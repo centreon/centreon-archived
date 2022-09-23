@@ -29,6 +29,7 @@ use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
 use Core\Security\ProviderConfiguration\Application\OpenId\Repository\WriteOpenIdConfigurationRepositoryInterface
     as WriteRepositoryInterface;
 use Core\Security\ProviderConfiguration\Domain\Model\Configuration;
+use Core\Security\ProviderConfiguration\Domain\OpenId\Model\ACLConditions;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Model\AuthenticationConditions;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Model\CustomConfiguration;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Model\GroupsMapping;
@@ -116,7 +117,7 @@ class DbWriteOpenIdConfigurationRepository extends AbstractRepositoryDRB impleme
             'contact_template_id' => $customConfiguration->getContactTemplate()?->getId(),
             'email_bind_attribute' => $customConfiguration->getEmailBindAttribute(),
             'fullname_bind_attribute' => $customConfiguration->getUserNameBindAttribute(),
-            'roles_mapping' => $customConfiguration->getACLConditions()->toArray(),
+            'roles_mapping' => $this->aclConditionsToArray($customConfiguration->getACLConditions()),
             "authentication_conditions" => $this->authenticationConditionsToArray(
                 $customConfiguration->getAuthenticationConditions()
             ),
@@ -248,6 +249,20 @@ class DbWriteOpenIdConfigurationRepository extends AbstractRepositoryDRB impleme
             "is_enabled" => $groupsMapping->isEnabled(),
             "attribute_path" => $groupsMapping->getAttributePath(),
             "endpoint" => $groupsMapping->getEndpoint()->toArray(),
+        ];
+    }
+
+    /**
+     * @param ACLConditions $aclConditions
+     * @return array<string,bool|string|array<string,string|null>>
+     */
+    private function aclConditionsToArray(ACLConditions $aclConditions): array
+    {
+        return [
+            'is_enabled' => $aclConditions->isEnabled(),
+            'apply_only_first_role' => $aclConditions->onlyFirstRoleIsApplied(),
+            'attribute_path' => $aclConditions->getAttributePath(),
+            'endpoint' => $aclConditions->getEndpoint()->toArray()
         ];
     }
 }

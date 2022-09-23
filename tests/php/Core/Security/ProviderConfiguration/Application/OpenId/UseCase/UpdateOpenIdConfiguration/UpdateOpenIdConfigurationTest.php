@@ -74,14 +74,16 @@ it('should present a NoContentResponse when the use case is executed correctly',
     $request->verifyPeer = false;
     $request->isAutoImportEnabled = false;
     $request->contactTemplate = ['id' => 1]; /** @phpstan-ignore-line */
-    $request->claimName = 'groups';
-    $request->rolesMapping = (new ACLConditions(
-        false,
-        false,
-        '',
-        new Endpoint(Endpoint::INTROSPECTION, ''),
-        []
-    ))->toArray();
+    $request->rolesMapping = [
+        'is_enabled' => false,
+        'apply_only_first_role' => false,
+        'attribute_path' => '',
+        'endpoint' => [
+            'type' => 'introspection_endpoint',
+            'custom_endpoint' => ''
+        ],
+        'relations' => []
+    ];
 
     $this->contactTemplateRepository
         ->expects($this->once())
@@ -123,14 +125,16 @@ it('should present an ErrorResponse when an error occured during the use case ex
     $request->verifyPeer = false;
     $request->isAutoImportEnabled = false;
     $request->contactTemplate = ['id' => 1]; /** @phpstan-ignore-line */
-    $request->claimName = 'groups';
-    $request->rolesMapping = (new ACLConditions(
-        false,
-        false,
-        '',
-        new Endpoint(Endpoint::INTROSPECTION, ''),
-        []
-    ))->toArray();
+    $request->rolesMapping = [
+        'is_enabled' => false,
+        'apply_only_first_role' => false,
+        'attribute_path' => '',
+        'endpoint' => [
+            'type' => 'introspection_endpoint',
+            'custom_endpoint' => ''
+        ],
+        'relations' => []
+    ];
     $request->authenticationConditions = [
         "is_enabled" => true,
         "attribute_path" => "info.groups",
@@ -182,14 +186,16 @@ it('should present an Error Response when auto import is enable and mandatory pa
     $request->authenticationType = 'client_secret_post';
     $request->verifyPeer = false;
     $request->isAutoImportEnabled = true;
-    $request->claimName = 'groups';
-    $request->rolesMapping = (new ACLConditions(
-        false,
-        false,
-        '',
-        new Endpoint(Endpoint::INTROSPECTION, ''),
-        []
-    ))->toArray();
+    $request->rolesMapping = [
+        'is_enabled' => false,
+        'apply_only_first_role' => false,
+        'attribute_path' => '',
+        'endpoint' => [
+            'type' => 'introspection_endpoint',
+            'custom_endpoint' => ''
+        ],
+        'relations' => []
+    ];
 
     $missingParameters = [
         'contact_template',
@@ -236,7 +242,6 @@ it('should present an Error Response when auto import is enable and the contact 
     $request->contactTemplate = ['id' => 1, "name" => 'contact_template'];
     $request->emailBindAttribute = 'email';
     $request->userNameBindAttribute = 'name';
-    $request->claimName = 'groups';
 
     $this->contactTemplateRepository
         ->expects($this->once())

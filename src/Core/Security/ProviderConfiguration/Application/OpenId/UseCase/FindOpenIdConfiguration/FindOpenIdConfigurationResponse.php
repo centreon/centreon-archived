@@ -25,6 +25,8 @@ namespace Core\Security\ProviderConfiguration\Application\OpenId\UseCase\FindOpe
 
 use Core\Contact\Domain\Model\ContactGroup;
 use Core\Contact\Domain\Model\ContactTemplate;
+use Core\Security\ProviderConfiguration\Domain\OpenId\Model\ACLConditions;
+use Core\Security\ProviderConfiguration\Domain\OpenId\Model\Endpoint;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Model\GroupsMapping;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Model\AuthorizationRule;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Model\ContactGroupRelation;
@@ -128,17 +130,7 @@ class FindOpenIdConfigurationResponse
     public ?array $contactGroup = null;
 
     /**
-     * @var array{
-     *  "is_enabled": bool,
-     *  "attribute_path": string,
-     *  "endpoint": array{
-     *      "type": string,
-     *      "custom_endpoint":string|null
-     *  },
-     *  "authorized_values": string[],
-     *  "trusted_client_addresses": string[],
-     *  "blacklist_client_addresses": string[]
-     * }
+     * @var array<string, array<int|string, string|null>|string|bool>
      */
     public array $aclConditions = [];
 
@@ -284,5 +276,20 @@ class FindOpenIdConfigurationResponse
             ],
             $contactGroupRelations
         );
+    }
+
+    /**
+     * @param ACLConditions $aclConditions
+     * @return array<string, array<int|string,string|null|array<mixed>>|string|bool>
+     */
+    public static function aclConditionsToArray(ACLConditions $aclConditions): array
+    {
+        $relations =  self::authorizationRulesToArray($aclConditions->getRelations());
+        return [
+            "is_enabled" => $aclConditions->isEnabled(),
+            "attribute_path" => $aclConditions->getAttributePath(),
+            "endpoint" => $aclConditions->getEndpoint()->toArray(),
+            "relations" => $relations
+        ];
     }
 }
