@@ -2,7 +2,7 @@ import { useState, useEffect, Dispatch, SetStateAction } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { equals, path } from 'ramda';
-import { useAtomValue } from 'jotai/utils';
+import { useAtom } from 'jotai';
 
 import { Tooltip } from '@mui/material';
 import Typography from '@mui/material/Typography';
@@ -114,9 +114,11 @@ const AnomalyDetectionSlider = ({
   const { sendRequest } = useRequest({
     request: putData,
   });
-  const countedRedCircles = useAtomValue(countedRedCirclesAtom);
+  const [countedRedCircles, setCountedRedCircles] = useAtom(
+    countedRedCirclesAtom,
+  );
 
-  console.log('look', countedRedCircles);
+  const msgTooltip = `${countedRedCircles} points out of envelope`;
 
   const step = 0.1;
   const sensitivityEndPoint = path<string>(
@@ -139,18 +141,21 @@ const AnomalyDetectionSlider = ({
   const handleChangeSlider = (event): void => {
     setCurrentValue(event.target.value);
     enableUpdatingSlider();
+    setOpenTooltip(true);
   };
 
   const handleAdd = (): void => {
     const newCurrentValue = Number((step + currentValue).toFixed(1));
     setCurrentValue(newCurrentValue);
     enableUpdatingSlider();
+    setOpenTooltip(true);
   };
 
   const handleRemove = (): void => {
     const newCurrentValue = Number((currentValue - step).toFixed(1));
     setCurrentValue(newCurrentValue);
     enableUpdatingSlider();
+    setOpenTooltip(true);
   };
 
   const handleChangeCheckBox = (event): void => {
@@ -159,6 +164,7 @@ const AnomalyDetectionSlider = ({
       return;
     }
     setIsDefaultValue(event.target.checked);
+    setOpenTooltip(true);
   };
 
   const confirm = (): void => {
@@ -166,6 +172,7 @@ const AnomalyDetectionSlider = ({
       return;
     }
     openModalConfirmation(true);
+    setCountedRedCircles(null);
   };
 
   const resizeEnvelope = (): void => {
@@ -182,7 +189,16 @@ const AnomalyDetectionSlider = ({
     setCurrentValue(sensitivity.current_value);
     setIsResizing(false);
     setIsDefaultValue(false);
+    setCountedRedCircles(null);
   };
+
+  useEffect(() => {
+    if (openTooltip) {
+      setTimeout(() => {
+        setOpenTooltip(false);
+      }, 1000);
+    }
+  }, [openTooltip]);
 
   useEffect(() => {
     if (isDefaultValue) {
@@ -221,9 +237,13 @@ const AnomalyDetectionSlider = ({
   return (
     <div className={classes.container}>
       <div className={classes.header}>
-        <Tooltip open placement="bottom" title={countedRedCircles}>
-          <Typography variant="h6">{t(LabelMenageEnvelope)}</Typography>
-        </Tooltip>
+        <Typography variant="h6">{t(LabelMenageEnvelope)}</Typography>
+        {countedRedCircles && (
+          <Tooltip open={openTooltip} title={msgTooltip}>
+            <div />
+          </Tooltip>
+        )}
+
         <Typography variant="caption">
           {t(LabelMenageEnvelopeSubTitle)}
         </Typography>
@@ -231,7 +251,7 @@ const AnomalyDetectionSlider = ({
 
       <div className={classes.body}>
         <div className={classes.bodyContainer}>
-          <IconButton data-testid="add" size="small" onClick={handleRemove}>
+          <IconButton data-testid="remove" size="small" onClick={handleRemove}>
             <div className={classes.icon}>
               <RemoveIcon fontSize="small" />
               <Typography variant="subtitle2">
@@ -252,7 +272,7 @@ const AnomalyDetectionSlider = ({
             valueLabelDisplay="on"
             onChange={handleChangeSlider}
           />
-          <IconButton data-testid="remove" size="small" onClick={handleAdd}>
+          <IconButton data-testid="add" size="small" onClick={handleAdd}>
             <div className={classes.icon}>
               <AddIcon fontSize="small" />
               <Typography variant="subtitle2">

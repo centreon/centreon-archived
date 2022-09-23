@@ -592,7 +592,6 @@ const GraphContent = ({
               rightScale={rightScale}
               timeSeries={timeSeries}
               timeTick={timeTick}
-              type={resource?.type}
               xScale={xScale}
             />
             {displayEventAnnotations && (

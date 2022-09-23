@@ -2,13 +2,12 @@ import { ReactNode } from 'react';
 
 import { Scale } from '@visx/visx';
 import { ScaleLinear, ScaleTime } from 'd3-scale';
-import { difference, equals, isNil, max, min } from 'ramda';
+import { difference, isNil, max, min } from 'ramda';
 
 import { alpha } from '@mui/material';
 
-import AnomalyDetectionShapeCircle from '../AnomalyDetection/AnomalyDetectionShapeCircle';
+import { Line, TimeValue } from '../models';
 import {
-  getTime,
   getInvertedStackedLines,
   getMax,
   getMin,
@@ -18,8 +17,6 @@ import {
   getUnits,
   getYScale,
 } from '../timeSeries';
-import { Line, TimeValue } from '../models';
-import { ResourceType } from '../../../models';
 
 import RegularAnchorPoint from './AnchorPoint/RegularAnchorPoint';
 import RegularLine from './RegularLine';
@@ -36,7 +33,6 @@ interface Props {
   rightScale: ScaleLinear<number, number>;
   timeSeries: Array<TimeValue>;
   timeTick: Date | null;
-  type: string;
   xScale: ScaleTime<number, number>;
 }
 
@@ -91,7 +87,6 @@ const Lines = ({
   isEditAnomalyDetectionDataDialogOpen,
   anomalyDetectionEnvelope,
   anomalyDetectionResizeEnvelope,
-  type,
 }: Props): JSX.Element => {
   const [, secondUnit, thirdUnit] = getUnits(lines);
 
@@ -112,19 +107,6 @@ const Lines = ({
   const stackedYScale = getStackedYScale({ leftScale, rightScale });
 
   const regularLines = difference(lines, stackedLines);
-
-  const isLegendClicked = lines?.length <= 1;
-
-  const showCircle =
-    equals(type, ResourceType.anomalydetection) &&
-    isEditAnomalyDetectionDataDialogOpen &&
-    !isLegendClicked;
-
-  const propsShapeCircle = {
-    getTime,
-    timeSeries,
-    xScale,
-  };
 
   return (
     <g>
@@ -190,14 +172,6 @@ const Lines = ({
                   lineColor={lineColor}
                   lines={lines}
                   metric={metric}
-                  // shapeCircleAnomalyDetection={
-                  //   showCircle && (
-                  //     <AnomalyDetectionShapeCircle
-                  //       {...propsShapeCircle}
-                  //       yScale={yScale}
-                  //     />
-                  //   )
-                  // }
                   timeSeries={timeSeries}
                   transparency={transparency}
                   unit={unit}

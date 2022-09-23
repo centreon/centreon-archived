@@ -1,5 +1,7 @@
 import { Dispatch, ReactNode, SetStateAction, useState } from 'react';
 
+import { useUpdateAtom } from 'jotai/utils';
+
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import Paper from '@mui/material/Paper';
@@ -11,6 +13,7 @@ import AnomalyDetectionExclusionPeriod from './AnomalyDetectionExclusionPeriod';
 import AnomalyDetectionModalConfirmation from './AnomalyDetectionModalConfirmation';
 import AnomalyDetectionSlider from './AnomalyDetectionSlider';
 import { CustomFactorsData } from './models';
+import { countedRedCirclesAtom } from './anomalyDetectionAtom';
 
 const useStyles = makeStyles((theme) => ({
   close: {
@@ -75,9 +78,11 @@ const EditAnomalyDetectionDataDialog = ({
     useState(false);
 
   const [isResizeEnvelope, setIsResizeEnvelope] = useState(false);
+  const setCountedRedCircles = useUpdateAtom(countedRedCirclesAtom);
 
   const handleClose = (): void => {
     setIsOpen(false);
+    setCountedRedCircles(null);
   };
 
   const getFactors = (data: CustomFactorsData): void => {
