@@ -1238,7 +1238,7 @@ class OpenIdProvider implements OpenIdProviderInterface
 
     /**
      * @param Endpoint $endpoint
-     * @return array
+     * @return array<string, mixed>
      */
     private function getGroupsFromProvider(Endpoint $endpoint): array {
         switch ($endpoint->getType()) {
@@ -1259,7 +1259,6 @@ class OpenIdProvider implements OpenIdProviderInterface
     /**
      * @param array<mixed> $groups
      * @param GroupsMapping $groupsMapping
-     * @return void
      */
     private function validateGroupsMapping(array $groups, GroupsMapping $groupsMapping): void
     {
@@ -1280,7 +1279,7 @@ class OpenIdProvider implements OpenIdProviderInterface
         $this->validateGroupsMappingAttributeOrFail($providerGroups, $groupsMapping->getContactGroupRelations());
     }
 
-        /**
+    /**
      * Validate Authentication Condition Attribute
      *
      * @param array<mixed> $providerGroupsMapping
