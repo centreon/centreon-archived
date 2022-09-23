@@ -22,7 +22,6 @@
     "contact_template",
     "email_bind_attribute",
     "fullname_bind_attribute",
-    "claim_name",
     "authentication_conditions",
     "groups_mapping"
   ],
@@ -90,9 +89,6 @@
       "type": ["string", "null"]
     },
     "fullname_bind_attribute": {
-      "type": ["string", "null"]
-    },
-    "claim_name": {
       "type": ["string", "null"]
     },
     "authentication_conditions": {

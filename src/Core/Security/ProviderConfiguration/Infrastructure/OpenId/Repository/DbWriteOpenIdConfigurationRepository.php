@@ -119,7 +119,6 @@ class DbWriteOpenIdConfigurationRepository extends AbstractRepositoryDRB impleme
             'contact_template_id' => $customConfiguration->getContactTemplate()?->getId(),
             'email_bind_attribute' => $customConfiguration->getEmailBindAttribute(),
             'fullname_bind_attribute' => $customConfiguration->getUserNameBindAttribute(),
-            'claim_name' => $customConfiguration->getClaimName(),
             'roles_mapping' => $customConfiguration->getACLConditions()->toArray(),
             "authentication_conditions" => $this->authenticationConditionsToArray(
                 $customConfiguration->getAuthenticationConditions()

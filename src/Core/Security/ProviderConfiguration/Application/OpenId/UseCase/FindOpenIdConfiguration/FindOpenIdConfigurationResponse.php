@@ -123,19 +123,9 @@ class FindOpenIdConfigurationResponse
     public ?string $userNameBindAttribute = null;
 
     /**
-     * @var string|null
-     */
-    public ?string $claimName = null;
-
-    /**
      * @var array{id: int, name: string}|null
      */
     public ?array $contactGroup = null;
-
-    /**
-     * @var array<array{claim_value: string, access_group:array{id: int, name: string}}>
-     */
-    public array $authorizationRules = [];
 
     /**
      * @var array{
