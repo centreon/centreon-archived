@@ -153,7 +153,7 @@ const AnomalyDetectionEnvelopeThreshold = ({
         />
         <LinePath {...props} y={estimatedY0} />
         <LinePath {...props} y={estimatedY1} />
-        {regularLines.map(({ metric, unit, invert }) => {
+        {regularLines.map(({ metric, unit, invert, name }) => {
           const yScale = getYScale({
             hasMoreThanTwoUnits: !isNil(thirdUnit),
             invert,
@@ -162,9 +162,10 @@ const AnomalyDetectionEnvelopeThreshold = ({
             secondUnit,
             unit,
           });
-          const originMetric = metric.includes('_upper_thresholds')
-            ? metric.replace('_upper_thresholds', '')
-            : undefined;
+          const originMetric =
+            !equals(name, 'Upper Threshold') && !equals(name, 'Lower Threshold')
+              ? metric
+              : undefined;
 
           return (
             <g key={metric}>
