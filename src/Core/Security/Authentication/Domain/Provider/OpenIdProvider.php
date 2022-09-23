@@ -1256,7 +1256,8 @@ class OpenIdProvider implements OpenIdProviderInterface
      * @param Endpoint $endpoint
      * @return array<string, mixed>
      */
-    private function getGroupsFromProvider(Endpoint $endpoint): array {
+    private function getGroupsFromProvider(Endpoint $endpoint): array
+    {
         switch ($endpoint->getType()) {
             case Endpoint::INTROSPECTION:
                 $groups = $this->sendRequestForIntrospectionEndpoint();
