@@ -1243,7 +1243,8 @@ class OpenIdProvider implements OpenIdProviderInterface
     /**
      * @param GroupsMapping $groupsMapping
      */
-    private function validateGroupsMappingOrFail(GroupsMapping $groupsMapping): void {
+    private function validateGroupsMappingOrFail(GroupsMapping $groupsMapping): void
+    {
         if ($groupsMapping->isEnabled()) {
             $groups = $this->getGroupsFromProvider($groupsMapping->getEndpoint());
             $this->validateGroupsMapping($groups, $groupsMapping);
