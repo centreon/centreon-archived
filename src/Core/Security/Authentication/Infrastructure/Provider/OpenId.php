@@ -32,7 +32,6 @@ use Core\Security\Authentication\Application\UseCase\Login\LoginRequest;
 use Core\Security\Authentication\Domain\Exception\SSOAuthenticationException;
 use Core\Security\Authentication\Domain\Model\AuthenticationTokens;
 use Core\Security\Authentication\Domain\Model\NewProviderToken;
-use Core\Security\Authentication\Domain\Model\ProviderToken;
 use Core\Security\Authentication\Domain\Provider\OpenIdProvider;
 use Core\Security\ProviderConfiguration\Domain\Model\Configuration;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Exceptions\OpenIdConfigurationException;
@@ -325,5 +324,13 @@ class OpenId implements ProviderAuthenticationInterface
     public function getIdTokenPayload(): array
     {
         return $this->provider->getIdTokenPayload();
+    }
+
+    /**
+     * @return ContactGroup[]
+     */
+    public function getUserContactGroups(): array
+    {
+        return $this->provider->getUserContactGroups();
     }
 }

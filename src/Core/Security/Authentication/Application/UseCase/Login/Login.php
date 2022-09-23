@@ -47,6 +47,7 @@ use Core\Security\Authentication\Domain\Exception\PasswordExpiredException;
 use Core\Security\Authentication\Infrastructure\Provider\AclUpdaterInterface;
 use Core\Security\Authentication\Domain\Exception\AuthenticationConditionsException;
 use Centreon\Domain\Authentication\Exception\AuthenticationException as LegacyAuthenticationException;
+use Core\Application\Common\UseCase\ErrorResponse;
 
 final class Login
 {
@@ -138,6 +139,9 @@ final class Login
             $presenter->setResponseStatus(new ErrorAclConditionsResponse($e->getMessage()));
         } catch (AuthenticationConditionsException $ex) {
             $presenter->setResponseStatus(new ErrorAuthenticationConditionsResponse($ex->getMessage()));
+            return;
+        } catch (\Throwable $ex) {
+            $presenter->setResponseStatus(new ErrorResponse($ex->getMessage()));
             return;
         }
     }

@@ -30,8 +30,6 @@ use Core\Contact\Application\Repository\WriteContactGroupRepositoryInterface;
 use Core\Security\AccessGroup\Application\Repository\WriteAccessGroupRepositoryInterface;
 use Core\Security\AccessGroup\Domain\Model\AccessGroup;
 use Core\Security\Authentication\Application\Provider\ProviderAuthenticationInterface;
-use Core\Security\Authentication\Domain\Provider\OpenIdProvider;
-use Core\Security\ProviderConfiguration\Domain\OpenId\Model\CustomConfiguration;
 
 class AclUpdater implements AclUpdaterInterface
 {
@@ -67,7 +65,9 @@ class AclUpdater implements AclUpdaterInterface
             /** @phpstan-ignore-next-line */
             $userAccessGroups = $this->provider->getUserAccessGroupsFromClaims($userClaims);
             $this->updateAccessGroupsForUser($user, $userAccessGroups);
-            $this->updateContactGroupsForUser($user);
+            if ($this->provider->getConfiguration()->getCustomConfiguration()->getGroupsMapping()->isEnabled()) {
+                $this->updateContactGroupsForUser($user);
+            }
         }
     }
 
@@ -106,16 +106,22 @@ class AclUpdater implements AclUpdaterInterface
     private function updateContactGroupsForUser(ContactInterface $user): void
     {
         /** @phpstan-ignore-next-line */
-        $contactGroup = $this->provider->getConfiguration()->getCustomConfiguration()->getContactGroup();
+        $contactGroups = $this->provider->getUserContactGroups();
 
         try {
             $this->info('Updating User Contact Group', [
                 "user_id" => $user->getId(),
-                "contact_group_id" => $contactGroup->getId(),
+                "contact_group_id" => [
+                    array_map(function ($contactGroup) {
+                        return $contactGroup->getId();
+                    }, $contactGroups)
+                ],
             ]);
             $this->dataStorageEngine->startTransaction();
             $this->contactGroupRepository->deleteContactGroupsForUser($user);
-            $this->contactGroupRepository->insertContactGroupForUser($user, $contactGroup);
+            foreach ($contactGroups as $contactGroup) {
+                $this->contactGroupRepository->insertContactGroupForUser($user, $contactGroup);
+            }
             $this->dataStorageEngine->commitTransaction();
         } catch (\Exception $ex) {
             $this->dataStorageEngine->rollbackTransaction();
