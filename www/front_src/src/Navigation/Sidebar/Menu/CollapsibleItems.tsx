@@ -51,34 +51,15 @@ interface StyleProps {
 const collapseWidth = 24;
 
 const useStyles = makeStyles((theme) => ({
-  activated: {
-    '& .MuiListItemText-root': {
-      '& .MuiTypography-root': {
-        color: theme.palette.background.paper,
-      },
-    },
-    '& .MuiSvgIcon-root': {
-      color: theme.palette.background.paper,
-    },
-    '&:hover': {
-      backgroundColor: theme.palette.primary.light,
-      color: theme.palette.primary.main,
-    },
-
-    backgroundColor: theme.palette.primary.light,
-  },
   label: {
     fontWeight: 'bold',
   },
   root: {
     '& .MuiListItemIcon-root': {
+      color: theme.palette.text.primary,
       minWidth: theme.spacing(2.25),
       padding: theme.spacing(0, 0.25, 0, 0.1),
     },
-    // '& .MuiTypography-root': {
-    //   color: theme.palette.text.primary,
-    //   fontSize: theme.typography.caption,
-    // },
     boxShadow: theme.shadows[3],
     outline: 'none',
   },

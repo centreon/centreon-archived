@@ -57,22 +57,32 @@ const useStyles = makeStyles((theme) => ({
       },
     },
     '& .MuiSvgIcon-root': {
-      color: theme.palette.primary.main,
+      color: isDarkMode(theme)
+        ? theme.palette.common.white
+        : theme.palette.primary.main,
     },
     '&:hover': {
       backgroundColor:
         isDarkMode(theme) && isRoot
-          ? theme.palette.common.black
+          ? theme.palette.primary.main
           : theme.palette.primary.light,
     },
     backgroundColor:
       isDarkMode(theme) && isRoot
-        ? theme.palette.common.black
+        ? theme.palette.primary.main
         : theme.palette.primary.light,
-    color: theme.palette.primary.main,
+    color:
+      isDarkMode(theme) && isRoot
+        ? theme.palette.common.white
+        : theme.palette.primary.main,
   }),
   arrowIcon: {
+    color: 'inherit',
+  },
+  iconButton: {
+    alignItems: 'center',
     color: theme.palette.common.white,
+    height: theme.spacing(rootHeightItem / 8),
   },
   iconWrapper: {
     alignItems: 'center',
@@ -80,19 +90,15 @@ const useStyles = makeStyles((theme) => ({
     minWidth: theme.spacing(5.75),
   },
   label: {
-    // '& .MuiTypography-root': {
-    //   fontSize: 11,
-    // },
+    '& .MuiTypography-root': {
+      color: 'inherit',
+      lineHeight: 1,
+    },
+    color: theme.palette.text.primary,
     margin: theme.spacing(0),
   },
-  listButton: {
-    alignItems: 'center',
-    color: theme.palette.common.white,
-    height: theme.spacing(rootHeightItem / 8),
-    // marginBottom: 0.8,
-  },
   rootLabel: {
-    color: theme.palette.common.white,
+    color: 'inherit',
     margin: theme.spacing(0),
   },
 }));
@@ -138,7 +144,7 @@ const MenuItems = ({
     Component: (
       <ListItemButton
         disableTouchRipple
-        className={clsx(classes.listButton, {
+        className={clsx(classes.iconButton, {
           [classes.activated]: hover,
         })}
         component={ItemLink}

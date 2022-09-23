@@ -55,7 +55,7 @@ const Drawer = styled(MuiDrawer, {
   '& .MuiPaper-root': {
     backgroundColor: isDarkMode(theme)
       ? theme.palette.common.black
-      : theme.palette.primary.main,
+      : theme.palette.primary.dark,
     border: 'none',
   },
   boxSizing: 'border-box',
