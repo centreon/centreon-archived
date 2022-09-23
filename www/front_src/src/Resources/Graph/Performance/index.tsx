@@ -205,10 +205,20 @@ const PerformanceGraph = ({
       endpoint,
     })
       .then((graphData) => {
+        // const type = resource?.type;
+        // let newLineData;
+
         setTimeSeries(getTimeSeries(graphData));
         setBase(graphData.global.base);
         setTitle(graphData.global.title);
         const newLineData = getLineData(graphData);
+
+        // if (equals(type, ResourceType.anomalydetection)) {
+        //   setTimeSeries(getTimeSeries(mockedResultModalGraph));
+        //   setBase(mockedResultModalGraph.global.base);
+        //   setTitle(mockedResultModalGraph.global.title);
+        //   newLineData = getLineData(mockedResultModalGraph);
+        // }
 
         if (lineData) {
           setLineData(
@@ -278,7 +288,28 @@ const PerformanceGraph = ({
   }
 
   const sortedLines = sortBy(prop('name'), lineData);
-  const displayedLines = reject(propEq('display', false), sortedLines);
+
+  const originMetric = sortedLines.map(({ metric }) =>
+    metric.includes('_upper_thresholds')
+      ? metric.replace('_upper_thresholds', '')
+      : null,
+  );
+
+  const lineOriginMetric = sortedLines.filter((item) => {
+    const name = originMetric.filter((element) => element);
+
+    return equals(item.metric, name[0]);
+  });
+
+  const linesThreshold = sortedLines.filter(({ metric }) =>
+    metric.includes('thresholds'),
+  );
+
+  const newSortedLines = equals(resource.type, ResourceType.anomalydetection)
+    ? [...linesThreshold, ...lineOriginMetric]
+    : sortedLines;
+
+  const displayedLines = reject(propEq('display', false), newSortedLines);
 
   const getLineByMetric = (metric): LineModel => {
     return find(propEq('metric', metric), lineData) as LineModel;
@@ -452,7 +483,7 @@ const PerformanceGraph = ({
           isEditAnomalyDetectionDataDialogOpen
         }
         limitLegendRows={limitLegendRows}
-        lines={sortedLines}
+        lines={newSortedLines}
         timeSeries={timeSeries}
         toggable={toggableLegend}
         onClearHighlight={clearHighlight}
