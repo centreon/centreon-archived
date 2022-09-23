@@ -1249,7 +1249,7 @@ class OpenIdProvider implements OpenIdProviderInterface
             $groups = $this->getGroupsFromProvider($groupsMapping->getEndpoint());
             $this->validateGroupsMapping($groups, $groupsMapping);
         } else {
-            $this->logAuthenticationInfo("Groups Mapping disabled", []);
+            $this->logAuthenticationInfo("Groups Mapping disabled");
         }
     }
 
