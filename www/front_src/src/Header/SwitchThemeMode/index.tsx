@@ -4,7 +4,6 @@ import clsx from 'clsx';
 import { useLocation } from 'react-router-dom';
 
 import { ListItemText, Switch } from '@mui/material';
-import { grey } from '@mui/material/colors';
 import makeStyles from '@mui/styles/makeStyles';
 
 import { patchData, useRequest } from '@centreon/ui';

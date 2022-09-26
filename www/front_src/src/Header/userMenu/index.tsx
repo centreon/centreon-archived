@@ -6,10 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { useUpdateAtom } from 'jotai/utils';
 import { equals, gt, isNil, not, __ } from 'ramda';
 
-import { grey } from '@mui/material/colors';
-import Divider from '@mui/material/Divider';
 import {
-  Typography,
   Box,
   Badge,
   Tooltip,
@@ -18,7 +15,6 @@ import {
   ListItemText,
   Popper,
   ListItemButton,
-  ListItemIcon as MUIListItemIcon,
   Fade,
 } from '@mui/material';
 import UserIcon from '@mui/icons-material/Person';
@@ -26,7 +22,7 @@ import FileCopyIcon from '@mui/icons-material/FileCopy';
 import CheckIcon from '@mui/icons-material/Check';
 import LogoutIcon from '@mui/icons-material/Logout';
 import SettingsIcon from '@mui/icons-material/Settings';
-import { makeStyles, styled } from '@mui/styles';
+import { makeStyles } from '@mui/styles';
 
 import {
   MenuSkeleton,
