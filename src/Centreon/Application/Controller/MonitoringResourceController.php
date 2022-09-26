@@ -277,7 +277,7 @@ class MonitoringResourceController extends AbstractController
         $parameters = [
             'internalId' => $resource->getInternalId(),
             'hostId' => $resource->getParent() !== null ? $resource->getParent()->getId() : $resource->getId(),
-            'serviceId' => $resource->getServiceId(),
+            'serviceId' => $resource->getId(),
             'hasGraphData' => $resource->hasGraph()
         ];
 
