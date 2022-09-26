@@ -72,7 +72,7 @@ class AclUpdater implements AclUpdaterInterface
             /** @phpstan-ignore-next-line */
             $userAccessGroups = $this->provider->getUserAccessGroupsFromClaims($userClaims);
             $this->updateAccessGroupsForUser($user, $userAccessGroups);
-            if ($this->provider->getConfiguration()->getCustomConfiguration()->getGroupsMapping()->isEnabled()) {
+            if ($customConfiguration->getGroupsMapping()->isEnabled()) {
                 $this->updateContactGroupsForUser($user);
             }
         }

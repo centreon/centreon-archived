@@ -51,7 +51,7 @@ use Core\Security\Authentication\Application\Provider\ProviderAuthenticationFact
 use Core\Security\Authentication\Application\Repository\WriteSessionTokenRepositoryInterface;
 use Centreon\Domain\Authentication\Exception\AuthenticationException as LegacyAuthenticationException;
 
-beforeEach(function() {
+beforeEach(function () {
     $this->provider = $this->createMock(ProviderAuthenticationInterface::class);
     $this->contact = $this->createMock(ContactInterface::class);
     $this->menuService = $this->createMock(MenuServiceInterface::class);
@@ -426,5 +426,4 @@ it('should present the custom redirection page when user is authenticated', func
     $useCase($this->authenticationRequest, $presenter);
     expect($presenter->getResponseStatus())->toBeInstanceOf(LoginResponse::class);
     expect($presenter->response->getMessage())->toBe($page->getRedirectionUri());
-
 });
