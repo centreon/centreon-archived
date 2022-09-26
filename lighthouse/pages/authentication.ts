@@ -26,7 +26,9 @@ export const generateReportForAuthenticationPage = async ({
   await page.click('button[role="tab"]:nth-child(2)');
   await flow.endTimespan();
 
-  await flow.startTimespan({ stepName: 'Type base URL' });
-  await page.type('input[aria-label="Base URL"]', 'http://localhost/');
+  await page.click('div[aria-label="Identity provider"]');
+
+  await flow.startTimespan({ stepName: 'Change OpenID connect activation' });
+  await page.click('input[aria-label="Enable OpenID Connect authentication"]');
   await flow.endTimespan();
 };
