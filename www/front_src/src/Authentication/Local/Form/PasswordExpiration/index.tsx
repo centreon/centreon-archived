@@ -72,8 +72,13 @@ const PasswordExpiration = (): JSX.Element => {
   );
 
   const timeInputConfiguration: Array<TimeInputConfiguration> = [
-    { unit: 'months' },
-    { maxOption: maxDaysOption, minOption: minDaysOption, unit: 'days' },
+    { dataTestId: 'local_passwordExpirationMonths', unit: 'months' },
+    {
+      dataTestId: 'local_passwordExpirationDays',
+      maxOption: maxDaysOption,
+      minOption: minDaysOption,
+      unit: 'days',
+    },
   ];
 
   return useMemoComponent({
