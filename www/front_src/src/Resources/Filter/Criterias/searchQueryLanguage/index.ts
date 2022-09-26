@@ -77,13 +77,13 @@ const isCriteriaPart = pipe(
 const isFilledCriteria = pipe(endsWith(':'), not);
 
 interface ParametersParse {
-  nameCriteria?: Record<string, string>;
+  criteriaName?: Record<string, string>;
   search: string;
 }
 
 const parse = ({
   search,
-  nameCriteria = criteriaValueNameById,
+  criteriaName = criteriaValueNameById,
 }: ParametersParse): Array<Criteria> => {
   const [criteriaParts, rawSearchParts] = partition(
     allPass([includes(':'), isCriteriaPart, isFilledCriteria]),
@@ -114,7 +114,7 @@ const parse = ({
 
           return {
             id,
-            name: nameCriteria[id],
+            name: criteriaName[id],
           };
         }
 
@@ -335,12 +335,11 @@ const getAutocompleteSuggestions = ({
 
     const criteriaNames = pluralize(criteriaName);
 
-    const criteriasWithInstalledModules = newSelectableCriterias?.[
-      criteriaNames
-    ]?.options as Array<{ id: string; name: string }>;
+    const criteriasForInstalledModules = newSelectableCriterias?.[criteriaNames]
+      ?.options as Array<{ id: string; name: string }>;
 
     const allCriterias = newSelectableCriterias
-      ? criteriasWithInstalledModules
+      ? criteriasForInstalledModules
       : criterias;
 
     const criteriaValueSuggestions = getCriteriaValueSuggestions({

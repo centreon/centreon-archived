@@ -85,7 +85,7 @@ const useStyles = makeStyles((theme) => ({
 
 interface Props {
   details: ResourceDetails;
-  isCanceledResizeEnvelope?: boolean;
+  isEnvelopeResizingCanceled?: boolean;
   isResizeEnvelope?: boolean;
   openModalConfirmation?: (value: boolean) => void;
   sendFactors: (data: CustomFactorsData) => void;
@@ -99,7 +99,7 @@ const AnomalyDetectionSlider = ({
   sensitivity,
   details,
   openModalConfirmation,
-  isCanceledResizeEnvelope,
+  isEnvelopeResizingCanceled,
   isResizeEnvelope,
   sendReloadGraphPerformance,
   setIsResizeEnvelope,
@@ -223,10 +223,10 @@ const AnomalyDetectionSlider = ({
   }, [currentValue, isResizing]);
 
   useEffect(() => {
-    if (isCanceledResizeEnvelope) {
+    if (isEnvelopeResizingCanceled) {
       cancelResizingEnvelope();
     }
-  }, [isCanceledResizeEnvelope]);
+  }, [isEnvelopeResizingCanceled]);
 
   useEffect(() => {
     if (isResizeEnvelope) {

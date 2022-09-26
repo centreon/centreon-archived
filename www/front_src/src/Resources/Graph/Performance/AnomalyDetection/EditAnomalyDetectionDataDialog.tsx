@@ -50,7 +50,7 @@ const useStyles = makeStyles((theme) => ({
 interface PropsChildren {
   factorsData?: CustomFactorsData | null;
   getFactors?: (data: CustomFactorsData) => void;
-  isCanceledResizeEnvelope?: boolean;
+  isEnvelopeResizingCanceled?: boolean;
   isResizeEnvelope?: boolean;
   openModalConfirmation?: (value: boolean) => void;
   setIsResizeEnvelope?: Dispatch<SetStateAction<boolean>>;
@@ -75,7 +75,7 @@ const EditAnomalyDetectionDataDialog = ({
   const [isModalConfirmationOpened, setIsModalConfirmationOpened] =
     useState(false);
 
-  const [isCanceledResizeEnvelope, setIsCanceledResizeEnvelope] =
+  const [isEnvelopeResizingCanceled, setIsEnvelopeResizingCanceled] =
     useState(false);
 
   const [isResizeEnvelope, setIsResizeEnvelope] = useState(false);
@@ -92,10 +92,10 @@ const EditAnomalyDetectionDataDialog = ({
 
   const openModalConfirmation = (value: boolean): void => {
     setIsModalConfirmationOpened(value);
-    setIsCanceledResizeEnvelope(false);
+    setIsEnvelopeResizingCanceled(false);
   };
   const cancelResizeEnvelope = (value: boolean): void => {
-    setIsCanceledResizeEnvelope(value);
+    setIsEnvelopeResizingCanceled(value);
   };
 
   const resizeEnvelope = (value: boolean): void => {
@@ -117,7 +117,7 @@ const EditAnomalyDetectionDataDialog = ({
             {children &&
               children({
                 getFactors,
-                isCanceledResizeEnvelope,
+                isEnvelopeResizingCanceled,
                 isResizeEnvelope,
                 openModalConfirmation,
                 setIsResizeEnvelope,

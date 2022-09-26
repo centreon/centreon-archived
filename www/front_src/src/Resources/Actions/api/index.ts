@@ -1,15 +1,15 @@
 import axios, { AxiosResponse, CancelToken } from 'axios';
-import { map, pick } from 'ramda';
+import { pick } from 'ramda';
 
-import { ResourceCategory, Resource } from '../../models';
+import { Resource, ResourceCategory } from '../../models';
 import { AcknowledgeFormValues } from '../Resource/Acknowledge';
 import { DowntimeToPost } from '../Resource/Downtime';
 
 import {
   acknowledgeEndpoint,
-  downtimeEndpoint,
   checkEndpoint,
   commentEndpoint,
+  downtimeEndpoint,
 } from './endpoint';
 
 interface ResourcesWithAcknowledgeParams {

@@ -50,7 +50,7 @@ const GraphTabContent = ({ details }: TabProps): JSX.Element => {
     equalsMetaService(type) ||
     equalsAnomalyDetection(type);
 
-  const getIsReload = (value: boolean): void => {
+  const reload = (value: boolean): void => {
     if (value) {
       loadDetails();
     }
@@ -62,7 +62,7 @@ const GraphTabContent = ({ details }: TabProps): JSX.Element => {
         <>
           <TimePeriodButtonGroup />
           <ExportablePerformanceGraphWithTimeline
-            getIsReload={getIsReload}
+            getIsReload={reload}
             graphHeight={280}
             isEditAnomalyDetectionDataDialogOpen={false}
             resource={details}
