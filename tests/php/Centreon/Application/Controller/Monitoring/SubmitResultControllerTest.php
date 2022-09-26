@@ -38,6 +38,8 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 
 class SubmitResultControllerTest extends TestCase
 {
+    private const DECODING_ERROR_MESSAGE = 'Error when decoding your sent data';
+
     protected $adminContact;
     protected $hostResource;
     protected $serviceResource;
@@ -165,7 +167,7 @@ class SubmitResultControllerTest extends TestCase
             ->method('getContent')
             ->willReturn('[}');
         $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('Error when decoding sent data');
+        $this->expectExceptionMessage(self::DECODING_ERROR_MESSAGE);
         $submitResultController->submitResultResources($this->request);
     }
 
@@ -216,7 +218,7 @@ class SubmitResultControllerTest extends TestCase
             ->method('getContent')
             ->willReturn('[}');
         $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('Error when decoding sent data');
+        $this->expectExceptionMessage(self::DECODING_ERROR_MESSAGE);
         $submitResultController->submitResultHost($this->request, $this->hostResource->getId());
     }
     /**
@@ -266,7 +268,7 @@ class SubmitResultControllerTest extends TestCase
             ->method('getContent')
             ->willReturn('[}');
         $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('Error when decoding sent data');
+        $this->expectExceptionMessage(self::DECODING_ERROR_MESSAGE);
         $submitResultController->submitResultService(
             $this->request,
             $this->serviceResource->getParent()->getId(),

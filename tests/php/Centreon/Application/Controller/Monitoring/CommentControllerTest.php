@@ -37,6 +37,8 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 
 class CommentControllerTest extends TestCase
 {
+    private const DECODING_ERROR_MESSAGE = 'Error when decoding your sent data';
+
     protected $adminContact;
     protected $hostResource;
     protected $serviceResource;
@@ -164,7 +166,7 @@ class CommentControllerTest extends TestCase
             ->method('getContent')
             ->willReturn('[}');
         $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('Error when decoding sent data');
+        $this->expectExceptionMessage(self::DECODING_ERROR_MESSAGE);
         $commentController->addResourcesComment($this->request);
     }
 
@@ -215,7 +217,7 @@ class CommentControllerTest extends TestCase
             ->method('getContent')
             ->willReturn('[}');
         $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('Error when decoding sent data');
+        $this->expectExceptionMessage(self::DECODING_ERROR_MESSAGE);
         $commentController->addHostComment($this->request, $this->hostResource->getId());
     }
     /**
@@ -265,7 +267,7 @@ class CommentControllerTest extends TestCase
             ->method('getContent')
             ->willReturn('[}');
         $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('Error when decoding sent data');
+        $this->expectExceptionMessage(self::DECODING_ERROR_MESSAGE);
         $commentController->addServiceComment(
             $this->request,
             $this->serviceResource->getParent()->getId(),
