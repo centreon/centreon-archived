@@ -9,7 +9,8 @@ use Centreon\Domain\Repository\TopologyRepository;
  * @group Centreon
  * @group ORM-repository
  */
-class TopologyRepositoryTest extends TestCase
+class
+TopologyRepositoryTest extends TestCase
 {
     /**
      * @var ((string|string[][])[]|(string|int[][])[])[]
@@ -52,7 +53,7 @@ class TopologyRepositoryTest extends TestCase
                 . "FROM acl_topology_relations, acl_topology "
                 . "WHERE acl_topology.acl_topo_activate = '1' "
                 . "AND acl_topology.acl_topo_id = acl_topology_relations.acl_topo_id "
-                . "AND acl_topology_relations.acl_topo_id = '1' ",
+                . "AND acl_topology_relations.acl_topo_id = :acl_topo_id ",
                 'data' => [
                     [
                         'topology_topology_id' => 1,

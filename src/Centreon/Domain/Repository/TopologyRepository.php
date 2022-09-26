@@ -109,7 +109,7 @@ class TopologyRepository extends ServiceEntityRepository
                         . "FROM acl_topology_relations, acl_topology "
                         . "WHERE acl_topology.acl_topo_activate = '1' "
                         . "AND acl_topology.acl_topo_id = acl_topology_relations.acl_topo_id "
-                        . "AND acl_topology_relations.acl_topo_id = :acl_topo_id");
+                        . "AND acl_topology_relations.acl_topo_id = :acl_topo_id ");
                     while ($topo_group = $DBRESULT->fetchRow()) {
                         $statement->bindValue(':acl_topo_id', $topo_group["acl_topology_id"], \PDO::PARAM_INT);
                         $statement->execute();
@@ -128,8 +128,8 @@ class TopologyRepository extends ServiceEntityRepository
                                 }
                             }
                         }
+                        $statement->closeCursor();
                     }
-                    $statement->closeCursor();
                     $DBRESULT->closeCursor();
 
                     if (count($topology)) {
