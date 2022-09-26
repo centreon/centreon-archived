@@ -131,10 +131,10 @@ final class Login
                 'password_is_expired' => true,
             ]);
             $presenter->setResponseStatus($response);
-            throw $e;
+            return;
         } catch (AuthenticationException $e) {
             $presenter->setResponseStatus(new UnauthorizedResponse($e->getMessage()));
-            throw $e;
+            return;
         } catch (AclConditionsException $e) {
             $presenter->setResponseStatus(new ErrorAclConditionsResponse($e->getMessage()));
         } catch (AuthenticationConditionsException $ex) {
