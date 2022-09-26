@@ -23,24 +23,24 @@ declare(strict_types=1);
 
 namespace Core\Security\Authentication\Infrastructure\Provider;
 
-use Centreon\Domain\Contact\Interfaces\ContactInterface;
+use Exception;
+use Throwable;
+use Pimple\Container;
 use Centreon\Domain\Log\LoggerTrait;
-use Centreon\Infrastructure\Service\Exception\NotFoundException;
+use Centreon\Domain\Entity\ContactGroup;
 use Core\Security\AccessGroup\Domain\Model\AccessGroup;
-use Core\Security\Authentication\Application\Provider\ProviderAuthenticationInterface;
+use Centreon\Domain\Contact\Interfaces\ContactInterface;
+use Core\Security\Authentication\Domain\Model\NewProviderToken;
+use Centreon\Infrastructure\Service\Exception\NotFoundException;
+use Core\Security\Authentication\Domain\Provider\OpenIdProvider;
+use Core\Security\Authentication\Domain\Model\AuthenticationTokens;
+use Core\Security\ProviderConfiguration\Domain\Model\Configuration;
+use Security\Domain\Authentication\Interfaces\OpenIdProviderInterface;
 use Core\Security\Authentication\Application\UseCase\Login\LoginRequest;
 use Core\Security\Authentication\Domain\Exception\SSOAuthenticationException;
-use Core\Security\Authentication\Domain\Model\AuthenticationTokens;
-use Core\Security\Authentication\Domain\Model\NewProviderToken;
-use Core\Security\Authentication\Domain\Model\ProviderToken;
-use Core\Security\Authentication\Domain\Provider\OpenIdProvider;
-use Core\Security\ProviderConfiguration\Domain\Model\Configuration;
-use Core\Security\ProviderConfiguration\Domain\OpenId\Exceptions\OpenIdConfigurationException;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Model\CustomConfiguration;
-use Exception;
-use Pimple\Container;
-use Security\Domain\Authentication\Interfaces\OpenIdProviderInterface;
-use Throwable;
+use Core\Security\Authentication\Application\Provider\ProviderAuthenticationInterface;
+use Core\Security\ProviderConfiguration\Domain\OpenId\Exceptions\OpenIdConfigurationException;
 
 class OpenId implements ProviderAuthenticationInterface
 {
@@ -293,5 +293,13 @@ class OpenId implements ProviderAuthenticationInterface
     public function getIdTokenPayload(): array
     {
         return $this->provider->getIdTokenPayload();
+    }
+
+    /**
+     * @return ContactGroup[]
+     */
+    public function getUserContactGroups(): array
+    {
+        return $this->provider->getUserContactGroups();
     }
 }

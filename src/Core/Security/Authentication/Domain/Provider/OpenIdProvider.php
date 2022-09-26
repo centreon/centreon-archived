@@ -30,33 +30,33 @@ use DateInterval;
 use CentreonUserLog;
 use Pimple\Container;
 use Centreon\Domain\Log\LoggerTrait;
+use Centreon\Domain\Entity\ContactGroup;
 use Symfony\Component\HttpFoundation\Response;
 use Core\Domain\Configuration\User\Model\NewUser;
-use Core\Security\Authentication\Domain\Exception\AclConditionsException;
-use Core\Security\Authentication\Domain\Exception\SSOAuthenticationException;
-use Core\Security\Authentication\Domain\Model\AuthenticationTokens;
-use Core\Security\Authentication\Domain\Model\NewProviderToken;
 use Symfony\Contracts\HttpClient\ResponseInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Core\Security\Authentication\Domain\Model\ProviderToken;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Centreon\Domain\Contact\Interfaces\ContactServiceInterface;
+use Core\Security\Authentication\Domain\Model\NewProviderToken;
+use Core\Security\Authentication\Domain\Model\AuthenticationTokens;
 use Core\Security\ProviderConfiguration\Domain\Model\Configuration;
-use Core\Security\ProviderConfiguration\Domain\OpenId\Exceptions\OpenIdConfigurationException;
-use Core\Security\ProviderConfiguration\Domain\OpenId\Model\ACLConditions;
-use Core\Security\ProviderConfiguration\Domain\OpenId\Model\AuthorizationRule;
-use Core\Security\ProviderConfiguration\Domain\OpenId\Model\CustomConfiguration;
+use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Model\Endpoint;
 use Security\Domain\Authentication\Interfaces\OpenIdProviderInterface;
-use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
-use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
-use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
-use Core\Security\Authentication\Domain\Exception\AuthenticationException;
+use Core\Security\Authentication\Domain\Exception\AclConditionsException;
+use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
+use Core\Security\ProviderConfiguration\Domain\OpenId\Model\GroupsMapping;
+use Core\Security\Authentication\Domain\Exception\SSOAuthenticationException;
 use Core\Application\Configuration\User\Repository\WriteUserRepositoryInterface;
+use Core\Security\ProviderConfiguration\Domain\OpenId\Model\CustomConfiguration;
+use Core\Security\ProviderConfiguration\Domain\OpenId\Model\ContactGroupRelation;
 use Core\Security\Authentication\Domain\Exception\AuthenticationConditionsException;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Model\AuthenticationConditions;
+use Core\Security\ProviderConfiguration\Domain\OpenId\Exceptions\OpenIdConfigurationException;
 
 class OpenIdProvider implements OpenIdProviderInterface
 {
@@ -117,6 +117,11 @@ class OpenIdProvider implements OpenIdProviderInterface
      * @var array<string>
      */
     private array $rolesMappingFromProvider = [];
+
+    /**
+     * @var ContactGroup[]
+     */
+    private array $userContactGroups = [];
 
     /**
      * @param HttpClientInterface $client
@@ -673,6 +678,7 @@ class OpenIdProvider implements OpenIdProviderInterface
 
         $this->validateAuthenticationConditionsOrFail($authenticationConditions);
         $this->validateAclConditions($customConfiguration);
+        $this->validateGroupsMappingOrFail($customConfiguration->getGroupsMapping());
     }
 
     /**
@@ -863,13 +869,13 @@ class OpenIdProvider implements OpenIdProviderInterface
      * Log Authentication information
      *
      * @param string $message
-     * @param array<string|int,string> $content
+     * @param array<string|int,string>|null $content
      */
-    private function logAuthenticationInfo(string $message, array $content): void
+    private function logAuthenticationInfo(string $message, ?array $content = null): void
     {
         $this->centreonLog->insertLog(
             CentreonUserLog::TYPE_LOGIN,
-            "[Openid] [INFO] $message : " . json_encode($content)
+            "[Openid] [INFO] $message" . ($content !== null ? ' : ' . json_encode($content) : '')
         );
         $this->info("$message : ", $content);
     }
@@ -1234,5 +1240,125 @@ class OpenIdProvider implements OpenIdProviderInterface
     public function getRolesMappingFromProvider(): array
     {
         return $this->rolesMappingFromProvider;
+    }
+
+    /**
+     * @param GroupsMapping $groupsMapping
+     */
+    private function validateGroupsMappingOrFail(GroupsMapping $groupsMapping): void
+    {
+        if ($groupsMapping->isEnabled()) {
+            $groups = $this->getGroupsFromProvider($groupsMapping->getEndpoint());
+            $this->validateGroupsMapping($groups, $groupsMapping);
+        } else {
+            $this->logAuthenticationInfo("Groups Mapping disabled");
+        }
+    }
+
+    /**
+     * @param Endpoint $endpoint
+     * @return array<string, mixed>
+     */
+    private function getGroupsFromProvider(Endpoint $endpoint): array
+    {
+        switch ($endpoint->getType()) {
+            case Endpoint::INTROSPECTION:
+                $groups = $this->sendRequestForIntrospectionEndpoint();
+                break;
+            case Endpoint::USER_INFORMATION:
+                $groups = $this->sendRequestForUserInformationEndpoint();
+                break;
+            default:
+                $groups = $this->sendRequestForCustomAuthenticationConditionEndpoint($endpoint->getUrl());
+                break;
+        }
+
+        return $groups;
+    }
+
+    /**
+     * @param array<mixed> $groups
+     * @param GroupsMapping $groupsMapping
+     */
+    private function validateGroupsMapping(array $groups, GroupsMapping $groupsMapping): void
+    {
+        $groupsAttributePath = explode(".", $groupsMapping->getAttributePath());
+        $this->logAuthenticationInfo("Configured groups mapping attribute path found", $groupsAttributePath);
+        foreach ($groupsAttributePath as $attribute) {
+            $providerGroups = [];
+            if (array_key_exists($attribute, $groups)) {
+                $providerGroups = $groups[$attribute];
+                $groups = $groups[$attribute];
+            } else {
+                break;
+            }
+        }
+        if (is_string($providerGroups)) {
+            $providerGroups = explode(",", $providerGroups);
+        }
+        $this->validateGroupsMappingAttributeOrFail($providerGroups, $groupsMapping->getContactGroupRelations());
+    }
+
+    /**
+     * Validate Authentication Condition Attribute
+     *
+     * @param array<mixed> $providerGroupsMapping
+     * @param ContactGroupRelation[] $contactGroupRelations
+     * @throws AuthenticationConditionsException
+     */
+    private function validateGroupsMappingAttributeOrFail(
+        array $providerGroupsMapping,
+        array $contactGroupRelations
+    ): void {
+        if (array_is_list($providerGroupsMapping) === false) {
+            $errorMessage = "Invalid Authentication conditions format, array of strings expected";
+            $this->error(
+                $errorMessage,
+                [
+                    "authentication_condition_from_provider" => $providerGroupsMapping
+                ]
+            );
+            $this->logExceptionInLoginLogFile(
+                $errorMessage,
+                AuthenticationConditionsException::invalidAuthenticationConditions()
+            );
+            throw AuthenticationConditionsException::invalidAuthenticationConditions();
+        }
+        $claimsFromProvider = [];
+        foreach ($contactGroupRelations as $contactGroupRelation) {
+            $claimsFromProvider[] = $contactGroupRelation->getClaimValue();
+        }
+        $groupsMatches = array_intersect($providerGroupsMapping, $claimsFromProvider);
+        $this->userContactGroups = [];
+        foreach ($groupsMatches as $groupsMatch) {
+            foreach ($contactGroupRelations as $contactGroupRelation) {
+                if ($contactGroupRelation->getClaimValue() === $groupsMatch) {
+                    $this->userContactGroups[] = $contactGroupRelation->getContactGroup();
+                }
+            }
+        }
+        if (empty($groupsMatches)) {
+            $this->error(
+                "Configured attribute path not found in conditions endpoint",
+                [
+                    "configured_groups_mapping" => $providerGroupsMapping
+                ]
+            );
+            $this->logExceptionInLoginLogFile(
+                "Configured attribute path not found in conditions endpoint: %s, message: %s",
+                AuthenticationConditionsException::conditionsNotFound()
+            );
+            throw AuthenticationConditionsException::conditionsNotFound();
+        }
+        $this->info("Groups found", ["group" => $groupsMatches]);
+        $this->logAuthenticationInfo("Groups found", $groupsMatches);
+    }
+
+    /**
+     * @return ContactGroup[]
+     */
+    public function getUserContactGroups(): array
+    {
+        return $this->userContactGroups;
     }
 }

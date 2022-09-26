@@ -29,11 +29,13 @@ use Centreon\Domain\Contact\Contact;
 use Core\Contact\Domain\Model\ContactGroup;
 use Symfony\Component\HttpFoundation\Request;
 use Core\Contact\Domain\Model\ContactTemplate;
+use Core\Application\Common\UseCase\ErrorResponse;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Core\Infrastructure\Common\Presenter\JsonPresenter;
 use Core\Security\AccessGroup\Domain\Model\AccessGroup;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Domain\Menu\Interfaces\MenuServiceInterface;
+use Core\Security\ProviderConfiguration\Domain\Model\Provider;
 use Security\Domain\Authentication\Model\AuthenticationTokens;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Centreon\Infrastructure\Service\Exception\NotFoundException;
@@ -45,26 +47,25 @@ use Security\Domain\Authentication\Interfaces\OpenIdProviderInterface;
 use Security\Domain\Authentication\Interfaces\ProviderServiceInterface;
 use Core\Security\Authentication\Application\UseCase\Login\LoginRequest;
 use Security\Domain\Authentication\Interfaces\SessionRepositoryInterface;
+use Core\Security\ProviderConfiguration\Domain\OpenId\Model\ACLConditions;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Model\Configuration;
+use Core\Security\ProviderConfiguration\Domain\OpenId\Model\GroupsMapping;
 use Core\Contact\Application\Repository\WriteContactGroupRepositoryInterface;
 use Core\Security\Authentication\Infrastructure\Provider\AclUpdaterInterface;
-use Core\Security\Authentication\Infrastructure\Repository\WriteSessionRepository;
-use Core\Security\ProviderConfiguration\Application\OpenId\Repository\ReadOpenIdConfigurationRepositoryInterface;
-use Core\Security\ProviderConfiguration\Domain\Model\Provider;
-use Core\Security\ProviderConfiguration\Domain\OpenId\Model\ACLConditions;
-use Core\Security\ProviderConfiguration\Domain\OpenId\Model\AuthenticationConditions;
 use Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Model\AuthorizationRule;
 use Core\Security\Authentication\Infrastructure\Api\Login\OpenId\LoginPresenter;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Model\CustomConfiguration;
 use Security\Domain\Authentication\Interfaces\AuthenticationRepositoryInterface;
+use Core\Security\Authentication\Infrastructure\Repository\WriteSessionRepository;
 use Core\Security\Authentication\Application\Repository\ReadTokenRepositoryInterface;
+use Core\Security\ProviderConfiguration\Domain\OpenId\Model\AuthenticationConditions;
 use Core\Security\Authentication\Application\Provider\ProviderAuthenticationInterface;
 use Core\Security\Authentication\Application\Repository\WriteTokenRepositoryInterface;
 use Core\Security\AccessGroup\Application\Repository\WriteAccessGroupRepositoryInterface;
 use Core\Security\Authentication\Application\Provider\ProviderAuthenticationFactoryInterface;
 use Core\Security\Authentication\Application\Repository\WriteSessionTokenRepositoryInterface;
-use Core\Security\ProviderConfiguration\Domain\OpenId\Model\GroupsMapping;
+use Core\Security\ProviderConfiguration\Application\OpenId\Repository\ReadOpenIdConfigurationRepositoryInterface;
 
 beforeEach(function () {
     $this->repository = $this->createMock(ReadOpenIdConfigurationRepositoryInterface::class);
@@ -174,8 +175,8 @@ it('expects to return an error message in presenter when no provider configurati
     );
 
     $useCase($request, $this->presenter);
-    expect($this->presenter->getPresentedData())->toBeObject();
-})->throws(ProviderException::class, 'Provider configuration (unknown provider) not found');
+    expect($this->presenter->getResponseStatus())->toBeInstanceOf(ErrorResponse::class);
+});
 
 it('expects to execute authenticateOrFail method from OpenIdProvider', function () {
     $request = LoginRequest::createForOpenId('127.0.0.1', 'abcde-fghij-klmno');
@@ -244,8 +245,9 @@ it(
             $this->defaultRedirectUri
         );
         $useCase($request, $this->presenter);
+        expect($this->presenter->getResponseStatus())->toBeInstanceOf(ErrorResponse::class);
     }
-)->throws(NotFoundException::class, 'User could not be created');
+);
 
 it(
     'expects to return an error message in presenter when the provider ' .
@@ -290,8 +292,9 @@ it(
         );
 
         $useCase($request, $this->presenter);
+        expect($this->presenter->getResponseStatus())->toBeInstanceOf(ErrorResponse::class);
     }
-)->throws(NotFoundException::class, 'User not found');
+);
 
 it('should update access groups for the authenticated user', function () {
     $request = LoginRequest::createForOpenId('127.0.0.1', 'abcde-fghij-klmno');
@@ -340,84 +343,3 @@ it('should update access groups for the authenticated user', function () {
 
     $useCase($request, $this->presenter);
 });
-
-//it('should not duplicate ACL insertion when access group is in multiple authorization rules', function () {
-//
-//    $request = LoginRequest::createForOpenId(Provider::OPENID, '127.0.0.1', 'abcde-fghij-klmno');
-//
-//    $accessGroup1 = new AccessGroup(1, "access_group_1", "access_group_1");
-//    $authorizationRules = [
-//        new AuthorizationRule("group1", $accessGroup1),
-//        new AuthorizationRule("group2", $accessGroup1)
-//    ];
-//    $customConfiguration = $this->validOpenIdConfiguration->getCustomConfiguration();
-//    $customConfiguration->setAuthorizationRules($authorizationRules);
-//
-//    $this->provider
-//        ->expects($this->any())
-//        ->method('getConfiguration')
-//        ->willReturn($this->validOpenIdConfiguration);
-//
-//    $this->providerFactory
-//        ->expects($this->once())
-//        ->method('create')
-//        ->willReturn($this->provider);
-//
-//    $useCase = new Login(
-//        $this->providerFactory,
-//        $this->session,
-//        $this->dataStorageEngine,
-//        $this->writeSessionRepository,
-//        $this->readTokenRepository,
-//        $this->writeTokenRepository,
-//        $this->writeSessionTokenRepository,
-//        $this->aclUpdater
-//    );
-//
-//    $useCase($request, $this->presenter);
-//
-//    dd($this->validOpenIdConfiguration);
-//});
-
-//it('should update contact group for the authenticated user', function () {
-//    $request = LoginRequest::createForOpenId(Provider::OPENID, '127.0.0.1', 'abcde-fghij-klmno');
-//
-//    $this->providerFactory
-//        ->expects($this->once())
-//        ->method('create')
-//        ->willReturn($this->provider);
-//
-//    $this->provider
-//        ->expects($this->any())
-//        ->method('getConfiguration')
-//        ->willReturn($this->validOpenIdConfiguration);
-//
-//    $contact = (new Contact())->setId(1);
-//    $this->provider
-//        ->expects($this->once())
-//        ->method('getUser')
-//        ->willReturn($contact);
-//
-//    $this->contactGroupRepository
-//        ->expects($this->once())
-//        ->method('deleteContactGroupsForUser')
-//        ->with($contact);
-//
-//    $this->contactGroupRepository
-//        ->expects($this->once())
-//        ->method('insertContactGroupForUser')
-//        ->with($contact, $this->contactGroup);
-//
-//    $useCase = new Login(
-//        $this->providerFactory,
-//        $this->session,
-//        $this->dataStorageEngine,
-//        $this->writeSessionRepository,
-//        $this->readTokenRepository,
-//        $this->writeTokenRepository,
-//        $this->writeSessionTokenRepository,
-//        $this->aclUpdater
-//    );
-//
-//    $useCase($request, $this->presenter);
-//});

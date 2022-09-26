@@ -73,20 +73,17 @@ class DbWriteOpenIdConfigurationRepository extends AbstractRepositoryDRB impleme
         $customConfiguration = $configuration->getCustomConfiguration();
         $authorizationRules = $customConfiguration->getACLConditions()->getRelations();
 
-        if (!empty($authorizationRules)) {
-            $this->info('Removing existing Authorization Rules');
-            $this->deleteAuthorizationRules();
-            $this->info('Inserting new Authorization Rules');
-            $this->insertAuthorizationRules($authorizationRules);
-        }
+        $this->info('Removing existing Authorization Rules');
+        $this->deleteAuthorizationRules();
+        $this->info('Inserting new Authorization Rules');
+        $this->insertAuthorizationRules($authorizationRules);
 
         $contactGroupRelations = $customConfiguration->getGroupsMapping()->getContactGroupRelations();
-        if (! empty($contactGroupRelations)) {
-            $this->info('Removing existing Authorization Rules');
-            $this->deleteContactGroupRelations();
-            $this->info('Inserting new Authorization Rules');
-            $this->insertContactGroupRelations($contactGroupRelations);
-        }
+
+        $this->info('Removing existing Group Mappings');
+        $this->deleteContactGroupRelations();
+        $this->info('Inserting new Group Mappings');
+        $this->insertContactGroupRelations($contactGroupRelations);
     }
 
     /**

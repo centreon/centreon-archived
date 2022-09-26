@@ -617,6 +617,12 @@ function updateOpenIdCustomConfiguration(CentreonDB $pearDB): void
         $blacklistClientAddresses = $customConfiguration['blacklist_client_addresses'];
         unset($customConfiguration['trusted_client_addresses']);
         unset($customConfiguration['blacklist_client_addresses']);
+
+        /**
+         * Remove claim name and contact group id as they are know handled in roles mapping and groups mapping.
+         */
+        unset($customConfiguration['claim_name']);
+        unset($customConfiguration['contact_group_id']);
         $customConfiguration['authentication_conditions'] = [
             'is_enabled' => false,
             'attribute_path' => '',
@@ -631,6 +637,11 @@ function updateOpenIdCustomConfiguration(CentreonDB $pearDB): void
             'attribute_path' => '',
             'endpoint' => ['type' => 'introspection_endpoint', 'custom_endpoint' => ''],
             'relations' => []
+        ];
+        $customConfiguration['groups_mapping'] = [
+            'is_enabled' => false,
+            'attribute_path' => '',
+            'endpoint' => ['type' => 'introspection_endpoint', 'custom_endpoint' => ''],
         ];
 
         $encodedConfiguration = json_encode($customConfiguration);
