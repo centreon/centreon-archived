@@ -91,11 +91,10 @@ class FindOpenIdConfiguration
         $findOpenIdConfigurationResponse->contactGroup = $customConfiguration->getContactGroup() === null
             ? null
             : $findOpenIdConfigurationResponse::contactGroupToArray($customConfiguration->getContactGroup());
-        $findOpenIdConfigurationResponse->authorizationRules =
-            empty($customConfiguration->getAuthorizationRules()) ? []
-            :
-            $findOpenIdConfigurationResponse::authorizationRulesToArray($customConfiguration->getAuthorizationRules());
-        $findOpenIdConfigurationResponse->aclConditions = $customConfiguration->getACLConditions()->toArray();
+
+        $findOpenIdConfigurationResponse->aclConditions = FindOpenIdConfigurationResponse::aclConditionsToArray(
+            $customConfiguration->getACLConditions()
+        );
         $findOpenIdConfigurationResponse->authenticationConditions =
             $findOpenIdConfigurationResponse::authenticationConditionsToArray(
                 $customConfiguration->getAuthenticationConditions()

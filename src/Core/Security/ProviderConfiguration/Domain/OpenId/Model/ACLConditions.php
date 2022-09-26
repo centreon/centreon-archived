@@ -106,10 +106,7 @@ class ACLConditions
             'is_enabled' => $this->isEnabled,
             'apply_only_first_role' => $this->applyOnlyFirstRole,
             'attribute_path' => $this->attributePath,
-            'endpoint' => $this->endpoint->toArray(),
-            'relations' => array_map(function ($relation) {
-                return $relation->toArray();
-            }, $this->relations)
+            'endpoint' => $this->endpoint->toArray()
         ];
     }
 

@@ -122,13 +122,16 @@ it('should execute the usecase properly', function () {
             'contact_template' => null,
             'email_bind_attribute' => null,
             'fullname_bind_attribute' => null,
-            'roles_mapping' => (new ACLConditions(
-                false,
-                false,
-                '',
-                new Endpoint(Endpoint::INTROSPECTION, ''),
-                []
-            ))->toArray(),
+            'roles_mapping' => [
+                'is_enabled' => false,
+                'apply_only_first_role' => false,
+                'attribute_path' => '',
+                'endpoint' => [
+                    'type' => 'introspection_endpoint',
+                    'custom_endpoint' => ''
+                ],
+                'relations' => []
+            ],
             "authentication_conditions" => [
                 "is_enabled" => false,
                 "attribute_path" => "",

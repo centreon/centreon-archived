@@ -635,8 +635,7 @@ function updateOpenIdCustomConfiguration(CentreonDB $pearDB): void
             'is_enabled' => false,
             'apply_only_first_role' => false,
             'attribute_path' => '',
-            'endpoint' => ['type' => 'introspection_endpoint', 'custom_endpoint' => ''],
-            'relations' => []
+            'endpoint' => ['type' => 'introspection_endpoint', 'custom_endpoint' => '']
         ];
         $customConfiguration['groups_mapping'] = [
             'is_enabled' => false,

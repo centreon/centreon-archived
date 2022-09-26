@@ -118,7 +118,16 @@ class UpdateOpenIdConfigurationRequest
     /**
      * @var array<string, array<int|string, string|null>|string|bool>
      */
-    public array $rolesMapping = [];
+    public array $rolesMapping = [
+        'is_enabled' => false,
+        'apply_only_first_role' => false,
+        'attribute_path' => '',
+        'endpoint' => [
+            'type' => 'introspection_endpoint',
+            'custom_endpoint' => ''
+        ],
+        'relations' => []
+    ];
 
     /**
      * @var array{
@@ -194,7 +203,8 @@ class UpdateOpenIdConfigurationRequest
             'fullname_bind_attribute' => $this->userNameBindAttribute,
             'verify_peer' => $this->verifyPeer,
             'authentication_conditions' => $this->authenticationConditions,
-            'groups_mapping' => $this->groupsMapping
+            'groups_mapping' => $this->groupsMapping,
+            'roles_mapping' => $this->rolesMapping
         ];
     }
 }
