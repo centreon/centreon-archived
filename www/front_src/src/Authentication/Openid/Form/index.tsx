@@ -63,25 +63,19 @@ const OpenidForm = ({
       all(isNilOrEmpty),
     )(formikValues);
 
-    const contactGroupError =
-      not(isEmpty(formikValues.authorizationRules)) &&
-      isNil(formikValues.contactGroup)
-        ? { contactGroup: t(labelRequired) }
-        : undefined;
-
-    if (not(isUserInfoOrIntrospectionTokenEmpty) && isNil(contactGroupError)) {
+    if (not(isUserInfoOrIntrospectionTokenEmpty)) {
       return {};
     }
 
     return {
       introspectionTokenEndpoint: t(labelRequired),
       userinfoEndpoint: t(labelRequired),
-      ...contactGroupError,
     };
   };
 
   return (
     <Form<OpenidConfiguration>
+      isCollapsible
       Buttons={FormButtons}
       groups={groups}
       initialValues={initialValues}
