@@ -287,6 +287,7 @@ class FindOpenIdConfigurationResponse
         $relations =  self::authorizationRulesToArray($aclConditions->getRelations());
         return [
             "is_enabled" => $aclConditions->isEnabled(),
+            'apply_only_first_role' => $aclConditions->onlyFirstRoleIsApplied(),
             "attribute_path" => $aclConditions->getAttributePath(),
             "endpoint" => $aclConditions->getEndpoint()->toArray(),
             "relations" => $relations
