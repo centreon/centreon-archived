@@ -37,9 +37,6 @@ final class CustomConfiguration implements CustomConfigurationInterface, OpenIdC
     public const AUTHENTICATION_BASIC = 'client_secret_basic';
     public const TYPE = 'openid';
     public const NAME = 'openid';
-    public const DEFAULT_CLAIM_NAME = "groups";
-
-    private ?string $claimName = self::DEFAULT_CLAIM_NAME;
 
     /**
      * @var string|null
@@ -536,25 +533,6 @@ final class CustomConfiguration implements CustomConfigurationInterface, OpenIdC
     }
 
     /**
-     * @return ?string
-     */
-    public function getClaimName(): ?string
-    {
-        return $this->claimName;
-    }
-
-    /**
-     * @param string|null $claimName
-     * @return self
-     */
-    public function setClaimName(?string $claimName): self
-    {
-        $this->claimName = $claimName;
-
-        return $this;
-    }
-
-    /**
      * @param AuthenticationConditions $authenticationConditions
      * @return self
      */
@@ -616,10 +594,6 @@ final class CustomConfiguration implements CustomConfigurationInterface, OpenIdC
         $this->setLoginClaim($json['login_claim']);
         $this->setAuthenticationType($json['authentication_type']);
         $this->setVerifyPeer($json['verify_peer']);
-        $this->setClaimName($json['claim_name']);
-        if (array_key_exists('authorization_rules', $json)) {
-            $this->setAuthorizationRules($json['authorization_rules']);
-        }
         $this->setAuthenticationConditions($json['authentication_conditions']);
         $this->setACLConditions($json['roles_mapping']);
         $this->setGroupsMapping($json['groups_mapping']);
