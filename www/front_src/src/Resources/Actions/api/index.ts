@@ -1,5 +1,5 @@
 import axios, { AxiosResponse, CancelToken } from 'axios';
-import { pick } from 'ramda';
+import { map, pick } from 'ramda';
 
 import { ResourceCategory, Resource } from '../../models';
 import { AcknowledgeFormValues } from '../Resource/Acknowledge';
@@ -24,11 +24,8 @@ const acknowledgeResources =
     resources,
     params,
   }: ResourcesWithAcknowledgeParams): Promise<Array<AxiosResponse>> => {
-    const payload = resources.map(({ type, id, parent }) => ({
-      id,
-      parent: parent ? { id: parent?.id } : parent,
-      type: ResourceCategory[type],
-    }));
+    const [{ type, ...rest }] = map(pick(['type', 'id', 'parent']), resources);
+    const payload = [{ ...rest, type: ResourceCategory[type] }];
 
     return axios.post(
       acknowledgeEndpoint,
@@ -58,11 +55,8 @@ const setDowntimeOnResources =
     resources,
     params,
   }: ResourcesWithDowntimeParams): Promise<AxiosResponse> => {
-    const payload = resources.map(({ type, id, parent }) => ({
-      id,
-      parent: parent ? { id: parent?.id } : parent,
-      type: ResourceCategory[type],
-    }));
+    const [{ type, ...rest }] = map(pick(['type', 'id', 'parent']), resources);
+    const payload = [{ ...rest, type: ResourceCategory[type] }];
 
     return axios.post(
       downtimeEndpoint,
@@ -90,11 +84,8 @@ const checkResources = ({
   resources,
   cancelToken,
 }: ResourcesWithRequestParams): Promise<AxiosResponse> => {
-  const payload = resources.map(({ type, id, parent }) => ({
-    id,
-    parent: parent ? { id: parent?.id } : parent,
-    type: ResourceCategory[type],
-  }));
+  const [{ type, ...rest }] = map(pick(['type', 'id', 'parent']), resources);
+  const payload = [{ ...rest, type: ResourceCategory[type] }];
 
   return axios.post(
     checkEndpoint,
@@ -125,9 +116,10 @@ const commentResources =
       commentEndpoint,
       {
         resources: resources.map((resource) => ({
-          ...pick(['id', 'type', 'parent'], resource),
+          ...pick(['id', 'parent'], resource),
           comment: parameters.comment,
           date: parameters.date,
+          type: ResourceCategory[resource.type],
         })),
       },
       { cancelToken },
