@@ -24,8 +24,11 @@ const acknowledgeResources =
     resources,
     params,
   }: ResourcesWithAcknowledgeParams): Promise<Array<AxiosResponse>> => {
-    const [{ type, ...rest }] = map(pick(['type', 'id', 'parent']), resources);
-    const payload = [{ ...rest, type: ResourceCategory[type] }];
+    const payload = resources.map(({ type, id, parent }) => ({
+      id,
+      parent,
+      type: ResourceCategory[type],
+    }));
 
     return axios.post(
       acknowledgeEndpoint,
@@ -55,8 +58,11 @@ const setDowntimeOnResources =
     resources,
     params,
   }: ResourcesWithDowntimeParams): Promise<AxiosResponse> => {
-    const [{ type, ...rest }] = map(pick(['type', 'id', 'parent']), resources);
-    const payload = [{ ...rest, type: ResourceCategory[type] }];
+    const payload = resources.map(({ type, id, parent }) => ({
+      id,
+      parent,
+      type: ResourceCategory[type],
+    }));
 
     return axios.post(
       downtimeEndpoint,
@@ -84,8 +90,11 @@ const checkResources = ({
   resources,
   cancelToken,
 }: ResourcesWithRequestParams): Promise<AxiosResponse> => {
-  const [{ type, ...rest }] = map(pick(['type', 'id', 'parent']), resources);
-  const payload = [{ ...rest, type: ResourceCategory[type] }];
+  const payload = resources.map(({ type, id, parent }) => ({
+    id,
+    parent,
+    type: ResourceCategory[type],
+  }));
 
   return axios.post(
     checkEndpoint,
