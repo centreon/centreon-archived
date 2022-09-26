@@ -6,7 +6,7 @@
     "config": {
         "secure-http": false,
         "platform": {
-            "php": "8.0"
+            "php": "8.1"
         },
         "allow-plugins": {
             "pestphp/pest-plugin": false,
@@ -14,7 +14,6 @@
         }
     },
     "require-dev": {
-        "adlawson/vfs": "^0.12.1",
         "behat/behat": "^3.10",
         "behat/mink-selenium2-driver": "^1.5",
         "friends-of-behat/mink": "^1.9",
@@ -32,6 +31,7 @@
         "webmozart/assert": "^1.8",
         "zircote/swagger-php": "^4.0",
         "pestphp/pest": "^1.21",
+        "php-vfs/php-vfs": "^1.4",
         "friendsofphp/php-cs-fixer": "^3.10"
     },
     "require": {
@@ -58,13 +58,18 @@
         "smarty-gettext/smarty-gettext": "^1.6",
         "symfony/config": "5.4.*",
         "symfony/console": "5.4.*",
+        "symfony/dependency-injection": "5.4.*",
         "symfony/dotenv": "5.4.*",
+        "symfony/error-handler": "5.4.*",
         "symfony/expression-language": "5.4.*",
+        "symfony/event-dispatcher": "5.4.*",
+        "symfony/event-dispatcher-contracts": "2.5.*",
         "symfony/filesystem": "5.4.*",
         "symfony/finder": "5.4.*",
         "symfony/flex": "^1.17",
         "symfony/framework-bundle": "5.4.*",
         "symfony/http-client": "5.4.*",
+        "symfony/http-foundation": "5.4.*",
         "symfony/http-kernel": "5.4.*",
         "symfony/lock": "5.4.*",
         "symfony/maker-bundle": "^1.11",
@@ -72,8 +77,10 @@
         "symfony/options-resolver": "5.4.*",
         "symfony/property-access": "5.4.*",
         "symfony/property-info": "5.4.*",
+        "symfony/routing": "5.4.*",
         "symfony/security-bundle": "5.4.*",
         "symfony/serializer": "5.4.*",
+        "symfony/string": "5.4.*",
         "symfony/translation": "5.4.*",
         "symfony/validator": "5.4.*",
         "symfony/yaml": "5.4.*",

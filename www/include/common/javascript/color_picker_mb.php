@@ -44,7 +44,7 @@ function filter_get($str)
 }
 
 if (function_exists("filter_var")) {
-    $name = filter_var($_GET["name"], FILTER_SANITIZE_SPECIAL_CHARS);
+    $name = \HtmlAnalyzer::sanitizeAndRemoveTags($_GET["name"]);
 } else {
     $name = htmlentities($_GET["name"], ENT_QUOTES, "UTF-8");
 }

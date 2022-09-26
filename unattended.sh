@@ -332,7 +332,7 @@ function set_required_prerequisite() {
 
         install_remi_repo
         $PKG_MGR -y -q install yum-utils
-        yum-config-manager --enable remi-php80
+        yum-config-manager --enable remi-php81
 
         set_centreon_repos
 
@@ -376,9 +376,9 @@ function set_required_prerequisite() {
         install_remi_repo
         $PKG_MGR config-manager --set-enabled 'powertools'
 
-        log "INFO" "Installing PHP 8.0 and enable it"
-        $PKG_MGR module install php:remi-8.0 -y -q
-        $PKG_MGR module enable php:remi-8.0 -y -q
+        log "INFO" "Installing PHP 8.1 and enable it"
+        $PKG_MGR module install php:remi-8.1 -y -q
+        $PKG_MGR module enable php:remi-8.1 -y -q
 
         log "INFO" "Installing packages ${BASE_PACKAGES[@]}"
         $PKG_MGR -y -q install ${BASE_PACKAGES[@]}
