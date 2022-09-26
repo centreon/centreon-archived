@@ -620,8 +620,8 @@ if (!is_null($host_id)) {
         }
 
         $query = "SELECT id FROM `index_data`, `metrics` WHERE host_name = :host_name" .
-            " AND service_description = :svc_description  AND id = index_id LIMIT 1";
-        $statement = $pearDB->prepare($query);
+            " AND service_description = :svc_description AND id = index_id LIMIT 1";
+        $statement = $pearDBO->prepare($query);
         $statement->bindValue(':host_name', $host_name, \PDO::PARAM_STR);
         $statement->bindValue(':svc_description', $svc_description, \PDO::PARAM_STR);
         $statement->execute();
