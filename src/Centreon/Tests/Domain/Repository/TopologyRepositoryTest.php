@@ -9,8 +9,7 @@ use Centreon\Domain\Repository\TopologyRepository;
  * @group Centreon
  * @group ORM-repository
  */
-class
-TopologyRepositoryTest extends TestCase
+class TopologyRepositoryTest extends TestCase
 {
     /**
      * @var ((string|string[][])[]|(string|int[][])[])[]
