@@ -31,6 +31,7 @@ const useStyles = makeStyles((theme) => ({
   editEnvelopeSize: {
     display: 'flex',
     justifyContent: 'space-between',
+    width: '50%',
   },
   envelopeSize: {
     flex: 1,
@@ -121,9 +122,6 @@ const EditAnomalyDetectionDataDialog = ({
                 openModalConfirmation,
                 setIsResizeEnvelope,
               })}
-          </Paper>
-          <Paper className={classes.exclusionPeriod}>
-            <EditAnomalyDetectionDataDialog.ExclusionPeriod />
           </Paper>
         </div>
         <EditAnomalyDetectionDataDialog.ModalConfirmation

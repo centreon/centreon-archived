@@ -58,7 +58,6 @@ import {
 import { TimeShiftDirection } from './Graph/TimeShiftZones';
 import Legend from './Legend';
 import LoadingSkeleton from './LoadingSkeleton';
-import { mockedResultModalGraph } from './mockedResultGraph/mockedResultModalGraph';
 import {
   AdjustTimePeriodProps,
   GraphData,
@@ -205,20 +204,10 @@ const PerformanceGraph = ({
       endpoint,
     })
       .then((graphData) => {
-        // const type = resource?.type;
-        // let newLineData;
-
         setTimeSeries(getTimeSeries(graphData));
         setBase(graphData.global.base);
         setTitle(graphData.global.title);
         const newLineData = getLineData(graphData);
-
-        // if (equals(type, ResourceType.anomalydetection)) {
-        //   setTimeSeries(getTimeSeries(mockedResultModalGraph));
-        //   setBase(mockedResultModalGraph.global.base);
-        //   setTitle(mockedResultModalGraph.global.title);
-        //   newLineData = getLineData(mockedResultModalGraph);
-        // }
 
         if (lineData) {
           setLineData(
