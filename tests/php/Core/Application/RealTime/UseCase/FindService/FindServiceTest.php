@@ -301,7 +301,10 @@ class FindServiceTest extends TestCase
         /**
          * @var Service
          */
-        $service = ServiceTest::createServiceModel();
+        $service = (ServiceTest::createServiceModel())
+            ->setIsAcknowledged(true)
+            ->setIsInDowntime(true);
+
         $servicegroup = new Servicegroup(1, 'ALL');
 
         $this->hostRepository
@@ -420,7 +423,10 @@ class FindServiceTest extends TestCase
         );
 
         $host = HostTest::createHostModel();
-        $service = ServiceTest::createServiceModel();
+        $service = (ServiceTest::createServiceModel())
+            ->setIsAcknowledged(true)
+            ->setIsInDowntime(true);
+
         $servicegroup = new Servicegroup(1, 'ALL');
 
         $this->hostRepository
