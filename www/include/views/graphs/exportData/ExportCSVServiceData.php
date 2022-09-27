@@ -33,9 +33,14 @@
  *
  */
 
-require_once realpath(__DIR__ . "/../../../../../bootstrap.php");
+function get_error($str){
+    echo $str."<br />";
+    exit(0);
+}
+
 require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.config.php");
 include_once _CENTREON_PATH_ . "www/class/centreonDB.class.php";
+include_once _CENTREON_PATH_ . "www/class/HtmlAnalyzer.php";
 
 $pearDB = new CentreonDB();
 $pearDBO = new CentreonDB("centstorage");
