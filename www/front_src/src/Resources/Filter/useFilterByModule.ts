@@ -28,11 +28,11 @@ const useFilterByModule = (): FilterByModule => {
   const defaultFiltersByModules = Object.keys(authorizedFilterByModules);
 
   const filtersToAdd = defaultFiltersByModules.map((filterName) => {
-    if (installedModules?.includes(filterName)) {
-      return authorizedFilterByModules[filterName];
+    if (!installedModules?.includes(filterName)) {
+      return null;
     }
 
-    return null;
+    return authorizedFilterByModules[filterName];
   });
 
   const newCriteriaValueNameById = filtersToAdd.reduce(

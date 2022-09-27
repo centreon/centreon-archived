@@ -51,9 +51,10 @@ const GraphTabContent = ({ details }: TabProps): JSX.Element => {
     equalsAnomalyDetection(type);
 
   const reload = (value: boolean): void => {
-    if (value) {
-      loadDetails();
+    if (!value) {
+      return;
     }
+    loadDetails();
   };
 
   return (
