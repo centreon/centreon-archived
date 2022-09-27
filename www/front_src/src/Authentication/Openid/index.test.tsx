@@ -643,7 +643,7 @@ describe('Openid configuration form', () => {
     expect(screen.getAllByLabelText(labelConditionValue)).toHaveLength(3);
   });
 
-  it('displays a new delete icon if a user type a text in the latest element of the field "condition value" ', async () => {
+  it('displays a new Delete icon if a user types a text in the latest element of the field "condition value" ', async () => {
     renderOpenidConfigurationForm();
     await waitFor(() => {
       expect(screen.getAllByLabelText(labelDeleteRelation)).toHaveLength(1);
