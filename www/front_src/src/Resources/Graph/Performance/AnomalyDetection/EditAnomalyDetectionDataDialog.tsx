@@ -3,9 +3,7 @@ import { Dispatch, ReactNode, SetStateAction, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useUpdateAtom } from 'jotai/utils';
 
-import Button from '@mui/material/Button';
-import Dialog from '@mui/material/Dialog';
-import Paper from '@mui/material/Paper';
+import { Button, Dialog, Paper } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 
 import { labelCancel } from '../../../translatedLabels';
@@ -112,19 +110,16 @@ const EditAnomalyDetectionDataDialog = ({
         <div className={classes.spacing}>
           <TimePeriodButtonGroup />
         </div>
-        <div className={classes.spacing}>
-          {children && children({ factorsData })}
-        </div>
+        <div className={classes.spacing}>{children?.({ factorsData })}</div>
         <div className={classes.editEnvelopeSize}>
           <Paper className={classes.envelopeSize}>
-            {children &&
-              children({
-                getFactors,
-                isEnvelopeResizingCanceled,
-                isResizeEnvelope,
-                openModalConfirmation,
-                setIsResizeEnvelope,
-              })}
+            {children?.({
+              getFactors,
+              isEnvelopeResizingCanceled,
+              isResizeEnvelope,
+              openModalConfirmation,
+              setIsResizeEnvelope,
+            })}
           </Paper>
         </div>
         <EditAnomalyDetectionDataDialog.ModalConfirmation

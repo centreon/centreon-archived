@@ -190,6 +190,7 @@ const ExportablePerformanceGraphWithTimeline = ({
     if (!onReload) {
       return;
     }
+
     onReload(value);
   };
 
