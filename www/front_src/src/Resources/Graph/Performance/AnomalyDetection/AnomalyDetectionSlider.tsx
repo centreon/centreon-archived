@@ -241,12 +241,12 @@ const AnomalyDetectionSlider = ({
     <div className={classes.container}>
       <div className={classes.header}>
         <Typography variant="h6">{t(labelMenageEnvelope)}</Typography>
-        {countedRedCircles && (
-          <Tooltip open={openTooltip} title={msgTooltip}>
-            <div />
-          </Tooltip>
-        )}
-
+        <Tooltip
+          open={countedRedCircles ? openTooltip : false}
+          title={msgTooltip}
+        >
+          <div />
+        </Tooltip>
         <Typography variant="caption">
           {t(labelMenageEnvelopeSubTitle)}
         </Typography>
