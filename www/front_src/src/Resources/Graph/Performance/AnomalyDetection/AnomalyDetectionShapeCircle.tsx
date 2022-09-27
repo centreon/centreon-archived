@@ -63,7 +63,7 @@ const AnomalyDetectionShapeCircle = ({
     return distance <= maxDistance && dotProd >= 0 && dotProd <= squareLen;
   };
 
-  const results = timeSeries.map((item, index) => {
+  const circles = timeSeries.map((item, index) => {
     const pointX = pointXOrigin(item);
     const pointX1 = pointXLower(item);
     const pointX2 = pointXUpper(item);
@@ -97,13 +97,15 @@ const AnomalyDetectionShapeCircle = ({
     };
   });
 
-  const count = results.filter((item) => item.circle.isCircleShown).length;
+  const countCirclesShown = circles.filter(
+    (item) => item.circle.isCircleShown,
+  ).length;
 
-  setCountedRedCircles(count);
+  setCountedRedCircles(countCirclesShown);
 
   return (
     <>
-      {results.map(({ circle }) => {
+      {circles.map(({ circle }) => {
         const { coordinate, isCircleShown } = circle;
 
         return (
