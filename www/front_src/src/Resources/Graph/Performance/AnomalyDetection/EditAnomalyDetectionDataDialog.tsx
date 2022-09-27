@@ -1,5 +1,6 @@
 import { Dispatch, ReactNode, SetStateAction, useState } from 'react';
 
+import { useTranslation } from 'react-i18next';
 import { useUpdateAtom } from 'jotai/utils';
 
 import Button from '@mui/material/Button';
@@ -7,6 +8,7 @@ import Dialog from '@mui/material/Dialog';
 import Paper from '@mui/material/Paper';
 import makeStyles from '@mui/styles/makeStyles';
 
+import { labelCancel } from '../../../translatedLabels';
 import TimePeriodButtonGroup from '../TimePeriods';
 
 import AnomalyDetectionExclusionPeriod from './AnomalyDetectionExclusionPeriod';
@@ -68,6 +70,7 @@ const EditAnomalyDetectionDataDialog = ({
   children,
 }: Props): JSX.Element => {
   const classes = useStyles();
+  const { t } = useTranslation();
 
   const [factorsData, setFactorsData] = useState<null | CustomFactorsData>(
     null,
@@ -131,7 +134,7 @@ const EditAnomalyDetectionDataDialog = ({
           setOpen={setIsModalConfirmationOpened}
         />
         <div className={classes.close}>
-          <Button onClick={handleClose}>Close</Button>
+          <Button onClick={handleClose}>{t(labelCancel)}</Button>
         </div>
       </div>
     </Dialog>
