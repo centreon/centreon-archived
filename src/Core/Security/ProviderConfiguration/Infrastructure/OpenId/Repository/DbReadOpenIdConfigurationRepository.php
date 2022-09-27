@@ -33,6 +33,7 @@ use Core\Security\AccessGroup\Infrastructure\Repository\DbAccessGroupFactory;
 use Core\Security\ProviderConfiguration\Application\OpenId\Repository\ReadOpenIdConfigurationRepositoryInterface
     as ReadRepositoryInterface;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Model\AuthorizationRule;
+use Core\Security\ProviderConfiguration\Domain\OpenId\Model\ContactGroupRelation;
 use Throwable;
 
 class DbReadOpenIdConfigurationRepository extends AbstractRepositoryDRB implements ReadRepositoryInterface
@@ -126,5 +127,31 @@ class DbReadOpenIdConfigurationRepository extends AbstractRepositoryDRB implemen
             $authorizationRules[] = new AuthorizationRule($result['claim_value'], $accessGroup);
         }
         return $authorizationRules;
+    }
+
+    /**
+     * Get Contact Group relations
+     *
+     * @param int $providerConfigurationId
+     * @return ContactGroupRelation[]
+     * @throws \Throwable
+     */
+    public function getContactGroupRelationsByConfigurationId(int $providerConfigurationId): array
+    {
+        $statement = $this->db->prepare(
+            "SELECT * FROM security_provider_contact_group_relation spcgn
+                INNER JOIN contactgroup ON cg_id = spcgn.contact_group_id
+                WHERE spcgn.provider_configuration_id = :providerConfigurationId"
+        );
+        $statement->bindValue(':providerConfigurationId', $providerConfigurationId, \PDO::PARAM_INT);
+        $statement->execute();
+
+        $contactGroupRelations = [];
+        while ($statement !== false && is_array($result = $statement->fetch(\PDO::FETCH_ASSOC))) {
+            $contactGroup = DbContactGroupFactory::createFromRecord($result);
+            $contactGroupRelations[] = new ContactGroupRelation($result['claim_value'], $contactGroup);
+        }
+
+        return $contactGroupRelations;
     }
 }

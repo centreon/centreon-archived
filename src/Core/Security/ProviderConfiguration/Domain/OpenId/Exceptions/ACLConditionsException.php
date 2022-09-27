@@ -18,24 +18,22 @@
  * For more information : contact@centreon.com
  *
  */
+
 declare(strict_types=1);
 
-namespace Core\Security\Authentication\Infrastructure\Api\Login\Local;
+namespace Core\Security\ProviderConfiguration\Domain\OpenId\Exceptions;
 
-use Core\Application\Common\UseCase\AbstractPresenter;
-use Core\Security\Authentication\Application\UseCase\Login\LoginPresenterInterface;
-
-class LoginPresenter extends AbstractPresenter implements LoginPresenterInterface
+class ACLConditionsException extends OpenIdConfigurationException
 {
     /**
-     * @param mixed $response
+     * @param array<string> $fields
+     * @return self
      */
-    public function present(mixed $response): void
+    public static function missingFields(array $fields): self
     {
-        $presenterResponse = [
-            'redirect_uri' => $this->responseStatus->getMessage()
-        ];
-
-        parent::present($presenterResponse);
+        return new self(_(sprintf(
+            'Missing mandatory fields: %s',
+            implode(', ', $fields)
+        )));
     }
 }

@@ -18,24 +18,30 @@
  * For more information : contact@centreon.com
  *
  */
+
 declare(strict_types=1);
 
-namespace Core\Security\Authentication\Infrastructure\Api\Login\Local;
+namespace Core\Security\Authentication\Domain\Exception;
 
-use Core\Application\Common\UseCase\AbstractPresenter;
-use Core\Security\Authentication\Application\UseCase\Login\LoginPresenterInterface;
-
-class LoginPresenter extends AbstractPresenter implements LoginPresenterInterface
+class AuthenticationConditionsException extends \Exception
 {
     /**
-     * @param mixed $response
+     * Exceptions thrown when authentication conditions are invalid.
+     *
+     * @return self
      */
-    public function present(mixed $response): void
+    public static function invalidAuthenticationConditions(): self
     {
-        $presenterResponse = [
-            'redirect_uri' => $this->responseStatus->getMessage()
-        ];
+        return new self(_("Invalid Provider authentication conditions"));
+    }
 
-        parent::present($presenterResponse);
+    /**
+     * Exceptions thrown when authentication are not found.
+     *
+     * @return self
+     */
+    public static function conditionsNotFound(): self
+    {
+        return new self(_("Authorized conditions not found in provider conditions"));
     }
 }

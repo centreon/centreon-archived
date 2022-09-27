@@ -218,6 +218,11 @@ final class DbReadAccessGroupRepository extends AbstractRepositoryDRB implements
         foreach ($accessGroupIds as $accessGroupId) {
             $queryBindValues[':access_group_' . $accessGroupId] = $accessGroupId;
         }
+
+        if (empty($queryBindValues)) {
+            return [];
+        }
+        $accessGroups = [];
         $boundIds = implode(', ', array_keys($queryBindValues));
         $statement = $this->db->prepare(
             "SELECT * FROM acl_groups WHERE acl_group_id IN ($boundIds)"
@@ -227,11 +232,11 @@ final class DbReadAccessGroupRepository extends AbstractRepositoryDRB implements
         }
         $statement->execute();
 
-        $accessGroups = [];
         while ($statement !== false && is_array($result = $statement->fetch(\PDO::FETCH_ASSOC))) {
             $accessGroups[] = DbAccessGroupFactory::createFromRecord($result);
         }
         $this->debug('Access group found: ' . count($accessGroups));
+
         return $accessGroups;
     }
 }

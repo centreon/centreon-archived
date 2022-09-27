@@ -15,27 +15,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * For more information : contact@centreon.com
- *
+ *  For more information : contact@centreon.com
  */
 declare(strict_types=1);
 
-namespace Core\Security\Authentication\Infrastructure\Api\Login\Local;
+namespace Core\Security\Authentication\Application\UseCase\Login;
 
-use Core\Application\Common\UseCase\AbstractPresenter;
-use Core\Security\Authentication\Application\UseCase\Login\LoginPresenterInterface;
+use Core\Application\Common\UseCase\ForbiddenResponse;
 
-class LoginPresenter extends AbstractPresenter implements LoginPresenterInterface
+class ErrorAclConditionsResponse extends ForbiddenResponse
 {
-    /**
-     * @param mixed $response
-     */
-    public function present(mixed $response): void
-    {
-        $presenterResponse = [
-            'redirect_uri' => $this->responseStatus->getMessage()
-        ];
-
-        parent::present($presenterResponse);
-    }
 }
