@@ -32,14 +32,12 @@ use Core\Severity\RealTime\Domain\Model\Severity;
 use Centreon\Domain\Monitoring\Host as LegacyHost;
 use Core\Application\Common\UseCase\NotFoundResponse;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
-use Core\Application\RealTime\UseCase\FindHost\FindHostResponse;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringServiceInterface;
 use Core\Application\RealTime\Repository\ReadHostRepositoryInterface;
 use Core\Tag\RealTime\Application\Repository\ReadTagRepositoryInterface;
 use Core\Application\RealTime\Repository\ReadDowntimeRepositoryInterface;
 use Core\Application\RealTime\Repository\ReadHostgroupRepositoryInterface;
-use Core\Application\RealTime\UseCase\FindHost\FindHostPresenterInterface;
-use Core\Security\Application\Repository\ReadAccessGroupRepositoryInterface;
+use Core\Security\AccessGroup\Application\Repository\ReadAccessGroupRepositoryInterface;
 use Core\Application\RealTime\Repository\ReadAcknowledgementRepositoryInterface;
 use Core\Severity\RealTime\Application\Repository\ReadSeverityRepositoryInterface;
 
@@ -78,14 +76,7 @@ class FindHost
      */
     public function __invoke(int $hostId, FindHostPresenterInterface $presenter): void
     {
-        $hostgroups = [];
-
-        $this->info(
-            "Searching details for host",
-            [
-                "id" => $hostId
-            ]
-        );
+        $this->info('Searching details for host', ['id' => $hostId]);
 
         if ($this->contact->isAdmin()) {
             $host = $this->repository->findHostById($hostId);
@@ -93,7 +84,7 @@ class FindHost
                 $this->handleHostNotFound($hostId, $presenter);
                 return;
             }
-            $hostgroups = $this->hostgroupRepository->findAllByHostId($hostId);
+            $hostGroups = $this->hostgroupRepository->findAllByHostId($hostId);
         } else {
             $accessGroups = $this->accessGroupRepository->findByContact($this->contact);
             $accessGroupIds = array_map(
@@ -105,10 +96,10 @@ class FindHost
                 $this->handleHostNotFound($hostId, $presenter);
                 return;
             }
-            $hostgroups = $this->hostgroupRepository->findAllByHostIdAndAccessGroupIds($hostId, $accessGroupIds);
+            $hostGroups = $this->hostgroupRepository->findAllByHostIdAndAccessGroupIds($hostId, $accessGroupIds);
         }
 
-        $host->setGroups($hostgroups);
+        $host->setGroups($hostGroups);
 
         $categories = $this->tagRepository->findAllByResourceAndTypeId($host->getId(), 0, Tag::HOST_CATEGORY_TYPE_ID);
 
@@ -154,13 +145,7 @@ class FindHost
      */
     private function handleHostNotFound(int $hostId, FindHostPresenterInterface $presenter): void
     {
-        $this->error(
-            "Host not found",
-            [
-                'id' => $hostId,
-                'userId' => $this->contact->getId()
-            ]
-        );
+        $this->error('Host not found', ['id' => $hostId, 'userId' => $this->contact->getId()]);
         $presenter->setResponseStatus(new NotFoundResponse('Host'));
     }
 
@@ -238,13 +223,8 @@ class FindHost
                 $this->monitoringService->hidePasswordInHostCommandLine($legacyHost);
                 $obfuscatedCommandLine = $legacyHost->getCheckCommand();
             } catch (\Throwable $ex) {
-                $this->debug(
-                    "Failed to hide password in host command line",
-                    [
-                        'id' => $host->getId(),
-                        'reason' => $ex->getMessage()
-                    ]
-                );
+                $errorMsg = 'Failed to hide password in host command line';
+                $this->debug($errorMsg, ['id' => $host->getId(), 'reason' => $ex->getMessage()]);
                 $obfuscatedCommandLine = sprintf(
                     _('Unable to hide passwords in command (Reason: %s)'),
                     $ex->getMessage()

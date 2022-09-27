@@ -79,6 +79,7 @@ export interface ResourceEndpoints {
   performance_graph?: string;
   status_graph?: string;
   timeline?: string;
+  timeline_download?: string;
 }
 
 export interface ResourceUris {

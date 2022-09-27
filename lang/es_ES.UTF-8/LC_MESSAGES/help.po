@@ -4306,18 +4306,6 @@ msgstr "Ejecuta el comando definido en la configuración del recopilador (Config
 #~ msgid "Additional Remote Server to which this server will be attached"
 #~ msgstr ""
 
-#  msgid "Create and edit pollers"
-#  msgstr ""
-
-#  msgid "Delete pollers"
-#  msgstr ""
-
-#  msgid "Deploy configuration"
-#  msgstr ""
-
-#  msgid "Poller Configuration Actions / Poller Management"
-#  msgstr ""
-
 #  msgid "Allows user to perform “Add”, “Add (advanced)” and “Duplicate” actions on pollers."
 #  msgstr ""
 

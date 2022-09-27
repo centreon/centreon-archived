@@ -16,7 +16,6 @@ import { areUserParametersLoadedAtom } from '../Main/useUser';
 import { labelAlias } from '../Resources/translatedLabels';
 import { platformInstallationStatusAtom } from '../Main/atoms/platformInstallationStatusAtom';
 import { userEndpoint } from '../api/endpoint';
-import { labelCentreonWallpaper } from '../components/Wallpaper/translatedLabels';
 import { platformVersionsAtom } from '../Main/atoms/platformVersionsAtom';
 
 import {
@@ -193,7 +192,9 @@ describe('Login Page', () => {
       );
     });
 
-    expect(screen.getByLabelText(labelCentreonWallpaper)).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByTestId('centreon-wallpaper')).toBeInTheDocument();
+    });
     expect(screen.getByLabelText(labelCentreonLogo)).toBeInTheDocument();
     expect(screen.getByLabelText(labelAlias)).toBeInTheDocument();
     expect(screen.getByLabelText(labelPassword)).toBeInTheDocument();

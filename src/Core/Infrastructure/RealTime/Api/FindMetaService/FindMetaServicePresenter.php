@@ -152,6 +152,7 @@ class FindMetaServicePresenter extends AbstractPresenter implements FindMetaServ
         $presenterResponse['links']['endpoints'] = [
             'notification_policy' => $endpoints['notification_policy'],
             'timeline' => $endpoints['timeline'],
+            'timeline_download' => $endpoints['timeline_download'],
             'status_graph' => $endpoints['status_graph'],
             'performance_graph' => $endpoints['performance_graph'],
             'metrics' => $endpoints['metrics'],

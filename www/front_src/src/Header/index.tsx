@@ -17,28 +17,33 @@ import UserMenu from './userMenu';
 export const isDarkMode = (theme: Theme): boolean =>
   equals(theme.palette.mode, ThemeMode.dark);
 
-export const headerHeight = 8;
+export const headerHeight = 6;
+export const headerPadding = 0.5;
 
 const useStyles = makeStyles((theme) => ({
   container: {
-    alignItems: 'center',
+    alignItems: 'flex-end',
     display: 'flex',
-    justifyContent: 'space-between',
     margin: theme.spacing(0, 4, 0, 3),
     width: '100%',
   },
   header: {
-    alignItems: 'center',
     backgroundColor: isDarkMode(theme)
       ? theme.palette.background.default
       : theme.palette.primary.main,
     display: 'flex',
     height: theme.spacing(headerHeight),
+    paddingBottom: theme.spacing(headerPadding),
     width: '100%',
   },
+  item: {
+    flex: 1,
+    maxWidth: theme.spacing(15),
+  },
   leftContainer: {
-    alignItems: 'center',
+    alignItems: 'flex-end',
     display: 'flex',
+    flex: 1,
     gap: theme.spacing(3),
     [theme.breakpoints.down(768)]: {
       gap: theme.spacing(2),
@@ -51,6 +56,8 @@ const useStyles = makeStyles((theme) => ({
   userMenuContainer: {
     alignItems: 'center',
     display: 'flex',
+    flex: 0.5,
+    justifyContent: 'flex-end',
   },
 }));
 
@@ -62,10 +69,18 @@ const Header = (): JSX.Element => {
     <header className={classes.header} ref={headerRef}>
       <div className={classes.container}>
         <div className={classes.leftContainer}>
-          <PollerMenu />
-          <ServiceStatusCounter />
-          <HostStatusCounter />
-          <FederatedComponent path="/bam/header/topCounter" />
+          <div className={classes.item}>
+            <PollerMenu />
+          </div>
+          <div className={classes.item}>
+            <ServiceStatusCounter />
+          </div>
+          <div className={classes.item}>
+            <HostStatusCounter />
+          </div>
+          <div className={classes.item}>
+            <FederatedComponent path="/bam/header/topCounter" />
+          </div>
         </div>
         <div className={classes.userMenuContainer}>
           <UserMenu headerRef={headerRef} />

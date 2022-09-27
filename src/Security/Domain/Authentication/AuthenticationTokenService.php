@@ -25,7 +25,7 @@ namespace Security\Domain\Authentication;
 use Centreon\Domain\Contact\Contact;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Security\Domain\Authentication\Exceptions\AuthenticationTokenException;
-use Security\Domain\Authentication\Model\AuthenticationTokens;
+use Core\Security\Authentication\Domain\Model\AuthenticationTokens;
 use Security\Domain\Authentication\Interfaces\AuthenticationTokenServiceInterface;
 use Security\Domain\Authentication\Interfaces\AuthenticationTokenRepositoryInterface;
 

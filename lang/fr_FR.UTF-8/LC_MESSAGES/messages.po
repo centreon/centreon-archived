@@ -17022,3 +17022,39 @@ msgstr "Petite taille"
 
 msgid "CSV"
 msgstr "CSV"
+
+msgid "User information cannot be updated"
+msgstr "Les informations de l'utilisateur ne peuvent pas être mises à jour"
+
+msgid "Poller Configuration Actions / Poller Management"
+msgstr "Actions de configuration des collecteurs / Gestion des collecteurs"
+
+msgid "Create and edit pollers"
+msgstr "Créer et modifier des collecteurs"
+
+msgid "Delete pollers"
+msgstr "Supprimer des collecteurs"
+
+msgid "Deploy configuration"
+msgstr "Déployer la configuration"
+
+msgid "Invalid endpoint type specified"
+msgstr "Type d'endpoint spécifié invalide"
+
+msgid "Invalid endpoint URL specified"
+msgstr "URL d'endpoint spécifié invalide"
+
+msgid "Request for authentication conditions custom endpoint has failed"
+msgstr "La demande de conditions d'authentification de l'endpoint personnalisé a échoué"
+
+msgid "Authorized conditions not found in provider conditions"
+msgstr "Les conditions autorisées ne figurent pas dans les conditions du provider"
+
+msgid "The request for roles mapping on custom endpoint has failed"
+msgstr "La demande d'association de rôles a échoué en interrogeant l'url personalisée"
+
+msgid "Invalid roles mapping fetched from provider"
+msgstr "Les roles récupérés depuis le serveur d'identité sont incorrects"
+
+msgid "Role mapping conditions do not match"
+msgstr "Aucune correspondance trouvée pour le couple roles / groupe d'accès"

@@ -200,8 +200,8 @@ class Broker extends AbstractObjectJSON
             $resultParameters = $this->stmt_broker_parameters->fetchAll(PDO::FETCH_GROUP | PDO::FETCH_ASSOC);
 
             //logger
-            $object['log']['directory'] = filter_var($row['log_directory'], FILTER_SANITIZE_STRING);
-            $object['log']['filename'] = filter_var($row['log_filename'], FILTER_SANITIZE_STRING);
+            $object['log']['directory'] = \HtmlAnalyzer::sanitizeAndRemoveTags($row['log_directory']);
+            $object['log']['filename'] = \HtmlAnalyzer::sanitizeAndRemoveTags($row['log_filename']);
             $object['log']['max_size'] = filter_var($row['log_max_size'], FILTER_VALIDATE_INT);
             $this->getLogsValues();
             $logs = $this->cacheLogValue[$object['broker_id']];
@@ -348,9 +348,9 @@ class Broker extends AbstractObjectJSON
         }
 
         // Manage path of cbd watchdog log
-        $watchdogLogsPath = trim($this->engine['broker_logs_path']) === '' ?
-            '/var/log/centreon-broker/watchdog.log' :
-            trim($this->engine['broker_logs_path']) . '/watchdog.log';
+        $watchdogLogsPath = $this->engine['broker_logs_path'] === null || empty(trim($this->engine['broker_logs_path']))
+            ? '/var/log/centreon-broker/watchdog.log'
+            : trim($this->engine['broker_logs_path']) . '/watchdog.log';
         $watchdog['log'] = $watchdogLogsPath;
 
         $this->generate_filename = 'watchdog.json';
@@ -548,6 +548,23 @@ class Broker extends AbstractObjectJSON
     }
 
     /**
+     * Method retrieving the Centreon Platform UUID generated during web installation
+     *
+     * @return string|null
+     */
+    private function getCentreonPlatformUuid(): ?string
+    {
+        global $pearDB;
+        $result = $pearDB->query("SELECT `value` FROM informations WHERE `key` = 'uuid'");
+
+        if (! $record = $result->fetch(\PDO::FETCH_ASSOC)) {
+            return null;
+        };
+
+        return $record['value'];
+    }
+
+    /**
      * Generate complete proxy url
      *
      * @return array with lua parameters
@@ -611,6 +628,14 @@ class Broker extends AbstractObjectJSON
                 ];
             }
         }
+
+        $uuid = $this->getCentreonPlatformUuid();
+
+        $luaParameters[] = [
+            'type' => 'string',
+            'name' => 'centreon_platform_uuid',
+            'value' => $uuid
+        ];
 
         return $luaParameters;
     }

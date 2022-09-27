@@ -7,7 +7,6 @@ import { useUpdateAtom } from 'jotai/utils';
 import { Box, Container, Paper, Tab } from '@mui/material';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
 import { makeStyles } from '@mui/styles';
-import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 
 import { userAtom } from '@centreon/ui-context';
 import { Group } from '@centreon/ui';
@@ -15,21 +14,24 @@ import { Group } from '@centreon/ui';
 import { Provider } from './models';
 import LocalAuthentication from './Local';
 import { labelPasswordSecurityPolicy } from './Local/translatedLabels';
-import { labelOpenIDConnectConfiguration } from './Openid/translatedLabels';
+import {
+  labelOpenIDConnectConfiguration,
+  labelRolesMapping,
+} from './Openid/translatedLabels';
 import OpenidConfiguration from './Openid';
 import WebSSOConfigurationForm from './WebSSO';
 import { labelWebSSOConfiguration } from './WebSSO/translatedLabels';
 import {
   labelActivation,
-  labelAuthorizations,
   labelAutoImportUsers,
-  labelClientAddresses,
+  labelAuthenticationConditions,
   labelIdentityProvider,
+  labelClientAddresses,
+  labelGroupsMapping,
 } from './translatedLabels';
 import { tabAtom, appliedTabAtom } from './tabAtoms';
 import passwordPadlockLogo from './logos/passwordPadlock.svg';
 import providerPadlockLogo from './logos/providerPadlock.svg';
-import Description from './Openid/Description';
 
 const panels = [
   {
@@ -62,18 +64,24 @@ export const groups: Array<Group> = [
     order: 2,
   },
   {
-    name: labelClientAddresses,
+    name: labelAuthenticationConditions,
     order: 3,
+  },
+  {
+    name: labelClientAddresses,
+    order: 4,
   },
   {
     name: labelAutoImportUsers,
-    order: 3,
+    order: 5,
   },
   {
-    EndIcon: HelpOutlineIcon,
-    TooltipContent: Description,
-    name: labelAuthorizations,
-    order: 4,
+    name: labelRolesMapping,
+    order: 6,
+  },
+  {
+    name: labelGroupsMapping,
+    order: 7,
   },
 ];
 

@@ -417,6 +417,7 @@ function multipleHostInDB($hosts = array(), $nbrDup = array())
         for ($i = 1; $i <= $nbrDup[$key]; $i++) {
             $val = null;
             foreach ($row as $key2 => $value2) {
+                $value2 = is_int($value2) ? (string) $value2 : $value2;
                 $key2 == "host_name" ? ($hostName = $value2 = $value2 . "_" . $i) : null;
                 $val
                     ? $val .= ($value2 != null ? (", '" . CentreonDB::escape($value2) . "'") : ", NULL")
@@ -602,6 +603,7 @@ function multipleHostInDB($hosts = array(), $nbrDup = array())
                         $ehi["host_host_id"] = $maxId["MAX(host_id)"];
                         $ehi["ehi_id"] = null;
                         foreach ($ehi as $key2 => $value2) {
+                            $value2 = is_int($value2) ? (string) $value2 : $value2;
                             $val
                                 ? $val .= ($value2 != null ? (", '" . CentreonDB::escape($value2) . "'") : ", NULL")
                                 : $val .= ($value2 != null ? ("'" . CentreonDB::escape($value2) . "'") : "NULL");
@@ -1373,6 +1375,13 @@ function updateHost($host_id = null, $from_MC = false, $cfg = null)
         $ret = $form->getSubmitValues();
     } else {
         $ret = $cfg;
+    }
+
+    if (!isset($ret["contact_additive_inheritance"])) {
+        $ret["contact_additive_inheritance"] = "0";
+    }
+    if (!isset($ret["cg_additive_inheritance"])) {
+        $ret["cg_additive_inheritance"] = "0";
     }
 
     isset($ret["nagios_server_id"])
@@ -2407,7 +2416,7 @@ function generateHostServiceMultiTemplate($hID, $hID2 = null, $antiLoop = null)
                     "service_hPars" => array("0" => $hID),
                     "service_sgs" => $service_sgs
                 );
-                $service_id = insertServiceInDB($service, array());
+                insertServiceInDB($service, array());
             }
         }
         $antiLoop[$hID2] = 1;
@@ -2446,7 +2455,7 @@ function updateHostTemplateService($host_id = null)
     if ($row["host_register"] == 0) {
         $rq = "DELETE FROM host_service_relation ";
         $rq .= "WHERE host_host_id = '" . $host_id . "'";
-        $dbResult2 = $pearDB->query($rq);
+        $pearDB->query($rq);
         $ret = array();
         $ret = $form->getSubmitValue("host_svTpls");
         if ($ret) {
@@ -2456,7 +2465,7 @@ function updateHostTemplateService($host_id = null)
                     $rq .= "(hostgroup_hg_id, host_host_id, servicegroup_sg_id, service_service_id) ";
                     $rq .= "VALUES ";
                     $rq .= "(NULL, '" . $host_id . "', NULL, '" . $ret[$i] . "')";
-                    $dbResult2 = $pearDB->query($rq);
+                    $pearDB->query($rq);
                 }
             }
         }
@@ -2515,9 +2524,11 @@ function updateHostTemplateUsed($useTpls = array())
     require_once "./include/common/common-Func.php";
 
     foreach ($useTpls as $key => $value) {
-        $dbResult = $pearDB->query("UPDATE host
-                                    SET host_template_model_htm_id = '" . getMyHostID($value) . "'
-                                    WHERE host_id = '" . $key . "'");
+        $pearDB->query(
+            "UPDATE host
+            SET host_template_model_htm_id = '" . getMyHostID($value) . "'
+            WHERE host_id = '" . $key . "'"
+        );
     }
 }
 
@@ -2537,14 +2548,14 @@ function updateNagiosServerRelation($host_id, $ret = array())
         : $ret = $form->getSubmitValue("nagios_server_id");
 
     if (isset($ret) && $ret != "" && $ret != 0) {
-        $dbResult = $pearDB->query("DELETE FROM `ns_host_relation` WHERE `host_host_id` = '" . (int)$host_id . "'");
+        $pearDB->query("DELETE FROM `ns_host_relation` WHERE `host_host_id` = '" . (int)$host_id . "'");
 
         $rq = "INSERT INTO `ns_host_relation` ";
         $rq .= "(`host_host_id`, `nagios_server_id`) ";
         $rq .= "VALUES ";
         $rq .= "('" . (int)$host_id . "', '" . $ret . "')";
 
-        $dbResult = $pearDB->query($rq);
+        $pearDB->query($rq);
     }
 }
 
@@ -2643,11 +2654,11 @@ function sanitizeFormHostParameters(array $ret): array
                 break;
             case 'host_name':
                 if (!empty($inputValue)) {
-                    $inputValue = filter_var($inputValue, FILTER_SANITIZE_STRING);
+                    $inputValue = \HtmlAnalyzer::sanitizeAndRemoveTags($inputValue);
                     $bindParams[':' . $inputName] = [
                         \PDO::PARAM_STR => ($inputValue === '' || $inputValue === false)
-                        ? null
-                        : $inputValue
+                            ? null
+                            : $inputValue
                     ];
                 }
                 break;
@@ -2659,7 +2670,7 @@ function sanitizeFormHostParameters(array $ret): array
             case 'host_snmp_version':
             case 'host_comment':
             case 'geo_coords':
-                $inputValue = filter_var($inputValue, FILTER_SANITIZE_STRING);
+                $inputValue = \HtmlAnalyzer::sanitizeAndRemoveTags($inputValue);
                 $bindParams[':' . $inputName] = [
                     \PDO::PARAM_STR => ($inputValue === '' || $inputValue === false)
                         ? null
@@ -2684,41 +2695,41 @@ function sanitizeFormHostParameters(array $ret): array
                 break;
             case 'host_notifOpts':
                 if (!empty($inputValue)) {
-                    $inputValue = filter_var(implode(",", array_keys($inputValue)), FILTER_SANITIZE_STRING);
+                    $inputValue = \HtmlAnalyzer::sanitizeAndRemoveTags(
+                        implode(",", array_keys($inputValue))
+                    );
                     $bindParams[':host_notification_options'] = [
                         \PDO::PARAM_STR => ($inputValue === '' || $inputValue === false)
-                        ? null
-                        : $inputValue
+                            ? null
+                            : $inputValue
                     ];
                 }
                 break;
             case 'contact_additive_inheritance':
             case 'cg_additive_inheritance':
-                $bindParams[':' . $inputName] = [
-                    \PDO::PARAM_INT => (isset($ret[$inputName]) ? 1 : 0)
-                ];
+                $bindParams[':' . $inputName] = [\PDO::PARAM_INT => $inputValue];
                 break;
             case 'mc_contact_additive_inheritance':
             case 'mc_cg_additive_inheritance':
-                $bindParams[':' . str_replace('mc_', '', $inputName)] = [
-                    \PDO::PARAM_INT => (isset($ret[$inputName]) ? 1 : 0)
-                ];
+                if (in_array($inputValue[$inputName], ['0', '1'])) {
+                    $bindParams[':' . str_replace('mc_', '', $inputName)] = [
+                        \PDO::PARAM_INT => $inputValue[$inputName]
+                    ];
+                }
                 break;
             case 'host_stalOpts':
                 if (!empty($inputValue)) {
-                    $inputValue = filter_var(implode(",", array_keys($inputValue)), FILTER_SANITIZE_STRING);
+                    $inputValue = \HtmlAnalyzer::sanitizeAndRemoveTags(
+                        implode(",", array_keys($inputValue))
+                    );
                     $bindParams[':host_stalking_options'] = [
-                        \PDO::PARAM_STR => ($inputValue === '' || $inputValue === false)
-                        ? null
-                        : $inputValue
+                        \PDO::PARAM_STR => ($inputValue === '' || $inputValue === false) ? null : $inputValue
                     ];
                 }
                 break;
             case 'host_register':
                 $bindParams[':' . $inputName] = [
-                    \PDO::PARAM_STR => in_array($inputValue, ['0', '1', '2', '3'])
-                        ? $inputValue
-                        : null
+                    \PDO::PARAM_STR => in_array($inputValue, ['0', '1', '2', '3']) ? $inputValue : null
                 ];
                 break;
             case 'host_activate':

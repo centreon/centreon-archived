@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, lazy, Suspense } from 'react';
 
 import { path, isNil, not } from 'ramda';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
@@ -7,10 +7,13 @@ import { Paper } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 import IconGraph from '@mui/icons-material/BarChart';
 
-import { IconButton, ComponentColumnProps } from '@centreon/ui';
+import {
+  IconButton,
+  ComponentColumnProps,
+  LoadingSkeleton,
+} from '@centreon/ui';
 
 import { labelGraph, labelServiceGraphs } from '../../translatedLabels';
-import PerformanceGraph from '../../Graph/Performance';
 import { ResourceDetails } from '../../Details/models';
 import { Resource } from '../../models';
 import {
@@ -22,6 +25,8 @@ import { lastDayPeriod } from '../../Details/tabs/Graph/models';
 
 import HoverChip from './HoverChip';
 import IconColumn from './IconColumn';
+
+const PerformanceGraph = lazy(() => import('../../Graph/Performance'));
 
 const useStyles = makeStyles((theme) => ({
   graph: {
@@ -63,15 +68,17 @@ const Graph = ({
   }, []);
 
   return (
-    <PerformanceGraph
-      limitLegendRows
-      displayCompleteGraph={displayCompleteGraph}
-      displayTitle={false}
-      endpoint={`${endpoint}${graphQueryParameters}`}
-      graphHeight={150}
-      resource={row}
-      timeline={[]}
-    />
+    <Suspense fallback={<LoadingSkeleton height="100%" />}>
+      <PerformanceGraph
+        limitLegendRows
+        displayCompleteGraph={displayCompleteGraph}
+        displayTitle={false}
+        endpoint={`${endpoint}${graphQueryParameters}`}
+        graphHeight={150}
+        resource={row}
+        timeline={[]}
+      />
+    </Suspense>
   );
 };
 

@@ -21,8 +21,8 @@
 
 namespace ConfigGenerateRemote;
 
-use \Exception;
-use \PDO;
+use Exception;
+use PDO;
 use ConfigGenerateRemote\Abstracts\AbstractObject;
 
 class Engine extends AbstractObject
