@@ -70,6 +70,6 @@ it('should throw an exception with a null url and a custom type', function () {
     (new Endpoint(Endpoint::CUSTOM, null));
 })->throws(InvalidEndpointException::class, InvalidEndpointException::invalidUrl()->getMessage());
 
-it('should throw an exception with a empty url and a custom type', function () {
+it('should throw an exception with an empty URL and a custom type', function () {
     (new Endpoint(Endpoint::CUSTOM, ''));
 })->throws(InvalidEndpointException::class, InvalidEndpointException::invalidUrl()->getMessage());
