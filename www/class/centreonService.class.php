@@ -529,7 +529,7 @@ class CentreonService
 
                     $valPassword = null;
                     if (isset($row['is_password'])) {
-                        if ($row['is_password'] === '1') {
+                        if ($row['is_password'] === 1) {
                             $valPassword = '1';
                         } else {
                             $valPassword = null;

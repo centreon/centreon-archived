@@ -35,6 +35,6 @@ class DbAccessGroupFactory
     {
         return (new AccessGroup((int) $record['acl_group_id'], $record['acl_group_name'], $record['acl_group_alias']))
             ->setActivate($record['acl_group_activate'] === '1')
-            ->setChanged($record['acl_group_changed'] === '1');
+            ->setChanged($record['acl_group_changed'] === 1);
     }
 }
