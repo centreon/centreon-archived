@@ -81,7 +81,7 @@ const AnomalyDetectionShapeCircle = ({
       pointY2,
     });
 
-    const isPointsDefined =
+    const arePointsDefined =
       !isNil(pointX) &&
       !isNil(pointY) &&
       !isNil(pointX1) &&
@@ -92,7 +92,7 @@ const AnomalyDetectionShapeCircle = ({
     return {
       circle: {
         coordinate: { key: index.toString(), x: pointX, y: pointY },
-        isShowCircle: !isPointBetweenPoint1Point2 && isPointsDefined,
+        isShowCircle: !isPointBetweenPoint1Point2 && arePointsDefined,
       },
     };
   });
