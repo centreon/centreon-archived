@@ -1,14 +1,16 @@
 import { useAtomValue } from 'jotai/utils';
 
+import { SelectEntry } from '@centreon/ui';
+
 import { platformVersionsAtom } from '../../Main/atoms/platformVersionsAtom';
 
 import {
-  criteriaValueNameById,
-  selectableResourceTypes,
-  selectableCriterias,
-  CriteriaNames,
   authorizedFilterByModules,
   CriteriaById,
+  CriteriaNames,
+  criteriaValueNameById,
+  selectableCriterias,
+  selectableResourceTypes,
 } from './Criterias/models';
 
 interface FilterByModule {
@@ -33,47 +35,58 @@ const useFilterByModule = (): FilterByModule => {
     return null;
   });
 
-  let newSelectableResourceTypes = [...selectableResourceTypes];
-  let newCriteriaValueNameById = { ...criteriaValueNameById };
+  const newCriteriaValueNameById = filtersToAdd.reduce(
+    (prev, item) => {
+      if (!item) {
+        return { ...prev };
+      }
 
-  const filters = filtersToAdd.map((item) => {
-    if (item) {
-      Object.keys(item).map((key, ind) => {
-        newCriteriaValueNameById = {
-          ...newCriteriaValueNameById,
-          [key]: Object.values(item)[ind],
-        };
+      const criteriasNameById = Object.keys(item).reduce(
+        (previousValue, key) => ({
+          ...previousValue,
+          [key]: item[key],
+        }),
+        { ...criteriaValueNameById },
+      );
 
-        const serviceId = key;
-        const serviceType = {
-          id: serviceId,
-          name: newCriteriaValueNameById[serviceId],
-        };
+      return { ...prev, ...criteriasNameById };
+    },
+    { ...criteriaValueNameById },
+  );
 
-        newSelectableResourceTypes = [
-          ...newSelectableResourceTypes,
-          serviceType,
-        ];
+  const newSelectableResourceTypes = filtersToAdd.reduce(
+    (prev, item) => {
+      if (!item) {
+        return [...prev];
+      }
 
-        return newSelectableResourceTypes;
-      });
-    }
+      const selectableTypes = Object.keys(item).reduce(
+        (previousValue, key) => {
+          const serviceType = {
+            id: key,
+            name: newCriteriaValueNameById[key],
+          };
 
-    return { newCriteriaValueNameById, newSelectableResourceTypes };
-  });
+          return [...previousValue, serviceType];
+        },
+        [...selectableResourceTypes],
+      );
 
-  const result = filters[filters.length - 1];
+      return [...prev, ...selectableTypes];
+    },
+    [...selectableResourceTypes],
+  );
 
   const newSelectableCriterias = {
     ...selectableCriterias,
     [CriteriaNames.resourceTypes]: {
       ...selectableCriterias[CriteriaNames.resourceTypes],
-      options: result?.newSelectableResourceTypes,
+      options: [...new Set(newSelectableResourceTypes)] as Array<SelectEntry>,
     },
   };
 
   return {
-    newCriteriaValueName: result?.newCriteriaValueNameById,
+    newCriteriaValueName: newCriteriaValueNameById,
     newSelectableCriterias,
   };
 };

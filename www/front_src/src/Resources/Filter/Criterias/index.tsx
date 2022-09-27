@@ -47,7 +47,7 @@ const CriteriasContent = (): JSX.Element => {
 
   const getSelectableCriterias = (): Array<CriteriaModel> => {
     const criteriasValue = filterByInstalledModulesWithParsedSearch({
-      nameCriteria: newCriteriaValueName,
+      criteriaName: newCriteriaValueName,
     });
 
     const criterias = sortBy(

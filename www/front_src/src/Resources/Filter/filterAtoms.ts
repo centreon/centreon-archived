@@ -88,11 +88,11 @@ export const filterWithParsedSearchDerivedAtom = atom((get) => ({
 
 export const filterByInstalledModulesWithParsedSearchDerivedAtom = atom(
   (get) =>
-    ({ nameCriteria }): Filter => {
+    ({ criteriaName }): Filter => {
       const result = {
         ...get(currentFilterAtom),
         criterias: [
-          ...parse({ nameCriteria, search: get(searchAtom) }),
+          ...parse({ criteriaName, search: get(searchAtom) }),
           find(
             propEq('name', 'sort'),
             get(currentFilterAtom).criterias,
