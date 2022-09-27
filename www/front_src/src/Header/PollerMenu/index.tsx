@@ -100,7 +100,8 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
   },
   subMenuToggle: {
-    backgroundColor: theme.palette.background.paper,
+    backgroundColor: theme.palette.background.default,
+    boxShadow: theme.shadows[3],
     boxSizing: 'border-box',
     color: theme.palette.text.primary,
     display: 'none',
