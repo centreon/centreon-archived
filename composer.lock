@@ -6570,12 +6570,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/centreon/centreon-test-lib.git",
-                "reference": "fbf6f542e40d9178d882e40a6b25a52622d2c3bc"
+                "reference": "d3ded3c12fc4f70788f43452b057bc6a505f41ee"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/centreon/centreon-test-lib/zipball/fbf6f542e40d9178d882e40a6b25a52622d2c3bc",
-                "reference": "fbf6f542e40d9178d882e40a6b25a52622d2c3bc",
+                "url": "https://api.github.com/repos/centreon/centreon-test-lib/zipball/d3ded3c12fc4f70788f43452b057bc6a505f41ee",
+                "reference": "d3ded3c12fc4f70788f43452b057bc6a505f41ee",
                 "shasum": ""
             },
             "require": {
@@ -6590,6 +6590,9 @@
                 "symfony/http-client": "^5.4.0",
                 "symfony/property-access": "^5.4.0",
                 "webmozart/assert": "^1.9"
+            },
+            "require-dev": {
+                "pestphp/pest": "^1.21"
             },
             "suggest": {
                 "behat/mink": "Browser controller/emulator abstraction for PHP",
@@ -6622,7 +6625,7 @@
                 "issues": "https://github.com/centreon/centreon-test-lib/issues",
                 "source": "https://github.com/centreon/centreon-test-lib/tree/master"
             },
-            "time": "2022-09-16T14:39:36+00:00"
+            "time": "2022-09-26T11:56:45+00:00"
         },
         {
             "name": "composer/pcre",
