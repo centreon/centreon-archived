@@ -84,7 +84,7 @@ class SessionAPIAuthenticator extends AbstractAuthenticator
      */
     public function supports(Request $request): bool
     {
-        return $request->headers->has('Cookie') && $request->cookies->has('PHPSESSID');
+        return $request->headers->has('Cookie') && !empty($request->getSession()->getId());
     }
 
     /**
@@ -119,7 +119,7 @@ class SessionAPIAuthenticator extends AbstractAuthenticator
         /**
          * @var string|null $sessionId
          */
-        $sessionId = $request->cookies->get('PHPSESSID');
+        $sessionId = $request->getSession()->getId();
         if (null === $sessionId) {
             // The token header was empty, authentication fails with HTTP Status
             // Code 401 "Unauthorized"

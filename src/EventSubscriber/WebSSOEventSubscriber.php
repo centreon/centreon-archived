@@ -115,7 +115,8 @@ class WebSSOEventSubscriber implements EventSubscriberInterface
         }
 
         $request = $event->getRequest();
-        if (!empty($request->getSession()->getId())) {
+        $isValidToken = $this->authenticationService->isValidToken($request->getSession()->getId());
+        if ($isValidToken) {
             return;
         }
 
@@ -139,7 +140,7 @@ class WebSSOEventSubscriber implements EventSubscriberInterface
      */
     private function createSession(Request $request, ProviderAuthenticationInterface $provider): void
     {
-        $this->info('Creating session');
+        $this->debug('Creating session');
 
         if ($this->writeSessionRepository->start($provider->getLegacySession())) {
             $sessionId = $request->getSession()->getId();
