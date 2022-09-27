@@ -107,7 +107,7 @@ class CentreonAPI
             $this->login = htmlentities($user, ENT_QUOTES);
         }
         if (isset($password)) {
-            $this->password = htmlentities($password, ENT_QUOTES);
+            $this->password = filter_var($password, FILTER_SANITIZE_STRING);
         }
         if (isset($action)) {
             $this->action = htmlentities(strtoupper($action), ENT_QUOTES);
