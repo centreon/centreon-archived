@@ -628,7 +628,7 @@ describe('Openid configuration form', () => {
     expect(screen.getAllByLabelText(labelDefineYourEndpoint)).toHaveLength(3);
   });
 
-  it('displays new input field if a user type a text in the latest element of the field "condition value" ', async () => {
+  it('displays a new input field if a user types a text in the latest element of the field "condition value" ', async () => {
     renderOpenidConfigurationForm();
 
     await waitFor(() => {
