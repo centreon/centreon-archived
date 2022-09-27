@@ -66,7 +66,7 @@ it('should return an EndpointCondition instance with an empty url if type is not
     expect($endpointCondition->getUrl())->toBeNull();
 });
 
-it('should throw an exception with a null url and a custom type', function () {
+it('should throw an exception with a null URL and a custom type', function () {
     (new Endpoint(Endpoint::CUSTOM, null));
 })->throws(InvalidEndpointException::class, InvalidEndpointException::invalidUrl()->getMessage());
 
