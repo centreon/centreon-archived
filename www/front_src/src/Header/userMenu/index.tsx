@@ -135,7 +135,7 @@ const useStyles = makeStyles((theme) => ({
     padding: 0,
   },
   menu: {
-    backgroundColor: theme.palette.background.paper,
+    backgroundColor: theme.palette.background.default,
     border: 'none',
     borderRadius: 0,
     boxShadow: theme.shadows[3],
