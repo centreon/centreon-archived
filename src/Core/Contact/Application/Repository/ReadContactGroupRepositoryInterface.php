@@ -52,4 +52,13 @@ interface ReadContactGroupRepositoryInterface
      * @throws \Throwable
      */
     public function find(int $contactGroupId): ?ContactGroup;
+
+    /**
+     * Get Contact groups by their ids.
+     *
+     * @param int[] $contactGroupIds
+     * @return ContactGroup[]
+     * @throws \Throwable
+     */
+    public function findByIds(array $contactGroupIds): array;
 }

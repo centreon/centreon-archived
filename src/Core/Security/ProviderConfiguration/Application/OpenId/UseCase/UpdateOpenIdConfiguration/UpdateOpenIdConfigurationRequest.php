@@ -26,11 +26,6 @@ namespace Core\Security\ProviderConfiguration\Application\OpenId\UseCase\UpdateO
 class UpdateOpenIdConfigurationRequest
 {
     /**
-     * @var int|null
-     */
-    public ?int $contactGroupId = null;
-
-    /**
      * @var boolean
      */
     public bool $isActive = false;
@@ -39,16 +34,6 @@ class UpdateOpenIdConfigurationRequest
      * @var boolean
      */
     public bool $isForced = false;
-
-    /**
-     * @var string[]
-     */
-    public array $trustedClientAddresses = [];
-
-    /**
-     * @var string[]
-     */
-    public array $blacklistClientAddresses = [];
 
     /**
      * @var string|null
@@ -131,14 +116,67 @@ class UpdateOpenIdConfigurationRequest
     public ?string $userNameBindAttribute = null;
 
     /**
-     * @var string|null
+     * @var array<string, array<int|string, string|null>|string|bool>
      */
-    public ?string $claimName = null;
+    public array $rolesMapping = [
+        'is_enabled' => false,
+        'apply_only_first_role' => false,
+        'attribute_path' => '',
+        'endpoint' => [
+            'type' => 'introspection_endpoint',
+            'custom_endpoint' => ''
+        ],
+        'relations' => []
+    ];
 
     /**
-     * @var array<array{claim_value: string, access_group_id: int}>
+     * @var array{
+     *  "is_enabled": bool,
+     *  "attribute_path": string,
+     *  "authorized_values": string[],
+     *  "trusted_client_addresses": string[],
+     *  "blacklist_client_addresses": string[],
+     *  "endpoint": array{
+     *      "type": string,
+     *      "custom_endpoint":string|null
+     *  }
+     * }
      */
-    public array $authorizationRules = [];
+    public array $authenticationConditions = [
+        "is_enabled" => false,
+        "attribute_path" => "",
+        "authorized_values" => [],
+        "trusted_client_addresses" => [],
+        "blacklist_client_addresses" => [],
+        "endpoint" => [
+            "type" => "introspection_endpoint",
+            "custom_endpoint" => null,
+        ],
+    ];
+
+    /**
+    * @var array{
+     *  "is_enabled": bool,
+     *  "attribute_path": string,
+     *  "endpoint": array{
+     *      "type": string,
+     *      "custom_endpoint":string|null
+     *  },
+     *  "relations":array<array{
+     *      "group_value": string,
+     *      "contact_group_id": int
+     *  }>
+     * }
+     */
+    public array $groupsMapping = [
+        "is_enabled" => false,
+        "attribute_path" => "",
+        "endpoint" => [
+            "type" => "introspection_endpoint",
+            "custom_endpoint" => null,
+        ],
+        "relations" => []
+    ];
 
     /**
      * @return array<string,mixed>
@@ -148,16 +186,12 @@ class UpdateOpenIdConfigurationRequest
         return [
             'is_forced' => $this->isForced,
             'is_active' => $this->isActive,
-            'contact_group_id' => $this->contactGroupId,
             'contact_template' => $this->contactTemplate,
-            'authorization_rules' => $this->authorizationRules,
             'auto_import' => $this->isAutoImportEnabled,
             'client_id' => $this->clientId,
             'authentication_type' => $this->authenticationType,
             'authorization_endpoint' => $this->authorizationEndpoint,
             'base_url' => $this->baseUrl,
-            'blacklist_client_addresses' => $this->blacklistClientAddresses,
-            'claim_name' => $this->claimName,
             'client_secret' => $this->clientSecret,
             'connection_scopes' => $this->connectionScopes,
             'email_bind_attribute' => $this->emailBindAttribute,
@@ -165,10 +199,12 @@ class UpdateOpenIdConfigurationRequest
             'introspection_token_endpoint' => $this->introspectionTokenEndpoint,
             'login_claim' => $this->loginClaim,
             'token_endpoint' => $this->tokenEndpoint,
-            'trusted_client_addresses' => $this->trustedClientAddresses,
             'userinfo_endpoint' => $this->userInformationEndpoint,
             'fullname_bind_attribute' => $this->userNameBindAttribute,
-            'verify_peer' => $this->verifyPeer
+            'verify_peer' => $this->verifyPeer,
+            'authentication_conditions' => $this->authenticationConditions,
+            'groups_mapping' => $this->groupsMapping,
+            'roles_mapping' => $this->rolesMapping
         ];
     }
 }
