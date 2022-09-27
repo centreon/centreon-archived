@@ -62,10 +62,10 @@ const GraphTabContent = ({ details }: TabProps): JSX.Element => {
         <>
           <TimePeriodButtonGroup />
           <ExportablePerformanceGraphWithTimeline
-            getIsReload={reload}
             graphHeight={280}
             isEditAnomalyDetectionDataDialogOpen={false}
             resource={details}
+            onReload={reload}
           />
         </>
       ) : (

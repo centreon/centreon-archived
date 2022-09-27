@@ -47,10 +47,10 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 interface Props {
-  getIsReload?: (value: boolean) => void;
   graphHeight: number;
   isEditAnomalyDetectionDataDialogOpen: boolean;
   limitLegendRows?: boolean;
+  onReload?: (value: boolean) => void;
   resizeEnvelopeData?: CustomFactorsData;
   resource?: Resource | ResourceDetails;
 }
@@ -61,7 +61,7 @@ const ExportablePerformanceGraphWithTimeline = ({
   limitLegendRows,
   isEditAnomalyDetectionDataDialogOpen,
   resizeEnvelopeData,
-  getIsReload,
+  onReload,
 }: Props): JSX.Element => {
   const classes = useStyles();
   const [timeline, setTimeline] = useState<Array<TimelineEvent>>();
@@ -187,10 +187,10 @@ const ExportablePerformanceGraphWithTimeline = ({
   };
 
   const sendReloadGraphPerformance = (value: boolean): void => {
-    if (!getIsReload) {
+    if (!onReload) {
       return;
     }
-    getIsReload(value);
+    onReload(value);
   };
 
   return (
