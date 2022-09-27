@@ -24,7 +24,7 @@ interface Props {
   xScale: ScaleTime<number, number>;
 }
 
-interface ParamsDiff {
+interface EnvelopeVariation {
   factors: CustomFactorsData;
   item: TimeValue;
   metricLower: string;
@@ -87,12 +87,12 @@ const AnomalyDetectionEnvelopeThreshold = ({
     y0Scale(prop(metricY0, timeValue)) ?? null;
 
   if (data) {
-    const getDiff = ({
+    const envelopeVariation = ({
       metricUpper,
       metricLower,
       item,
       factors,
-    }: ParamsDiff): number => {
+    }: EnvelopeVariation): number => {
       return (
         ((prop(metricUpper, item) as number) -
           (prop(metricLower, item) as number)) *
@@ -101,7 +101,7 @@ const AnomalyDetectionEnvelopeThreshold = ({
     };
 
     const estimatedY1 = (timeValue): number => {
-      const diff = getDiff({
+      const diff = envelopeVariation({
         factors: data,
         item: timeValue,
         metricLower: metricY0,
@@ -112,7 +112,7 @@ const AnomalyDetectionEnvelopeThreshold = ({
     };
 
     const estimatedY0 = (timeValue): number => {
-      const diff = getDiff({
+      const diff = envelopeVariation({
         factors: data,
         item: timeValue,
         metricLower: metricY0,
