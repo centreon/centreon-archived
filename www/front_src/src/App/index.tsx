@@ -42,7 +42,7 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'stretch',
     backgroundColor: equals(theme.palette.mode, ThemeMode.dark)
       ? '#2c2c2c'
-      : theme.palette.background.default,
+      : theme.palette.background.paper,
     display: 'flex',
     fontFamily: theme.typography.fontFamily,
     height: '100%',
