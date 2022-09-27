@@ -1008,8 +1008,8 @@ class OpenIdProvider implements OpenIdProviderInterface
         AuthenticationConditions $authenticationConditions
     ): void {
         $authenticationAttributePath = explode(".", $authenticationConditions->getAttributePath());
-        $this->logAuthenticationInfo("Configured Attribute path found", $authenticationAttributePath);
-        $this->logAuthenticationInfo("Configured Authorized values", $authenticationConditions->getAuthorizedValues());
+        $this->logAuthenticationInfo("Configured attribute path found", $authenticationAttributePath);
+        $this->logAuthenticationInfo("Configured authorized values", $authenticationConditions->getAuthorizedValues());
         foreach ($authenticationAttributePath as $attribute) {
             $providerAuthenticationConditions = [];
             if (array_key_exists($attribute, $conditions)) {
@@ -1041,7 +1041,7 @@ class OpenIdProvider implements OpenIdProviderInterface
         array $configuredAuthorizedValues
     ): void {
         if (array_is_list($providerAuthenticationConditions) === false) {
-            $errorMessage = "Invalid Authentication conditions format, array of strings expected";
+            $errorMessage = "Invalid authentication conditions format, array of strings expected";
             $this->error(
                 $errorMessage,
                 [
@@ -1086,7 +1086,7 @@ class OpenIdProvider implements OpenIdProviderInterface
      */
     private function sendRequestForCustomAclConditionEndpoint(string $customEndpoint): array
     {
-        $this->info('Send Request for authentication conditions...');
+        $this->info('Sending request for authentication conditions...');
 
         $headers = [
             'Authorization' => "Bearer " . trim($this->providerToken->getToken())
@@ -1311,7 +1311,7 @@ class OpenIdProvider implements OpenIdProviderInterface
         array $contactGroupRelations
     ): void {
         if (array_is_list($providerGroupsMapping) === false) {
-            $errorMessage = "Invalid Authentication conditions format, array of strings expected";
+            $errorMessage = "Invalid authentication conditions format, array of strings expected";
             $this->error(
                 $errorMessage,
                 [

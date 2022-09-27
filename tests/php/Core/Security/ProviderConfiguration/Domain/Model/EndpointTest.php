@@ -44,21 +44,21 @@ it('should throw an exception with a bad endpoint type', function () {
     (new Endpoint('bad_type', $this->custom_relative_url));
 })->throws(InvalidEndpointException::class, InvalidEndpointException::invalidType()->getMessage());
 
-it('should throw an exception with a bad relative url', function () {
+it('should throw an exception with a bad relative URL', function () {
     (new Endpoint(Endpoint::CUSTOM, 'bad_relative_url'));
 })->throws(InvalidEndpointException::class, InvalidEndpointException::invalidUrl()->getMessage());
 
-it('should return an EndpointCondition instance with a correct relative url', function () {
+it('should return an EndpointCondition instance with a correct relative URL', function () {
     $endpointCondition = new Endpoint(Endpoint::CUSTOM, $this->custom_relative_url);
     expect($endpointCondition->getUrl())->toBe($this->custom_relative_url);
 });
 
-it('should return an EndpointCondition instance with a correct url', function () {
+it('should return an EndpointCondition instance with a correct URL', function () {
     $endpointCondition = new Endpoint(Endpoint::CUSTOM, $this->custom_url);
     expect($endpointCondition->getUrl())->toBe($this->custom_url);
 });
 
-it('should return an EndpointCondition instance with an empty url if type is not custom', function () {
+it('should return an EndpointCondition instance with an empty URL if type is not custom', function () {
     $endpointCondition = new Endpoint(Endpoint::INTROSPECTION, $this->custom_url);
     expect($endpointCondition->getUrl())->toBeNull();
 

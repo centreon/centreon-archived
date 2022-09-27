@@ -384,7 +384,7 @@ class UpdateOpenIdConfiguration
             $foundContactGroupsId[] = $foundAccessGroup->getId();
         }
         $nonExistentAccessGroupsIds = array_diff($contactGroupIds, $foundContactGroupsId);
-        $this->error("Access Groups not found", [
+        $this->error("Access groups not found", [
             "access_group_ids" => implode(', ', $nonExistentAccessGroupsIds)
         ]);
     }

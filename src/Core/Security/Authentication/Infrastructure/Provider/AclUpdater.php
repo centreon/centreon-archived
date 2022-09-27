@@ -117,7 +117,7 @@ class AclUpdater implements AclUpdaterInterface
         $contactGroups = $this->provider->getUserContactGroups();
 
         try {
-            $this->info('Updating User Contact Group', [
+            $this->info('Updating user contact group', [
                 "user_id" => $user->getId(),
                 "contact_group_id" => [
                     array_map(function ($contactGroup) {

@@ -243,7 +243,7 @@ class OpenId implements ProviderAuthenticationInterface
             $claimValue = $authorizationRule->getClaimValue();
             if (!in_array($claimValue, $claims)) {
                 $this->info(
-                    "Configured Claim Value not found in user claims",
+                    "Configured claim value not found in user claims",
                     ["claim_value" => $claimValue]
                 );
 
