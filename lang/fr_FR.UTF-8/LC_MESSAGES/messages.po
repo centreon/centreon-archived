@@ -17042,7 +17042,7 @@ msgid "Invalid endpoint type specified"
 msgstr "Type d'endpoint spécifié invalide"
 
 msgid "Invalid endpoint URL specified"
-msgstr "URL d'endpoint spécifié invalide"
+msgstr "URL d'endpoint spécifiée invalide"
 
 msgid "Request for authentication conditions custom endpoint has failed"
 msgstr "La demande de conditions d'authentification de l'endpoint personnalisé a échoué"
