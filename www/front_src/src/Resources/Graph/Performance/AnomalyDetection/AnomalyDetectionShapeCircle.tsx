@@ -97,27 +97,23 @@ const AnomalyDetectionShapeCircle = ({
     };
   });
 
-  const countCirclesShown = circles.filter(
-    (item) => item.circle.isCircleShown,
-  ).length;
+  const circlesShown = circles.filter((item) => item.circle.isCircleShown);
 
-  setCountedRedCircles(countCirclesShown);
+  setCountedRedCircles(circlesShown.length);
 
   return (
     <>
-      {circles.map(({ circle }) => {
-        const { coordinate, isCircleShown } = circle;
+      {circlesShown.map(({ circle }) => {
+        const { coordinate } = circle;
 
         return (
-          isCircleShown && (
-            <Shape.Circle
-              cx={coordinate.x}
-              cy={coordinate.y}
-              fill="red"
-              key={coordinate.key}
-              r={2}
-            />
-          )
+          <Shape.Circle
+            cx={coordinate.x}
+            cy={coordinate.y}
+            fill="red"
+            key={coordinate.key}
+            r={2}
+          />
         );
       })}
     </>
