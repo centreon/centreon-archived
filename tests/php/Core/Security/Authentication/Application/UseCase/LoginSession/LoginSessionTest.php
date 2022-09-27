@@ -95,7 +95,7 @@ beforeEach(function () {
     $this->authenticationRequest = LoginRequest::createForLocal("admin", "password", '127.0.0.1');
 });
 
-it('should present an error Response when the Provider configuration is not found', function () {
+it('should present an error response when the provider configuration is not found', function () {
     $useCase = new Login(
         $this->providerFactory,
         $this->session,
@@ -120,7 +120,7 @@ it('should present an error Response when the Provider configuration is not foun
 });
 
 
-it('should present an UnauthorizedResponse when the authentication fail', function () {
+it('should present an UnauthorizedResponse when the authentication fails', function () {
     $useCase = new Login(
         $this->providerFactory,
         $this->session,
@@ -178,7 +178,7 @@ it('should present a PasswordExpiredResponse when the user password is expired',
     expect($presenter->getResponseStatus())->toBeInstanceOf(PasswordExpiredResponse::class);
 });
 
-it('should present an UnauthorizedResponse when User is not authorize to login', function () {
+it('should present an UnauthorizedResponse when user is not authorized to log in', function () {
     $useCase = new Login(
         $this->providerFactory,
         $this->session,
@@ -197,7 +197,7 @@ it('should present an UnauthorizedResponse when User is not authorize to login',
 });
 
 
-it("should present an UnauthorizedResponse when User doesn't exist", function () {
+it("should present an UnauthorizedResponse when user doesn't exist", function () {
     $useCase = new Login(
         $this->providerFactory,
         $this->session,
@@ -230,7 +230,7 @@ it("should present an UnauthorizedResponse when User doesn't exist", function ()
     expect($presenter->getResponseStatus())->toBeInstanceOf(UnauthorizedResponse::class);
 });
 
-it('should create an user when auto import is enabled', function () {
+it('should create a user when auto import is enabled', function () {
     $useCase = new Login(
         $this->providerFactory,
         $this->session,
