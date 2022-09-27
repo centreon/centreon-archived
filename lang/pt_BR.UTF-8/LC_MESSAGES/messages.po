@@ -15709,5 +15709,10 @@ msgstr "Tem certeza de que deseja alterar o tamanho do envelope? O novo tamanho 
 msgid "Changes to the envelope size will be applied immediately"
 msgstr "As alterações no tamanho do envelope serão aplicadas imediatamente"
 
-msgid "Manage envelop size"
+msgid "Manage envelope size"
 msgstr "Gerenciar o tamanho do envelope"
+
+msgid "use default value"
+msgstr "usar valor padrão"
+
+

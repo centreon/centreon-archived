@@ -17,8 +17,11 @@ import Button from '@mui/material/Button';
 import { IconButton, useRequest, putData } from '@centreon/ui';
 
 import {
-  LabelMenageEnvelope,
-  LabelMenageEnvelopeSubTitle,
+  labelMenageEnvelope,
+  labelMenageEnvelopeSubTitle,
+  labelCancel,
+  labelSave,
+  labelUseDefaultValue,
 } from '../../../translatedLabels';
 import { ResourceDetails, Sensitivity } from '../../../Details/models';
 
@@ -237,7 +240,7 @@ const AnomalyDetectionSlider = ({
   return (
     <div className={classes.container}>
       <div className={classes.header}>
-        <Typography variant="h6">{t(LabelMenageEnvelope)}</Typography>
+        <Typography variant="h6">{t(labelMenageEnvelope)}</Typography>
         {countedRedCircles && (
           <Tooltip open={openTooltip} title={msgTooltip}>
             <div />
@@ -245,7 +248,7 @@ const AnomalyDetectionSlider = ({
         )}
 
         <Typography variant="caption">
-          {t(LabelMenageEnvelopeSubTitle)}
+          {t(labelMenageEnvelopeSubTitle)}
         </Typography>
       </div>
 
@@ -288,13 +291,13 @@ const AnomalyDetectionSlider = ({
               onChange={handleChangeCheckBox}
             />
           }
-          label="use default value"
+          label={t(labelUseDefaultValue)}
         />
       </div>
 
       <div className={classes.footer}>
         <Button size="small" variant="text" onClick={cancelResizingEnvelope}>
-          Cancel
+          {t(labelCancel)}
         </Button>
         <Button
           className={classes.confirmButton}
@@ -303,7 +306,7 @@ const AnomalyDetectionSlider = ({
           variant="contained"
           onClick={confirm}
         >
-          Confirm
+          {t(labelSave)}
         </Button>
       </div>
     </div>

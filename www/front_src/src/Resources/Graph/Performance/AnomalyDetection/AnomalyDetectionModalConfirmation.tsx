@@ -6,7 +6,9 @@ import { Dialog } from '@centreon/ui';
 
 import {
   labelEditAnomalyDetectionConfirmation,
-  LabelMenageEnvelope,
+  labelMenageEnvelope,
+  labelSave,
+  labelCancel,
 } from '../../../translatedLabels';
 
 interface Props {
@@ -31,7 +33,9 @@ const AnomalyDetectionModalConfirmation = ({
 
   return (
     <Dialog
-      labelTitle={t(LabelMenageEnvelope)}
+      labelCancel={t(labelCancel)}
+      labelConfirm={t(labelSave)}
+      labelTitle={t(labelMenageEnvelope)}
       open={open}
       onCancel={cancel}
       onClose={(): void => setOpen(false)}

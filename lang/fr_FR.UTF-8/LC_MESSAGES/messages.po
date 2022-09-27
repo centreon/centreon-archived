@@ -17047,5 +17047,8 @@ msgstr "Voulez-vous vraiment modifier la taille de l'enveloppe ? Le nouveau form
 msgid "Changes to the envelope size will be applied immediately"
 msgstr "Les modifications apportées à la taille de l'enveloppe seront appliquées immédiatement"
 
-msgid "Manage envelop size"
+msgid "Manage envelope size"
 msgstr "Gérer la taille de l'enveloppe"
+
+msgid "use default value"
+msgstr "utiliser la valeur par défaut"

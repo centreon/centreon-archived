@@ -15249,5 +15249,9 @@ msgstr "¿Está seguro de que desea cambiar el tamaño del sobre? El nuevo tama�
 msgid "Changes to the envelope size will be applied immediately"
 msgstr "Los cambios en el tamaño del sobre se aplicarán inmediatamente."
 
-msgid "Manage envelop size"
+msgid "Manage envelope size"
 msgstr "Administrar el tamaño del sobre"
+
+msgid "use default value"
+msgstr "usar el valor predeterminado"
+
