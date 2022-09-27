@@ -8,11 +8,7 @@ import {
   versionApi,
   logout,
 } from '../../commons';
-import {
-  initializeResourceData,
-  removeResourceData,
-  setUserTokenApiV1,
-} from '../../support/centreonData';
+import { initializeResourceData } from '../../support/centreonData';
 
 interface Criteria {
   name: string;
@@ -74,8 +70,9 @@ const deleteUserFilter = (): Cypress.Chainable => {
 };
 
 const tearDownResource = (): Cypress.Chainable => {
-  return setUserTokenApiV1()
-    .then(removeResourceData)
+  return cy
+    .setUserTokenApiV1()
+    .then(() => cy.removeResourceData())
     .then(applyConfigurationViaClapi)
     .then(logout);
 };

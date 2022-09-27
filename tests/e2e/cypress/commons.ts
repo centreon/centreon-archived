@@ -98,10 +98,7 @@ const checkThatConfigurationIsExported = (): void => {
     if (configurationExportedCheckStepCount < maxSteps) {
       cy.wait(stepWaitingTime);
 
-      return cy
-        .wrap(null)
-        .then(() => applyConfigurationViaClapi())
-        .then(() => checkThatConfigurationIsExported());
+      return cy.wrap(null).then(() => applyConfigurationViaClapi());
     }
 
     throw new Error(`No configuration export after ${pollingCheckTimeout}ms`);
