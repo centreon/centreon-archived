@@ -83,7 +83,7 @@ const checkThatConfigurationIsExported = (): void => {
   ).then(({ stdout }): Cypress.Chainable<null> | null => {
     configurationExportedCheckStepCount += 1;
 
-    const configurationExported = now - new Date(stdout).getTime() < 500;
+    const configurationExported = now - new Date(stdout).getTime() < 1000;
 
     cy.log('Configuration exported', configurationExported);
     cy.log(
@@ -98,7 +98,10 @@ const checkThatConfigurationIsExported = (): void => {
     if (configurationExportedCheckStepCount < maxSteps) {
       cy.wait(stepWaitingTime);
 
-      return cy.wrap(null).then(() => applyConfigurationViaClapi());
+      return cy
+        .wrap(null)
+        .then(() => applyConfigurationViaClapi())
+        .then(() => checkThatConfigurationIsExported());
     }
 
     throw new Error(`No configuration export after ${pollingCheckTimeout}ms`);
