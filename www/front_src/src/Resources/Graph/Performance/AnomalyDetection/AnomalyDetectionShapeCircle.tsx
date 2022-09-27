@@ -97,7 +97,7 @@ const AnomalyDetectionShapeCircle = ({
     };
   });
 
-  const circlesShown = circles.filter((item) => item.circle.isCircleShown);
+  const circlesShown = circles.filter(({ circle }) => circle.isCircleShown);
 
   setCountedRedCircles(circlesShown.length);
 
