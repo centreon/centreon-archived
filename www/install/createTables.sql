@@ -2422,6 +2422,7 @@ CREATE TABLE `security_provider_access_group_relation` (
   `claim_value` VARCHAR(255) NOT NULL,
   `access_group_id` int(11) NOT NULL,
   `provider_configuration_id` int(11) NOT NULL,
+  `priority` smallint NOT NULL,
   PRIMARY KEY (`claim_value`, `access_group_id`, `provider_configuration_id`),
   CONSTRAINT `security_provider_access_group_id`
     FOREIGN KEY (`access_group_id`)

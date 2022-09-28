@@ -64,15 +64,15 @@ class AclUpdater implements AclUpdaterInterface
 
             /** @var CustomConfiguration $customConfiguration */
             $customConfiguration = $provider->getConfiguration()->getCustomConfiguration();
-            if (!$customConfiguration->getACLConditions()->isEnabled()) {
-                return;
+
+            if ($customConfiguration->getACLConditions()->isEnabled()) {
+                /** @phpstan-ignore-next-line */
+                $userClaims = $this->provider->getUserClaims();
+                /** @phpstan-ignore-next-line */
+                $userAccessGroups = $this->provider->getUserAccessGroupsFromClaims($userClaims);
+                $this->updateAccessGroupsForUser($user, $userAccessGroups);
             }
 
-            /** @phpstan-ignore-next-line */
-            $userClaims = $this->provider->getUserClaims();
-            /** @phpstan-ignore-next-line */
-            $userAccessGroups = $this->provider->getUserAccessGroupsFromClaims($userClaims);
-            $this->updateAccessGroupsForUser($user, $userAccessGroups);
             if ($customConfiguration->getGroupsMapping()->isEnabled()) {
                 $this->updateContactGroupsForUser($user);
             }
