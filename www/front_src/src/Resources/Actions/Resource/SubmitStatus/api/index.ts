@@ -28,7 +28,7 @@ const submitResourceStatus =
           {
             ...pick(['parent'], resource),
             id: equals(resource.type, ResourceType.anomalydetection)
-              ? resource.serviceId
+              ? resource.service_id
               : resource.id,
             output,
 

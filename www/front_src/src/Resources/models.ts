@@ -54,7 +54,7 @@ export interface Resource extends NamedEntity {
   notification_enabled?: boolean;
   parent?: Parent;
   passive_checks?: boolean;
-  serviceId?: number;
+  service_id?: number;
   severity_level?: number;
   short_type: ResourceShortType;
   status?: Status;
