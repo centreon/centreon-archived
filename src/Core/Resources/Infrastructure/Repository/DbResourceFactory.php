@@ -48,7 +48,9 @@ class DbResourceFactory
 
         $parent = null;
 
-        if (self::resourceHasParent((int) $record['type'], $availableResourceTypes)) {
+        $resourceHasParent = self::resourceHasParent((int) $record['type'], $availableResourceTypes);
+
+        if ($resourceHasParent === true) {
             $parentStatus = (new ResourceStatus())
                 ->setCode((int) $record['parent_status'])
                 ->setName(self::getStatusAsString(HostResourceType::TYPE_NAME, (int) $record['parent_status']))
@@ -150,17 +152,8 @@ class DbResourceFactory
                 : (int) $record['id']
         );
 
-        $resource->setServiceId(
-            self::resourceHasParent((int) $record['type'], $availableResourceTypes) === true
-                ? (int) $record['id']
-                : null
-        );
-
-        $resource->setHostId(
-            self::resourceHasParent((int) $record['type'], $availableResourceTypes) === true
-                ? (int) $record['parent_id']
-                : (int) $record['id']
-        );
+        $resource->setServiceId($resourceHasParent === true ? (int) $record['id'] : null);
+        $resource->setHostId($resourceHasParent === true ? (int) $record['parent_id'] : (int) $record['id']);
 
         /** @var string|null */
         $actionUrl = $record['action_url'];
