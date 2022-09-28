@@ -1,7 +1,7 @@
 import { useTheme, Skeleton, SkeletonProps } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 
-const headerHeight = 3.8;
+import { headerHeight } from '../../../Header';
 
 const useStyles = makeStyles((theme) => ({
   nextContent: {

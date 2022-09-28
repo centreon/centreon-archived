@@ -9,6 +9,7 @@ import { CSSObject, styled, Theme } from '@mui/material/styles';
 import { ThemeMode } from '@centreon/ui-context';
 
 import { Page } from '../models';
+import { headerHeight } from '../../Header';
 
 import Logo from './Logo';
 import MiniLogo from './Logo/LogoMini';
@@ -42,11 +43,10 @@ const DrawerHeader = styled('div')(({ theme }) => ({
   '&:hover': {
     cursor: 'pointer',
   },
-  alignItems: 'flex-end',
-  alignSelf: 'center',
+  alignItems: 'center',
   display: 'flex',
-  height: theme.spacing(6.9),
-  paddingRight: theme.spacing(0.65),
+  height: theme.spacing(headerHeight),
+  justifyContent: 'center',
 }));
 
 const Drawer = styled(MuiDrawer, {
@@ -55,7 +55,7 @@ const Drawer = styled(MuiDrawer, {
   '& .MuiPaper-root': {
     backgroundColor: isDarkMode(theme)
       ? theme.palette.common.black
-      : theme.palette.primary.main,
+      : theme.palette.primary.dark,
     border: 'none',
   },
   boxSizing: 'border-box',

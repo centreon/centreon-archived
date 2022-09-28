@@ -79,16 +79,12 @@ const useStyles = makeStyles((theme) => ({
       right: theme.spacing(0.5),
     },
   },
-  label: {
-    color: theme.palette.common.white,
-  },
   link: {
     textDecoration: 'none',
   },
   pollarHeaderRight: {
     display: 'flex',
     flexDirection: 'column',
-    gap: theme.spacing(1),
     justifyContent: 'space-between',
     [theme.breakpoints.down(768)]: {
       flexDirection: 'row',
@@ -96,9 +92,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   pollerDetailRow: {
-    borderBottomStyle: 'solid',
-    borderWidth: '1px',
-    color: theme.palette.common.white,
+    borderBottom: '1px solid',
     display: 'flex',
     justifyContent: 'space-between',
   },
@@ -106,16 +100,16 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
   },
   subMenuToggle: {
-    backgroundColor: equals(theme.palette.mode, ThemeMode.dark)
-      ? theme.palette.background.default
-      : theme.palette.primary.main,
+    backgroundColor: theme.palette.background.default,
+    boxShadow: theme.shadows[3],
     boxSizing: 'border-box',
+    color: theme.palette.text.primary,
     display: 'none',
-    left: theme.spacing(0),
+    left: 0,
     padding: theme.spacing(1),
     position: 'absolute',
     textAlign: 'left',
-    top: '100%',
+    top: `calc(100% + ${theme.spacing(1.25)})`,
     width: theme.spacing(20),
     zIndex: theme.zIndex.mobileStepper,
   },
@@ -240,12 +234,12 @@ const PollerMenu = (): JSX.Element | null => {
               return (
                 <div className={classes.pollerDetailRow} key={key}>
                   <Typography
-                    className={clsx([classes.label, classes.pollerDetailTitle])}
+                    className={classes.pollerDetailTitle}
                     variant="body2"
                   >
                     <li>{t(pollerIssueKeyToMessage[key])}</li>
                   </Typography>
-                  <Typography className={classes.label} variant="body2">
+                  <Typography variant="body2">
                     {issue.total ? issue.total : ''}
                   </Typography>
                 </div>
@@ -253,12 +247,8 @@ const PollerMenu = (): JSX.Element | null => {
             })
           ) : (
             <div className={classes.pollerDetailRow}>
-              <Typography className={classes.label} variant="body2">
-                {t(labelAllPollers)}
-              </Typography>
-              <Typography className={classes.label} variant="body2">
-                {pollerCount as number}
-              </Typography>
+              <Typography variant="body2">{t(labelAllPollers)}</Typography>
+              <Typography variant="body2">{pollerCount as number}</Typography>
             </div>
           )}
           {allowPollerConfiguration && (

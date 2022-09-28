@@ -52,16 +52,12 @@ const useStatusStyles = makeStyles<Theme, StyleProps>((theme) => {
   return {
     avatar: {
       fontSize: theme.typography.body1.fontSize,
-      height: theme.spacing(1.875),
-      position: 'relative',
-      width: theme.spacing(1.875),
+      height: theme.spacing(2.5),
+      width: theme.spacing(2.5),
     },
     container: {
-      bottom: theme.spacing(1),
       display: 'flex',
       gap: theme.spacing(0.5),
-      position: 'relative',
-      right: theme.spacing(1.5),
       [theme.breakpoints.down(768)]: {
         bottom: 0,
         right: theme.spacing(1),
@@ -70,8 +66,8 @@ const useStatusStyles = makeStyles<Theme, StyleProps>((theme) => {
     database: ({ databaseSeverity }): CreateCSSProperties<StyleProps> =>
       getSeverityColor(databaseSeverity),
     icon: {
-      height: theme.spacing(1.5),
-      width: theme.spacing(1.5),
+      height: theme.spacing(1.75),
+      width: theme.spacing(1.75),
     },
     latency: ({ latencySeverity }): CreateCSSProperties<StyleProps> =>
       getSeverityColor(latencySeverity),

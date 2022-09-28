@@ -53,52 +53,52 @@ const useStyles = makeStyles((theme) => ({
   activated: ({ isRoot }): CreateCSSProperties => ({
     '& .MuiListItemText-root': {
       '& .MuiTypography-root': {
-        color:
-          isDarkMode(theme) && isRoot
-            ? theme.palette.primary.main
-            : theme.palette.common.white,
+        color: 'inherit',
       },
     },
     '& .MuiSvgIcon-root': {
-      color:
-        isDarkMode(theme) && isRoot
-          ? theme.palette.primary.main
-          : theme.palette.common.white,
+      color: isDarkMode(theme)
+        ? theme.palette.common.white
+        : theme.palette.primary.main,
     },
     '&:hover': {
       backgroundColor:
         isDarkMode(theme) && isRoot
-          ? theme.palette.common.black
-          : theme.palette.primary.dark,
-      color: theme.palette.common.white,
+          ? theme.palette.primary.main
+          : theme.palette.primary.light,
     },
-
     backgroundColor:
       isDarkMode(theme) && isRoot
-        ? theme.palette.common.black
-        : theme.palette.primary.dark,
+        ? theme.palette.primary.main
+        : theme.palette.primary.light,
+    color:
+      isDarkMode(theme) && isRoot
+        ? theme.palette.common.white
+        : theme.palette.primary.main,
   }),
-  containerIcon: {
+  arrowIcon: {
+    color: 'inherit',
+  },
+  iconButton: {
     alignItems: 'center',
     color: theme.palette.common.white,
-    minWidth: theme.spacing(5.75),
+    height: theme.spacing(rootHeightItem / 8),
   },
-  icon: {
-    color: theme.palette.common.white,
+  iconWrapper: {
+    alignItems: 'center',
+    color: 'inherit',
+    minWidth: theme.spacing(5.75),
   },
   label: {
     '& .MuiTypography-root': {
-      fontSize: 11,
+      color: 'inherit',
+      lineHeight: 1,
     },
+    color: theme.palette.text.primary,
     margin: theme.spacing(0),
   },
-  listButton: {
-    alignItems: 'center',
-    height: theme.spacing(rootHeightItem / 8),
-    marginBottom: 0.8,
-  },
   rootLabel: {
-    color: theme.palette.common.white,
+    color: 'inherit',
     margin: theme.spacing(0),
   },
 }));
@@ -144,7 +144,7 @@ const MenuItems = ({
     Component: (
       <ListItemButton
         disableTouchRipple
-        className={clsx(classes.listButton, {
+        className={clsx(classes.iconButton, {
           [classes.activated]: hover,
         })}
         component={ItemLink}
@@ -156,13 +156,13 @@ const MenuItems = ({
       >
         {isRoot ? (
           <>
-            <ListItemIcon className={classes.containerIcon}>
+            <ListItemIcon className={classes.iconWrapper}>
               {icon}
               {isDrawerOpen &&
                 Array.isArray(data?.children) &&
                 data.children.length > 0 && (
                   <ArrowIcon
-                    className={classes.icon}
+                    className={classes.arrowIcon}
                     isOpen={isOpen}
                     size="small"
                   />
