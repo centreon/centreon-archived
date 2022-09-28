@@ -32,6 +32,16 @@ Centreon\Domain\Monitoring\Resource:
             groups:
                 - 'resource_main'
                 - 'resource_parent'
+        serviceId:
+            type: int
+            groups:
+                - 'resource_main'
+                - 'resource_parent'
+        hostId:
+            type: int
+            groups:
+                - 'resource_main'
+                - 'resource_parent'
         type:
             type: string
             groups:
