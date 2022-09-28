@@ -6,6 +6,10 @@ interface ActionClapi {
   values: string;
 }
 
+interface DateBeforeLoginProps {
+  dateBeforeLogin: Date;
+}
+
 const stepWaitingTime = 250;
 const pollingCheckTimeout = 100000;
 const maxSteps = pollingCheckTimeout / stepWaitingTime;
@@ -71,8 +75,10 @@ const checkThatFixtureServicesExistInDatabase = (): void => {
 
 let configurationExportedCheckStepCount = 0;
 
-const checkThatConfigurationIsExported = (): void => {
-  const now = new Date().getTime();
+const checkThatConfigurationIsExported = ({
+  dateBeforeLogin,
+}: DateBeforeLoginProps): void => {
+  const now = dateBeforeLogin.getTime();
 
   cy.log('Checking that configuration is exported');
 
@@ -83,13 +89,7 @@ const checkThatConfigurationIsExported = (): void => {
   ).then(({ stdout }): Cypress.Chainable<null> | null => {
     configurationExportedCheckStepCount += 1;
 
-    const configurationExported = now - new Date(stdout).getTime() < 1000;
-
-    cy.log('Configuration exported', configurationExported);
-    cy.log(
-      'Configuration export check step count',
-      configurationExportedCheckStepCount,
-    );
+    const configurationExported = now < new Date(stdout).getTime();
 
     if (configurationExported) {
       return null;
@@ -101,7 +101,7 @@ const checkThatConfigurationIsExported = (): void => {
       return cy
         .wrap(null)
         .then(() => applyConfigurationViaClapi())
-        .then(() => checkThatConfigurationIsExported());
+        .then(() => checkThatConfigurationIsExported({ dateBeforeLogin }));
     }
 
     throw new Error(`No configuration export after ${pollingCheckTimeout}ms`);

@@ -50,10 +50,12 @@ const initializeResourceData = (): Cypress.Chainable => {
 };
 
 const insertResourceFixtures = (): Cypress.Chainable => {
+  const dateBeforeLogin = new Date();
+
   return loginAsAdminViaApiV2()
     .then(initializeResourceData)
     .then(applyConfigurationViaClapi)
-    .then(checkThatConfigurationIsExported)
+    .then(() => checkThatConfigurationIsExported({ dateBeforeLogin }))
     .then(submitResultsViaClapi)
     .then(checkThatFixtureServicesExistInDatabase)
     .then(() => cy.visit(`${Cypress.config().baseUrl}`))
