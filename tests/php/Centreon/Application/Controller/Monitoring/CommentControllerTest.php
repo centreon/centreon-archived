@@ -39,20 +39,17 @@ class CommentControllerTest extends TestCase
 {
     private const DECODING_ERROR_MESSAGE = 'Error when decoding your sent data';
 
-    protected $adminContact;
-    protected $hostResource;
-    protected $serviceResource;
-    protected $correctJsonComment;
-    protected $wrongJsonComment;
-    protected $hostCommentJson;
-    protected $serviceCommentJson;
-    protected $serviceResult;
-    protected $commentService;
-    protected $monitoringService;
-
-    protected $container;
-
-    protected $request;
+    private Contact $adminContact;
+    private Resource $hostResource;
+    private Resource $serviceResource;
+    private string $correctJsonComment;
+    private string $wrongJsonComment;
+    private string $hostCommentJson;
+    private string $serviceCommentJson;
+    private CommentService $commentService;
+    private MonitoringService $monitoringService;
+    private ContainerInterface $container;
+    private Request $request;
 
     protected function setUp(): void
     {

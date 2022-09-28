@@ -40,19 +40,16 @@ class SubmitResultControllerTest extends TestCase
 {
     private const DECODING_ERROR_MESSAGE = 'Error when decoding your sent data';
 
-    protected $adminContact;
-    protected $hostResource;
-    protected $serviceResource;
-    protected $correctJsonSubmitResult;
-    protected $wrongJsonSubmitResult;
-    protected $hostSubmitResultJson;
-    protected $serviceSubmitResultJson;
-    protected $serviceResult;
-    protected $submitResultService;
-
-    protected $container;
-
-    protected $request;
+    private Contact $adminContact;
+    private Resource $hostResource;
+    private Resource $serviceResource;
+    private string $correctJsonSubmitResult;
+    private string $wrongJsonSubmitResult;
+    private string $hostSubmitResultJson;
+    private string $serviceSubmitResultJson;
+    private SubmitResultService $submitResultService;
+    private ContainerInterface $container;
+    private Request $request;
 
     protected function setUp(): void
     {
