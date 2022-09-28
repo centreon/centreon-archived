@@ -11,11 +11,9 @@ before(() => {
 });
 
 When('I enter my credentials on the login page', () => {
-  cy.getLabelByTag({ label: 'Alias', tag: 'input' }).type('user1');
-  cy.getLabelByTag({ label: 'Password', tag: 'input' }).type(
-    'Centreon!2021User1',
-  );
-  cy.getLabelByTag({ label: 'Connect', tag: 'button' }).click();
+  cy.getByLabel({ label: 'Alias', tag: 'input' }).type('user1');
+  cy.getByLabel({ label: 'Password', tag: 'input' }).type('Centreon!2021User1');
+  cy.getByLabel({ label: 'Connect', tag: 'button' }).click();
 });
 
 Then('I am redirected to the default page', () => {
@@ -32,13 +30,13 @@ Given('I am logged in', () => {
 
 When('I click on the logout action', () => {
   cy.contains('Rows per page');
-  cy.getLabelByTag({ label: 'Profile', tag: '' }).click();
+  cy.getByLabel({ label: 'Profile', tag: '' }).click();
   cy.contains('Logout').click();
 });
 
 Then('I am logged out and redirected to the login page', () => {
   cy.url().should('include', '/login');
-  cy.getLabelByTag({ label: 'Alias', tag: 'input' }).should('exist');
+  cy.getByLabel({ label: 'Alias', tag: 'input' }).should('exist');
 });
 
 after(removeContact);

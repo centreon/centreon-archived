@@ -3,13 +3,13 @@ import 'cypress-wait-until';
 import { refreshButton } from '../integration/Resources-status/common';
 import { apiActionV1, executeActionViaClapi } from '../commons';
 
-interface GetLabelByTagProps {
+interface GetByLabelProps {
   label: string;
   tag?: string;
 }
 Cypress.Commands.add(
-  'getLabelByTag',
-  ({ tag = '', label }: GetLabelByTagProps): Cypress.Chainable => {
+  'getByLabel',
+  ({ tag = '', label }: GetByLabelProps): Cypress.Chainable => {
     return cy.get(`${tag}[aria-label="${label}"]`);
   },
 );
@@ -49,7 +49,7 @@ Cypress.Commands.add('setUserTokenApiV1', (): Cypress.Chainable => {
 declare global {
   namespace Cypress {
     interface Chainable {
-      getLabelByTag: ({ tag, label }) => Cypress.Chainable;
+      getByLabel: ({ tag, label }) => Cypress.Chainable;
       refreshListing: () => Cypress.Chainable;
       removeResourceData: () => Cypress.Chainable;
       setUserTokenApiV1: () => Cypress.Chainable;
