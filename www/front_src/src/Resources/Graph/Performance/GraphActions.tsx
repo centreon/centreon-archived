@@ -1,6 +1,6 @@
 import { MouseEvent, MutableRefObject, useState } from 'react';
 
-import { isNil } from 'ramda';
+import { isNil, equals } from 'ramda';
 import { useTranslation } from 'react-i18next';
 import { useAtomValue } from 'jotai';
 import { useNavigate } from 'react-router-dom';
@@ -9,6 +9,7 @@ import { Divider, Menu, MenuItem, useTheme } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 import SaveAsImageIcon from '@mui/icons-material/SaveAlt';
 import LaunchIcon from '@mui/icons-material/Launch';
+import WrenchIcon from '@mui/icons-material/Build';
 
 import {
   ContentWithCircularLoading,
@@ -20,13 +21,15 @@ import {
   labelExport,
   labelAsDisplayed,
   labelMediumSize,
-  labelSmallSize,
   labelPerformancePage,
+  labelSmallSize,
+  labelPerformanceGraphAD,
   labelCSV,
 } from '../../translatedLabels';
 import { CustomTimePeriod } from '../../Details/tabs/Graph/models';
 import { TimelineEvent } from '../../Details/tabs/Timeline/models';
 import memoizeComponent from '../../memoizedComponent';
+import { ResourceType } from '../../models';
 import { detailsAtom } from '../../Details/detailsAtoms';
 
 import exportToPng from './ExportableGraphWithTimeline/exportToPng';
@@ -37,24 +40,20 @@ import {
 
 interface Props {
   customTimePeriod?: CustomTimePeriod;
+  getIsModalOpened: (value: boolean) => void;
   performanceGraphRef: MutableRefObject<HTMLDivElement | null>;
   resourceName: string;
   resourceParentName?: string;
+  resourceType?: string;
   timeline?: Array<TimelineEvent>;
 }
 
 const useStyles = makeStyles((theme) => ({
   buttonGroup: {
+    alignItems: 'center',
     columnGap: theme.spacing(1),
     display: 'inline',
     flexDirection: 'row',
-  },
-  buttonLink: {
-    background: 'transparent',
-    border: 'none',
-  },
-  labelButton: {
-    fontWeight: 'bold',
   },
 }));
 
@@ -62,8 +61,10 @@ const GraphActions = ({
   customTimePeriod,
   resourceParentName,
   resourceName,
+  resourceType,
   timeline,
   performanceGraphRef,
+  getIsModalOpened,
 }: Props): JSX.Element => {
   const classes = useStyles();
   const theme = useTheme();
@@ -72,7 +73,10 @@ const GraphActions = ({
   const [exporting, setExporting] = useState<boolean>(false);
   const { format } = useLocaleDateTimeFormat();
   const navigate = useNavigate();
-
+  const isResourceAnomalyDetection = equals(
+    resourceType,
+    ResourceType.anomalydetection,
+  );
   const openSizeExportMenu = (event: MouseEvent<HTMLButtonElement>): void => {
     setMenuAnchor(event.currentTarget);
   };
@@ -127,6 +131,10 @@ const GraphActions = ({
     });
   };
 
+  const openModalAnomalyDetection = (): void => {
+    getIsModalOpened(true);
+  };
+
   return (
     <div className={classes.buttonGroup}>
       <ContentWithCircularLoading
@@ -138,37 +146,44 @@ const GraphActions = ({
           <IconButton
             disableTouchRipple
             ariaLabel={t(labelPerformancePage)}
-            className={classes.buttonLink}
             color="primary"
             data-testid={labelPerformancePage}
             size="small"
             title={t(labelPerformancePage)}
             onClick={goToPerformancePage}
           >
-            <LaunchIcon style={{ fontSize: 18 }} />
+            <LaunchIcon fontSize="inherit" />
           </IconButton>
           <IconButton
             disableTouchRipple
             ariaLabel={t(labelExport)}
             data-testid={labelExport}
             disabled={isNil(timeline)}
-            size="large"
+            size="small"
             title={t(labelExport)}
             onClick={openSizeExportMenu}
           >
-            <SaveAsImageIcon style={{ fontSize: 18 }} />
+            <SaveAsImageIcon fontSize="inherit" />
           </IconButton>
+          {isResourceAnomalyDetection && (
+            <IconButton
+              disableTouchRipple
+              ariaLabel={t(labelPerformanceGraphAD)}
+              data-testid={labelPerformanceGraphAD}
+              size="small"
+              title={t(labelPerformanceGraphAD)}
+              onClick={openModalAnomalyDetection}
+            >
+              <WrenchIcon fontSize="inherit" />
+            </IconButton>
+          )}
           <Menu
             keepMounted
             anchorEl={menuAnchor}
             open={Boolean(menuAnchor)}
             onClose={closeSizeExportMenu}
           >
-            <MenuItem
-              className={classes.labelButton}
-              data-testid={labelExport}
-              sx={{ cursor: 'auto' }}
-            >
+            <MenuItem data-testid={labelExport} sx={{ cursor: 'auto' }}>
               {t(labelExport)}
             </MenuItem>
             <Divider />

@@ -81,10 +81,28 @@ export const sendingFilterAtom = atom(false);
 export const filterWithParsedSearchDerivedAtom = atom((get) => ({
   ...get(currentFilterAtom),
   criterias: [
-    ...parse(get(searchAtom)),
+    ...parse({ search: get(searchAtom) }),
     find(propEq('name', 'sort'), get(currentFilterAtom).criterias) as Criteria,
   ],
 }));
+
+export const filterByInstalledModulesWithParsedSearchDerivedAtom = atom(
+  (get) =>
+    ({ criteriaName }): Filter => {
+      const result = {
+        ...get(currentFilterAtom),
+        criterias: [
+          ...parse({ criteriaName, search: get(searchAtom) }),
+          find(
+            propEq('name', 'sort'),
+            get(currentFilterAtom).criterias,
+          ) as Criteria,
+        ],
+      };
+
+      return result;
+    },
+);
 
 export const getFilterWithUpdatedCriteriaDerivedAtom = atom(
   (get) =>

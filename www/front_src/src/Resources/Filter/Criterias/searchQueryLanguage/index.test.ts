@@ -103,7 +103,7 @@ const parsedSearch = [
 
 describe('parse', () => {
   it('parses the given search string into a Search model', () => {
-    const result = parse(search);
+    const result = parse({ search });
 
     expect(result).toEqual(parsedSearch);
   });

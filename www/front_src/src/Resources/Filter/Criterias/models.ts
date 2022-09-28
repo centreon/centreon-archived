@@ -31,6 +31,7 @@ import {
   labelHostSeverity,
   labelHostSeverityLevel,
   labelServiceSeverityLevel,
+  labelAnomalyDetection,
 } from '../../translatedLabels';
 import {
   buildHostGroupsEndpoint,
@@ -264,7 +265,14 @@ const selectableCriterias: CriteriaById = {
   },
 };
 
+const authorizedFilterByModules = {
+  'centreon-anomaly-detection': {
+    'anomaly-detection': labelAnomalyDetection,
+  },
+};
+
 export {
+  authorizedFilterByModules,
   unhandledState,
   warningStatus,
   downStatus,

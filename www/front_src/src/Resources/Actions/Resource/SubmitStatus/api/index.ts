@@ -2,7 +2,7 @@ import axios, { AxiosResponse, CancelToken } from 'axios';
 import { pick } from 'ramda';
 
 import { resourcesEndpoint } from '../../../../api/endpoint';
-import { Resource } from '../../../../models';
+import { Resource, ResourceCategory } from '../../../../models';
 
 const submitStatusEndpoint = `${resourcesEndpoint}/submit`;
 
@@ -26,10 +26,11 @@ const submitResourceStatus =
       {
         resources: [
           {
-            ...pick(['type', 'id', 'parent'], resource),
+            ...pick(['id', 'parent'], resource),
             output,
             performance_data: performanceData,
             status: statusId,
+            type: ResourceCategory[resource.type],
           },
         ],
       },

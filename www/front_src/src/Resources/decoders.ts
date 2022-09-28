@@ -114,6 +114,7 @@ const commonDecoders = {
       JsonDecoder.isExactly('h'),
       JsonDecoder.isExactly('m'),
       JsonDecoder.isExactly('s'),
+      JsonDecoder.isExactly('a'),
     ],
     'ResourceShortType',
   ),
