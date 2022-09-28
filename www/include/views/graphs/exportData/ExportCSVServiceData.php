@@ -33,8 +33,9 @@
  *
  */
 
-function get_error($str){
-    echo $str."<br />";
+function get_error($str)
+{
+    echo $str . "<br />";
     exit(0);
 }
 
