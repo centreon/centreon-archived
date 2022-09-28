@@ -32,11 +32,6 @@ use Centreon\Infrastructure\Service\Exception\NotFoundException;
 class TaskService
 {
     /**
-     * @var KeyGeneratorInterface
-     */
-    private $gen;
-
-    /**
      * @var CentreonDBManagerService
      */
     private $dbManager;
@@ -101,15 +96,12 @@ class TaskService
 
     /**
      * TaskService constructor
-     * @param KeyGeneratorInterface $generator
      * @param CentreonDBManagerService $dbManager
      */
     public function __construct(
-        KeyGeneratorInterface $generator,
         CentreonDBManagerService $dbManager,
         CentcoreCommandService $cmdService
     ) {
-        $this->gen = $generator;
         $this->dbManager = $dbManager;
         $this->cmdService = $cmdService;
     }

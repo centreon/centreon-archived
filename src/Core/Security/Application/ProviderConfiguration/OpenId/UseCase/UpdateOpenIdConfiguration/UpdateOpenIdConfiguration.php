@@ -154,6 +154,11 @@ class UpdateOpenIdConfiguration
     {
         $this->info('Creating Authorization Rules');
         $accessGroupIds = $this->getAccessGroupIds($authorizationRulesFromRequest);
+
+        if (empty($accessGroupIds)) {
+            return [];
+        }
+
         $foundAccessGroups = $this->accessGroupRepository->findByIds($accessGroupIds);
 
         $this->logNonExistentAccessGroupsIds($accessGroupIds, $foundAccessGroups);
@@ -241,12 +246,10 @@ class UpdateOpenIdConfiguration
             }
             $this->info('Updating OpenID Configuration');
             $this->repository->updateConfiguration($configuration);
-            if (! empty($configuration->getAuthorizationRules())) {
-                $this->info('Removing existent Authorization Rules');
-                $this->repository->deleteAuthorizationRules();
-                $this->info('Inserting new Authorization Rules');
-                $this->repository->insertAuthorizationRules($configuration->getAuthorizationRules());
-            }
+            $this->info('Removing existent Authorization Rules');
+            $this->repository->deleteAuthorizationRules();
+            $this->info('Inserting new Authorization Rules');
+            $this->repository->insertAuthorizationRules($configuration->getAuthorizationRules());
             if (! $isAlreadyInTransaction) {
                 $this->dataStorageEngine->commitTransaction();
             }

@@ -274,7 +274,7 @@ try {
                     $tplStr .= "&nbsp;|&nbsp;";
                 }
                 $tplStr .= "<a href='" . $WikiURL .
-                    "/index.php?title=Service_:_" . $value1 . "' target='_blank'>" . $value1 . "</a>";
+                    "/index.php?title=Service-Template_:_" . $value1 . "' target='_blank'>" . $value1 . "</a>";
             }
         }
         $templateHostArray[$key] = $tplStr;
