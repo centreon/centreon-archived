@@ -133,7 +133,7 @@ class FindMetaService
                 $metaService,
                 $metaServiceConfiguration,
                 $downtimes,
-                $acknowledgement^
+                $acknowledgement
             )
         );
     }
