@@ -24,7 +24,7 @@ When('I select the acknowledge action on a problematic Resource', () => {
     .find('input[type="checkbox"]:first')
     .click();
 
-  cy.getByLabel({ label: actions.acknowledge, tag: '' }).last().click();
+  cy.getByLabel({ label: actions.acknowledge }).last().click();
 
   cy.get('textarea').should('be.visible');
   cy.get('button').contains('Acknowledge').click();
@@ -56,7 +56,7 @@ When('I select the downtime action on a problematic Resource', () => {
     .find('input[type="checkbox"]:first')
     .click();
 
-  cy.getByLabel({ label: actions.setDowntime, tag: '' }).last().click();
+  cy.getByLabel({ label: actions.setDowntime }).last().click();
 
   cy.get('textarea').should('be.visible');
   cy.get('button').contains(`${actions.setDowntime}`).click();

@@ -30,7 +30,7 @@ Given('I am logged in', () => {
 
 When('I click on the logout action', () => {
   cy.contains('Rows per page');
-  cy.getByLabel({ label: 'Profile', tag: '' }).click();
+  cy.getByLabel({ label: 'Profile' }).click();
   cy.contains('Logout').click();
 });
 

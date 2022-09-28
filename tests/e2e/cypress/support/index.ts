@@ -4,7 +4,7 @@ import './Commands';
 before(() => {
   return cy
     .exec(`npx wait-on ${Cypress.config().baseUrl}`)
-    .then(() => cy.setUserTokenApiV1());
+    .then(cy.setUserTokenApiV1);
 });
 
 Cypress.on('uncaught:exception', (err) => {

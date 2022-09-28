@@ -49,7 +49,7 @@ Cypress.Commands.add('setUserTokenApiV1', (): Cypress.Chainable => {
 declare global {
   namespace Cypress {
     interface Chainable {
-      getByLabel: ({ tag, label }) => Cypress.Chainable;
+      getByLabel: ({ tag, label }: GetByLabelProps) => Cypress.Chainable;
       refreshListing: () => Cypress.Chainable;
       removeResourceData: () => Cypress.Chainable;
       setUserTokenApiV1: () => Cypress.Chainable;
