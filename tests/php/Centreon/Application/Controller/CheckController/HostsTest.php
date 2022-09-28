@@ -23,13 +23,8 @@ declare(strict_types=1);
 
 namespace Tests\Centreon\Application\Controller\CheckController;
 
-use Centreon\Domain\Entity\EntityValidator;
-use FOS\RestBundle\View\View;
-use JMS\Serializer\Exception\ValidationFailedException;
 use Centreon\Domain\Check\Check;
-use Centreon\Application\Controller\CheckController;
 use Centreon\Domain\Contact\Contact;
-use Symfony\Component\Validator\ConstraintViolationListInterface;
 
 final class HostsTest extends ResourcesTestCase
 {

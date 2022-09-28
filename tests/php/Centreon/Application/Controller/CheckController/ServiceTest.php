@@ -26,6 +26,7 @@ namespace Tests\Centreon\Application\Controller\CheckController;
 use Centreon\Application\Controller\CheckController;
 use Centreon\Domain\Check\Check;
 use Centreon\Domain\Contact\Contact;
+use Centreon\Domain\Entity\EntityValidator;
 use FOS\RestBundle\View\View;
 use JMS\Serializer\Exception\ValidationFailedException;
 
@@ -77,7 +78,11 @@ final class ServiceTest extends ResourceTestCase
         ];
     }
 
-    private function executeMethodUnderTest(Check $check, $validator)
+    /**
+     * @param Check $check
+     * @param EntityValidator $validator
+     */
+    private function executeMethodUnderTest(Check $check, EntityValidator $validator): View
     {
         $contact = $this->mockContact(isAdmin: true, expectedRole: Contact::ROLE_HOST_CHECK, hasRole: true);
         $container = $this->mockContainer(

@@ -25,6 +25,7 @@ namespace Tests\Centreon\Application\Controller\CheckController;
 
 use DateTime;
 use DateInterval;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase as BaseTestCase;
 use FOS\RestBundle\View\View;
 use JMS\Serializer\DeserializationContext;
@@ -52,6 +53,9 @@ abstract class TestCase extends BaseTestCase
     protected const REQUIRED_ROLE_FOR_ADMIN = Contact::ROLE_HOST_CHECK;
     protected const DEFAULT_REQUEST_CONTENT = 'request content';
 
+    /**
+     * @return mixed[]
+     */
     abstract protected function getTestMethodArguments(): array;
 
     protected function assertAdminPrivilegeIsRequired(): void
@@ -119,6 +123,9 @@ abstract class TestCase extends BaseTestCase
         $this->assertNull($view->getData());
     }
 
+    /**
+     * @param Check[] $checks
+     */
     protected function assertResourceCheckValidatesChecks(EntityValidator $validator, array $checks): void
     {
         $this->expectException(ValidationFailedException::class);
@@ -182,7 +189,7 @@ abstract class TestCase extends BaseTestCase
                 $authorizationChecker,
                 $tokenStorage,
                 new class () {
-                    public function get()
+                    public function get(): string
                     {
                         return __DIR__ . '/../../../../../../';
                     }
@@ -202,11 +209,14 @@ abstract class TestCase extends BaseTestCase
         return $mock;
     }
 
-    protected function mockEntityValidator(): EntityValidator
+    protected function mockEntityValidator(): EntityValidator|MockObject
     {
         return $this->createMock(EntityValidator::class);
     }
 
+    /**
+     * @param Check[]|Check $deserializedObj
+     */
     protected function mockSerializer(array|Check $deserializedObj): SerializerInterface
     {
         $mock = $this->createMock(SerializerInterface::class);
@@ -224,7 +234,7 @@ abstract class TestCase extends BaseTestCase
         return $mock;
     }
 
-    protected function mockService(): CheckServiceInterface
+    protected function mockService(): CheckServiceInterface|MockObject
     {
         return $this->createMock(CheckServiceInterface::class);
     }
@@ -240,7 +250,7 @@ abstract class TestCase extends BaseTestCase
         return $mock;
     }
 
-    protected function mockTokenStorage($token): TokenStorageInterface
+    protected function mockTokenStorage(TokenInterface|null $token): TokenStorageInterface
     {
         $mock = $this->createMock(TokenStorageInterface::class);
 

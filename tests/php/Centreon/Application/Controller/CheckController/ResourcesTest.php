@@ -78,6 +78,9 @@ class ResourcesTest extends TestCase
         $sut->checkResources($this->mockRequest($requestContent), $this->mockSerializerWithResources([$hostResource]));
     }
 
+    /**
+     * @return iterable<string, mixed[]>
+     */
     public function wrongRequestContentDataProvider(): iterable
     {
         yield 'null' => [null];
@@ -113,6 +116,9 @@ class ResourcesTest extends TestCase
         $sut->checkResources($this->mockRequest($serializedRequestContent), $this->mockSerializerWithResources([$hostResource]));
     }
 
+    /**
+     * @return iterable<string, string[]>
+     */
     public function wrongRequestContentDataProviderForValidator(): iterable
     {
         yield 'additional properties aren\'t allowed' => [
@@ -181,6 +187,9 @@ class ResourcesTest extends TestCase
         $this->assertEquals($view, View::create());
     }
 
+    /**
+     * @return iterable<string, string[]>
+     */
     public function forbiddenRulesForResourceCheck(): iterable
     {
         yield 'could not check with acknowledgment role' => [Contact::ROLE_HOST_ACKNOWLEDGEMENT];
@@ -190,6 +199,7 @@ class ResourcesTest extends TestCase
     }
 
     /**
+     * @param ResourceEntity[] $resources
      * @test
      * @dataProvider allowedRulesForResourceCheck
      */
@@ -215,6 +225,9 @@ class ResourcesTest extends TestCase
         $this->assertEquals($view, View::create());
     }
 
+    /**
+     * @return iterable<string, mixed[]>
+     */
     public function allowedRulesForResourceCheck(): iterable
     {
         $hostResource = new ResourceEntity();
@@ -227,6 +240,9 @@ class ResourcesTest extends TestCase
         yield 'could check with service role' => [Contact::ROLE_SERVICE_CHECK, [$serviceResource]];
     }
 
+    /**
+     * @param ResourceEntity[] $resources
+     */
     protected function mockSerializerWithResources(array $resources): SerializerInterface
     {
         $mock = $this->createMock(SerializerInterface::class);

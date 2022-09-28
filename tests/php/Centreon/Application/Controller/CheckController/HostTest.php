@@ -23,6 +23,7 @@ declare(strict_types=1);
 
 namespace Tests\Centreon\Application\Controller\CheckController;
 
+use Centreon\Domain\Entity\EntityValidator;
 use FOS\RestBundle\View\View;
 use Centreon\Domain\Check\Check;
 use Centreon\Domain\Contact\Contact;
@@ -75,7 +76,7 @@ final class HostTest extends ResourceTestCase
         ];
     }
 
-    private function executeMethodUnderTest(Check $check, $validator)
+    private function executeMethodUnderTest(Check $check, EntityValidator $validator): View
     {
         $contact = $this->mockContact(isAdmin: true, expectedRole: Contact::ROLE_HOST_CHECK, hasRole: true);
         $container = $this->mockContainer(
