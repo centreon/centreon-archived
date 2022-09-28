@@ -59,12 +59,14 @@ const isAuthorizationRelationsFilled = (values: FormikValues): boolean =>
 
 export const inputs: Array<InputProps> = [
   {
+    dataTestId: 'oidc_enableOpenIDConnectAuthentication',
     fieldName: 'isActive',
     group: labelActivation,
     label: labelEnableOpenIDConnectAuthentication,
     type: InputType.Switch,
   },
   {
+    dataTestId: 'oidc_activationMode',
     fieldName: 'isForced',
     group: labelActivation,
     label: labelAuthenticationMode,
@@ -87,6 +89,7 @@ export const inputs: Array<InputProps> = [
       creatable: true,
       options: [],
     },
+    dataTestId: 'oidc_trustedClientAddresses',
     fieldName: 'trustedClientAddresses',
     group: labelClientAddresses,
     label: labelTrustedClientAddresses,
