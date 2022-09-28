@@ -942,7 +942,7 @@ class CentreonLDAP
         try {
             // checking if an override was manually set on this contact
             $stmtManualRequest = $this->db->prepare(
-                'SELECT `contact_name`, `contact_ldap_required_sync`, `contact_ldap_last_sync` 
+                'SELECT `contact_name`, `contact_ldap_required_sync`, `contact_ldap_last_sync`
                 FROM contact WHERE contact_id = :contactId'
             );
             $stmtManualRequest->bindValue(':contactId', $contactId, \PDO::PARAM_INT);
