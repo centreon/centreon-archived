@@ -1,11 +1,10 @@
 import { lazy, Suspense } from 'react';
 
-import { equals, not } from 'ramda';
+import { not } from 'ramda';
 
 import makeStyles from '@mui/styles/makeStyles';
 
 import { LoadingSkeleton } from '@centreon/ui';
-import { ThemeMode } from '@centreon/ui-context';
 
 import PageLoader from '../components/PageLoader';
 import { headerHeight } from '../Header';
@@ -40,9 +39,7 @@ const useStyles = makeStyles((theme) => ({
   },
   wrapper: {
     alignItems: 'stretch',
-    backgroundColor: equals(theme.palette.mode, ThemeMode.dark)
-      ? '#2c2c2c'
-      : theme.palette.background.paper,
+    backgroundColor: theme.palette.background.paper,
     display: 'flex',
     fontFamily: theme.typography.fontFamily,
     height: '100%',
