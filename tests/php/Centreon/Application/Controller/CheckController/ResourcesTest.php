@@ -113,7 +113,10 @@ class ResourcesTest extends TestCase
         $hostResource = new ResourceEntity();
         $hostResource->setType(ResourceEntity::TYPE_HOST);
 
-        $sut->checkResources($this->mockRequest($serializedRequestContent), $this->mockSerializerWithResources([$hostResource]));
+        $sut->checkResources(
+            $this->mockRequest($serializedRequestContent),
+            $this->mockSerializerWithResources([$hostResource])
+        );
     }
 
     /**
