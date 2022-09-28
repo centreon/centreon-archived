@@ -69,9 +69,6 @@ class FindOpenIdConfiguration
         $findOpenIdConfigurationResponse = new FindOpenIdConfigurationResponse();
         $findOpenIdConfigurationResponse->isActive = $provider->isActive();
         $findOpenIdConfigurationResponse->isForced = $provider->isForced();
-        $findOpenIdConfigurationResponse->trustedClientAddresses = $customConfiguration->getTrustedClientAddresses();
-        $findOpenIdConfigurationResponse->blacklistClientAddresses =
-            $customConfiguration->getBlacklistClientAddresses();
         $findOpenIdConfigurationResponse->baseUrl = $customConfiguration->getBaseUrl();
         $findOpenIdConfigurationResponse->authorizationEndpoint = $customConfiguration->getAuthorizationEndpoint();
         $findOpenIdConfigurationResponse->tokenEndpoint = $customConfiguration->getTokenEndpoint();
@@ -91,14 +88,20 @@ class FindOpenIdConfiguration
             : $findOpenIdConfigurationResponse::contactTemplateToArray($customConfiguration->getContactTemplate());
         $findOpenIdConfigurationResponse->emailBindAttribute = $customConfiguration->getEmailBindAttribute();
         $findOpenIdConfigurationResponse->userNameBindAttribute = $customConfiguration->getUserNameBindAttribute();
-        $findOpenIdConfigurationResponse->claimName = $customConfiguration->getClaimName();
         $findOpenIdConfigurationResponse->contactGroup = $customConfiguration->getContactGroup() === null
             ? null
             : $findOpenIdConfigurationResponse::contactGroupToArray($customConfiguration->getContactGroup());
-        $findOpenIdConfigurationResponse->authorizationRules =
-            empty($customConfiguration->getAuthorizationRules()) ? []
-            :
-            $findOpenIdConfigurationResponse::authorizationRulesToArray($customConfiguration->getAuthorizationRules());
+
+        $findOpenIdConfigurationResponse->aclConditions = FindOpenIdConfigurationResponse::aclConditionsToArray(
+            $customConfiguration->getACLConditions()
+        );
+        $findOpenIdConfigurationResponse->authenticationConditions =
+            $findOpenIdConfigurationResponse::authenticationConditionsToArray(
+                $customConfiguration->getAuthenticationConditions()
+            );
+        $findOpenIdConfigurationResponse->groupsMapping = $findOpenIdConfigurationResponse::groupsMappingToArray(
+            $customConfiguration->getGroupsMapping()
+        );
 
         return $findOpenIdConfigurationResponse;
     }

@@ -4649,8 +4649,6 @@ components:
       required:
         - is_active
         - is_forced
-        - trusted_client_addresses
-        - blacklist_client_addresses
         - base_url
         - authorization_endpoint
         - token_endpoint
@@ -4679,20 +4677,6 @@ components:
           type: boolean
           description: "Indicates whether the provider is forced or not"
           example: false
-        trusted_client_addresses:
-          type: array
-          description: "List of trusted client addresses"
-          items:
-            type: string
-            description: "IP address"
-            example: "127.0.0.1"
-        blacklist_client_addresses:
-          type: array
-          description: "List of blacklisted client addresses"
-          items:
-            type: string
-            description: "IP address"
-            example: "127.0.0.1"
         base_url:
           type: string
           description: "Base URL of the provider"
@@ -4783,68 +4767,210 @@ components:
           description: "Fullname bind attribute"
           example: "name"
           nullable: true
-        claim_name:
-          type: string
-          description: "Authorization claim"
-          example: "groups"
-          nullable: true
-    ReadAuthenticationOpenIdProvider:
-      $ref: '#/components/schemas/AuthenticationOpenIdProvider'
-      properties:
-        contact_group:
+        authentication_conditions:
           type: object
-          nullable: true
+          required:
+            - trusted_client_addresses
+            - blacklist_client_addresses
+            - is_enabled
+            - attribute_path
+            - endpoint
+            - authorized_values
           properties:
-            id:
-              type: integer
-              description: "Contact group ID"
-              example: 1
-            name:
+            trusted_client_addresses:
+              type: array
+              description: "List of trusted client addresses"
+              items:
+                type: string
+                description: "IP address"
+                example: "127.0.0.1"
+            blacklist_client_addresses:
+              type: array
+              description: "List of blacklisted client addresses"
+              items:
+                type: string
+                description: "IP address"
+                example: "127.0.0.1"
+            is_enabled:
+              type: boolean
+            attribute_path:
               type: string
-              description: "Contact group name"
-              example: "Default"
-        authorization_rules:
-          type: array
-          items:
-            type: object
-            properties:
-              claim_value:
+              example: info.items.prop1
+            endpoint:
+              type: object
+              properties:
+                type:
+                  type: string
+                  enum: [introspection_endpoint, user_information_endpoint, custom_endpoint]
+                custom_endpoint:
+                  type: string
+                  nullable: true
+            authorized_values:
+              type: array
+              items:
                 type: string
-                description: "Authorization claim value"
-                example: "scope"
-              access_group:
+        groups_mapping:
+          type: object
+          required:
+            - is_enabled
+            - attribute_path
+            - endpoint
+            - relations
+          properties:
+            is_enabled:
+              type: boolean
+            attribute_path:
+              type: string
+              nullable: false
+              example: info.items.groups
+            endpoint:
+              type: object
+              properties:
+                type:
+                  type: string
+                  enum: [introspection_endpoint, user_information_endpoint, custom_endpoint]
+                custom_endpoint:
+                  type: string
+                  nullable: true
+            relations:
+              type: array
+              items:
                 type: object
-                description: "Access group"
                 properties:
-                  id:
-                    type: integer
-                    description: "Access group ID"
-                    example: 1
-                  name:
+                  group_value:
                     type: string
-                    description: "Access group name"
-                    example: "Default"
+                    description: "Attribute group value"
+                    example: "group1"
+        roles_mapping:
+          type: object
+          required:
+            - is_enabled
+            - apply_only_first_role
+            - attribute_path
+            - endpoint
+            - relations
+          properties:
+            is_enabled:
+              type: boolean
+            apply_only_first_role:
+              type: boolean
+            attribute_path:
+              type: string
+              example: info.items.role
+            endpoint:
+              type: object
+              properties:
+                type:
+                  type: string
+                  enum: [introspection_endpoint, user_information_endpoint, custom_endpoint]
+                custom_endpoint:
+                  type: string
+                  nullable: true
+            relations:
+              type: array
+              items:
+                type: object
+                properties:
+                  claim_value:
+                    type: string
+                    description: "Authorization claim value"
+                    example: "scope"
+    ReadAuthenticationOpenIdProvider:
+      allOf:
+        - $ref: '#/components/schemas/AuthenticationOpenIdProvider'
+        - properties:
+            contact_group:
+              type: object
+              nullable: true
+              properties:
+                id:
+                  type: integer
+                  description: "Contact group ID"
+                  example: 1
+                name:
+                  type: string
+                  description: "Contact group name"
+                  example: "Default"
+            groups_mapping:
+              type: object
+              properties:
+                relations:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      group_value:
+                        type: string
+                        description: "Attribute group value"
+                        example: "group1"
+                      contact_group:
+                        type: object
+                        description: "Contact group"
+                        properties:
+                          id:
+                            type: integer
+                            description: "Contact group ID"
+                            example: 1
+                          name:
+                            type: string
+                            description: "Contact group name"
+                            example: "cg1"
+            roles_mapping:
+              type: object
+              properties:
+                relations:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      claim_value:
+                        type: string
+                        description: "Authorization claim value"
+                        example: "scope"
+                      access_group:
+                        type: object
+                        description: "Access group"
+                        properties:
+                          id:
+                            type: integer
+                            description: "Access group ID"
+                            example: 1
+                          name:
+                            type: string
+                            description: "Access group name"
+                            example: "Default"
     WriteAuthenticationOpenIdProvider:
-      $ref: '#/components/schemas/AuthenticationOpenIdProvider'
-      properties:
-        contact_group_id:
-          type: integer
-          description: "Contact group ID"
-          example: 1
-          nullable: true
-        authorization_rules:
-          type: array
-          items:
-            type: object
-            properties:
-              claim_value:
-                type: string
-                description: "Authorization claim value"
-                example: "scope"
-              access_group_id:
-                type: integer
-                description: "Access group ID"
-                example: 1
+      allOf:
+        - $ref: '#/components/schemas/AuthenticationOpenIdProvider'
+        - properties:
+            groups_mapping:
+              type: object
+              properties:
+                relations:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      group_value:
+                        type: string
+                        description: "Attribute group value"
+                        example: "group1"
+                      contact_group_id:
+                        type: integer
+                        description: "Contact group id"
+                        example: 1
+            roles_mapping:
+              type: object
+              properties:
+                relations:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      access_group_id:
+                        type: integer
+                        description: "Access group id"
+                        example: 1
     Comment.Resources:
       type: object
       required: [ resources ]

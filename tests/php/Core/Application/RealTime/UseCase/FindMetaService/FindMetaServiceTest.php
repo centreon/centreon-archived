@@ -181,7 +181,9 @@ it('should present a NotFoundResponse if metaservice requested is not found as n
 
 it('should find the metaservice as non-admin', function () {
     $metaServiceConfiguration = MetaServiceConfigurationTest::createMetaServiceModel();
-    $metaService = MetaServiceTest::createMetaServiceModel();
+    $metaService = (MetaServiceTest::createMetaServiceModel())
+        ->setIsInDowntime(true)
+        ->setIsAcknowledged(true);
 
     $downtimes[] = (new Downtime(1, 1, 10))
         ->setCancelled(false);

@@ -619,18 +619,17 @@ if (!is_null($host_id)) {
             $status .= "&value[" . $key . "]=" . $value;
         }
 
-        $optionsURL = "host_name=" . urlencode($host_name) . "&service_description=" . urlencode($svc_description);
-
-        $query = "SELECT id FROM `index_data`, `metrics` WHERE host_name = '" . $pearDBO->escape($host_name) .
-            "' AND service_description = '" . $pearDBO->escape($svc_description) . "' AND id = index_id LIMIT 1";
-        $DBRES = $pearDBO->query($query);
+        $query = "SELECT id FROM `index_data`, `metrics` WHERE host_name = :host_name" .
+            " AND service_description = :svc_description AND id = index_id LIMIT 1";
+        $statement = $pearDBO->prepare($query);
+        $statement->bindValue(':host_name', $host_name, \PDO::PARAM_STR);
+        $statement->bindValue(':svc_description', $svc_description, \PDO::PARAM_STR);
+        $statement->execute();
         $index_data = 0;
-        if ($DBRES->rowCount()) {
-            $row = $DBRES->fetchRow();
+        if ($statement->rowCount()) {
+            $row = $statement->fetchRow();
             $index_data = $row['id'];
         }
-        $optionsURL2 = "index=" . $index_data;
-
         /*
          * Assign translations
          */
@@ -873,9 +872,7 @@ if (!is_null($host_id)) {
         $tpl->assign("sv_ext_action_url_lang", _("Action URL"));
         $tpl->assign("sv_ext_action_url", CentreonUtils::escapeSecure($actionurl));
         $tpl->assign("sv_ext_icon_image_alt", getMyServiceExtendedInfoField($service_id, "esi_icon_image_alt"));
-        $tpl->assign("options", $optionsURL);
         $tpl->assign("index_data", $index_data);
-        $tpl->assign("options2", CentreonUtils::escapeSecure($optionsURL2));
 
         /**
          * Build the service detail URI that will be used in the

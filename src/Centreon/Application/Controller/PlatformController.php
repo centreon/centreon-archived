@@ -23,6 +23,7 @@ declare(strict_types=1);
 
 namespace Centreon\Application\Controller;
 
+use Centreon\Domain\VersionHelper;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -90,12 +91,16 @@ class PlatformController extends AbstractController
      */
     private function extractVersion(string $version): array
     {
-        list($major, $minor, $fix) = explode('.', $version, 3);
+        list($major, $minor, $fix) = explode(
+            '.',
+            VersionHelper::regularizeDepthVersion($version),
+            3
+        );
         return [
             'version' => $version,
             'major' => $major,
             'minor' => $minor,
-            'fix' => !empty($fix) ? $fix : '0'
+            'fix' => $fix
         ];
     }
 

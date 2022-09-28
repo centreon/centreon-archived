@@ -37,8 +37,8 @@ class DbWebSSOConfigurationFactory
     public static function createFromRecord(array $customConfiguration, array $configuration): WebSSOConfiguration
     {
         $webSSOConfiguration = new WebSSOConfiguration(
-            $configuration['is_active'] === '1',
-            $configuration['is_forced'] === '1',
+            $configuration['is_active'] === 1,
+            $configuration['is_forced'] === 1,
             $customConfiguration['trusted_client_addresses'],
             $customConfiguration['blacklist_client_addresses'],
             $customConfiguration['login_header_attribute'],
