@@ -276,8 +276,8 @@ class MonitoringResourceController extends AbstractController
     {
         $parameters = [
             'internalId' => $resource->getInternalId(),
-            'hostId' => $resource->getParent() !== null ? $resource->getParent()->getId() : $resource->getId(),
-            'serviceId' => $resource->getId(),
+            'hostId' => $resource->getHostId(),
+            'serviceId' => $resource->getServiceId(),
             'hasGraphData' => $resource->hasGraph()
         ];
 
@@ -375,7 +375,7 @@ class MonitoringResourceController extends AbstractController
                 'type' => ResourceEntity::TYPE_SERVICE,
                 'id' => $serviceId,
                 'tab' => $tab,
-                'uuid' => 's' . $serviceId
+                'uuid' => 'h' . $hostId . '-s' . $serviceId
             ]),
         ]);
     }

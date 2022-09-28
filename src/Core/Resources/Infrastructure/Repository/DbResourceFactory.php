@@ -150,6 +150,18 @@ class DbResourceFactory
                 : (int) $record['id']
         );
 
+        $resource->setServiceId(
+            self::resourceHasParent((int) $record['type'], $availableResourceTypes) === true
+                ? (int) $record['id']
+                : null
+        );
+
+        $resource->setHostId(
+            self::resourceHasParent((int) $record['type'], $availableResourceTypes) === true
+                ? (int) $record['parent_id']
+                : (int) $record['id']
+        );
+
         /** @var string|null */
         $actionUrl = $record['action_url'];
 
