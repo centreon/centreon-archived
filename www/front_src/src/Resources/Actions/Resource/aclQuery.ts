@@ -19,7 +19,7 @@ import { useAtomValue } from 'jotai/utils';
 
 import { aclAtom } from '@centreon/ui-context';
 
-import { Resource } from '../../models';
+import { Resource, ResourceCategory } from '../../models';
 import { labelServicesDenied, labelHostsDenied } from '../../translatedLabels';
 
 interface AclQuery {
@@ -41,7 +41,7 @@ const useAclQuery = (): AclQuery => {
   const { t } = useTranslation();
   const acl = useAtomValue(aclAtom);
 
-  const toType = ({ type }): string => type;
+  const toType = ({ type }): string => ResourceCategory[type];
 
   const can = ({
     resources,
