@@ -112,7 +112,7 @@ const AnomalyDetectionSlider = ({
 
   const [currentValue, setCurrentValue] = useState(sensitivity.current_value);
   const [isDefaultValue, setIsDefaultValue] = useState(false);
-  const [isResizing, setIsResizing] = useState(false);
+  const [isResizingConfirmed, setIsResizingConfirmed] = useState(false);
   const [openTooltip, setOpenTooltip] = useState(false);
   const { sendRequest } = useRequest({
     request: putData,
@@ -121,7 +121,7 @@ const AnomalyDetectionSlider = ({
     countedRedCirclesAtom,
   );
 
-  const msgTooltip = `${countedRedCircles} points out of envelope`;
+  const tooltipMessage = `${countedRedCircles} points out of envelope`;
 
   const step = 0.1;
   const sensitivityEndPoint = path<string>(
@@ -136,33 +136,33 @@ const AnomalyDetectionSlider = ({
     },
   ];
 
-  const enableUpdatingSlider = (): void => {
+  const isEnvelopeUpdateSliderEnabled = (): void => {
     setIsDefaultValue(false);
-    setIsResizing(true);
+    setIsResizingConfirmed(true);
   };
 
   const handleChangeSlider = (event): void => {
     setCurrentValue(event.target.value);
-    enableUpdatingSlider();
+    isEnvelopeUpdateSliderEnabled();
     setOpenTooltip(true);
   };
 
   const handleAdd = (): void => {
     const newCurrentValue = Number((step + currentValue).toFixed(1));
     setCurrentValue(newCurrentValue);
-    enableUpdatingSlider();
+    isEnvelopeUpdateSliderEnabled();
     setOpenTooltip(true);
   };
 
   const handleRemove = (): void => {
     const newCurrentValue = Number((currentValue - step).toFixed(1));
     setCurrentValue(newCurrentValue);
-    enableUpdatingSlider();
+    isEnvelopeUpdateSliderEnabled();
     setOpenTooltip(true);
   };
 
   const handleChangeCheckBox = (event): void => {
-    setIsResizing(true);
+    setIsResizingConfirmed(true);
     if (isDefaultValue) {
       return;
     }
@@ -185,12 +185,12 @@ const AnomalyDetectionSlider = ({
     });
 
     sendReloadGraphPerformance(true);
-    setIsResizing(false);
+    setIsResizingConfirmed(false);
   };
 
   const cancelResizingEnvelope = (): void => {
     setCurrentValue(sensitivity.current_value);
-    setIsResizing(false);
+    setIsResizingConfirmed(false);
     setIsDefaultValue(false);
     setCountedRedCircles(null);
   };
@@ -210,7 +210,10 @@ const AnomalyDetectionSlider = ({
   }, [isDefaultValue]);
 
   useEffect(() => {
-    if (equals(currentValue, sensitivity.default_value) && isResizing) {
+    if (
+      equals(currentValue, sensitivity.default_value) &&
+      isResizingConfirmed
+    ) {
       setIsDefaultValue(true);
     }
     if (isResizeEnvelope && setIsResizeEnvelope) {
@@ -220,10 +223,10 @@ const AnomalyDetectionSlider = ({
 
     sendFactors({
       currentFactor: sensitivity.current_value,
-      isResizing,
+      isResizing: isResizingConfirmed,
       simulatedFactor: currentValue,
     });
-  }, [currentValue, isResizing]);
+  }, [currentValue, isResizingConfirmed]);
 
   useEffect(() => {
     if (isEnvelopeResizingCanceled) {
@@ -243,7 +246,7 @@ const AnomalyDetectionSlider = ({
         <Typography variant="h6">{t(labelMenageEnvelope)}</Typography>
         <Tooltip
           open={countedRedCircles ? openTooltip : false}
-          title={msgTooltip}
+          title={tooltipMessage}
         >
           <div />
         </Tooltip>
@@ -301,7 +304,7 @@ const AnomalyDetectionSlider = ({
         </Button>
         <Button
           className={classes.confirmButton}
-          disabled={!isResizing}
+          disabled={!isResizingConfirmed}
           size="small"
           variant="contained"
           onClick={confirm}
