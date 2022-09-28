@@ -1,8 +1,8 @@
 import axios, { AxiosResponse, CancelToken } from 'axios';
-import { pick } from 'ramda';
+import { pick, equals } from 'ramda';
 
 import { resourcesEndpoint } from '../../../../api/endpoint';
-import { Resource, ResourceCategory } from '../../../../models';
+import { Resource, ResourceCategory, ResourceType } from '../../../../models';
 
 const submitStatusEndpoint = `${resourcesEndpoint}/submit`;
 
@@ -26,8 +26,12 @@ const submitResourceStatus =
       {
         resources: [
           {
-            ...pick(['id', 'parent'], resource),
+            ...pick(['parent'], resource),
+            id: equals(resource.type, ResourceType.anomalydetection)
+              ? resource.serviceId
+              : resource.id,
             output,
+
             performance_data: performanceData,
             status: statusId,
             type: ResourceCategory[resource.type],

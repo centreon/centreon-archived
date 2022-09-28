@@ -1,7 +1,7 @@
 import axios, { AxiosResponse, CancelToken } from 'axios';
-import { pick } from 'ramda';
+import { pick, equals } from 'ramda';
 
-import { Resource, ResourceCategory } from '../../models';
+import { Resource, ResourceCategory, ResourceType } from '../../models';
 import { AcknowledgeFormValues } from '../Resource/Acknowledge';
 import { DowntimeToPost } from '../Resource/Downtime';
 
@@ -24,8 +24,8 @@ const acknowledgeResources =
     resources,
     params,
   }: ResourcesWithAcknowledgeParams): Promise<Array<AxiosResponse>> => {
-    const payload = resources.map(({ type, id, parent }) => ({
-      id,
+    const payload = resources.map(({ type, id, parent, serviceId }) => ({
+      id: equals(type, ResourceType.anomalydetection) ? serviceId : id,
       parent,
       type: ResourceCategory[type],
     }));
@@ -58,8 +58,8 @@ const setDowntimeOnResources =
     resources,
     params,
   }: ResourcesWithDowntimeParams): Promise<AxiosResponse> => {
-    const payload = resources.map(({ type, id, parent }) => ({
-      id,
+    const payload = resources.map(({ type, id, parent, serviceId }) => ({
+      id: equals(type, ResourceType.anomalydetection) ? serviceId : id,
       parent,
       type: ResourceCategory[type],
     }));
@@ -90,8 +90,8 @@ const checkResources = ({
   resources,
   cancelToken,
 }: ResourcesWithRequestParams): Promise<AxiosResponse> => {
-  const payload = resources.map(({ type, id, parent }) => ({
-    id,
+  const payload = resources.map(({ type, id, parent, serviceId }) => ({
+    id: equals(type, ResourceType.anomalydetection) ? serviceId : id,
     parent,
     type: ResourceCategory[type],
   }));
@@ -125,9 +125,12 @@ const commentResources =
       commentEndpoint,
       {
         resources: resources.map((resource) => ({
-          ...pick(['id', 'parent'], resource),
+          ...pick(['parent'], resource),
           comment: parameters.comment,
           date: parameters.date,
+          id: equals(resource.type, ResourceType.anomalydetection)
+            ? resource?.serviceId
+            : resource.id,
           type: ResourceCategory[resource.type],
         })),
       },

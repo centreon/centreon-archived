@@ -6,7 +6,7 @@ import { useUpdateAtom } from 'jotai/utils';
 import { Button, Dialog, Paper } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 
-import { labelCancel } from '../../../translatedLabels';
+import { labelClose } from '../../../translatedLabels';
 import TimePeriodButtonGroup from '../TimePeriods';
 
 import AnomalyDetectionExclusionPeriod from './AnomalyDetectionExclusionPeriod';
@@ -129,7 +129,7 @@ const EditAnomalyDetectionDataDialog = ({
           setOpen={setIsModalConfirmationOpened}
         />
         <div className={classes.close}>
-          <Button onClick={handleClose}>{t(labelCancel)}</Button>
+          <Button onClick={handleClose}>{t(labelClose)}</Button>
         </div>
       </div>
     </Dialog>
