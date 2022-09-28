@@ -1133,13 +1133,15 @@ class CentreonGraph
         } else {
             $this->templateId = htmlentities($_GET["template_id"], ENT_QUOTES, "UTF-8");
         }
-        $DBRESULT = $this->DB->query(
+        $statement = $this->DB->prepare(
             "SELECT *
                 FROM giv_graphs_template
-                WHERE graph_id = '" . $this->templateId . "' LIMIT 1"
+                WHERE graph_id = :graph_id LIMIT 1"
         );
-        $this->templateInformations = $DBRESULT->fetch();
-        $DBRESULT->closeCursor();
+        $statement->bindValue(':graph_id', (int) $this->templateId, \PDO::PARAM_INT);
+        $statement->execute();
+        $this->templateInformations = $statement->fetch(\PDO::FETCH_ASSOC);
+        $statement->closeCursor();
     }
 
     /**
