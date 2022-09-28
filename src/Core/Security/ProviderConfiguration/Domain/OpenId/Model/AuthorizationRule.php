@@ -50,4 +50,15 @@ class AuthorizationRule
     {
         return $this->accessGroup;
     }
+
+    /**
+     * @return array<string,string|int>
+     */
+    public function toArray(): array
+    {
+        return [
+            'claim_value' => $this->claimValue,
+            'access_group_id' => $this->accessGroup->getId()
+        ];
+    }
 }

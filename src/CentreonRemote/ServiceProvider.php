@@ -23,7 +23,6 @@ namespace CentreonRemote;
 
 use Pimple\Container;
 use Pimple\Psr11\ServiceLocator;
-use Centreon\Domain\Service\AppKeyGeneratorService;
 use Centreon\Infrastructure\Provider\AutoloadServiceProviderInterface;
 use Centreon\Infrastructure\Service\CentcoreCommandService;
 use CentreonRemote\Application\Webservice;
@@ -85,7 +84,6 @@ class ServiceProvider implements AutoloadServiceProviderInterface
 
         $pimple[static::CENTREON_TASKSERVICE] = function (Container $pimple): TaskService {
             $service = new TaskService(
-                new AppKeyGeneratorService(),
                 $pimple[\Centreon\ServiceProvider::CENTREON_DB_MANAGER],
                 new CentcoreCommandService()
             );

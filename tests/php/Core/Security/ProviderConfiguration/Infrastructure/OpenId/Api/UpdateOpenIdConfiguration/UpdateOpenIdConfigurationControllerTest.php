@@ -24,6 +24,8 @@ declare(strict_types=1);
 namespace Tests\Core\Security\ProviderConfiguration\Infrastructure\OpenId\Api\UpdateOpenIdConfiguration;
 
 use Centreon\Domain\Contact\Contact;
+use Core\Security\ProviderConfiguration\Domain\OpenId\Model\ACLConditions;
+use Core\Security\ProviderConfiguration\Domain\OpenId\Model\Endpoint;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
@@ -104,8 +106,6 @@ it('should execute the usecase properly', function () {
         $validPayload = json_encode([
             'is_active' => true,
             'is_forced' => true,
-            'trusted_client_addresses' => [],
-            'blacklist_client_addresses' => [],
             'base_url' => 'http://127.0.0.1/auth/openid-connect',
             'authorization_endpoint' => '/authorization',
             'token_endpoint' => '/token',
@@ -122,9 +122,36 @@ it('should execute the usecase properly', function () {
             'contact_template' => null,
             'email_bind_attribute' => null,
             'fullname_bind_attribute' => null,
-            'contact_group_id' => 1,
-            'claim_name' => "groups",
-            'authorization_rules' => []
+            'roles_mapping' => [
+                'is_enabled' => false,
+                'apply_only_first_role' => false,
+                'attribute_path' => '',
+                'endpoint' => [
+                    'type' => 'introspection_endpoint',
+                    'custom_endpoint' => ''
+                ],
+                'relations' => []
+            ],
+            "authentication_conditions" => [
+                "is_enabled" => false,
+                "attribute_path" => "",
+                "endpoint" => [
+                    "type" => "introspection_endpoint",
+                    "custom_endpoint" => null
+                ],
+                "authorized_values" => [],
+                "trusted_client_addresses" => [],
+                "blacklist_client_addresses" => []
+            ],
+            "groups_mapping" => [
+                "is_enabled" => false,
+                "attribute_path" => "",
+                "endpoint" => [
+                    "type" => "introspection_endpoint",
+                    "custom_endpoint" => null
+                ],
+                "relations" => []
+            ]
         ]);
 
         $this->request

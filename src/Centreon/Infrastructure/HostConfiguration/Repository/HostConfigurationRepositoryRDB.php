@@ -779,7 +779,7 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
             $statement->bindValue(':ip_address', $host->getIpAddress(), \PDO::PARAM_STR);
             $statement->bindValue(':comment', $host->getComment(), \PDO::PARAM_STR);
             $statement->bindValue(':geo_coords', $host->getGeoCoords(), \PDO::PARAM_STR);
-            $statement->bindValue(':is_activate', $host->isActivated(), \PDO::PARAM_STR);
+            $statement->bindValue(':is_activate', $host->isActivated() ? '1' : '0', \PDO::PARAM_STR);
             $statement->bindValue(':host_register', '1', \PDO::PARAM_STR);
             $statement->bindValue(':active_check_status', Host::OPTION_DEFAULT, \PDO::PARAM_STR);
             $statement->bindValue(':passive_check_status', Host::OPTION_DEFAULT, \PDO::PARAM_STR);

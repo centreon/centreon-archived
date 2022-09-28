@@ -23,15 +23,14 @@ declare(strict_types=1);
 
 namespace Core\Security\Authentication\Infrastructure\Provider;
 
-use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Domain\Log\LoggerTrait;
+use Core\Security\AccessGroup\Domain\Model\AccessGroup;
+use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Domain\Repository\Interfaces\DataStorageEngineInterface;
 use Core\Contact\Application\Repository\WriteContactGroupRepositoryInterface;
-use Core\Security\AccessGroup\Application\Repository\WriteAccessGroupRepositoryInterface;
-use Core\Security\AccessGroup\Domain\Model\AccessGroup;
-use Core\Security\Authentication\Application\Provider\ProviderAuthenticationInterface;
-use Core\Security\Authentication\Domain\Provider\OpenIdProvider;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Model\CustomConfiguration;
+use Core\Security\Authentication\Application\Provider\ProviderAuthenticationInterface;
+use Core\Security\AccessGroup\Application\Repository\WriteAccessGroupRepositoryInterface;
 
 class AclUpdater implements AclUpdaterInterface
 {
@@ -62,12 +61,21 @@ class AclUpdater implements AclUpdaterInterface
     {
         $this->provider = $provider;
         if ($provider->isUpdateACLSupported()) {
+
+            /** @var CustomConfiguration $customConfiguration */
+            $customConfiguration = $provider->getConfiguration()->getCustomConfiguration();
+            if (!$customConfiguration->getACLConditions()->isEnabled()) {
+                return;
+            }
+
             /** @phpstan-ignore-next-line */
             $userClaims = $this->provider->getUserClaims();
             /** @phpstan-ignore-next-line */
             $userAccessGroups = $this->provider->getUserAccessGroupsFromClaims($userClaims);
             $this->updateAccessGroupsForUser($user, $userAccessGroups);
-            $this->updateContactGroupsForUser($user);
+            if ($customConfiguration->getGroupsMapping()->isEnabled()) {
+                $this->updateContactGroupsForUser($user);
+            }
         }
     }
 
@@ -106,16 +114,22 @@ class AclUpdater implements AclUpdaterInterface
     private function updateContactGroupsForUser(ContactInterface $user): void
     {
         /** @phpstan-ignore-next-line */
-        $contactGroup = $this->provider->getConfiguration()->getCustomConfiguration()->getContactGroup();
+        $contactGroups = $this->provider->getUserContactGroups();
 
         try {
-            $this->info('Updating User Contact Group', [
+            $this->info('Updating user contact group', [
                 "user_id" => $user->getId(),
-                "contact_group_id" => $contactGroup->getId(),
+                "contact_group_id" => [
+                    array_map(function ($contactGroup) {
+                        return $contactGroup->getId();
+                    }, $contactGroups)
+                ],
             ]);
             $this->dataStorageEngine->startTransaction();
             $this->contactGroupRepository->deleteContactGroupsForUser($user);
-            $this->contactGroupRepository->insertContactGroupForUser($user, $contactGroup);
+            foreach ($contactGroups as $contactGroup) {
+                $this->contactGroupRepository->insertContactGroupForUser($user, $contactGroup);
+            }
             $this->dataStorageEngine->commitTransaction();
         } catch (\Exception $ex) {
             $this->dataStorageEngine->rollbackTransaction();

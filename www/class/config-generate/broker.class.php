@@ -220,7 +220,8 @@ class Broker extends AbstractObjectJSON
                 }
 
                 $subValuesToCastInArray = [];
-                $rrdCacheOption = 'disable';
+                $rrdCacheOption = null;
+                $rrdCached = null;
                 foreach ($value as $subvalue) {
                     if (
                         !isset($subvalue['fieldIndex'])
@@ -239,21 +240,20 @@ class Broker extends AbstractObjectJSON
                         } elseif ($subvalue['config_key'] === 'category') {
                             $object[$key][$subvalue['config_group_id']]['filters'][$subvalue['config_key']][] =
                                 $subvalue['config_value'];
-                        } else {
+                        } elseif (in_array($subvalue['config_key'], ['rrd_cached_option', 'rrd_cached'])) {
                             if ($subvalue['config_key'] === 'rrd_cached_option') {
                                 $rrdCacheOption = $subvalue['config_value'];
-                                continue;
+                            } elseif ($subvalue['config_key'] === 'rrd_cached') {
+                                $rrdCached = $subvalue['config_value'];
                             }
-
-                            if ($subvalue['config_key'] === 'rrd_cached') {
+                            if ($rrdCached && $rrdCacheOption) {
                                 if ($rrdCacheOption === 'tcp') {
-                                    $object[$key][$subvalue['config_group_id']]['port'] = $subvalue['config_value'];
+                                    $object[$key][$subvalue['config_group_id']]['port'] = $rrdCached;
                                 } elseif ($rrdCacheOption === 'unix') {
-                                    $object[$key][$subvalue['config_group_id']]['path'] = $subvalue['config_value'];
+                                    $object[$key][$subvalue['config_group_id']]['path'] = $rrdCached;
                                 }
-                                continue;
                             }
-
+                        } else {
                             $object[$key][$subvalue['config_group_id']][$subvalue['config_key']] =
                                 $subvalue['config_value'];
 
