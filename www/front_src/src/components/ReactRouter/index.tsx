@@ -18,8 +18,7 @@ import { Remote } from '../../federatedModules/Load';
 const NotAllowedPage = lazy(() => import('../../FallbackPages/NotAllowedPage'));
 const NotFoundPage = lazy(() => import('../../FallbackPages/NotFoundPage'));
 
-const PageContainer = styled('div')(({ theme }) => ({
-  background: theme.palette.background.paper,
+const PageContainer = styled('div')(() => ({
   display: 'grid',
   gridTemplateRows: 'auto 1fr',
   height: '100%',

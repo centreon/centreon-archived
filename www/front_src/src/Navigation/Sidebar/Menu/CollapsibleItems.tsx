@@ -51,41 +51,25 @@ interface StyleProps {
 const collapseWidth = 24;
 
 const useStyles = makeStyles((theme) => ({
-  activated: {
-    '& .MuiListItemText-root': {
-      '& .MuiTypography-root': {
-        color: theme.palette.background.paper,
-      },
-    },
-    '& .MuiSvgIcon-root': {
-      color: theme.palette.background.paper,
-    },
-    '&:hover': {
-      backgroundColor: theme.palette.primary.main,
-    },
-
-    backgroundColor: theme.palette.primary.main,
-  },
   label: {
     fontWeight: 'bold',
   },
   root: {
     '& .MuiListItemIcon-root': {
+      color: theme.palette.text.primary,
       minWidth: theme.spacing(2.25),
       padding: theme.spacing(0, 0.25, 0, 0.1),
-    },
-    '& .MuiTypography-root': {
-      color: theme.palette.text.primary,
-      fontSize: theme.typography.caption,
     },
     boxShadow: theme.shadows[3],
     outline: 'none',
   },
   subHeader: {
+    backgroundColor: 'rgba(0,0,0,.05)',
     color: theme.palette.text.secondary,
     fontSize: theme.typography.caption.fontSize,
     fontWeight: 'bold',
-    lineHeight: theme.spacing(2.9),
+    lineHeight: 1,
+    padding: theme.spacing(1),
     textAlign: 'center',
   },
   toggled: {
@@ -93,7 +77,7 @@ const useStyles = makeStyles((theme) => ({
       width: theme.spacing(1),
     },
     '&::-webkit-scrollbar-corner': {
-      backgroundColor: theme.palette.background.paper,
+      backgroundColor: theme.palette.background.default,
     },
     '&::-webkit-scrollbar-thumb': {
       backgroundColor: theme.palette.action.disabled,
@@ -101,7 +85,7 @@ const useStyles = makeStyles((theme) => ({
     '&::-webkit-scrollbar-track': {
       border: `solid ${theme.palette.action.hover} 0.5px`,
     },
-    backgroundColor: theme.palette.background.paper,
+    backgroundColor: theme.palette.background.default,
     left: ({ currentWidth }: StyleProps): string => theme.spacing(currentWidth),
     maxHeight: ({ collapseScrollMaxHeight }: StyleProps): string =>
       collapseScrollMaxHeight
