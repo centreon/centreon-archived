@@ -122,7 +122,9 @@ const AnomalyDetectionSlider = ({
     countedRedCirclesAtom,
   );
 
-  const tooltipMessage = `${countedRedCircles} ${labelPointsOutsideOfEnvelopeCount}`;
+  const tooltipMessage = `${countedRedCircles} ${t(
+    labelPointsOutsideOfEnvelopeCount,
+  )}`;
 
   const step = 0.1;
   const sensitivityEndPoint = path<string>(
