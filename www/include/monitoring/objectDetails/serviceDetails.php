@@ -875,10 +875,6 @@ if (!is_null($host_id)) {
         $tpl->assign("sv_ext_action_url", CentreonUtils::escapeSecure($actionurl));
         $tpl->assign("sv_ext_icon_image_alt", getMyServiceExtendedInfoField($service_id, "esi_icon_image_alt"));
         $tpl->assign("index_data", $index_data);
-<<<<<<< HEAD
-=======
-        $tpl->assign("options2", CentreonUtils::escapeSecure($optionsURL2));
->>>>>>> 7a375650b1 (fix(details): remove dead code (#11672) (#11685))
 
         /**
          * Build the service detail URI that will be used in the
