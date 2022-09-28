@@ -22,6 +22,7 @@ import {
   labelCancel,
   labelSave,
   labelUseDefaultValue,
+  labelPointsOutsideOfEnvelopeCount,
 } from '../../../translatedLabels';
 import { ResourceDetails, Sensitivity } from '../../../Details/models';
 
@@ -121,7 +122,7 @@ const AnomalyDetectionSlider = ({
     countedRedCirclesAtom,
   );
 
-  const tooltipMessage = `${countedRedCircles} points out of envelope`;
+  const tooltipMessage = `${countedRedCircles} ${labelPointsOutsideOfEnvelopeCount}`;
 
   const step = 0.1;
   const sensitivityEndPoint = path<string>(
