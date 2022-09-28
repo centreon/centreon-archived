@@ -28,7 +28,7 @@ use Core\Security\AccessGroup\Domain\Model\AccessGroup;
 class DbAccessGroupFactory
 {
     /**
-     * @param array<string, string> $record
+     * @param array<string, string|int> $record
      * @return AccessGroup
      */
     public static function createFromRecord(array $record): AccessGroup
