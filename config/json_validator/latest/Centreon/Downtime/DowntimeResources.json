@@ -1,10 +1,41 @@
 {
     "$schema": "http://json-schema.org/draft-04/schema#",
-    "title": "Schedule checks on resources",
+    "title": "Downtime on resources",
     "type": "object",
-    "required": ["resources"],
+    "required": ["downtime", "resources"],
     "additionalProperties": false,
     "properties": {
+        "downtime": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["start_time", "end_time", "is_fixed", "duration", "comment"],
+            "properties": {
+                "start_time": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "end_time" : {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "is_fixed": {
+                    "type": "boolean"
+                },
+                "duration": {
+                    "type": "integer"
+                },
+                "author_id": {
+                    "type": "integer"
+                },
+                "comment": {
+                    "type": "string"
+                },
+                "with_services": {
+                    "type": "boolean",
+                    "default": false
+                }
+            }
+        },
         "resources": {
             "type": "array",
             "items": {
@@ -12,8 +43,7 @@
                 "required": [
                     "type",
                     "id",
-                    "parent",
-                    "status"
+                    "parent"
                 ],
                 "additionalProperties": false,
                 "properties": {
@@ -35,22 +65,6 @@
                                 "type": "integer"
                             }
                         }
-                    },
-                    "status": {
-                        "type": "integer",
-                        "enum": [0, 1, 2, 3]
-                    },
-                    "output": {
-                        "type": [
-                            "string",
-                            "null"
-                        ]
-                    },
-                    "performance_data": {
-                        "type": [
-                            "string",
-                            "null"
-                        ]
                     }
                 }
             }

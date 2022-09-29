@@ -52,7 +52,7 @@ export interface Resource extends NamedEntity {
   last_check?: string;
   links?: ResourceLinks;
   notification_enabled?: boolean;
-  parent?: Parent;
+  parent?: Parent | null;
   passive_checks?: boolean;
   service_id?: number;
   severity_level?: number;

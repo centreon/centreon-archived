@@ -1,5 +1,5 @@
 import axios, { AxiosResponse, CancelToken } from 'axios';
-import { pick, equals } from 'ramda';
+import { equals } from 'ramda';
 
 import { Resource, ResourceCategory, ResourceType } from '../../models';
 import { AcknowledgeFormValues } from '../Resource/Acknowledge';
@@ -26,7 +26,7 @@ const acknowledgeResources =
   }: ResourcesWithAcknowledgeParams): Promise<Array<AxiosResponse>> => {
     const payload = resources.map(({ type, id, parent, service_id }) => ({
       id: equals(type, ResourceType.anomalydetection) ? service_id : id,
-      parent,
+      parent: parent ? { id: parent?.id } : null,
       type: ResourceCategory[type],
     }));
 
@@ -35,7 +35,6 @@ const acknowledgeResources =
       {
         acknowledgement: {
           comment: params.comment,
-          force_active_checks: params.forceActiveChecks,
           is_notify_contacts: params.notify,
           is_persistent_comment: params.persistent,
           is_sticky: params.isSticky,
@@ -60,7 +59,7 @@ const setDowntimeOnResources =
   }: ResourcesWithDowntimeParams): Promise<AxiosResponse> => {
     const payload = resources.map(({ type, id, parent, service_id }) => ({
       id: equals(type, ResourceType.anomalydetection) ? service_id : id,
-      parent,
+      parent: parent ? { id: parent?.id } : null,
       type: ResourceCategory[type],
     }));
 
@@ -92,7 +91,7 @@ const checkResources = ({
 }: ResourcesWithRequestParams): Promise<AxiosResponse> => {
   const payload = resources.map(({ type, id, parent, service_id }) => ({
     id: equals(type, ResourceType.anomalydetection) ? service_id : id,
-    parent,
+    parent: parent ? { id: parent?.id } : null,
     type: ResourceCategory[type],
   }));
 
@@ -125,12 +124,12 @@ const commentResources =
       commentEndpoint,
       {
         resources: resources.map((resource) => ({
-          ...pick(['parent'], resource),
           comment: parameters.comment,
           date: parameters.date,
           id: equals(resource.type, ResourceType.anomalydetection)
             ? resource?.service_id
             : resource.id,
+          parent: resource?.parent ? { id: resource?.parent?.id } : null,
           type: ResourceCategory[resource.type],
         })),
       },
