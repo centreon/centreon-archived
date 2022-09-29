@@ -3,7 +3,8 @@ $help = array();
 
 $help["hostgroup_name"] = dgettext(
     "help",
-    "Name of the host group. It must be unique and cannot contain white spaces, or special characters like ~!$%^&*\"|'<>?,()=."
+    "Name of the host group. It must be unique and cannot contain white spaces,"
+    . " or special characters like ~!$%^&*\"|'<>?,()=."
 );
 $help["alias"] = dgettext(
     "help",
