@@ -17092,3 +17092,18 @@ msgstr "Coordonnées géographiques"
 
 msgid "Members"
 msgstr "Membres"
+
+msgid "Monitoring settings"
+msgstr "Paramètres de supervision"
+
+msgid "Classification"
+msgstr "Classification"
+
+msgid "Hosts (simplified)"
+msgstr "Hôtes (simplifiés)"
+
+msgid "Templates (simplified)"
+msgstr "Modèles (simplifiés)"
+
+msgid "Host Groups (simplified)"
+msgstr "Groupes d'hôtes (simplifiés)"
