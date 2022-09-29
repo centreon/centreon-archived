@@ -73,13 +73,13 @@ $tpl = initSmartyTpl($modules_path, $tpl);
 
 try {
     $postHostTemplate = !empty($_POST['searchHostTemplate'])
-        ? filter_input(INPUT_POST, 'searchHostTemplate', FILTER_SANITIZE_STRING)
+        ? \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['searchHostTemplate'])
         : '';
     $searchHasNoProcedure = !empty($_POST['searchHasNoProcedure'])
-        ? filter_input(INPUT_POST, 'searchHasNoProcedure', FILTER_SANITIZE_STRING)
+        ? \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['searchHasNoProcedure'])
         : '';
     $templatesHasNoProcedure = !empty($_POST['searchTemplatesWithNoProcedure'])
-        ? filter_input(INPUT_POST, 'searchTemplatesWithNoProcedure', FILTER_SANITIZE_STRING)
+        ? \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['searchTemplatesWithNoProcedure'])
         : '';
 
     $conf = getWikiConfig($pearDB);
@@ -167,11 +167,11 @@ try {
             foreach ($tplArr as $key1 => $value1) {
                 if ($firstTpl) {
                     $tplStr .= " <a href='" . $WikiURL .
-                        "/index.php?title=Host-Template:" . $value1 . "' target = '_blank' > " . $value1 . "</a > ";
+                        "/index.php?title=Host-Template_:_" . $value1 . "' target = '_blank' > " . $value1 . "</a > ";
                     $firstTpl = 0;
                 } else {
                     $tplStr .= "&nbsp;|&nbsp;<a href = '" . $WikiURL .
-                        "/index.php?title=Host-Template:" . $value1 . "' target = '_blank' > " . $value1 . "</a > ";
+                        "/index.php?title=Host-Template_:_" . $value1 . "' target = '_blank' > " . $value1 . "</a > ";
                 }
             }
         }

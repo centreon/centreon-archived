@@ -200,8 +200,8 @@ class Broker extends AbstractObjectJSON
             $resultParameters = $this->stmt_broker_parameters->fetchAll(PDO::FETCH_GROUP | PDO::FETCH_ASSOC);
 
             //logger
-            $object['log']['directory'] = filter_var($row['log_directory'], FILTER_SANITIZE_STRING);
-            $object['log']['filename'] = filter_var($row['log_filename'], FILTER_SANITIZE_STRING);
+            $object['log']['directory'] = \HtmlAnalyzer::sanitizeAndRemoveTags($row['log_directory']);
+            $object['log']['filename'] = \HtmlAnalyzer::sanitizeAndRemoveTags($row['log_filename']);
             $object['log']['max_size'] = filter_var($row['log_max_size'], FILTER_VALIDATE_INT);
             $this->getLogsValues();
             $logs = $this->cacheLogValue[$object['broker_id']];
@@ -220,7 +220,8 @@ class Broker extends AbstractObjectJSON
                 }
 
                 $subValuesToCastInArray = [];
-                $rrdCacheOption = 'disable';
+                $rrdCacheOption = null;
+                $rrdCached = null;
                 foreach ($value as $subvalue) {
                     if (
                         !isset($subvalue['fieldIndex'])
@@ -239,21 +240,20 @@ class Broker extends AbstractObjectJSON
                         } elseif ($subvalue['config_key'] === 'category') {
                             $object[$key][$subvalue['config_group_id']]['filters'][$subvalue['config_key']][] =
                                 $subvalue['config_value'];
-                        } else {
+                        } elseif (in_array($subvalue['config_key'], ['rrd_cached_option', 'rrd_cached'])) {
                             if ($subvalue['config_key'] === 'rrd_cached_option') {
                                 $rrdCacheOption = $subvalue['config_value'];
-                                continue;
+                            } elseif ($subvalue['config_key'] === 'rrd_cached') {
+                                $rrdCached = $subvalue['config_value'];
                             }
-
-                            if ($subvalue['config_key'] === 'rrd_cached') {
+                            if ($rrdCached && $rrdCacheOption) {
                                 if ($rrdCacheOption === 'tcp') {
-                                    $object[$key][$subvalue['config_group_id']]['port'] = $subvalue['config_value'];
+                                    $object[$key][$subvalue['config_group_id']]['port'] = $rrdCached;
                                 } elseif ($rrdCacheOption === 'unix') {
-                                    $object[$key][$subvalue['config_group_id']]['path'] = $subvalue['config_value'];
+                                    $object[$key][$subvalue['config_group_id']]['path'] = $rrdCached;
                                 }
-                                continue;
                             }
-
+                        } else {
                             $object[$key][$subvalue['config_group_id']][$subvalue['config_key']] =
                                 $subvalue['config_value'];
 
@@ -348,9 +348,9 @@ class Broker extends AbstractObjectJSON
         }
 
         // Manage path of cbd watchdog log
-        $watchdogLogsPath = trim($this->engine['broker_logs_path']) === '' ?
-            '/var/log/centreon-broker/watchdog.log' :
-            trim($this->engine['broker_logs_path']) . '/watchdog.log';
+        $watchdogLogsPath = $this->engine['broker_logs_path'] === null || empty(trim($this->engine['broker_logs_path']))
+            ? '/var/log/centreon-broker/watchdog.log'
+            : trim($this->engine['broker_logs_path']) . '/watchdog.log';
         $watchdog['log'] = $watchdogLogsPath;
 
         $this->generate_filename = 'watchdog.json';

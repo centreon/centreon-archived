@@ -30,6 +30,20 @@ try {
     $errorMessage = "Impossible to update 'cb_field' table";
     $pearDB->query("ALTER TABLE cb_field MODIFY description VARCHAR(510) DEFAULT NULL");
 
+    $errorMessage = "Impossible to update 'hosts' table";
+    if (! str_contains(strtolower($pearDBO->getColumnType('hosts', 'notification_number')), 'bigint')) {
+        $pearDBO->beginTransaction();
+        $pearDBO->query("UPDATE `hosts` SET `notification_number`= 0 WHERE `notification_number`< 0");
+        $pearDBO->query("ALTER TABLE `hosts` MODIFY `notification_number` BIGINT(20) UNSIGNED DEFAULT NULL");
+    }
+
+    $errorMessage = "Impossible to update 'services' table";
+    if (! str_contains(strtolower($pearDBO->getColumnType('services', 'notification_number')), 'bigint')) {
+        $pearDBO->beginTransaction();
+        $pearDBO->query("UPDATE `services` SET `notification_number`= 0 WHERE `notification_number`< 0");
+        $pearDBO->query("ALTER TABLE `services` MODIFY `notification_number` BIGINT(20) UNSIGNED DEFAULT NULL");
+    }
+
     $pearDB->beginTransaction();
 
     $errorMessage = "Unable to delete 'oreon_web_path' and color options from database";
@@ -44,6 +58,8 @@ try {
     $errorMessage = "Impossible to update pollers ACLs";
     updatePollerAcls($pearDB);
 
+    $errorMessage = "Impossible to update OpenID Provider configuration";
+    updateOpenIdCustomConfiguration($pearDB);
     $pearDB->commit();
 
     if ($pearDB->isColumnExist('remote_servers', 'app_key') === 1) {
@@ -71,6 +87,10 @@ try {
 } catch (\Exception $e) {
     if ($pearDB->inTransaction()) {
         $pearDB->rollBack();
+    }
+
+    if ($pearDBO->inTransaction()) {
+        $pearDBO->rollBack();
     }
 
     $centreonLog->insertLog(
@@ -593,4 +613,60 @@ function getFieldsDetails(): array
     ];
 
     return ['bbdo_server' => $bbdoServer, 'bbdo_client' => $bbdoClient];
+}
+
+/**
+ * Update Open ID Provider with new parameters.
+ *
+ * @param CentreonDB $pearDB
+ */
+function updateOpenIdCustomConfiguration(CentreonDB $pearDB): void
+{
+    $statement = $pearDB->query("SELECT custom_configuration FROM provider_configuration WHERE `name`='openid'");
+
+    if ($result = $statement->fetch()) {
+        $customConfiguration = json_decode($result, true);
+
+        /**
+         * Remove trusted & blacklist client addresses from root of custom configuration
+         * and add them to authentication conditions
+         */
+        $trustedClientAddresses = $customConfiguration['trusted_client_addresses'];
+        $blacklistClientAddresses = $customConfiguration['blacklist_client_addresses'];
+        unset($customConfiguration['trusted_client_addresses']);
+        unset($customConfiguration['blacklist_client_addresses']);
+
+        /**
+         * Remove claim name and contact group id as they are know handled in roles mapping and groups mapping.
+         */
+        unset($customConfiguration['claim_name']);
+        unset($customConfiguration['contact_group_id']);
+        $customConfiguration['authentication_conditions'] = [
+            'is_enabled' => false,
+            'attribute_path' => '',
+            'endpoint' => '',
+            'authorized_values' => [],
+            'trusted_client_addresses' => $trustedClientAddresses,
+            'blacklist_client_addresses' => $blacklistClientAddresses
+        ];
+        $customConfiguration['roles_mapping'] = [
+            'is_enabled' => false,
+            'apply_only_first_role' => false,
+            'attribute_path' => '',
+            'endpoint' => ['type' => 'introspection_endpoint', 'custom_endpoint' => '']
+        ];
+        $customConfiguration['groups_mapping'] = [
+            'is_enabled' => false,
+            'attribute_path' => '',
+            'endpoint' => ['type' => 'introspection_endpoint', 'custom_endpoint' => ''],
+        ];
+
+        $encodedConfiguration = json_encode($customConfiguration);
+
+        $statement = $pearDB->prepare(
+            "UPDATE custom_configuration SET custom_configuration = :customConfiguration WHERE `name`='openid'"
+        );
+        $statement->bindValue(':customConfiguration', $encodedConfiguration, \PDO::PARAM_STR);
+        $statement->execute();
+    }
 }

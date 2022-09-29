@@ -74,9 +74,9 @@ class NavigationList implements JsonSerializable
     /**
      * JSON serialization of entity
      *
-     * @return array<mixed>
+     * @return mixed[]
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): mixed
     {
         $groups = $this->extractGroups($this->entities);
         $naviList = $this->generateLevels($this->entities, $groups);
@@ -143,7 +143,10 @@ class NavigationList implements JsonSerializable
         $naviList = [];
 
         foreach ($entities as $entity) {
-            if (preg_match('/^(\d)$/', $entity->getTopologyPage(), $matches)) {
+            if (
+                $entity->getTopologyPage() !== null
+                && preg_match('/^(\d)$/', $entity->getTopologyPage(), $matches)
+            ) {
                 $naviList[$entity->getTopologyId()] = [
                     'page' => $entity->getTopologyPage(),
                     'label' => $entity->getTopologyName(),
@@ -157,7 +160,8 @@ class NavigationList implements JsonSerializable
                     'show' => (bool)$entity->getTopologyShow()
                 ];
             } elseif (
-                preg_match('/^(\d)(\d\d)$/', $entity->getTopologyPage(), $matches)
+                $entity->getTopologyPage() !== null
+                && preg_match('/^(\d)(\d\d)$/', $entity->getTopologyPage(), $matches)
                 && !empty($naviList[$matches[1]])
             ) {
                 $naviList[$matches[1]]['children'][$entity->getTopologyPage()] = [
@@ -170,7 +174,8 @@ class NavigationList implements JsonSerializable
                     'show' => (bool)$entity->getTopologyShow()
                 ];
             } elseif (
-                preg_match('/^(\d)(\d\d)(\d\d)$/', $entity->getTopologyPage(), $matches)
+                $entity->getTopologyPage() !== null
+                && preg_match('/^(\d)(\d\d)(\d\d)$/', $entity->getTopologyPage(), $matches)
                 && !empty($naviList[$matches[1]]['children'][$matches[1] . $matches[2]])
             ) { // level 3
                 $levelTwo = $matches[1] . $matches[2];

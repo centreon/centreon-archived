@@ -27,15 +27,21 @@ use Centreon\Domain\Log\LoggerTrait;
 use Centreon\Domain\Repository\RepositoryException;
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
-use Core\Security\ProviderConfiguration\Application\Repository\ReadConfigurationRepositoryInterface;
 use Core\Security\ProviderConfiguration\Application\OpenId\Repository\ReadOpenIdConfigurationRepositoryInterface;
+use Core\Security\ProviderConfiguration\Application\Repository\ReadConfigurationRepositoryInterface;
 use Core\Security\ProviderConfiguration\Domain\CustomConfigurationInterface;
+use Core\Security\ProviderConfiguration\Domain\Local\Model\CustomConfiguration as LocalCustomConfiguration;
 use Core\Security\ProviderConfiguration\Domain\Local\Model\SecurityPolicy;
 use Core\Security\ProviderConfiguration\Domain\Model\Configuration;
 use Core\Security\ProviderConfiguration\Domain\Model\Provider;
+use Core\Security\ProviderConfiguration\Domain\OpenId\Exceptions\ACLConditionsException;
+use Core\Security\ProviderConfiguration\Domain\OpenId\Exceptions\InvalidEndpointException;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Exceptions\OpenIdConfigurationException;
-use Core\Security\ProviderConfiguration\Domain\Local\Model\CustomConfiguration as LocalCustomConfiguration;
+use Core\Security\ProviderConfiguration\Domain\OpenId\Model\ACLConditions;
+use Core\Security\ProviderConfiguration\Domain\OpenId\Model\AuthenticationConditions;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Model\CustomConfiguration as OpenIdCustomConfiguration;
+use Core\Security\ProviderConfiguration\Domain\OpenId\Model\Endpoint;
+use Core\Security\ProviderConfiguration\Domain\OpenId\Model\GroupsMapping;
 use Core\Security\ProviderConfiguration\Domain\WebSSO\Model\CustomConfiguration as WebSSOCustomConfiguration;
 
 final class DbReadConfigurationRepository extends AbstractRepositoryDRB implements ReadConfigurationRepositoryInterface
@@ -128,13 +134,17 @@ final class DbReadConfigurationRepository extends AbstractRepositoryDRB implemen
                 $jsonDecoded['contact_template'] = $jsonDecoded['contact_template_id'] !== null
                     ? $this->readOpenIdConfigurationRepository->getContactTemplate($jsonDecoded['contact_template_id'])
                     : null;
-                $jsonDecoded['contact_group'] = $jsonDecoded['contact_group_id'] !== null
-                    ? $this->readOpenIdConfigurationRepository->getContactGroup($jsonDecoded['contact_group_id'])
-                    : null;
-                $jsonDecoded['authorization_rules'] =
-                    $this->readOpenIdConfigurationRepository->getAuthorizationRulesByConfigurationId(
-                        $configuration->getId()
-                    );
+                $jsonDecoded['roles_mapping'] = $this->createAclConditions(
+                    $configuration->getId(),
+                    $jsonDecoded['roles_mapping']
+                );
+                $jsonDecoded['authentication_conditions'] = $this->createAuthenticationConditionsFromRecord(
+                    $jsonDecoded['authentication_conditions']
+                );
+                $jsonDecoded['groups_mapping'] = $this->createGroupsMappingFromRecord(
+                    $jsonDecoded['groups_mapping'],
+                    $configuration->getId()
+                );
 
                 return new OpenIdCustomConfiguration($jsonDecoded);
             case Provider::WEB_SSO:
@@ -153,6 +163,26 @@ final class DbReadConfigurationRepository extends AbstractRepositoryDRB implemen
             default:
                 throw new \Exception("Unknown provider configuration name, can't load custom configuration");
         }
+    }
+
+    /**
+     * @param int $configurationId
+     * @param array<string,bool|string|string[]> $roles_mapping
+     * @return ACLConditions
+     * @throws ACLConditionsException
+     * @throws InvalidEndpointException
+     */
+    private function createAclConditions(int $configurationId, array $roles_mapping): ACLConditions
+    {
+        $rules = $this->readOpenIdConfigurationRepository->getAuthorizationRulesByConfigurationId($configurationId);
+
+        return new ACLConditions(
+            $roles_mapping['is_enabled'],
+            $roles_mapping['apply_only_first_role'],
+            $roles_mapping['attribute_path'],
+            new Endpoint($roles_mapping['endpoint']['type'], $roles_mapping['endpoint']['custom_endpoint']),
+            $rules
+        );
     }
 
     /**
@@ -252,5 +282,78 @@ final class DbReadConfigurationRepository extends AbstractRepositoryDRB implemen
         }
 
         return $excludedUsers;
+    }
+
+    /**
+     * Create Authentication Conditions from record.
+     *
+     * @param array{
+     *  "is_enabled": bool,
+     *  "attribute_path": string,
+     *  "authorized_values": string[],
+     *  "trusted_client_addresses": string[],
+     *  "blacklist_client_addresses": string[],
+     *  "endpoint": array{
+     *      "type": string,
+     *      "custom_endpoint":string|null
+     *  }
+     * } $authenticationConditionsRecord
+     * @return AuthenticationConditions
+     */
+    private function createAuthenticationConditionsFromRecord(
+        array $authenticationConditionsRecord
+    ): AuthenticationConditions {
+        $endpoint = new Endpoint(
+            $authenticationConditionsRecord["endpoint"]["type"],
+            $authenticationConditionsRecord["endpoint"]["custom_endpoint"]
+        );
+
+        $authenticationConditions = new AuthenticationConditions(
+            $authenticationConditionsRecord["is_enabled"],
+            $authenticationConditionsRecord["attribute_path"],
+            $endpoint,
+            $authenticationConditionsRecord["authorized_values"]
+        );
+        $authenticationConditions->setTrustedClientAddresses(
+            $authenticationConditionsRecord["trusted_client_addresses"]
+        );
+        $authenticationConditions->setBlacklistClientAddresses(
+            $authenticationConditionsRecord["blacklist_client_addresses"]
+        );
+
+        return $authenticationConditions;
+    }
+
+    /**
+     * Create Groups Mapping From Record.
+     * @param array{
+     *  "is_enabled": bool,
+     *  "attribute_path": string,
+     *  "endpoint": array{
+     *      "type": string,
+     *      "custom_endpoint":string|null
+     *  }
+     * } $groupsMappingRecord
+     * @param int $configurationId
+     * @return GroupsMapping
+     */
+    private function createGroupsMappingFromRecord(array $groupsMappingRecord, int $configurationId): GroupsMapping
+    {
+        $endpoint = new Endpoint(
+            $groupsMappingRecord["endpoint"]["type"],
+            $groupsMappingRecord["endpoint"]["custom_endpoint"]
+        );
+
+        $contactGroupRelations = $this->readOpenIdConfigurationRepository->getContactGroupRelationsByConfigurationId(
+            $configurationId
+        );
+        $groupsMapping = new GroupsMapping(
+            $groupsMappingRecord['is_enabled'],
+            $groupsMappingRecord['attribute_path'],
+            $endpoint,
+            $contactGroupRelations
+        );
+
+        return $groupsMapping;
     }
 }

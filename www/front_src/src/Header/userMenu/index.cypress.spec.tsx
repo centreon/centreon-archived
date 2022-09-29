@@ -67,9 +67,9 @@ describe('User Menu', () => {
     cy.get('[data-cy=userIcon]').click();
     cy.get('[data-cy=themeSwitch]').as('switchMode').should('be.visible');
     cy.get('@switchMode').click();
-    cy.matchImageSnapshot('User Menu -- using the light mode');
+    cy.matchImageSnapshot('User Menu -- using the dark mode');
     cy.get('@switchMode').click();
 
-    cy.matchImageSnapshot('User Menu -- using the dark mode');
+    cy.matchImageSnapshot('User Menu -- using the light mode');
   });
 });

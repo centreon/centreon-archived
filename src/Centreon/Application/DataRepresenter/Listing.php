@@ -106,9 +106,9 @@ class Listing implements JsonSerializable
     /**
      * JSON serialization of list
      *
-     * @return array
+     * @return array<string,mixed>
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): mixed
     {
         $result = [
             'pagination' => [

@@ -1,6 +1,7 @@
 import { prop, toLower } from 'ramda';
 
 import {
+  CriteriaById,
   CriteriaNames,
   selectableResourceTypes,
   selectableStates,
@@ -35,6 +36,7 @@ export const criteriaNameSortOrder = {
 
 export interface AutocompleteSuggestionProps {
   cursorPosition: number;
+  newSelectableCriterias?: CriteriaById;
   search: string;
 }
 

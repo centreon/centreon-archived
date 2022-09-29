@@ -43,9 +43,8 @@ include_once "./class/centreonUtils.class.php";
 include "./include/common/autoNumLimit.php";
 $mnftr_id = null;
 
-$search = filter_var(
-    $_POST['searchTM'] ?? $_GET['searchTM'] ?? null,
-    FILTER_SANITIZE_STRING
+$search = \HtmlAnalyzer::sanitizeAndRemoveTags(
+    $_POST['searchTM'] ?? $_GET['searchTM'] ?? null
 );
 
 if (isset($_POST['searchTM']) || isset($_GET['searchTM'])) {

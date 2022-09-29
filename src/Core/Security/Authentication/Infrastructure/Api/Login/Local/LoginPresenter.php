@@ -33,7 +33,7 @@ class LoginPresenter extends AbstractPresenter implements LoginPresenterInterfac
     public function present(mixed $response): void
     {
         $presenterResponse = [
-            'redirect_uri' => $response->getRedirectUri()
+            'redirect_uri' => $this->responseStatus->getMessage()
         ];
 
         parent::present($presenterResponse);

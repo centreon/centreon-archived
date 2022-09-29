@@ -34,7 +34,7 @@ try {
     );
     if (($result = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
         $defaultValue = $result['COLUMN_DEFAULT'];
-        if ($defaultValue !== '0') {
+        if ($defaultValue !== 0) {
             // An update is required
             $errorMessage = 'Impossible to alter the table on_demand_macro_host';
             $pearDB->query('ALTER TABLE on_demand_macro_host ALTER is_password SET DEFAULT 0');
@@ -51,7 +51,7 @@ try {
     );
     if (($defaultValue = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
         $defaultValue = $result['COLUMN_DEFAULT'];
-        if ($defaultValue !== '0') {
+        if ($defaultValue !== 0) {
             // An update is required
             $errorMessage = 'Impossible to alter the table on_demand_macro_service';
             $pearDB->query('ALTER TABLE on_demand_macro_service ALTER is_password SET DEFAULT 0');

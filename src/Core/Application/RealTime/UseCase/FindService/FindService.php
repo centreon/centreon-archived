@@ -159,6 +159,14 @@ class FindService
 
         $service->setSeverity($severity);
 
+        $acknowledgement = $service->isAcknowledged() === true
+            ? $this->acknowledgementRepository->findOnGoingAcknowledgementByHostIdAndServiceId($hostId, $serviceId)
+            : null;
+
+        $downtimes = $service->isInDowntime() === true
+            ? $this->downtimeRepository->findOnGoingDowntimesByHostIdAndServiceId($hostId, $serviceId)
+            : [];
+
         /**
          * Obfuscate the passwords in Service commandLine
          */
@@ -167,8 +175,8 @@ class FindService
         $presenter->present(
             $this->createResponse(
                 $service,
-                $this->downtimeRepository->findOnGoingDowntimesByHostIdAndServiceId($hostId, $serviceId),
-                $this->acknowledgementRepository->findOnGoingAcknowledgementByHostIdAndServiceId($hostId, $serviceId),
+                $downtimes,
+                $acknowledgement,
                 $host
             )
         );

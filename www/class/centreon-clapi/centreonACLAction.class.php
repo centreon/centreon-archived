@@ -74,6 +74,8 @@ class CentreonACLAction extends CentreonObject
         $this->nbOfCompulsoryParams = 2;
         $this->availableActions = array(
             'generate_cfg',
+            'create_edit_poller_cfg',
+            'delete_poller_cfg',
             'generate_trap',
             'global_event_handler',
             'global_flap_detection',

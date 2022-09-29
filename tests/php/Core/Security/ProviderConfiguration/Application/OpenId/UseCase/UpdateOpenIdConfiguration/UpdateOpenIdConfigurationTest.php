@@ -35,6 +35,8 @@ use Core\Security\AccessGroup\Application\Repository\ReadAccessGroupRepositoryIn
 use Core\Security\Authentication\Application\Provider\ProviderAuthenticationFactoryInterface;
 use Core\Security\ProviderConfiguration\Application\OpenId\Repository\ReadOpenIdConfigurationRepositoryInterface;
 use Core\Security\ProviderConfiguration\Application\OpenId\Repository\WriteOpenIdConfigurationRepositoryInterface;
+use Core\Security\ProviderConfiguration\Domain\OpenId\Model\ACLConditions;
+use Core\Security\ProviderConfiguration\Domain\OpenId\Model\Endpoint;
 use Core\Security\ProviderConfiguration\Application\OpenId\UseCase\UpdateOpenIdConfiguration\{UpdateOpenIdConfiguration,
     UpdateOpenIdConfigurationPresenterInterface,
     UpdateOpenIdConfigurationRequest
@@ -58,8 +60,6 @@ it('should present a NoContentResponse when the use case is executed correctly',
     $request = new UpdateOpenIdConfigurationRequest();
     $request->isActive = true;
     $request->isForced = true;
-    $request->trustedClientAddresses = [];
-    $request->blacklistClientAddresses = [];
     $request->baseUrl = 'http://127.0.0.1/auth/openid-connect';
     $request->authorizationEndpoint = '/authorization';
     $request->tokenEndpoint = '/token';
@@ -74,14 +74,16 @@ it('should present a NoContentResponse when the use case is executed correctly',
     $request->verifyPeer = false;
     $request->isAutoImportEnabled = false;
     $request->contactTemplate = ['id' => 1]; /** @phpstan-ignore-line */
-    $request->contactGroupId = 1;
-    $request->claimName = 'groups';
-
-    $this->contactGroupRepository
-        ->expects($this->once())
-        ->method('find')
-        ->with(1)
-        ->willReturn($this->contactGroup);
+    $request->rolesMapping = [
+        'is_enabled' => false,
+        'apply_only_first_role' => false,
+        'attribute_path' => '',
+        'endpoint' => [
+            'type' => 'introspection_endpoint',
+            'custom_endpoint' => ''
+        ],
+        'relations' => []
+    ];
 
     $this->contactTemplateRepository
         ->expects($this->once())
@@ -109,8 +111,6 @@ it('should present an ErrorResponse when an error occured during the use case ex
     $request = new UpdateOpenIdConfigurationRequest();
     $request->isActive = true;
     $request->isForced = true;
-    $request->trustedClientAddresses = ["abcd_.@"];
-    $request->blacklistClientAddresses = [];
     $request->baseUrl = 'http://127.0.0.1/auth/openid-connect';
     $request->authorizationEndpoint = '/authorization';
     $request->tokenEndpoint = '/token';
@@ -125,14 +125,24 @@ it('should present an ErrorResponse when an error occured during the use case ex
     $request->verifyPeer = false;
     $request->isAutoImportEnabled = false;
     $request->contactTemplate = ['id' => 1]; /** @phpstan-ignore-line */
-    $request->contactGroupId = 1;
-    $request->claimName = 'groups';
-
-    $this->contactGroupRepository
-        ->expects($this->once())
-        ->method('find')
-        ->with(1)
-        ->willReturn($this->contactGroup);
+    $request->rolesMapping = [
+        'is_enabled' => false,
+        'apply_only_first_role' => false,
+        'attribute_path' => '',
+        'endpoint' => [
+            'type' => 'introspection_endpoint',
+            'custom_endpoint' => ''
+        ],
+        'relations' => []
+    ];
+    $request->authenticationConditions = [
+        "is_enabled" => true,
+        "attribute_path" => "info.groups",
+        "endpoint" => ["type" => "introspection_endpoint", "custom_endpoint" => null],
+        "authorized_values" => ["groupsA"],
+        "trusted_client_addresses" => ['abcd_.@'],
+        "blacklist_client_addresses" => []
+    ];
 
     $this->contactTemplateRepository
         ->expects($this->once())
@@ -144,7 +154,7 @@ it('should present an ErrorResponse when an error occured during the use case ex
         ->expects($this->once())
         ->method('setResponseStatus')
         ->with(new ErrorResponse(
-            AssertionException::ipOrDomain('abcd_.@', 'OpenIdCustomConfiguration::trustedClientAddresses')->getMessage()
+            AssertionException::ipOrDomain('abcd_.@', 'AuthenticationConditions::trustedClientAddresses')->getMessage()
         ));
 
     $useCase = new UpdateOpenIdConfiguration(
@@ -163,8 +173,6 @@ it('should present an Error Response when auto import is enable and mandatory pa
     $request = new UpdateOpenIdConfigurationRequest();
     $request->isActive = true;
     $request->isForced = true;
-    $request->trustedClientAddresses = [];
-    $request->blacklistClientAddresses = [];
     $request->baseUrl = 'http://127.0.0.1/auth/openid-connect2';
     $request->authorizationEndpoint = '/authorization';
     $request->tokenEndpoint = '/token';
@@ -178,22 +186,22 @@ it('should present an Error Response when auto import is enable and mandatory pa
     $request->authenticationType = 'client_secret_post';
     $request->verifyPeer = false;
     $request->isAutoImportEnabled = true;
-    $request->contactGroupId = 1;
-    $request->claimName = 'groups';
+    $request->rolesMapping = [
+        'is_enabled' => false,
+        'apply_only_first_role' => false,
+        'attribute_path' => '',
+        'endpoint' => [
+            'type' => 'introspection_endpoint',
+            'custom_endpoint' => ''
+        ],
+        'relations' => []
+    ];
 
     $missingParameters = [
         'contact_template',
         'email_bind_attribute',
         'fullname_bind_attribute',
     ];
-
-    $contactGroup = new ContactGroup(1, 'contact_group');
-
-    $this->contactGroupRepository
-        ->expects($this->once())
-        ->method('find')
-        ->with(1)
-        ->willReturn($contactGroup);
 
     $this->presenter
         ->expects($this->once())
@@ -218,8 +226,6 @@ it('should present an Error Response when auto import is enable and the contact 
     $request = new UpdateOpenIdConfigurationRequest();
     $request->isActive = true;
     $request->isForced = true;
-    $request->trustedClientAddresses = [];
-    $request->blacklistClientAddresses = [];
     $request->baseUrl = 'http://127.0.0.1/auth/openid-connect';
     $request->authorizationEndpoint = '/authorization';
     $request->tokenEndpoint = '/token';
@@ -236,8 +242,6 @@ it('should present an Error Response when auto import is enable and the contact 
     $request->contactTemplate = ['id' => 1, "name" => 'contact_template'];
     $request->emailBindAttribute = 'email';
     $request->userNameBindAttribute = 'name';
-    $request->contactGroupId = 1;
-    $request->claimName = 'groups';
 
     $this->contactTemplateRepository
         ->expects($this->once())

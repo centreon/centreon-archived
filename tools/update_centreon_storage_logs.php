@@ -218,7 +218,7 @@ function getNotEmptyPartitions($db, $isMigrationRecovery = false)
             ) AS s"
         );
         $result = $countResult->fetchAll(\PDO::FETCH_ASSOC);
-        $isEmptyPartition = $result[0]['is_empty'] === '0';
+        $isEmptyPartition = $result[0]['is_empty'] === 0;
 
         if ($isEmptyPartition) {
             unset($partitions[$partition]);

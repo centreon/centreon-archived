@@ -1,6 +1,7 @@
 import axios, { AxiosResponse, CancelToken } from 'axios';
+import { equals } from 'ramda';
 
-import { Resource } from '../../models';
+import { Resource, ResourceCategory, ResourceType } from '../../models';
 import { AcknowledgeFormValues } from '../Resource/Acknowledge';
 import { DowntimeToPost } from '../Resource/Downtime';
 
@@ -23,10 +24,10 @@ const acknowledgeResources =
     resources,
     params,
   }: ResourcesWithAcknowledgeParams): Promise<Array<AxiosResponse>> => {
-    const payload = resources.map(({ type, id, parent }) => ({
-      id,
+    const payload = resources.map(({ type, id, parent, service_id }) => ({
+      id: equals(type, ResourceType.anomalydetection) ? service_id : id,
       parent: parent ? { id: parent?.id } : null,
-      type,
+      type: ResourceCategory[type],
     }));
 
     return axios.post(
@@ -56,10 +57,10 @@ const setDowntimeOnResources =
     resources,
     params,
   }: ResourcesWithDowntimeParams): Promise<AxiosResponse> => {
-    const payload = resources.map(({ type, id, parent }) => ({
-      id,
+    const payload = resources.map(({ type, id, parent, service_id }) => ({
+      id: equals(type, ResourceType.anomalydetection) ? service_id : id,
       parent: parent ? { id: parent?.id } : null,
-      type,
+      type: ResourceCategory[type],
     }));
 
     return axios.post(
@@ -88,10 +89,10 @@ const checkResources = ({
   resources,
   cancelToken,
 }: ResourcesWithRequestParams): Promise<AxiosResponse> => {
-  const payload = resources.map(({ type, id, parent }) => ({
-    id,
+  const payload = resources.map(({ type, id, parent, service_id }) => ({
+    id: equals(type, ResourceType.anomalydetection) ? service_id : id,
     parent: parent ? { id: parent?.id } : null,
-    type,
+    type: ResourceCategory[type],
   }));
 
   return axios.post(
@@ -122,13 +123,14 @@ const commentResources =
     return axios.post(
       commentEndpoint,
       {
-        resources: resources.map(({ type, id, parent }) => ({
+        resources: resources.map((resource) => ({
           comment: parameters.comment,
           date: parameters.date,
-          id,
-
-          parent: parent ? { id: parent?.id } : null,
-          type,
+          id: equals(resource.type, ResourceType.anomalydetection)
+            ? resource?.service_id
+            : resource.id,
+          parent: resource?.parent ? { id: resource?.parent?.id } : null,
+          type: ResourceCategory[resource.type],
         })),
       },
       { cancelToken },

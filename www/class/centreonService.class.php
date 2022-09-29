@@ -529,7 +529,7 @@ class CentreonService
 
                     $valPassword = null;
                     if (isset($row['is_password'])) {
-                        if ($row['is_password'] === '1') {
+                        if ($row['is_password'] === 1) {
                             $valPassword = '1';
                         } else {
                             $valPassword = null;
@@ -1727,12 +1727,14 @@ class CentreonService
         } else {
             $alreadyProcessed[] = $svcId;
 
-            $res = $this->db->query(
-                "SELECT service_template_model_stm_id FROM service WHERE service_id = " . $this->db->escape($svcId)
+            $statement = $this->db->prepare(
+                "SELECT service_template_model_stm_id FROM service WHERE service_id = :service_id"
             );
+            $statement->bindValue(':service_id', (int) $svcId, \PDO::PARAM_INT);
+            $statement->execute();
 
-            if ($res->rowCount()) {
-                $row = $res->fetchRow();
+            if ($statement->rowCount()) {
+                $row = $statement->fetch(\PDO::FETCH_ASSOC);
                 if (!empty($row['service_template_model_stm_id']) && $row['service_template_model_stm_id'] !== null) {
                     $svcTmpl = array_merge(
                         $svcTmpl,

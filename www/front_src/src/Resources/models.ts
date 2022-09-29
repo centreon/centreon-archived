@@ -1,12 +1,20 @@
 import { ListingModel } from '@centreon/ui';
 
 export enum ResourceType {
+  anomalydetection = 'anomaly-detection',
   host = 'host',
   metaservice = 'metaservice',
   service = 'service',
 }
 
-export type ResourceShortType = 'h' | 's' | 'm';
+export enum ResourceCategory {
+  'anomaly-detection' = ResourceType.service,
+  'service' = ResourceType.service,
+  'host' = ResourceType.host,
+  'metaservice' = ResourceType.metaservice,
+}
+
+export type ResourceShortType = 'h' | 's' | 'm' | 'a';
 
 export interface NamedEntity {
   id: number;
@@ -46,6 +54,7 @@ export interface Resource extends NamedEntity {
   notification_enabled?: boolean;
   parent?: Parent | null;
   passive_checks?: boolean;
+  service_id?: number;
   severity_level?: number;
   short_type: ResourceShortType;
   status?: Status;
@@ -77,6 +86,7 @@ export interface ResourceEndpoints {
   downtime?: string;
   metrics?: string;
   performance_graph?: string;
+  sensitivity?: string;
   status_graph?: string;
   timeline?: string;
   timeline_download?: string;

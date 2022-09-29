@@ -23,9 +23,10 @@ declare(strict_types=1);
 
 namespace Core\Security\Authentication\Application\UseCase\Login;
 
+use Core\Application\Common\UseCase\ResponseStatusInterface;
 use Exception;
 
-final class LoginResponse
+final class LoginResponse implements ResponseStatusInterface
 {
     /**
      * @param string $redirectUri
@@ -49,5 +50,13 @@ final class LoginResponse
     public function getException(): ?Exception
     {
         return $this->exception;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMessage(): string
+    {
+        return $this->redirectUri;
     }
 }

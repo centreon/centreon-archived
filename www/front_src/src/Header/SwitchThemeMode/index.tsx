@@ -15,9 +15,9 @@ const useStyles = makeStyles((theme) => ({
     '& .MuiSwitch-thumb': {
       backgroundColor: 'white',
     },
-    '& .MuiSwitch-track': {
-      backgroundColor: '#aab4be',
-      opacity: 1,
+    '& .MuiSwitch-track, & .Mui-checked + .MuiSwitch-track': {
+      backgroundColor: theme.palette.text.primary,
+      opacity: 0.5,
     },
     alignItems: 'center',
     display: 'flex',
@@ -27,9 +27,6 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'space-around',
   },
   containerSwitch: {
-    '& .MuiSwitch-switchBase': {
-      padding: theme.spacing(0.5, 0.5, 0.5, 0.75),
-    },
     '&.Mui-checked': {
       '&:hover': {
         backgroundColor: 'unset',
@@ -40,7 +37,6 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   disabledMode: {
-    color: theme.palette.common.white,
     opacity: 0.5,
   },
   mode: {

@@ -289,12 +289,12 @@ class CentreonDB extends \PDO
     /**
      * Query
      *
-     * @return PDOStatement|null
      * @param string $queryString
      * @param mixed $parameters
      * @param mixed $parametersArgs
+     * @return PDOStatement|null
      */
-    public function query($queryString, $parameters = null, ...$parametersArgs)
+    public function query($queryString, $parameters = null, ...$parametersArgs): CentreonDBStatement|false
     {
         if (!is_null($parameters) && !is_array($parameters)) {
             $parameters = [$parameters];
@@ -463,8 +463,8 @@ class CentreonDB extends \PDO
             return -1;
         }
 
-        $table = filter_var($table, FILTER_SANITIZE_STRING);
-        $column = filter_var($column, FILTER_SANITIZE_STRING);
+        $table = \HtmlAnalyzer::sanitizeAndRemoveTags($table);
+        $column = \HtmlAnalyzer::sanitizeAndRemoveTags($column);
 
         $query = "SELECT COLUMN_NAME
             FROM INFORMATION_SCHEMA.COLUMNS
@@ -500,5 +500,40 @@ class CentreonDB extends \PDO
     private function logSqlError(string $query, string $message): void
     {
         $this->log->insertLog(2, $message . " QUERY : " . $query);
+    }
+
+    /**
+     * This method returns a column type from a given table and column.
+     *
+     * @param string $tableName
+     * @param string $columnName
+     * @return string
+     */
+    public function getColumnType(string $tableName, string $columnName): string
+    {
+        $tableName = \HtmlAnalyzer::sanitizeAndRemoveTags($tableName);
+        $columnName = \HtmlAnalyzer::sanitizeAndRemoveTags($columnName);
+
+        $query = 'SELECT COLUMN_TYPE
+            FROM INFORMATION_SCHEMA.COLUMNS
+            WHERE TABLE_SCHEMA = :dbName
+            AND TABLE_NAME = :tableName
+            AND COLUMN_NAME = :columnName';
+
+        $stmt = $this->prepare($query);
+
+        try {
+            $stmt->bindValue(':dbName', $this->dsn['database'], \PDO::PARAM_STR);
+            $stmt->bindValue(':tableName', $tableName, \PDO::PARAM_STR);
+            $stmt->bindValue(':columnName', $columnName, \PDO::PARAM_STR);
+            $stmt->execute();
+            $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+            if (! empty($result)) {
+                return $result['COLUMN_TYPE'];
+            }
+            throw new \PDOException("Unable to get column type");
+        } catch (\PDOException $e) {
+            $this->logSqlError($query, $e->getMessage());
+        }
     }
 }

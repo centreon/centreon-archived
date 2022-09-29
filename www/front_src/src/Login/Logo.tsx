@@ -16,6 +16,7 @@ import { labelCentreonLogo } from './translatedLabels';
 const useStyles = makeStyles({
   centreonLogo: {
     height: '100%',
+    objectFit: 'contain',
     width: '100%',
   },
   centreonLogoWhite: {

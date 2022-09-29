@@ -1,4 +1,3 @@
-import { setUserTokenApiV1 } from '../../support/centreonData';
 import {
   applyConfigurationViaClapi,
   executeActionViaClapi,
@@ -19,7 +18,7 @@ const insertContactFixture = (): Cypress.Chainable => {
 };
 
 const removeContact = (): Cypress.Chainable => {
-  return setUserTokenApiV1().then(() => {
+  return cy.setUserTokenApiV1().then(() => {
     executeActionViaClapi({
       action: 'DEL',
       object: 'CONTACT',
