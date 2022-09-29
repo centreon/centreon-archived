@@ -7344,4 +7344,11 @@ msgstr "Ce paramètre permet de désactiver la supervision du service."
 msgid "Service severity level. Can be used to sort alerts in the monitoring menus, including the Resources Status page."
 msgstr "Niveau de sévérité du service. Permet de trier les alertes dans les menus de supervision, notamment dans la page Statut des Ressources."
 
+msgid "Name of the host group. It must be unique and cannot contain white spaces, or special characters like ~!$%^&*\"|'<>?,()=."
+msgstr "Nom du groupe d’hôtes. Il doit être unique et ne peut pas contenir de caractères spéciaux tels que ~!$%^&*\"|'<>?,()=."
 
+msgid "Hosts belonging to the group"
+msgstr "Hôtes faisant partie de ce groupe"
+
+msgid "Geographic coordinates to allow Centreon MAP to plot the host group on a geographic view. Format: Latitude,Longitude. For example, Paris' coordinates are 48.51,2.20"
+msgstr "Coordonnées géographiques permettant à Centreon MAP de positionner le groupe d’hôtes sur une vue géographique. Format : Latitude,Longitude. Par exemple pour Paris, saisir : 48.51,2.20"
