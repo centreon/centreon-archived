@@ -290,7 +290,10 @@ $help["notes_url"] = dgettext(
     "help",
     "Clickable URL displayed in the Notes column of the Resources Status page."
 );
-$help["notes"] = dgettext("help", "Define an optional string of notes pertaining to the service.");
+$help["notes"] = dgettext(
+    "help",
+    "Information note displayed as a tooltip in the Notes column of the Resources Status page."
+);
 $help["action_url"] = dgettext(
     "help",
     "Define an optional URL that can be used to provide more actions to be performed on the service. " .
