@@ -289,7 +289,7 @@ class CentreonDB extends \PDO
     /**
      * Query
      *
-     * @return PDOStatement|null
+     * @return CentreonDBStatement|false
      * @param string $queryString
      * @param mixed $parameters
      * @param mixed $parametersArgs
