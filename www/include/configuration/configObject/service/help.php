@@ -46,8 +46,8 @@ $help["mc_update"] = dgettext(
 $help["service_alias"] = dgettext("help", "Name used for service in auto-deploy by template.");
 $help["service_description"] = dgettext(
     "help",
-    "Define the description of the service. It may contain spaces, dashes, and colons (semicolons, apostrophes, " .
-    "and quotation marks should be avoided). Services must have a unique description on a per host basis."
+    "Name of the service or template. It cannot contain white spaces, or special characters like ~!$%^&*\"|'<>?,()=."
+    . " Each service of an host must have a unique name. The name of a service template must be unique."
 );
 $help["use"] = dgettext(
     "help",
@@ -183,10 +183,9 @@ $help['use_only_contacts_from_host'] = dgettext(
  */
 $help["host_templates"] = dgettext(
     "help",
-    "Specify one or multiple host templates, that should be linked to this template. A service, that uses " .
-    "this service template, will complete the missing host relation and result in a full service definition."
+    "When one of these host template is applied to a host, a service will be created based on the current template."
 );
-$help["host_name"] = dgettext("help", "Specify the host(s) that this service \"runs\" on or is associated with.");
+$help["host_name"] = dgettext("help", "Host(s) to which the service is attached");
 $help["hostgroup_name"] = dgettext(
     "help",
     "Specify the hostgroup(s) that this service \"runs\" on or is associated with. One or more hostgroup(s) " .
@@ -194,8 +193,7 @@ $help["hostgroup_name"] = dgettext(
 );
 $help["servicegroups"] = dgettext(
     "help",
-    "This directive is used to identify the short name(s) of the servicegroup(s) that the service belongs to. " .
-    "This directive may be used as an alternative to using the members directive in servicegroup definitions."
+    "Service groups linked to the service."
 );
 $help["snmptraps"] = dgettext("help", "Specify the relation of known SNMP traps to state changes of this service.");
 
@@ -285,15 +283,12 @@ $help["graph_template"] = dgettext(
 );
 $help["categories"] = dgettext(
     "help",
-    "Select the categories this service should be linked to. Categories are used for finer control in service ACL " .
-    "definitions."
+    "Host categories linked to the service."
 );
 
 $help["notes_url"] = dgettext(
     "help",
-    "Define an optional URL that can be used to provide more information about the service. " .
-    "Any valid URL can be used. This can be very useful if you want to make detailed information on the service, " .
-    "emergency contact methods, etc. available to other support staff."
+    "Clickable URL displayed in the Notes column of the Resources Status page."
 );
 $help["notes"] = dgettext("help", "Define an optional string of notes pertaining to the service.");
 $help["action_url"] = dgettext(
@@ -310,11 +305,14 @@ $help["icon_image_alt"] = dgettext(
     "help",
     "Define an optional string that is used in the alternative description of the icon image."
 );
-$help['criticality_id'] = dgettext("help", "Severity level use to sort issue in Monitoring menu.");
+$help['criticality_id'] = dgettext(
+    "help",
+    "Service severity level. Can be used to sort alerts in the monitoring menus, including the Resources Status page."
+);
 $help["geo_coords"] = dgettext(
     "help",
-    "Geographical coordinates use by Centreon Map module to position element on map. Define \"Latitude,Longitude\", " .
-    "for example for Paris coordinates set \"48.51,2.20\""
+    "Geographic coordinates to allow Centreon MAP to plot the resource on a geographic view."
+    . " Format: Latitude,Longitude. For example, Paris' coordinates are 48.51,2.20"
 );
 
 /*
@@ -342,4 +340,9 @@ $help["initial_state"] = dgettext(
     "help",
     "By default monitoring engine will assume that all services are in OK states when it starts." .
     "You can override the initial state for a service by using this directive."
+);
+
+$help["service_activate"] = dgettext(
+    "help",
+    "This setting determines whether the service must be monitored or not."
 );
