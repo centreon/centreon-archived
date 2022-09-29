@@ -1,15 +1,15 @@
 import axios, { AxiosResponse, CancelToken } from 'axios';
-import { map, pick } from 'ramda';
+import { pick, equals } from 'ramda';
 
-import { Resource } from '../../models';
+import { Resource, ResourceCategory, ResourceType } from '../../models';
 import { AcknowledgeFormValues } from '../Resource/Acknowledge';
 import { DowntimeToPost } from '../Resource/Downtime';
 
 import {
   acknowledgeEndpoint,
-  downtimeEndpoint,
   checkEndpoint,
   commentEndpoint,
+  downtimeEndpoint,
 } from './endpoint';
 
 interface ResourcesWithAcknowledgeParams {
@@ -24,6 +24,12 @@ const acknowledgeResources =
     resources,
     params,
   }: ResourcesWithAcknowledgeParams): Promise<Array<AxiosResponse>> => {
+    const payload = resources.map(({ type, id, parent, service_id }) => ({
+      id: equals(type, ResourceType.anomalydetection) ? service_id : id,
+      parent,
+      type: ResourceCategory[type],
+    }));
+
     return axios.post(
       acknowledgeEndpoint,
       {
@@ -35,7 +41,7 @@ const acknowledgeResources =
           is_sticky: params.isSticky,
           with_services: params.acknowledgeAttachedResources,
         },
-        resources: map(pick(['type', 'id', 'parent']), resources),
+        resources: payload,
       },
       { cancelToken },
     );
@@ -52,6 +58,12 @@ const setDowntimeOnResources =
     resources,
     params,
   }: ResourcesWithDowntimeParams): Promise<AxiosResponse> => {
+    const payload = resources.map(({ type, id, parent, service_id }) => ({
+      id: equals(type, ResourceType.anomalydetection) ? service_id : id,
+      parent,
+      type: ResourceCategory[type],
+    }));
+
     return axios.post(
       downtimeEndpoint,
       {
@@ -63,7 +75,7 @@ const setDowntimeOnResources =
           start_time: params.startTime,
           with_services: params.isDowntimeWithServices,
         },
-        resources: map(pick(['type', 'id', 'parent']), resources),
+        resources: payload,
       },
       { cancelToken },
     );
@@ -78,10 +90,16 @@ const checkResources = ({
   resources,
   cancelToken,
 }: ResourcesWithRequestParams): Promise<AxiosResponse> => {
+  const payload = resources.map(({ type, id, parent, service_id }) => ({
+    id: equals(type, ResourceType.anomalydetection) ? service_id : id,
+    parent,
+    type: ResourceCategory[type],
+  }));
+
   return axios.post(
     checkEndpoint,
     {
-      resources: map(pick(['type', 'id', 'parent']), resources),
+      resources: payload,
     },
     { cancelToken },
   );
@@ -107,9 +125,13 @@ const commentResources =
       commentEndpoint,
       {
         resources: resources.map((resource) => ({
-          ...pick(['id', 'type', 'parent'], resource),
+          ...pick(['parent'], resource),
           comment: parameters.comment,
           date: parameters.date,
+          id: equals(resource.type, ResourceType.anomalydetection)
+            ? resource?.service_id
+            : resource.id,
+          type: ResourceCategory[resource.type],
         })),
       },
       { cancelToken },

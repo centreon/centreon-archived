@@ -17,14 +17,12 @@ import {
   applyCurrentFilterDerivedAtom,
   clearFilterDerivedAtom,
   filterWithParsedSearchDerivedAtom,
+  filterByInstalledModulesWithParsedSearchDerivedAtom,
 } from '../filterAtoms';
+import useFilterByModule from '../useFilterByModule';
 
 import Criteria from './Criteria';
-import {
-  CriteriaDisplayProps,
-  selectableCriterias,
-  Criteria as CriteriaModel,
-} from './models';
+import { CriteriaDisplayProps, Criteria as CriteriaModel } from './models';
 import { criteriaNameSortOrder } from './searchQueryLanguage/models';
 
 const useStyles = makeStyles((theme) => ({
@@ -36,29 +34,35 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const getSelectableCriteriaByName = (name: string): CriteriaDisplayProps =>
-  selectableCriterias[name];
-
-const isNonSelectableCriteria = (criteria: CriteriaModel): boolean =>
-  pipe(({ name }) => name, getSelectableCriteriaByName, isNil)(criteria);
-
 const CriteriasContent = (): JSX.Element => {
   const classes = useStyles();
 
   const { t } = useTranslation();
 
-  const filterWithParsedSearch = useAtomValue(
-    filterWithParsedSearchDerivedAtom,
+  const { newCriteriaValueName, newSelectableCriterias } = useFilterByModule();
+
+  const filterByInstalledModulesWithParsedSearch = useAtomValue(
+    filterByInstalledModulesWithParsedSearchDerivedAtom,
   );
 
   const getSelectableCriterias = (): Array<CriteriaModel> => {
+    const criteriasValue = filterByInstalledModulesWithParsedSearch({
+      criteriaName: newCriteriaValueName,
+    });
+
     const criterias = sortBy(
       ({ name }) => criteriaNameSortOrder[name],
-      filterWithParsedSearch.criterias,
+      criteriasValue.criterias,
     );
 
     return reject(isNonSelectableCriteria)(criterias);
   };
+
+  const getSelectableCriteriaByName = (name: string): CriteriaDisplayProps =>
+    newSelectableCriterias[name];
+
+  const isNonSelectableCriteria = (criteria: CriteriaModel): boolean =>
+    pipe(({ name }) => name, getSelectableCriteriaByName, isNil)(criteria);
 
   const applyCurrentFilter = useUpdateAtom(applyCurrentFilterDerivedAtom);
   const clearFilter = useUpdateAtom(clearFilterDerivedAtom);
