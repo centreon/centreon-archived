@@ -7284,10 +7284,6 @@ msgstr "Si le \"Common Name\" (CN) du certificat est différent de la valeur du 
 msgid "Enable compression"
 msgstr "Activer la compression des données"
 
-
-
-
-
 msgid "Network address. Can be either IP or FQDN. If no DNS service is available, using a FQDN could raise false alarms."
 msgstr "Adresse réseau TCP/IPv4 ou FQDN. Si un FQDN est utilisé, cela peut aboutir à de fausses alertes en cas de panne DNS."
 
@@ -7317,8 +7313,6 @@ msgstr "Lien cliquable affiché dans la colonne Action de la page Statut des Res
 
 msgid "Geographic coordinates to allow Centreon MAP to plot the resource on a geographic view. Format: Latitude,Longitude. For example, Paris' coordinates are 48.51,2.20"
 msgstr "Coordonnées géographiques permettant à Centreon MAP de positionner les ressources sur une vue géographique. Format : Latitude,Longitude. Par exemple pour Paris, saisir : 48.51,2.20"
-
-
 
 msgid "Host(s) to which the service is attached"
 msgstr "Hôte(s) au(x)quel(s) le service est rattaché"

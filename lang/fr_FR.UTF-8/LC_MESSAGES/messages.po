@@ -17077,7 +17077,6 @@ msgstr "points hors enveloppe"
 msgid "Edit anomaly detection data"
 msgstr "Modifier les données de détection d'anomalie"
 
-##########
 msgid "Enable/disable resource"
 msgstr "Activer/désactiver la ressource"
 
