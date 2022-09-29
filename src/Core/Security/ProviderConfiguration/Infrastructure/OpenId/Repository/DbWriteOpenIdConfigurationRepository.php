@@ -154,9 +154,10 @@ class DbWriteOpenIdConfigurationRepository extends AbstractRepositoryDRB impleme
             $providerConfigurationId = (int)$result['id'];
             $insertStatement = $this->db->prepare(
                 "INSERT INTO security_provider_access_group_relation
-                    (claim_value, access_group_id, provider_configuration_id)
-                    VALUES (:claimValue, :accessGroupId, :providerConfigurationId)"
+                    (claim_value, access_group_id, provider_configuration_id, priority)
+                    VALUES (:claimValue, :accessGroupId, :providerConfigurationId, :priority)"
             );
+            $priority = 0;
             foreach ($authorizationRules as $authorizationRule) {
                 $insertStatement->bindValue(':claimValue', $authorizationRule->getClaimValue());
                 $insertStatement->bindValue(
@@ -167,6 +168,11 @@ class DbWriteOpenIdConfigurationRepository extends AbstractRepositoryDRB impleme
                 $insertStatement->bindValue(
                     ':providerConfigurationId',
                     $providerConfigurationId,
+                    \PDO::PARAM_INT
+                );
+                $insertStatement->bindValue(
+                    ':priority',
+                    ++$priority,
                     \PDO::PARAM_INT
                 );
                 $insertStatement->execute();

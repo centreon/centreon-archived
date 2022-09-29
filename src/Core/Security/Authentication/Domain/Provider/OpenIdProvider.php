@@ -877,7 +877,8 @@ class OpenIdProvider implements OpenIdProviderInterface
             CentreonUserLog::TYPE_LOGIN,
             "[Openid] [INFO] $message" . ($content !== null ? ' : ' . json_encode($content) : '')
         );
-        $this->info("$message : ", $content);
+
+        $this->info("$message : ", $content ?: []);
     }
 
     /**
@@ -1160,8 +1161,9 @@ class OpenIdProvider implements OpenIdProviderInterface
             }
         }
 
-        if ($aclConditions->onlyFirstRoleIsApplied() && !empty($providerConditions)) {
-            $providerConditions = [$providerConditions[0]];
+        $configuredClaimValues = $aclConditions->getClaimValues();
+        if ($aclConditions->onlyFirstRoleIsApplied() && !empty($configuredClaimValues)) {
+            $configuredClaimValues = [$configuredClaimValues[0]];
         }
 
         $this->rolesMappingFromProvider = $providerConditions;
@@ -1170,7 +1172,7 @@ class OpenIdProvider implements OpenIdProviderInterface
             $providerConditions = explode(",", $providerConditions);
         }
 
-        $this->validateAclAttributeOrFail($providerConditions, $aclConditions->getClaimValues());
+        $this->validateAclAttributeOrFail($providerConditions, $configuredClaimValues);
     }
 
     /**

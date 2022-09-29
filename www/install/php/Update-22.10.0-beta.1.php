@@ -625,7 +625,7 @@ function updateOpenIdCustomConfiguration(CentreonDB $pearDB): void
     $statement = $pearDB->query("SELECT custom_configuration FROM provider_configuration WHERE `name`='openid'");
 
     if ($result = $statement->fetch()) {
-        $customConfiguration = json_decode($result, true);
+        $customConfiguration = json_decode($result['custom_configuration'], true);
 
         /**
          * Remove trusted & blacklist client addresses from root of custom configuration
