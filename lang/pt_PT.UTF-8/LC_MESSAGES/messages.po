@@ -15720,3 +15720,18 @@ msgstr "Editar dados de detecção de anomalias"
 
 #  msgid "Members"
 #  msgstr ""
+
+#  msgid "Monitoring settings"
+#  msgstr ""
+
+#  msgid "Classification"
+#  msgstr ""
+
+#  msgid "Hosts (simplified)"
+#  msgstr ""
+
+#  msgid "Templates (simplified)"
+#  msgstr ""
+
+#  msgid "Host Groups (simplified)"
+#  msgstr ""

@@ -4839,3 +4839,66 @@ msgstr ""
 
 #  msgid "Enable compression"
 #  msgstr ""
+
+#  msgid "Network address. Can be either IP or FQDN. If no DNS service is available, using a FQDN could raise false alarms."
+#  msgstr ""
+
+#  msgid "This setting determines whether the host and its services must be monitored or not."
+#  msgstr ""
+
+#  msgid "Central, remote server or poller that will monitor the host."
+#  msgstr ""
+
+#  msgid "Timezone corresponding to the host's location. This will impact how the check period is applied to it."
+#  msgstr ""
+
+#  msgid "Host groups linked to the host."
+#  msgstr ""
+
+#  msgid "Host categories linked to the host."
+#  msgstr ""
+
+#  msgid "Host severity level. Can be used to sort alerts in the monitoring menus, including the Resources Status page."
+#  msgstr ""
+
+#  msgid "Clickable URL displayed in the Notes column of the Resources Status page."
+#  msgstr ""
+
+#  msgid "Clickable URL displayed in the Action column of the Resources Status page. Intended as a shortcut for an action on the resource, such as opening a management console."
+#  msgstr ""
+
+#  msgid "Geographic coordinates to allow Centreon MAP to plot the resource on a geographic view. Format: Latitude,Longitude. For example, Paris' coordinates are 48.51,2.20"
+#  msgstr ""
+
+#  msgid "Host(s) to which the service is attached"
+#  msgstr ""
+
+#  msgid "Name of the service or template. It cannot contain white spaces, or special characters like ~!$%^&*\"|'<>?,()=. Each service of an host must have a unique name. The name of a service template must be unique."
+#  msgstr ""
+
+#  msgid "When one of these host template is applied to a host, a service will be created based on the current template."
+#  msgstr ""
+
+#  msgid "Service groups linked to the service."
+#  msgstr ""
+
+#  msgid "Host categories linked to the service."
+#  msgstr ""
+
+#  msgid "Information note displayed as a tooltip in the Notes column of the Resources Status page."
+#  msgstr ""
+
+#  msgid "This setting determines whether the service must be monitored or not."
+#  msgstr ""
+
+#  msgid "Service severity level. Can be used to sort alerts in the monitoring menus, including the Resources Status page."
+#  msgstr ""
+
+#  msgid "Name of the host group. It must be unique and cannot contain white spaces, or special characters like ~!$%^&*\"|'<>?,()=."
+#  msgstr ""
+
+#  msgid "Hosts belonging to the group"
+#  msgstr ""
+
+#  msgid "Geographic coordinates to allow Centreon MAP to plot the host group on a geographic view. Format: Latitude,Longitude. For example, Paris' coordinates are 48.51,2.20"
+#  msgstr ""
