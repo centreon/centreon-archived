@@ -31,6 +31,7 @@ abstract class AbstractHypermediaProvider
 {
     public const URI_EVENT_LOGS = '/main.php?p=20301&svc={hostId}_{serviceId}';
     public const ENDPOINT_SERVICE_DOWNTIME = '';
+    public const ENDPOINT_DETAILS = '';
 
     /**
      * @param ContactInterface $contact
@@ -171,5 +172,13 @@ abstract class AbstractHypermediaProvider
         }
 
         return $this->generateUri(static::URI_EVENT_LOGS, $urlParams);
+    }
+
+    /**
+     * @param array<string, int> $parameters
+     */
+    protected function generateResourceDetailsUri(array $parameters): string
+    {
+        return $this->generateEndpoint(static::ENDPOINT_DETAILS, $parameters);
     }
 }
