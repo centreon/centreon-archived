@@ -1059,13 +1059,13 @@ class OpenIdProvider implements OpenIdProviderInterface
         $conditionMatches = array_intersect($providerAuthenticationConditions, $configuredAuthorizedValues);
         if (empty($conditionMatches)) {
             $this->error(
-                "Configured attribute path not found in conditions endpoint",
+                "Configured attribute value not found in conditions endpoint",
                 [
                     "configured_authorized_values" => $configuredAuthorizedValues
                 ]
             );
             $this->logExceptionInLoginLogFile(
-                "Configured attribute path not found in conditions endpoint: %s, message: %s",
+                "Configured attribute value not found in conditions endpoint: %s, message: %s",
                 AuthenticationConditionsException::conditionsNotFound()
             );
             throw AuthenticationConditionsException::conditionsNotFound();
@@ -1341,13 +1341,13 @@ class OpenIdProvider implements OpenIdProviderInterface
         }
         if (empty($groupsMatches)) {
             $this->error(
-                "Configured attribute path not found in conditions endpoint",
+                "Configured attribute value not found in groups mapping endpoint",
                 [
                     "configured_groups_mapping" => $providerGroupsMapping
                 ]
             );
             $this->logExceptionInLoginLogFile(
-                "Configured attribute path not found in conditions endpoint: %s, message: %s",
+                "Configured attribute value not found in groups mapping endpoint: %s, message: %s",
                 AuthenticationConditionsException::conditionsNotFound()
             );
             throw AuthenticationConditionsException::conditionsNotFound();
