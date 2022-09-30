@@ -15705,3 +15705,33 @@ msgstr "pontos fora do envelope"
 
 msgid "Edit anomaly detection data"
 msgstr "Editar dados de detecção de anomalias"
+
+#  msgid "Enable/disable resource"
+#  msgstr ""
+
+#  msgid "Note"
+#  msgstr ""
+
+#  msgid "Note URL"
+#  msgstr ""
+
+#  msgid "Geographic coordinates"
+#  msgstr ""
+
+#  msgid "Members"
+#  msgstr ""
+
+#  msgid "Monitoring settings"
+#  msgstr ""
+
+#  msgid "Classification"
+#  msgstr ""
+
+#  msgid "Hosts (simplified)"
+#  msgstr ""
+
+#  msgid "Templates (simplified)"
+#  msgstr ""
+
+#  msgid "Host Groups (simplified)"
+#  msgstr ""

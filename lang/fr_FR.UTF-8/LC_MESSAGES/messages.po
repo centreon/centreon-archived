@@ -17076,3 +17076,33 @@ msgstr "points hors enveloppe"
 
 msgid "Edit anomaly detection data"
 msgstr "Modifier les données de détection d'anomalie"
+
+msgid "Enable/disable resource"
+msgstr "Activer/désactiver la ressource"
+
+msgid "Note"
+msgstr "Note"
+
+msgid "Note URL"
+msgstr "URL de la note"
+
+msgid "Geographic coordinates"
+msgstr "Coordonnées géographiques"
+
+msgid "Members"
+msgstr "Membres"
+
+msgid "Monitoring settings"
+msgstr "Paramètres de supervision"
+
+msgid "Classification"
+msgstr "Classification"
+
+msgid "Hosts (simplified)"
+msgstr "Hôtes (simplifiés)"
+
+msgid "Templates (simplified)"
+msgstr "Modèles (simplifiés)"
+
+msgid "Host Groups (simplified)"
+msgstr "Groupes d'hôtes (simplifiés)"

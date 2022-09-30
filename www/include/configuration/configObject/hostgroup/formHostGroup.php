@@ -103,7 +103,7 @@ if ($o == "a") {
  * Contact basic information
  */
 $form->addElement('header', 'information', _("General Information"));
-$form->addElement('text', 'hg_name', _("Host Group Name"), $attrsText);
+$form->addElement('text', 'hg_name', _("Name"), $attrsText);
 $form->addElement('text', 'hg_alias', _("Alias"), $attrsText);
 
 /*
@@ -116,7 +116,7 @@ $attrHost1 = array_merge(
     $attrHosts,
     array('defaultDatasetRoute' => $hostRoute)
 );
-$form->addElement('select2', 'hg_hosts', _("Linked Hosts"), array(), $attrHost1);
+$form->addElement('select2', 'hg_hosts', _("Members"), array(), $attrHost1);
 
 /*
  * Extended information
