@@ -92,9 +92,15 @@ class ACLConditions
      */
     public function getClaimValues(): array
     {
-        return array_map(function ($relation) {
+        $values = array_map(function ($relation) {
             return $relation->getClaimValue();
         }, $this->relations);
+
+        if ($this->applyOnlyFirstRole) {
+            $values = [$values[0]];
+        }
+
+        return $values;
     }
 
     /**
