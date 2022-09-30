@@ -209,12 +209,4 @@ class ServiceHypermediaProvider extends AbstractHypermediaProvider implements Hy
             $categories
         );
     }
-
-    /**
-     * @inheritDoc
-     */
-    public function generateResourceDetailsUri(array $parameters): string
-    {
-        return parent::generateResourceDetailsUri($parameters);
-    }
 }

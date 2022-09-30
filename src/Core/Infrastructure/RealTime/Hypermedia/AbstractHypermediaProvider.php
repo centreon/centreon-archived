@@ -177,7 +177,7 @@ abstract class AbstractHypermediaProvider
     /**
      * @param array<string, int> $parameters
      */
-    protected function generateResourceDetailsUri(array $parameters): string
+    public function generateResourceDetailsUri(array $parameters): string
     {
         return $this->generateEndpoint(static::ENDPOINT_DETAILS, $parameters);
     }

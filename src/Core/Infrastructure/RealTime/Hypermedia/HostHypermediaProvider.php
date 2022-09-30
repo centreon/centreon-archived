@@ -197,12 +197,4 @@ class HostHypermediaProvider extends AbstractHypermediaProvider implements Hyper
             $categories
         );
     }
-
-    /**
-     * @inheritDoc
-     */
-    public function generateResourceDetailsUri(array $parameters): string
-    {
-        return parent::generateResourceDetailsUri($parameters);
-    }
 }

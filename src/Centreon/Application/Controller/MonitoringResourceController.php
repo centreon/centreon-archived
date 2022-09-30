@@ -387,8 +387,7 @@ class MonitoringResourceController extends AbstractController
             [
                 'hostId' => $hostId,
                 'serviceId' => $serviceId
-            ],
-            self::TAB_DETAILS_NAME
+            ]
         );
     }
 
@@ -431,8 +430,7 @@ class MonitoringResourceController extends AbstractController
             $metaId,
             [
                 'metaId' => $metaId
-            ],
-            self::TAB_DETAILS_NAME
+            ]
         );
     }
 

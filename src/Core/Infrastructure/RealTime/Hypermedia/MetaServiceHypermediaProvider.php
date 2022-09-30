@@ -135,12 +135,4 @@ class MetaServiceHypermediaProvider extends AbstractHypermediaProvider implement
     {
         return [];
     }
-
-    /**
-     * @inheritDoc
-     */
-    public function generateResourceDetailsUri(array $parameters): string
-    {
-        return parent::generateResourceDetailsUri($parameters);
-    }
 }
