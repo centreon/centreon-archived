@@ -25,11 +25,12 @@ namespace Core\Infrastructure\RealTime\Hypermedia;
 
 use Centreon\Domain\Contact\Contact;
 use Core\Domain\RealTime\Model\ResourceTypes\ServiceResourceType;
+use Core\Infrastructure\Common\Api\HttpUrlTrait;
 
 class ServiceHypermediaProvider extends AbstractHypermediaProvider implements HypermediaProviderInterface
 {
     public const ENDPOINT_SERVICE_ACKNOWLEDGEMENT = 'centreon_application_acknowledgement_addserviceacknowledgement',
-                 ENDPOINT_SERVICE_DETAILS = 'centreon_application_monitoring_resource_details_service',
+                 ENDPOINT_DETAILS = 'centreon_application_monitoring_resource_details_service',
                  ENDPOINT_SERVICE_DOWNTIME = 'monitoring.downtime.addServiceDowntime',
                  ENDPOINT_SERVICE_NOTIFICATION_POLICY = 'configuration.service.notification-policy',
                  ENDPOINT_SERVICE_PERFORMANCE_GRAPH = 'monitoring.metric.getServicePerformanceMetrics',
@@ -117,7 +118,7 @@ class ServiceHypermediaProvider extends AbstractHypermediaProvider implements Hy
         $urlParams = ['serviceId' => $parameters['serviceId'], 'hostId' => $parameters['hostId'],];
 
         return [
-            'details' => $this->generateEndpoint(self::ENDPOINT_SERVICE_DETAILS, $urlParams),
+            'details' => $this->generateEndpoint(self::ENDPOINT_DETAILS, $urlParams),
             'timeline' => $this->generateEndpoint(self::ENDPOINT_SERVICE_TIMELINE, $urlParams),
             'timeline_download' => $this->generateEndpoint(self::TIMELINE_DOWNLOAD, $urlParams),
             'status_graph' => $this->generateEndpoint(self::ENDPOINT_SERVICE_STATUS_GRAPH, $urlParams),

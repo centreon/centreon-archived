@@ -29,8 +29,6 @@ use Core\Domain\RealTime\Model\ResourceTypes\MetaServiceResourceType;
 
 class MetaServiceHypermediaProvider extends AbstractHypermediaProvider implements HypermediaProviderInterface
 {
-    use HttpUrlTrait;
-
     public const ENDPOINT_TIMELINE = 'centreon_application_monitoring_gettimelinebymetaservices',
                  ENDPOINT_TIMELINE_DOWNLOAD = 'centreon_application_monitoring_download_timeline_by_metaservice',
                  ENDPOINT_PERFORMANCE_GRAPH = 'monitoring.metric.getMetaServicePerformanceMetrics',
