@@ -22,6 +22,10 @@ declare(strict_types=1);
 
 namespace Centreon\Application\Controller;
 
+use Core\Infrastructure\RealTime\Hypermedia\HostHypermediaProvider;
+use Core\Infrastructure\RealTime\Hypermedia\MetaServiceHypermediaProvider;
+use Core\Infrastructure\RealTime\Hypermedia\ServiceHypermediaProvider;
+use Core\Infrastructure\RealTime\Hypermedia\UriGenerator;
 use FOS\RestBundle\View\View;
 use FOS\RestBundle\Context\Context;
 use Centreon\Domain\Contact\Contact;
@@ -124,7 +128,8 @@ class MonitoringResourceController extends AbstractController
         private ResourceServiceInterface $resource,
         private IconUrlNormalizer $iconUrlNormalizer,
         \Traversable $resourceTypes,
-        \Traversable $hyperMediaProviders
+        \Traversable $hyperMediaProviders,
+        private UriGenerator $uriGenerator
     ) {
         $this->hasProviders($resourceTypes);
         $this->resourceTypes = iterator_to_array($resourceTypes);
@@ -332,14 +337,11 @@ class MonitoringResourceController extends AbstractController
             throw new ResourceException(sprintf(_('Cannot build uri to unknown tab : %s'), $tab));
         }
 
-        return $this->buildListingUri([
-            'details' => json_encode([
-                'type' => ResourceEntity::TYPE_HOST,
-                'id' => $hostId,
-                'tab' => $tab,
-                'uuid' => 'h' . $hostId
-            ]),
-        ]);
+        return $this->buildResourceDetailUri(
+            $hostId,
+            HostHypermediaProvider::ENDPOINT_HOST_DETAILS,
+            ['hostId' => $hostId]
+        );
     }
 
     /**
@@ -368,16 +370,27 @@ class MonitoringResourceController extends AbstractController
             throw new ResourceException(sprintf(_('Cannot build uri to unknown tab : %s'), $tab));
         }
 
-        return $this->buildListingUri([
+        return $this->buildResourceDetailUri(
+            $serviceId,
+            ServiceHypermediaProvider::ENDPOINT_SERVICE_DETAILS,
+            ['hostId' => $hostId, 'serviceId' => $serviceId]
+        );
+    }
+
+    private function buildResourceDetailUri(int $id, string $type, array $resourceParams): string
+    {
+        $resourcesDetailsEndpoint = $this->getBaseUri();
+        $resourcesDetailsEndpoint .= $this->uriGenerator->generateEndpoint($type, $resourceParams);
+
+        $params = [
             'details' => json_encode([
-                'parentType' => ResourceEntity::TYPE_HOST,
-                'parentId' => $hostId,
-                'type' => ResourceEntity::TYPE_SERVICE,
-                'id' => $serviceId,
-                'tab' => $tab,
-                'uuid' => 'h' . $hostId . '-s' . $serviceId
+                'id' => $id,
+                'tab' => self::TAB_DETAILS_NAME,
+                'resourcesDetailsEndpoint' => $resourcesDetailsEndpoint
             ]),
-        ]);
+        ];
+
+        return $this->buildListingUri($params);
     }
 
     /**
@@ -393,16 +406,11 @@ class MonitoringResourceController extends AbstractController
             throw new ResourceException(sprintf(_('Cannot build uri to unknown tab : %s'), $tab));
         }
 
-        return $this->buildListingUri([
-            'details' => json_encode([
-                'parentType' => null,
-                'parentId' => null,
-                'type' => ResourceEntity::TYPE_META,
-                'id' => $metaId,
-                'tab' => $tab,
-                'uuid' => 'm' . $metaId
-            ]),
-        ]);
+        return $this->buildResourceDetailUri(
+            $metaId,
+            MetaServiceHypermediaProvider::ENDPOINT_DETAILS,
+            ['metaId' => $metaId]
+        );
     }
 
     /**
