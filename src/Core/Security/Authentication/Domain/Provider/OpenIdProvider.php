@@ -1343,14 +1343,14 @@ class OpenIdProvider implements OpenIdProviderInterface
             $this->error(
                 "Configured attribute value not found in groups mapping endpoint",
                 [
-                    "configured_groups_mapping" => $providerGroupsMapping
+                    "provider_groups_mapping" => $providerGroupsMapping,
+                    "configured_groups_mapping" => $claimsFromProvider
                 ]
             );
             $this->logExceptionInLoginLogFile(
                 "Configured attribute value not found in groups mapping endpoint: %s, message: %s",
                 AuthenticationConditionsException::conditionsNotFound()
             );
-            throw AuthenticationConditionsException::conditionsNotFound();
         }
         $this->info("Groups found", ["group" => $groupsMatches]);
         $this->logAuthenticationInfo("Groups found", $groupsMatches);
