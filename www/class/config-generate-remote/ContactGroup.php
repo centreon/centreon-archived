@@ -48,6 +48,8 @@ class ContactGroup extends AbstractObject
     protected $stmtContact = null;
     protected $stmtCgService = null;
 
+    protected $illegalCharsTab = array();
+
     /**
      * Generate contact group cache
      *
@@ -184,7 +186,34 @@ class ContactGroup extends AbstractObject
     }
 
     /**
-     * Generate contact group and get contact group name
+     * Check illegal char defined into nagios.cfg file
+     *
+     * @param string $name The string to sanitize
+     * @return string The string sanitized
+     */
+    protected function checkIllegalChar($name)
+    {
+        $pollerId = $this->backendInstance->getPollerId();
+
+        if (! isset($this->illegalCharsTab[ $pollerId ])) {
+            $query = "SELECT illegal_object_name_chars FROM cfg_nagios WHERE nagios_server_id = :pollerId";
+            $stmt = $this->backendInstance->db->prepare($query);
+            $stmt->bindParam(':pollerId', $pollerId, PDO::PARAM_INT);
+            $stmt->execute();
+
+            $illegalCharsStr = implode('', $stmt->fetchAll(PDO::FETCH_COLUMN));
+            $illegalCharsStr = html_entity_decode($illegalCharsStr, ENT_QUOTES, "UTF-8");
+            $this->illegalCharsTab[ $pollerId ] = array_unique(str_split($illegalCharsStr));
+        }
+
+        if (! empty($this->illegalCharsTab[ $pollerId ])) {
+            $name = str_replace($this->illegalCharsTab[ $pollerId ], '_', $name);
+        }
+        return $name;
+    }
+
+    /**
+     * Generate contact group and get contact group name (sanitized)
      *
      * @param null|integer $cgId
      * @return void|string
@@ -212,6 +241,8 @@ class ContactGroup extends AbstractObject
         if ($this->checkGenerate($cgId)) {
             return $this->cg[$cgId]['cg_name'];
         }
+
+        $this->cg[$cgId]['cg_name'] = $this->checkIllegalChar($this->cg[$cgId]['cg_name']);
 
         $this->getContactFromCgId($cgId);
 
