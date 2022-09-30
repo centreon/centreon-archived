@@ -172,4 +172,9 @@ abstract class AbstractHypermediaProvider
 
         return $this->generateUri(static::URI_EVENT_LOGS, $urlParams);
     }
+
+    public function generateResourceDetailsUri(array $parameters): string
+    {
+        return $this->getBaseUri() . $this->generateEndpoint(static::ENDPOINT_DETAILS, $parameters);
+    }
 }

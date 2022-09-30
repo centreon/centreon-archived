@@ -99,6 +99,11 @@ class MetaServiceHypermediaProvider extends AbstractHypermediaProvider implement
             array_merge($parameters, $acknowledgementFilter)
         );
     }
+    /*
+    public function generateResourceDetailsUri(array $parameters): string
+    {
+        return $this->getBaseUri() . $this->generateEndpoint(self::ENDPOINT_DETAILS, $parameters);
+    } */
 
     /**
      * @inheritDoc

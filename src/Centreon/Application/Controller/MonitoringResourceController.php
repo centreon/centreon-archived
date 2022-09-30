@@ -394,6 +394,39 @@ class MonitoringResourceController extends AbstractController
     }
 
     /**
+     * Possible other solution
+     */
+/*     public function buildMetaServiceDetailsUri(int $metaId, string $tab = self::TAB_DETAILS_NAME): string
+    {
+        if (!in_array($tab, self::ALLOWED_TABS)) {
+            throw new ResourceException(sprintf(_('Cannot build uri to unknown tab : %s'), $tab));
+        }
+
+        return $this->buildResourceDetailUri($metaId, MetaServiceResourceType::TYPE_NAME, ['metaId' => $metaId]);
+    }
+
+    private function buildResourceDetailUri(int $id, string $type, array $resourceParams): string
+    {
+        foreach ($this->hyperMediaProviders as $hyperMediaProvider) {
+            if ($hyperMediaProvider->isValidFor($type)) {
+                $hyperMediaProvider->generateResourceDetailsUri($resourceParams);
+            }
+        }
+        $resourcesDetailsEndpoint = $this->getBaseUri();
+        $resourcesDetailsEndpoint .= $this->uriGenerator->generateEndpoint($type, $resourceParams);
+
+        $params = [
+            'details' => json_encode([
+                'id' => $id,
+                'tab' => self::TAB_DETAILS_NAME,
+                'resourcesDetailsEndpoint' => $resourcesDetailsEndpoint
+            ]),
+        ];
+
+        return $this->buildListingUri($params);
+    } */
+
+    /**
      * Build uri to access meta service panel
      *
      * @param integer $metaId
