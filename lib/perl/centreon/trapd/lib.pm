@@ -749,7 +749,7 @@ sub readtrap {
     my $variable_fix;
     while (defined(my $line = <$input>)) {
         push(@rawtrap, $line);
-        $line =~ s(`)(')g;	#` Replace any back ticks with regular single quote
+        $line =~ s(`)(')g;	# Replace any back ticks with regular single quote
 
         # Remove escape from quotes if enabled
         if ($args{config}->{remove_backslash_from_quotes} == 1) {
@@ -760,6 +760,10 @@ sub readtrap {
         my $temp2;
 
         ($temp1, $temp2) = split (/ /, $line, 2);
+
+        if (!defined($temp2)) {
+            next;
+        }
 
         chomp ($temp1);       # Variable NAME
         chomp ($temp2);       # Variable VALUE
@@ -781,7 +785,7 @@ sub readtrap {
             # If line begins with a double quote (") but does not END in a double quote then we need to merge
             # the following lines together into one until we find the closing double quote.  Allow for escaped quotes.
             # Net-SNMP sometimes divides long lines into multiple lines..
-            if ( ($temp2 =~ /^\"/) && ( ! ($temp2 =~ /\"$/)) ) {
+            if ( ($temp2 =~ /^\"/) && ( ! ($temp2 =~ /\"$/)) || ($temp2 eq "\"") ) {
                 $args{logger}->writeLogDebug("  Multi-line value detected - merging onto one line...");
                 $temp2 =~ s/[\r\n]//g;			# Remove the newline character
                 while (defined(my $line2 = <$input>)) {
@@ -799,6 +803,9 @@ sub readtrap {
             if ($temp2 eq "") {
                 $temp2 = "(null)";
             }
+
+            # Replace single quotes in case of running external commands
+            $temp2 =~ s/'/'\\''/g;
 
             # Have quotes around it?
             if ($temp2 =~ /^\"/ && $temp2 =~ /\"$/) {
