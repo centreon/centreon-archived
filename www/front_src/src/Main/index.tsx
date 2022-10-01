@@ -20,6 +20,7 @@ import { useAtomValue } from 'jotai/utils';
 import { useAtom } from 'jotai';
 
 import reactRoutes from '../reactRoutes/routeMap';
+import NotAllowedPage from '../FallbackPages/NotAllowedPage';
 
 import { platformInstallationStatusAtom } from './atoms/platformInstallationStatusAtom';
 import Provider from './Provider';
@@ -79,6 +80,7 @@ const Main = (): JSX.Element => {
       return;
     }
 
+    // TODO: if isCloud from API and license expired redirect to authentication-denied route
     if (not(areUserParametersLoaded)) {
       navigate(reactRoutes.login);
     }
@@ -95,6 +97,10 @@ const Main = (): JSX.Element => {
         <Route
           element={<ResetPasswordPage />}
           path={reactRoutes.resetPassword}
+        />
+        <Route
+          element={<NotAllowedPage />}
+          path={reactRoutes.authenticationDenied}
         />
         <Route element={<AppPage />} path="*" />
       </Routes>

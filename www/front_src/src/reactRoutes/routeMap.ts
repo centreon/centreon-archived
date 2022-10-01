@@ -1,5 +1,6 @@
 const routeMap = {
   authentication: '/administration/authentication',
+  authenticationDenied: '/authentication-denied',
   extensionsManagerPage: '/administration/extensions/manager',
   install: '/install/install.php',
   login: '/login',
