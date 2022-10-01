@@ -72,14 +72,39 @@ allow httpd_t snmpd_var_lib_t:file write;
 allow httpd_t systemd_logind_sessions_t:fifo_file write;
 allow httpd_t systemd_systemctl_exec_t:file { execute getattr };
 
+#============= init_t ==============
+allow init_t httpd_tmp_t:dir { remove_name rmdir };
+
+#============= logrotate_t ==============
+allow logrotate_t var_t:dir read;
+
+#============= rhsmcertd_t ==============
+allow rhsmcertd_t var_log_t:dir add_name;
+allow rhsmcertd_t var_log_t:file create;
+
 #============= system_dbusd_t ==============
 allow system_dbusd_t setroubleshootd_t:process { noatsecure rlimitinh siginh };
 
 #============= systemd_tmpfiles_t ==============
 allow systemd_tmpfiles_t self:capability net_admin;
 
+#============= systemd_logind_t ==============
+allow systemd_logind_t httpd_tmp_t:dir { read remove_name rmdir write };
+allow systemd_logind_t snmpd_t:dbus send_msg;
+
 #============= NetworkManager_t ==============
 allow NetworkManager_t initrc_t:process { noatsecure rlimitinh siginh };
 
 #============= snmpd_t ==============
 allow snmpd_t fixed_disk_device_t:blk_file read;
+allow snmpd_t centreon_spool_t:dir { add_name write };
+allow snmpd_t centreon_spool_t:file { create getattr ioctl open setattr write };
+allow snmpd_t lastlog_t:file { open read write };
+allow snmpd_t security_t:security compute_av;
+allow snmpd_t self:capability audit_write;
+allow snmpd_t self:netlink_audit_socket { create nlmsg_relay };
+allow snmpd_t self:netlink_selinux_socket { bind create };
+allow snmpd_t self:passwd rootok;
+allow snmpd_t systemd_logind_t:dbus send_msg;
+allow snmpd_t unconfined_dbusd_t:unix_stream_socket connectto;
+allow snmpd_t user_tmp_t:sock_file write;
