@@ -34,7 +34,6 @@ use Centreon\Infrastructure\Service\CentcoreConfigService;
 use Centreon\Infrastructure\Service\CentreonDBManagerService;
 use Centreon\Domain\Service\I18nService;
 use Centreon\Domain\Service\FrontendComponentService;
-use Centreon\Domain\Service\AppKeyGeneratorService;
 use Centreon\Domain\Service\BrokerConfigurationService;
 use Centreon\Domain\Repository\CfgCentreonBrokerRepository;
 use Centreon\Domain\Repository\CfgCentreonBrokerInfoRepository;
@@ -169,12 +168,6 @@ class ServiceProvider implements AutoloadServiceProviderInterface
             }
 
             return $_SESSION['centreon']->user; // @codeCoverageIgnoreEnd
-        };
-
-        $pimple['centreon.keygen'] = function (): AppKeyGeneratorService {
-            $service = new AppKeyGeneratorService();
-
-            return $service;
         };
 
         $pimple[static::CENTREON_ACL] = function (Container $container): CentreonACL {
