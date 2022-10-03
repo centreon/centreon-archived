@@ -17,6 +17,7 @@ import {
 import { retrievedNavigation } from '../Navigation/mocks';
 import { retrievedFederatedModule } from '../federatedModules/mocks';
 import { navigationEndpoint } from '../Navigation/useNavigation';
+import { labelAuthenticationDenied } from '../FallbackPages/AuthenticationDenied/translatedLabels';
 
 import { labelCentreonIsLoading } from './translatedLabels';
 
@@ -308,6 +309,18 @@ describe('Main', () => {
 
     await waitFor(() => {
       expect(screen.getByLabelText(labelConnect)).toBeInTheDocument();
+    });
+  });
+
+  it('displays the authentication denied page', async () => {
+    window.history.pushState({}, '', '/authentication-denied');
+
+    mockDefaultGetRequests();
+
+    renderMain();
+
+    await waitFor(() => {
+      expect(screen.getByText(labelAuthenticationDenied)).toBeInTheDocument();
     });
   });
 
