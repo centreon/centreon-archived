@@ -246,18 +246,6 @@ try {
         $msg_restart[$key] = str_replace("\n", "<br>", $str);
     }
 
-    /* Find restart / reload action from modules */
-    foreach ($centreon->modules as $key => $value) {
-        if (
-            $value["restart"]
-            && $files = glob(_CENTREON_PATH_ . "www/modules/" . $key . "/restart_pollers/*.php")
-        ) {
-            foreach ($files as $filename) {
-                include $filename;
-            }
-        }
-    }
-
     $xml->startElement("response");
     $xml->writeElement("status", $okMsg);
     $xml->writeElement("statuscode", STATUS_OK);
