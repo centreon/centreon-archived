@@ -19,12 +19,14 @@ import {
 
 export const inputs: Array<InputProps> = [
   {
+    dataTestId: 'web_sso_isActive',
     fieldName: 'isActive',
     group: labelActivation,
     label: labelEnableWebSSOAuthentication,
     type: InputType.Switch,
   },
   {
+    dataTestId: 'web_sso_isForced',
     fieldName: 'isForced',
     group: labelActivation,
     label: labelAuthenticationMode,
@@ -47,6 +49,7 @@ export const inputs: Array<InputProps> = [
       creatable: true,
       options: [],
     },
+    dataTestId: 'web_sso_trustedClientAddresses',
     fieldName: 'trustedClientAddresses',
     group: labelClientAddresses,
     label: labelTrustedClientAddresses,
@@ -57,12 +60,14 @@ export const inputs: Array<InputProps> = [
       creatable: true,
       options: [],
     },
+    dataTestId: 'web_sso_blacklistClientAddresses',
     fieldName: 'blacklistClientAddresses',
     group: labelClientAddresses,
     label: labelBlacklistClientAddresses,
     type: InputType.MultiAutocomplete,
   },
   {
+    dataTestId: 'web_sso_loginHeaderAttribute',
     fieldName: 'loginHeaderAttribute',
     group: labelIdentityProvider,
     label: labelLoginHeaderAttributeName,
@@ -70,12 +75,14 @@ export const inputs: Array<InputProps> = [
     type: InputType.Text,
   },
   {
+    dataTestId: 'web_sso_patternMatchingLogin',
     fieldName: 'patternMatchingLogin',
     group: labelIdentityProvider,
     label: labelPatternMatchLogin,
     type: InputType.Text,
   },
   {
+    dataTestId: 'web_sso_patternReplaceLogin',
     fieldName: 'patternReplaceLogin',
     group: labelIdentityProvider,
     label: labelPatternReplaceLogin,
