@@ -370,7 +370,6 @@ try {
 
   stage('Docker packaging') {
     def parallelSteps = [:]
-    def osBuilds = isStableBuild() ? ['centos7', 'alma8'] : ['centos7']
     for (x in ['centos7', 'alma8']) {
       def osBuild = x
       parallelSteps[osBuild] = {
