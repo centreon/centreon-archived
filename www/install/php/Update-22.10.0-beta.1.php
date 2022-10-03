@@ -644,7 +644,7 @@ function updateOpenIdCustomConfiguration(CentreonDB $pearDB): void
         $customConfiguration['authentication_conditions'] = [
             'is_enabled' => false,
             'attribute_path' => '',
-            'endpoint' => '',
+            'endpoint' => ['type' => 'introspection_endpoint', 'custom_endpoint' => ''],
             'authorized_values' => [],
             'trusted_client_addresses' => $trustedClientAddresses,
             'blacklist_client_addresses' => $blacklistClientAddresses
