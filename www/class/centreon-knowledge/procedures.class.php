@@ -139,13 +139,15 @@ class procedures
             "WHERE host_host_id = '" . $host_id . "' " .
             "ORDER BY `order`"
         );
+        $statement = $this->centreon_DB->prepare(
+            "SELECT host_name " .
+            "FROM host " .
+            "WHERE host_id = :host_id LIMIT 1"
+        );
         while ($row = $dbResult->fetch()) {
-            $dbResult2 = $this->centreon_DB->query(
-                "SELECT host_name " .
-                "FROM host " .
-                "WHERE host_id = '" . $row['host_tpl_id'] . "' LIMIT 1"
-            );
-            $hTpl = $dbResult2->fetch();
+            $statement->bindValue(':host_id', $row['host_tpl_id'], \PDO::PARAM_INT);
+            $statement->execute();
+            $hTpl = $statement->fetch(\PDO::FETCH_ASSOC);
             $tplArr[$row['host_tpl_id']] = html_entity_decode($hTpl["host_name"], ENT_QUOTES);
         }
         unset($row);
