@@ -15412,6 +15412,77 @@ msgstr ""
 # msgid "OpenID Connect only"
 # msgstr ""
 
+msgid "Trusted client addresses"
+msgstr "Endereços de clientes de confiança"
+
+msgid "Login attribute path"
+msgstr "Caminho de atributo de login"
+
+msgid "Blacklist client addresses"
+msgstr "Endereços de clientes da lista negra"
+
+msgid "Enable conditions on identity provider"
+msgstr "Habilitar condições sobre o fornecedor de identidade"
+
+msgid "Conditions attribute path"
+msgstr "Caminho de atributos de condições"
+
+msgid "Which endpoint does the conditions attribute path come from?"
+msgstr "De que ponto final as condições atribuem o caminho?"
+
+msgid "Introspection endpoint"
+msgstr "Ponto final da introspecção"
+
+msgid "User information"
+msgstr "Informações ao usuário"
+
+msgid "Other"
+msgstr "Outros"
+
+msgid "Define authorized conditions values"
+msgstr "Definir valores de condições autorizadas"
+
+msgid "Condition value"
+msgstr "Valor da condição"
+
+msgid "Email attribute path"
+msgstr "Caminho de atributos de e-mail"
+
+msgid "Fullname attribute path"
+msgstr "Caminho de atributos de nome completo"
+
+msgid "Enable automatic management"
+msgstr "Habilitar o gerenciamento automático"
+
+msgid "Apply only first role"
+msgstr "Aplicar apenas o primeiro papel"
+
+msgid "Roles attribute path"
+msgstr "Atributos dos papéis"
+
+msgid "Which endpoint does the roles attribute path come from?"
+msgstr "De qual ponto final os papéis atribuem o caminho?"
+
+msgid "Define the relation between roles and ACL access groups"
+msgstr "Definir a relação entre as funções e os grupos de acesso ACL"
+
+msgid "Role value"
+msgstr "Valor do papel"
+
+msgid "ACL access group"
+msgstr "Grupo de acesso ACL"
+
+msgid "Groups attribute path"
+msgstr "Caminho de atributos de grupos"
+
+msgid "Which endpoint does the groups attribute path come from?"
+msgstr "De que ponto final os grupos atribuem o caminho?"
+
+msgid "Define the relation between groups and contact groups"
+msgstr "Definir a relação entre grupos e grupos de contato"
+
+msgid "Group value"
+msgstr "Valor do grupo"
 # msgid "Mixed"
 # msgstr ""
 
