@@ -120,12 +120,20 @@ class FindMetaService
         $hostId = $metaService->getHostId();
         $serviceId = $metaService->getServiceId();
 
+        $acknowledgement = $metaService->isAcknowledged() === true
+            ? $this->acknowledgementRepository->findOnGoingAcknowledgementByHostIdAndServiceId($hostId, $serviceId)
+            : null;
+
+        $downtimes = $metaService->isInDowntime() === true
+            ? $this->downtimeRepository->findOnGoingDowntimesByHostIdAndServiceId($hostId, $serviceId)
+            : [];
+
         $presenter->present(
             $this->createResponse(
                 $metaService,
                 $metaServiceConfiguration,
-                $this->downtimeRepository->findOnGoingDowntimesByHostIdAndServiceId($hostId, $serviceId),
-                $this->acknowledgementRepository->findOnGoingAcknowledgementByHostIdAndServiceId($hostId, $serviceId)
+                $downtimes,
+                $acknowledgement
             )
         );
     }
