@@ -664,7 +664,7 @@ function updateOpenIdCustomConfiguration(CentreonDB $pearDB): void
         $encodedConfiguration = json_encode($customConfiguration);
 
         $statement = $pearDB->prepare(
-            "UPDATE custom_configuration SET custom_configuration = :customConfiguration WHERE `name`='openid'"
+            "UPDATE provider_configuration SET custom_configuration = :customConfiguration WHERE `name`='openid'"
         );
         $statement->bindValue(':customConfiguration', $encodedConfiguration, \PDO::PARAM_STR);
         $statement->execute();
