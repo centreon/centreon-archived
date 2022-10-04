@@ -71,7 +71,7 @@ const Content = ({
       ref={itemRef}
       style={style}
     >
-      <Paper className={classes.paper}>
+      <Paper className={classes.paper} sx={{ border: 0 }}>
         <div className={classes.tile}>
           <div {...listeners} className={classes.handler}>
             <MoreVertIcon fontSize="small" />
