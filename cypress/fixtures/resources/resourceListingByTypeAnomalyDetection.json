@@ -1,0 +1,106 @@
+{
+    "result": [
+        {
+            "uuid": "h14-a1",
+            "duration": "31s",
+            "last_check": "31s",
+            "short_type": "a",
+            "id": 1,
+            "type": "anomaly-detection",
+            "name": "ad",
+            "alias": null,
+            "fqdn": null,
+            "host_id": 14,
+            "service_id": 27,
+            "icon": null,
+            "monitoring_server_name": "Central",
+            "parent": {
+                "uuid": "h14",
+                "short_type": "h",
+                "id": 14,
+                "type": "host",
+                "name": "Centreon-Server",
+                "alias": "Monitoring Server",
+                "fqdn": "127.0.0.1",
+                "host_id": null,
+                "service_id": null,
+                "icon": null,
+                "status": {
+                    "code": 0,
+                    "name": "UP",
+                    "severity_code": 5
+                },
+                "links": {
+                    "uris": {
+                        "configuration": null,
+                        "logs": null,
+                        "reporting": null
+                    },
+                    "endpoints": {
+                        "details": null,
+                        "timeline": null,
+                        "status_graph": null,
+                        "performance_graph": null,
+                        "acknowledgement": null,
+                        "downtime": null,
+                        "notification_policy": null
+                    },
+                    "externals": {
+                        "action_url": null,
+                        "notes": null
+                    }
+                }
+            },
+            "status": {
+                "code": 0,
+                "name": "OK",
+                "severity_code": 5
+            },
+            "flapping": null,
+            "in_downtime": false,
+            "acknowledged": false,
+            "active_checks": true,
+            "passive_checks": true,
+            "links": {
+                "uris": {
+                    "configuration": "/centreon/main.php?p=60220&o=c&service_id=27",
+                    "logs": "/centreon/main.php?p=20301&svc=14_27",
+                    "reporting": "/centreon/main.php?p=30702&period=yesterday&start=&end=&host_id=14&item=27"
+                },
+                "endpoints": {
+                    "details": "/centreon/api/latest/monitoring/resources/anomaly-detection/1",
+                    "timeline": "/centreon/api/latest/monitoring/hosts/14/services/27/timeline",
+                    "status_graph": "/centreon/api/latest/monitoring/hosts/14/services/27/metrics/status",
+                    "performance_graph": "/centreon/api/latest/monitoring/hosts/14/services/27/metrics/performance",
+                    "acknowledgement": "/centreon/api/latest/monitoring/hosts/14/services/27/acknowledgements?limit=1",
+                    "downtime": "/centreon/api/latest/monitoring/hosts/14/services/27/downtimes?search=%7B%22%24and%22:%5B%7B%22start_time%22:%7B%22%24lt%22:1664895724%7D,%22end_time%22:%7B%22%24gt%22:1664895724%7D,%220%22:%7B%22%24or%22:%7B%22is_cancelled%22:%7B%22%24neq%22:1%7D,%22deletion_time%22:%7B%22%24gt%22:1664895724%7D%7D%7D%7D%5D%7D",
+                    "notification_policy": null
+                },
+                "externals": {
+                    "action_url": "",
+                    "notes": {
+                        "label": "",
+                        "url": ""
+                    }
+                }
+            },
+            "chart_url": null,
+            "last_status_change": "2022-10-04T17:01:33+02:00",
+            "tries": "1/4 (H)",
+            "information": "OK: Regular activity, rta=0.00ms",
+            "performance_data": null,
+            "notification_enabled": false,
+            "severity": null
+        }
+    ],
+    "meta": {
+        "page": 1,
+        "limit": 30,
+        "search": {},
+        "sort_by": {
+            "status_severity_code": "ASC",
+            "last_status_change": "DESC"
+        },
+        "total": 1
+    }
+}
