@@ -9,7 +9,14 @@ def stableBranch = "master"
 def devBranch = "develop"
 env.REF_BRANCH = stableBranch
 env.PROJECT='centreon-web'
-if (env.BRANCH_NAME.startsWith('release-')) {
+
+
+
+
+if (env.BRANCH_NAME.startsWith('release-22.10.0-next')) {
+  env.BUILD = 'QA'
+  env.REPO = 'unstable'
+} else if (env.BRANCH_NAME.startsWith('release-')) {
   env.BUILD = 'RELEASE'
   env.REPO = 'testing'
   env.DELIVERY_STAGE = 'Delivery to testing'
