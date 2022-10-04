@@ -20,17 +20,13 @@
                 "type": "object",
                 "required": [
                     "type",
-                    "id"
+                    "id",
+                    "parent"
                 ],
                 "additionalProperties": false,
                 "properties": {
                     "type": {
-                        "type": "string",
-                        "enum": [
-                            "service",
-                            "host",
-                            "metaservice"
-                        ]
+                        "type": "string"
                     },
                     "id": {
                         "type": "integer"
@@ -40,6 +36,8 @@
                             "object",
                             "null"
                         ],
+                        "additionalProperties": false,
+                        "required": ["id"],
                         "properties": {
                             "id": {
                                 "type": "integer"
