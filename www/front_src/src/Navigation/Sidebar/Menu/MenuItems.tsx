@@ -50,7 +50,7 @@ interface Props {
 }
 
 const useStyles = makeStyles((theme) => ({
-  activated: ({ isRoot }): CreateCSSProperties => ({
+  activated: (): CreateCSSProperties => ({
     '& .MuiListItemText-root': {
       '& .MuiTypography-root': {
         color: 'inherit',
@@ -62,19 +62,16 @@ const useStyles = makeStyles((theme) => ({
         : theme.palette.primary.main,
     },
     '&:hover': {
-      backgroundColor:
-        isDarkMode(theme) && isRoot
-          ? theme.palette.primary.main
-          : theme.palette.primary.light,
-    },
-    backgroundColor:
-      isDarkMode(theme) && isRoot
-        ? theme.palette.primary.main
+      backgroundColor: isDarkMode(theme)
+        ? theme.palette.primary.dark
         : theme.palette.primary.light,
-    color:
-      isDarkMode(theme) && isRoot
-        ? theme.palette.common.white
-        : theme.palette.primary.main,
+    },
+    backgroundColor: isDarkMode(theme)
+      ? theme.palette.primary.dark
+      : theme.palette.primary.light,
+    color: isDarkMode(theme)
+      ? theme.palette.common.white
+      : theme.palette.primary.main,
   }),
   arrowIcon: {
     color: 'inherit',
