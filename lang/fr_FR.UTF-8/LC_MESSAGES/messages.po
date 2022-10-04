@@ -16627,6 +16627,15 @@ msgstr "Définir la relation entre les groupes et les groupes de contact"
 msgid "Group value"
 msgstr "Valeur du groupe"
 
+msgid "Define your endpoint"
+msgstr "Définissez votre point d'accès"
+
+msgid "Roles mapping"
+msgstr "Association de rôles"
+
+msgid "Groups mapping"
+msgstr "Association de groupes"
+
 msgid "Authentication mode"
 msgstr "Mode d'authentification"
 

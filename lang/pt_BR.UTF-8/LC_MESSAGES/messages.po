@@ -15412,14 +15412,8 @@ msgstr ""
 # msgid "OpenID Connect only"
 # msgstr ""
 
-msgid "Trusted client addresses"
-msgstr "Endereços de clientes de confiança"
-
 msgid "Login attribute path"
 msgstr "Caminho de atributo de login"
-
-msgid "Blacklist client addresses"
-msgstr "Endereços de clientes da lista negra"
 
 msgid "Enable conditions on identity provider"
 msgstr "Habilitar condições sobre o fornecedor de identidade"
@@ -15483,6 +15477,15 @@ msgstr "Definir a relação entre grupos e grupos de contato"
 
 msgid "Group value"
 msgstr "Valor do grupo"
+
+msgid "Define your endpoint"
+msgstr "Defina seu ponto final"
+
+msgid "Roles mapping"
+msgstr "Associação de papéis"
+
+msgid "Groups mapping"
+msgstr "Associação de grupos"
 # msgid "Mixed"
 # msgstr ""
 
