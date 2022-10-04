@@ -117,7 +117,7 @@ const useStyles = makeStyles((theme) => ({
     },
     '&:hover': {
       background: equals(theme.palette.mode, ThemeMode.dark)
-        ? theme.palette.primary.main
+        ? theme.palette.primary.dark
         : theme.palette.primary.light,
       color: equals(theme.palette.mode, ThemeMode.dark)
         ? theme.palette.common.white
