@@ -125,11 +125,6 @@ class FindOpenIdConfigurationResponse
     public ?string $userNameBindAttribute = null;
 
     /**
-     * @var array{id: int, name: string}|null
-     */
-    public ?array $contactGroup = null;
-
-    /**
      * @var array<string, array<int|string, string|null>|string|bool>
      */
     public array $aclConditions = [];
@@ -167,18 +162,6 @@ class FindOpenIdConfigurationResponse
         return [
             "id" => $contactTemplate->getId(),
             "name" => $contactTemplate->getName(),
-        ];
-    }
-
-    /**
-     * @param ContactGroup $contactGroup
-     * @return array{id: int, name: string}
-     */
-    public static function contactGroupToArray(ContactGroup $contactGroup): array
-    {
-        return [
-            "id" => $contactGroup->getId(),
-            "name" => $contactGroup->getName()
         ];
     }
 

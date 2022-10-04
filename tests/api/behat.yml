@@ -40,6 +40,14 @@ default:
       paths: [ "%paths.base%/features/LocalAuthentication.feature" ]
       contexts:
         - Centreon\Test\Api\Context\LocalAuthenticationContext
+    local_provider_configuration:
+      paths: [ "%paths.base%/features/LocalProviderConfiguration.feature" ]
+      contexts:
+        - Centreon\Test\Api\Context\LocalProviderConfigurationContext
+    openid_provider_configuration:
+      paths: [ "%paths.base%/features/OpenIdProviderConfiguration.feature" ]
+      contexts:
+        - Centreon\Test\Api\Context\OpenIdProviderConfigurationContext
     user_filter:
       paths: [ "%paths.base%/features/UserFilter.feature" ]
       contexts:

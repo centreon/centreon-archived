@@ -4572,7 +4572,6 @@ components:
             - password_expiration
             - can_reuse_passwords
             - delay_before_new_password
-            - contact_template_id
           properties:
             password_min_length:
               description: minimum length of the password
@@ -4665,9 +4664,6 @@ components:
         - contact_template
         - email_bind_attribute
         - fullname_bind_attribute
-        - contact_group
-        - authorization_claim
-        - authorization_relations
       properties:
         is_active:
           type: boolean
@@ -4879,18 +4875,6 @@ components:
       allOf:
         - $ref: '#/components/schemas/AuthenticationOpenIdProvider'
         - properties:
-            contact_group:
-              type: object
-              nullable: true
-              properties:
-                id:
-                  type: integer
-                  description: "Contact group ID"
-                  example: 1
-                name:
-                  type: string
-                  description: "Contact group name"
-                  example: "Default"
             groups_mapping:
               type: object
               properties:
