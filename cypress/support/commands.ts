@@ -12,3 +12,5 @@ Cypress.Commands.add('display_filter_Menu', () => {
   cy.get('[aria-label="Filter options"]').click();
   cy.contains('Type').should('be.visible').click();
 });
+
+Cypress.Commands.add('click_outside', () => cy.get('body').click(0, 0));

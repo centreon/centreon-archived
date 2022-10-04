@@ -102,6 +102,7 @@ describe('Anomaly detection', () => {
     cy.fixture('resources/resourceListingByTypeAnomalyDetection.json').as(
       'listResourceByType',
     );
+
     cy.server();
     cy.route('GET', '**/resources?*', '@listResourceByType').as(
       'getResourceListByType',
@@ -121,8 +122,20 @@ describe('Anomaly detection', () => {
 
     const payload = Object.keys(authorizedFilterByModules[moduleName]);
 
-    cy.wait('@getResourceListByType').then(({ url }) => {
-      expect(url.includes(`&types=${JSON.stringify(payload)}`)).to.equal(true);
+    cy.wait('@getResourceListByType').then((data) => {
+      expect(data.url.includes(`&types=${JSON.stringify(payload)}`)).to.equal(
+        true,
+      );
     });
+
+    cy.click_outside();
+
+    cy.fixture('resources/resourceListingByTypeAnomalyDetection.json').then(
+      (data) => {
+        data.result.map((item) =>
+          cy.get('body').contains(item.name).should('be.visible'),
+        );
+      },
+    );
   });
 });
