@@ -46,7 +46,7 @@ const ServiceCard = ({
   const { t } = useTranslation();
 
   return (
-    <Paper className={classes.serviceCard} sx={{ border: 0 }}>
+    <Paper className={classes.serviceCard}>
       <div className={classes.serviceDetails}>
         <div>
           <CompactStatusChip

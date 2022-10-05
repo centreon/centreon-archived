@@ -72,7 +72,6 @@ const Contacts = ({
         component={Paper}
         display="grid"
         sx={{
-          border: 0,
           justifyContent: 'center',
           py: 1,
         }}

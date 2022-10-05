@@ -98,7 +98,7 @@ const Notifications = (): JSX.Element => {
 
   return (
     <Stack spacing={1}>
-      <Paper sx={{ border: 0 }}>
+      <Paper>
         <Stack
           alignItems="center"
           direction="row"

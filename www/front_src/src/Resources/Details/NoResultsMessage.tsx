@@ -16,7 +16,7 @@ const NoResultsMessage = (): JSX.Element => {
   const { t } = useTranslation();
 
   return (
-    <Paper className={classes.container} sx={{ border: 0 }}>
+    <Paper className={classes.container}>
       <Typography align="center" variant="body1">
         {t(labelNoResultsFound)}
       </Typography>

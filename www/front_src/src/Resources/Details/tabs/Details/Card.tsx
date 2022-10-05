@@ -18,7 +18,7 @@ const Card = ({ children, className }: Props): JSX.Element => {
   const classes = useStyles();
 
   return (
-    <Paper className={className} elevation={0} sx={{ border: 0 }}>
+    <Paper className={className} elevation={0}>
       <div className={classes.content}>{children}</div>
     </Paper>
   );

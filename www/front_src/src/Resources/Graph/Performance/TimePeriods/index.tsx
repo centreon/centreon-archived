@@ -44,7 +44,7 @@ const useStyles = makeStyles<Theme, StylesProps>((theme) => ({
   header: ({ disablePaper }): CreateCSSProperties<StylesProps> => ({
     alignItems: 'center',
     backgroundColor: disablePaper ? 'transparent' : 'undefined',
-    border: disablePaper ? 'unset' : 0,
+    border: disablePaper ? 'unset' : 'undefined',
     boxShadow: disablePaper ? 'unset' : 'undefined',
     columnGap: theme.spacing(2),
     display: 'grid',

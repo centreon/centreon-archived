@@ -39,7 +39,6 @@ const useStyles = makeStyles((theme: Theme) => ({
     width: '100%',
   },
   graphContainer: {
-    border: 0,
     display: 'grid',
     gridTemplateRows: '1fr',
     height: '93%',
