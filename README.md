@@ -24,7 +24,7 @@ on the market; it is absolutely free and Open Source.
 Regarding the [Products Lifecycle Policy](https://docs.centreon.com/current/en/releases/lifecycle.html),
 only the following versions are supported:
 
-* Centreon 22.04.x, released on May, 2022, full support
+* Centreon 22.04.x, released on May 20, 2022, full support
 * Centreon 21.10.x, released on November 2, 2021, major, critical bugs and blockers, or security
 * Centreon 21.04.x, released on April 21, 2021, security and blocking issue support only
 
