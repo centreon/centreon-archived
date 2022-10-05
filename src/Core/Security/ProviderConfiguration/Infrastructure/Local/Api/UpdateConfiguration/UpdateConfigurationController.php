@@ -23,7 +23,9 @@ declare(strict_types=1);
 
 namespace Core\Security\ProviderConfiguration\Infrastructure\Local\Api\UpdateConfiguration;
 
+use Centreon\Domain\Contact\Contact;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Centreon\Application\Controller\AbstractController;
 use Core\Security\ProviderConfiguration\Application\Local\UseCase\UpdateConfiguration\UpdateConfiguration;
 use Core\Security\ProviderConfiguration\Application\Local\UseCase\UpdateConfiguration\UpdateConfigurationRequest;
@@ -45,6 +47,13 @@ class UpdateConfigurationController extends AbstractController
         UpdateConfigurationPresenterInterface $presenter,
     ): object {
         $this->denyAccessUnlessGrantedForApiConfiguration();
+        /**
+         * @var Contact $contact
+         */
+        $contact = $this->getUser();
+        if (! $contact->hasTopologyRole(Contact::ROLE_ADMINISTRATION_AUTHENTICATION_READ_WRITE)) {
+            return $this->view(null, Response::HTTP_FORBIDDEN);
+        }
         $this->validateDataSent($request, __DIR__ . '/UpdateConfigurationSchema.json');
         $updateConfigurationRequest = $this->createUpdateConfigurationRequest($request);
         $useCase($presenter, $updateConfigurationRequest);

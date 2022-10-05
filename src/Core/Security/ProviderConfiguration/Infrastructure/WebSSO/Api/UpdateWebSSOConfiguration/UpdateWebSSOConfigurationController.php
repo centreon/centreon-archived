@@ -23,6 +23,8 @@ declare(strict_types=1);
 
 namespace Core\Security\ProviderConfiguration\Infrastructure\WebSSO\Api\UpdateWebSSOConfiguration;
 
+use Centreon\Domain\Contact\Contact;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Centreon\Application\Controller\AbstractController;
 use Centreon\Domain\Log\LoggerTrait;
@@ -48,6 +50,13 @@ class UpdateWebSSOConfigurationController extends AbstractController
         UpdateWebSSOConfigurationPresenterInterface $presenter
     ): object {
         $this->denyAccessUnlessGrantedForApiConfiguration();
+        /**
+         * @var Contact $contact
+         */
+        $contact = $this->getUser();
+        if (! $contact->hasTopologyRole(Contact::ROLE_ADMINISTRATION_AUTHENTICATION_READ_WRITE)) {
+            return $this->view(null, Response::HTTP_FORBIDDEN);
+        }
         $this->info('Validating request body...');
         $this->validateDataSent($request, __DIR__ . '/UpdateWebSSOConfigurationSchema.json');
         $updateWebSSOConfigurationRequest = $this->createUpdateWebSSOConfigurationRequest($request);

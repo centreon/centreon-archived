@@ -821,7 +821,7 @@ class CentreonService
             }
         }
 
-        $iIdCommande = $form['command_command_id'];
+        $iIdCommande = $form['command_command_id'] ?? [];
 
         $templateName = "";
         if (empty($iIdCommande)) {
