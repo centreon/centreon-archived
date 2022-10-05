@@ -16,7 +16,10 @@ const ParentResourceColumn = ({
 
   return (
     <div className={classes.resourceDetailsCell}>
-      <StatusChip severityCode={row.parent?.status?.severity_code || 0} />
+      <StatusChip
+        severityCode={row.parent?.status?.severity_code || 0}
+        size="small"
+      />
       <div className={classes.resourceNameItem}>
         <Typography className={classes.resourceNameText} variant="body2">
           {row.parent.name}
