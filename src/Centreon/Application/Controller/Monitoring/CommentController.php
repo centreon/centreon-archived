@@ -23,11 +23,9 @@ declare(strict_types=1);
 namespace Centreon\Application\Controller\Monitoring;
 
 use Exception;
-use JsonSchema\Validator;
 use FOS\RestBundle\View\View;
 use Centreon\Domain\Contact\Contact;
 use Centreon\Domain\Monitoring\Host;
-use JsonSchema\Constraints\Constraint;
 use Centreon\Domain\Monitoring\Service;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -54,52 +52,19 @@ class CommentController extends AbstractController
      */
     private $monitoringService;
 
+    private const COMMENT_RESOURCES_PAYLOAD_VALIDATION_FILE =
+        __DIR__ . '/../../../../../config/json_validator/latest/Centreon/Comment/CommentResources.json';
+
+
+    private const SINGLE_COMMENT_PAYLOAD_VALIDATION_FILE =
+        __DIR__ . '/../../../../../config/json_validator/latest/Centreon/Comment/Comment.json';
+
     public function __construct(
         CommentServiceInterface $commentService,
         MonitoringServiceInterface $monitoringService
     ) {
         $this->commentService = $commentService;
         $this->monitoringService = $monitoringService;
-    }
-
-    /**
-     * This function will ensure that the POST data is valid
-     * regarding validation constraints defined and will return
-     * the decoded JSON content
-     *
-     * @param Request $request
-     * @param string $jsonValidatorFile
-     * @return array<string,mixed> $receivedData
-     * @throws \InvalidArgumentException
-     */
-    private function validateAndRetrievePostData(Request $request, string $jsonValidatorFile): array
-    {
-        $receivedData = json_decode((string) $request->getContent(), true);
-        if (!is_array($receivedData)) {
-            throw new \InvalidArgumentException(_('Error when decoding sent data'));
-        }
-
-        /*
-        * Validate the content of the POST request against the JSON schema validator
-        */
-        $validator = new Validator();
-        $bodyContent = json_decode((string) $request->getContent());
-        $file = 'file://' . __DIR__ . '/../../../../../' . $jsonValidatorFile;
-        $validator->validate(
-            $bodyContent,
-            (object) ['$ref' => $file],
-            Constraint::CHECK_MODE_VALIDATE_SCHEMA
-        );
-
-        if (!$validator->isValid()) {
-            $message = '';
-            foreach ($validator->getErrors() as $error) {
-                $message .= sprintf("[%s] %s\n", $error['property'], $error['message']);
-            }
-            throw new \InvalidArgumentException($message);
-        }
-
-        return $receivedData;
     }
 
     /**
@@ -163,16 +128,13 @@ class CommentController extends AbstractController
        /*
         * Validate the content of the request against the JSON schema validator
         */
-        $receivedData = $this->validateAndRetrievePostData(
-            $request,
-            'config/json_validator/latest/Centreon/Comment/CommentResources.json'
-        );
+        $payload = $this->validateAndRetrieveDataSent($request, self::COMMENT_RESOURCES_PAYLOAD_VALIDATION_FILE);
 
         /**
          * If user has no rights to add a comment for host and/or service
          * return view with unauthorized HTTP header response
          */
-        if (!$this->hasCommentRightsForResources($contact, $receivedData['resources'])) {
+        if (!$this->hasCommentRightsForResources($contact, $payload['resources'])) {
             return $this->view(null, Response::HTTP_UNAUTHORIZED);
         }
 
@@ -184,22 +146,22 @@ class CommentController extends AbstractController
 
         $now = new \DateTime();
 
-        foreach ($receivedData['resources'] as $commentResource) {
-            $date = ($commentResource['date'] !== null) ? new \DateTime($commentResource['date']) : $now;
-            $comments[$commentResource['id']] = (new Comment($commentResource['id'], $commentResource['comment']))
+        foreach ($payload['resources'] as $resource) {
+            $date = ($resource['date'] !== null) ? new \DateTime($resource['date']) : $now;
+            $comments[$resource['id']] = (new Comment($resource['id'], $resource['comment']))
                 ->setDate($date);
 
-            if ($commentResource['type'] === ResourceEntity::TYPE_HOST) {
-                $resourceIds['host'][] = $commentResource['id'];
-            } elseif ($commentResource['type'] === ResourceEntity::TYPE_SERVICE) {
-                $comments[$commentResource['id']]->setParentResourceId($commentResource['parent']['id']);
+            if ($resource['type'] === ResourceEntity::TYPE_HOST) {
+                $resourceIds['host'][] = $resource['id'];
+            } elseif ($resource['type'] === ResourceEntity::TYPE_SERVICE) {
+                $comments[$resource['id']]->setParentResourceId($resource['parent']['id']);
                 $resourceIds['service'][] = [
-                    'host_id' => $commentResource['parent']['id'],
-                    'service_id' => $commentResource['id']
+                    'host_id' => $resource['parent']['id'],
+                    'service_id' => $resource['id']
                 ];
-            } elseif ($commentResource['type'] === ResourceEntity::TYPE_META) {
+            } elseif ($resource['type'] === ResourceEntity::TYPE_META) {
                 $resourceIds['metaservice'][] = [
-                    'service_id' => $commentResource['id']
+                    'service_id' => $resource['id']
                 ];
             }
         }
@@ -236,16 +198,13 @@ class CommentController extends AbstractController
             return $this->view(null, Response::HTTP_UNAUTHORIZED);
         }
 
-        $receivedData = $this->validateAndRetrievePostData(
-            $request,
-            'config/json_validator/latest/Centreon/Comment/Comment.json'
-        );
+       /*
+        * Validate the content of the request against the JSON schema validator
+        */
+        $payload = $this->validateAndRetrieveDataSent($request, self::SINGLE_COMMENT_PAYLOAD_VALIDATION_FILE);
 
-        /**
-         * At this point we validate the JSON sent with the JSON validator.
-         */
-        $date = ($receivedData['date'] !== null) ? new \DateTime($receivedData['date']) : new \DateTime();
-        $comment = (new Comment($hostId, $receivedData['comment']))
+        $date = ($payload['date'] !== null) ? new \DateTime($payload['date']) : new \DateTime();
+        $comment = (new Comment($hostId, $payload['comment']))
             ->setDate($date);
         $host = new Host();
         $host->setId($hostId);
@@ -280,16 +239,16 @@ class CommentController extends AbstractController
             return $this->view(null, Response::HTTP_UNAUTHORIZED);
         }
 
-        $receivedData = $this->validateAndRetrievePostData(
-            $request,
-            'config/json_validator/latest/Centreon/Comment/Comment.json'
-        );
+       /*
+        * Validate the content of the request against the JSON schema validator
+        */
+        $payload = $this->validateAndRetrieveDataSent($request, self::SINGLE_COMMENT_PAYLOAD_VALIDATION_FILE);
 
         /**
          * At this point we validate the JSON sent with the JSON validator.
          */
-        $date = ($receivedData['date'] !== null) ? new \DateTime($receivedData['date']) : new \DateTime();
-        $comment = (new Comment($serviceId, $receivedData['comment']))
+        $date = ($payload['date'] !== null) ? new \DateTime($payload['date']) : new \DateTime();
+        $comment = (new Comment($serviceId, $payload['comment']))
             ->setDate($date)
             ->setParentResourceId($hostId);
 
@@ -328,19 +287,19 @@ class CommentController extends AbstractController
             return $this->view(null, Response::HTTP_UNAUTHORIZED);
         }
 
-        $receivedData = $this->validateAndRetrievePostData(
-            $request,
-            'config/json_validator/latest/Centreon/Comment/Comment.json'
-        );
+       /*
+        * Validate the content of the request against the JSON schema validator
+        */
+        $payload = $this->validateAndRetrieveDataSent($request, self::SINGLE_COMMENT_PAYLOAD_VALIDATION_FILE);
 
         /**
          * At this point we validate the JSON sent with the JSON validator.
          */
-        $date = ($receivedData['date'] !== null) ? new \DateTime($receivedData['date']) : new \DateTime();
+        $date = ($payload['date'] !== null) ? new \DateTime($payload['date']) : new \DateTime();
 
         $service = $this->monitoringService->findOneServiceByDescription('meta_' . $metaId);
 
-        if (is_null($service)) {
+        if ($service === null) {
             throw new EntityNotFoundException(
                 sprintf(
                     _('Meta service %d not found'),
@@ -349,7 +308,7 @@ class CommentController extends AbstractController
             );
         }
 
-        $comment = (new Comment($service->getId(), $receivedData['comment']))
+        $comment = (new Comment($service->getId(), $payload['comment']))
             ->setParentResourceId($service->getHost()->getId())
             ->setDate($date);
 

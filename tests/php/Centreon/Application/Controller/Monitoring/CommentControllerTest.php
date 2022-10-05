@@ -37,20 +37,19 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 
 class CommentControllerTest extends TestCase
 {
-    protected $adminContact;
-    protected $hostResource;
-    protected $serviceResource;
-    protected $correctJsonComment;
-    protected $wrongJsonComment;
-    protected $hostCommentJson;
-    protected $serviceCommentJson;
-    protected $serviceResult;
-    protected $commentService;
-    protected $monitoringService;
+    private const DECODING_ERROR_MESSAGE = 'Error when decoding your sent data';
 
-    protected $container;
-
-    protected $request;
+    private Contact $adminContact;
+    private Resource $hostResource;
+    private Resource $serviceResource;
+    private string $correctJsonComment;
+    private string $wrongJsonComment;
+    private string $hostCommentJson;
+    private string $serviceCommentJson;
+    private CommentService $commentService;
+    private MonitoringService $monitoringService;
+    private ContainerInterface $container;
+    private Request $request;
 
     protected function setUp(): void
     {
@@ -164,7 +163,7 @@ class CommentControllerTest extends TestCase
             ->method('getContent')
             ->willReturn('[}');
         $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('Error when decoding sent data');
+        $this->expectExceptionMessage(self::DECODING_ERROR_MESSAGE);
         $commentController->addResourcesComment($this->request);
     }
 
@@ -215,7 +214,7 @@ class CommentControllerTest extends TestCase
             ->method('getContent')
             ->willReturn('[}');
         $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('Error when decoding sent data');
+        $this->expectExceptionMessage(self::DECODING_ERROR_MESSAGE);
         $commentController->addHostComment($this->request, $this->hostResource->getId());
     }
     /**
@@ -265,7 +264,7 @@ class CommentControllerTest extends TestCase
             ->method('getContent')
             ->willReturn('[}');
         $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('Error when decoding sent data');
+        $this->expectExceptionMessage(self::DECODING_ERROR_MESSAGE);
         $commentController->addServiceComment(
             $this->request,
             $this->serviceResource->getParent()->getId(),

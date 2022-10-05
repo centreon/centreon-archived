@@ -38,19 +38,18 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 
 class SubmitResultControllerTest extends TestCase
 {
-    protected $adminContact;
-    protected $hostResource;
-    protected $serviceResource;
-    protected $correctJsonSubmitResult;
-    protected $wrongJsonSubmitResult;
-    protected $hostSubmitResultJson;
-    protected $serviceSubmitResultJson;
-    protected $serviceResult;
-    protected $submitResultService;
+    private const DECODING_ERROR_MESSAGE = 'Error when decoding your sent data';
 
-    protected $container;
-
-    protected $request;
+    private Contact $adminContact;
+    private Resource $hostResource;
+    private Resource $serviceResource;
+    private string $correctJsonSubmitResult;
+    private string $wrongJsonSubmitResult;
+    private string $hostSubmitResultJson;
+    private string $serviceSubmitResultJson;
+    private SubmitResultService $submitResultService;
+    private ContainerInterface $container;
+    private Request $request;
 
     protected function setUp(): void
     {
@@ -165,7 +164,7 @@ class SubmitResultControllerTest extends TestCase
             ->method('getContent')
             ->willReturn('[}');
         $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('Error when decoding sent data');
+        $this->expectExceptionMessage(self::DECODING_ERROR_MESSAGE);
         $submitResultController->submitResultResources($this->request);
     }
 
@@ -216,7 +215,7 @@ class SubmitResultControllerTest extends TestCase
             ->method('getContent')
             ->willReturn('[}');
         $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('Error when decoding sent data');
+        $this->expectExceptionMessage(self::DECODING_ERROR_MESSAGE);
         $submitResultController->submitResultHost($this->request, $this->hostResource->getId());
     }
     /**
@@ -266,7 +265,7 @@ class SubmitResultControllerTest extends TestCase
             ->method('getContent')
             ->willReturn('[}');
         $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('Error when decoding sent data');
+        $this->expectExceptionMessage(self::DECODING_ERROR_MESSAGE);
         $submitResultController->submitResultService(
             $this->request,
             $this->serviceResource->getParent()->getId(),

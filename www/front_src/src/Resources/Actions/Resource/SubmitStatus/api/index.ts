@@ -26,8 +26,9 @@ const submitResourceStatus =
       {
         resources: [
           {
-            ...pick(['type', 'id', 'parent'], resource),
+            ...pick(['type', 'id'], resource),
             output,
+            parent: resource?.parent ? { id: resource.parent.id } : null,
             performance_data: performanceData,
             status: statusId,
           },
