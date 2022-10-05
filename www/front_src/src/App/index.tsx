@@ -15,11 +15,10 @@ const useStyles = makeStyles((theme) => ({
   content: {
     display: 'flex',
     flexDirection: 'column',
+    flexGrow: 1,
     height: '100%',
     overflow: 'hidden',
     position: 'relative',
-    transition: 'all 0.3s',
-    width: '100%',
   },
   fullScreenWrapper: {
     flexGrow: 1,
@@ -34,11 +33,9 @@ const useStyles = makeStyles((theme) => ({
     zIndex: 1500,
   },
   mainContent: {
-    height: `calc(100vh - ${theme.spacing(headerHeight)})`,
-    width: '100%',
+    flexGrow: 1,
   },
   wrapper: {
-    alignItems: 'stretch',
     backgroundColor: theme.palette.background.paper,
     display: 'flex',
     fontFamily: theme.typography.fontFamily,
