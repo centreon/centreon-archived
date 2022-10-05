@@ -123,7 +123,7 @@ const TimelineTab = ({ details }: TabProps): JSX.Element => {
       details={details}
       filter={
         <Stack spacing={0.5}>
-          <Paper className={classes.filterHeader} sx={{ border: 0 }}>
+          <Paper className={classes.filterHeader}>
             <TimePeriodButtonGroup disableGraphOptions disablePaper />
             <MultiAutocompleteField
               label={t(labelEvent)}
