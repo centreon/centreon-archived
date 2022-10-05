@@ -35,9 +35,6 @@ const useStyles = makeStyles<Theme, { severityCode?: number }>((theme) => {
     card: ({ severityCode }): CreateCSSProperties => ({
       ...(severityCode && {
         backgroundColor: getStatusBackgroundColor(severityCode),
-        // borderColor: getStatusBackgroundColor(severityCode),
-        // borderStyle: 'solid',
-        // borderWidth: 2,
         border: 0,
         color: getStatusTextColor(severityCode),
       }),
