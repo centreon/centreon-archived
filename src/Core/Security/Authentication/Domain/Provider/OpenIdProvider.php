@@ -1146,6 +1146,7 @@ class OpenIdProvider implements OpenIdProviderInterface
     {
         $aclConditions = $customConfiguration->getACLConditions();
         if (!$aclConditions->isEnabled()) {
+            $this->logAuthenticationInfo("Roles mapping is disabled");
             return;
         }
 
