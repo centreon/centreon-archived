@@ -1,10 +1,34 @@
 {
     "$schema": "http://json-schema.org/draft-04/schema#",
-    "title": "Schedule checks on resources",
+    "title": "Acknowledge resources",
     "type": "object",
-    "required": ["resources"],
+    "required": ["acknowledgement", "resources"],
     "additionalProperties": false,
     "properties": {
+        "acknowledgement": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "comment": {
+                    "type": "string"
+                },
+                "with_services": {
+                    "type": "boolean"
+                },
+                "force_active_checks": {
+                    "type": "boolean"
+                },
+                "is_notify_contacts": {
+                    "type": "boolean"
+                },
+                "is_persistent_comment": {
+                    "type": "boolean"
+                },
+                "is_sticky": {
+                    "type": "boolean"
+                }
+            }
+        },
         "resources": {
             "type": "array",
             "items": {
@@ -12,8 +36,7 @@
                 "required": [
                     "type",
                     "id",
-                    "parent",
-                    "status"
+                    "parent"
                 ],
                 "additionalProperties": false,
                 "properties": {
@@ -35,22 +58,6 @@
                                 "type": "integer"
                             }
                         }
-                    },
-                    "status": {
-                        "type": "integer",
-                        "enum": [0, 1, 2, 3]
-                    },
-                    "output": {
-                        "type": [
-                            "string",
-                            "null"
-                        ]
-                    },
-                    "performance_data": {
-                        "type": [
-                            "string",
-                            "null"
-                        ]
                     }
                 }
             }

@@ -17,35 +17,39 @@ Feature:
     """
     And the configuration is generated and exported
     And I wait until host "test" is monitored
-    And I send a GET request to '/api/v21.10/monitoring/hosts?search={"host.name":"test"}'
+    And I send a GET request to '/api/v22.10/monitoring/hosts?search={"host.name":"test"}'
     And I store response values in:
       | name   | path         |
       | hostId | result[0].id |
-    And I send a POST request to '/api/v21.10/monitoring/hosts/<hostId>/check' with body:
+    And I send a POST request to '/api/v22.10/monitoring/hosts/<hostId>/check' with body:
     """
     {}
     """
-    And I wait to get 1 result from "/api/v21.10/monitoring/hosts/<hostId>/timeline" (tries: 30)
+    And I wait to get 1 result from "/api/v22.10/monitoring/hosts/<hostId>/timeline" (tries: 30)
 
-    When I send a POST request to '/api/v21.10/monitoring/resources/acknowledge' with body:
+    When I send a POST request to '/api/v22.10/monitoring/resources/acknowledge' with body:
     """
     {
       "acknowledgement": {
         "comment": "Acknowledged by admin",
         "is_notify_contacts": false,
-        "with_services": false
+        "with_services": false,
+        "force_active_checks": false,
+        "is_persistent_comment": false,
+        "is_sticky": false
       },
       "resources": [
         {
           "type": "host",
-          "id": <hostId>
+          "id": <hostId>,
+          "parent": null
         }
       ]
     }
     """
-    Then I wait to get 1 result from "/api/v21.10/monitoring/hosts/<hostId>/acknowledgements" (tries: 30)
+    Then I wait to get 1 result from "/api/v22.10/monitoring/hosts/<hostId>/acknowledgements" (tries: 30)
 
-    When I send a DELETE request to '/api/v21.10/monitoring/resources/acknowledgements' with body:
+    When I send a DELETE request to '/api/v22.10/monitoring/resources/acknowledgements' with body:
     """
     {
       "disacknowledgement": {
@@ -54,9 +58,10 @@ Feature:
       "resources": [
         {
           "type": "host",
-          "id": <hostId>
+          "id": <hostId>,
+          "parent": null
         }
       ]
     }
     """
-    Then I wait to get 0 result from "/api/v21.10/monitoring/hosts/<hostId>/acknowledgements" (tries: 30)
+    Then I wait to get 0 result from "/api/v22.10/monitoring/hosts/<hostId>/acknowledgements" (tries: 30)
