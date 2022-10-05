@@ -1,12 +1,16 @@
 import React from 'react';
 
-import { Provider } from 'jotai';
+import { act, renderHook } from '@testing-library/react-hooks/dom';
+import { Provider, useAtom } from 'jotai';
+import { BrowserRouter as Router } from 'react-router-dom';
 
-import { authorizedFilterByModules } from '../../../Filter/Criterias/models';
 import { platformVersionsAtom } from '../../../../Main/atoms/platformVersionsAtom';
+import { authorizedFilterByModules } from '../../../Filter/Criterias/models';
+import { storedFilterAtom } from '../../../Filter/filterAtoms';
+import { allFilter } from '../../../Filter/models';
+import Resources from '../../../index';
 import { enabledAutorefreshAtom } from '../../../Listing/listingAtoms';
-import Filter from '../../../Filter/index';
-import Listing from '../../../Listing/index';
+import { labelGraph } from '../../../translatedLabels';
 
 const installedModules = {
   modules: {
@@ -49,10 +53,32 @@ const searchWords = filtersToBeDisplayedInSearchBar.reduce(
 
 describe('Anomaly detection', () => {
   beforeEach(() => {
-    cy.fixture('resources/resourceListing.json').as('listResource');
-
     cy.server();
+    cy.fixture('resources/resourceListing.json').as('listResource');
+    cy.fixture('resources/userFilter.json').as('userFilter');
+    cy.fixture('resources/detailsAnomalyDetection.json').as(
+      'detailsAnomalyDetection',
+    );
+    cy.fixture('resources/performanceGraphAnomalyDetection.json').as(
+      'graphAnomalyDetection',
+    );
+
     cy.route('GET', '**/resources?*', '@listResource').as('getResourceList');
+    cy.route('GET', '**/users/filters/events-view?*', '@userFilter');
+    cy.route(
+      'GET',
+      '**/resources/anomaly-detection/1',
+      '@detailsAnomalyDetection',
+    );
+    cy.route('GET', '**/performance?*', '@graphAnomalyDetection').as(
+      'getGraphDataAnomalyDetection',
+    );
+
+    const storedFilter = renderHook(() => useAtom(storedFilterAtom));
+
+    act(() => {
+      storedFilter.result.current[1](allFilter);
+    });
 
     cy.mount(
       <Provider
@@ -61,8 +87,9 @@ describe('Anomaly detection', () => {
           [enabledAutorefreshAtom, false],
         ]}
       >
-        <Filter />
-        <Listing />
+        <Router>
+          <Resources />
+        </Router>
       </Provider>,
     );
   });
@@ -79,7 +106,7 @@ describe('Anomaly detection', () => {
     // cy.matchImageSnapshot();
   });
 
-  it('display the filters of anomaly detection on search bar when user checks filters of anomaly-detection in filter Menu', () => {
+  it('display the filters of anomaly detection on search bar when  filters of anomaly-detection in filter Menu are checked ', () => {
     cy.viewport(750, 750);
 
     cy.display_filter_Menu();
@@ -98,7 +125,7 @@ describe('Anomaly detection', () => {
     // cy.matchImageSnapshot();
   });
 
-  it.only('display resource of type anomaly-detection when user checks filter anomaly detection and clicked on search button', () => {
+  it('display resource of type anomaly-detection when  filters of anomaly detection are checked and search button is clicked', () => {
     cy.fixture('resources/resourceListingByTypeAnomalyDetection.json').as(
       'listResourceByType',
     );
@@ -107,16 +134,12 @@ describe('Anomaly detection', () => {
     cy.route('GET', '**/resources?*', '@listResourceByType').as(
       'getResourceListByType',
     );
-    cy.viewport(750, 750);
 
     cy.display_filter_Menu();
 
-    filtersToBeDisplayedInTypeMenu.map((item) => {
-      cy.contains(item).should('be.visible').click();
-      cy.get('input[type="checkbox"]').should('be.checked');
-
-      return null;
-    });
+    filtersToBeDisplayedInTypeMenu.map((item) =>
+      cy.contains(item).should('be.visible').click(),
+    );
 
     cy.get('[data-testid="Search"]').click();
 
@@ -132,10 +155,24 @@ describe('Anomaly detection', () => {
 
     cy.fixture('resources/resourceListingByTypeAnomalyDetection.json').then(
       (data) => {
-        data.result.map((item) =>
-          cy.get('body').contains(item.name).should('be.visible'),
-        );
+        data.result.map((item) => cy.contains(item.name).should('be.visible'));
       },
     );
+    // cy.matchImageSnapshot();
+  });
+
+  it.only('display the wrench icon on graph actions when one row of resource anomaly-detection is clicked ', () => {
+    cy.viewport(1200, 750);
+
+    cy.contains('ad').click();
+    cy.get('[data-testid="3"]').contains(labelGraph).click();
+    cy.click_outside();
+    cy.wait('@getGraphDataAnomalyDetection');
+    cy.get('[data-testid="editAnomalyDetectionIcon"]').should('be.visible');
+    // cy.matchImageSnapshot();
+  });
+
+  it.only('display the modal of edit anomaly-detection when wrench icon is clicked ', () => {
+    // cy.matchImageSnapshot();
   });
 });
