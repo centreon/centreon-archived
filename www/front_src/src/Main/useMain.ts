@@ -56,12 +56,11 @@ const useMain = (): void => {
   useEffect(() => {
     displayAuthenticationError();
 
-    getPlatformVersions();
-
     getPlatformInstallationStatus({
       endpoint: platformInstallationStatusEndpoint,
     }).then((retrievedPlatformInstallationStatus) => {
       setPlatformInstallationStatus(retrievedPlatformInstallationStatus);
+      getPlatformVersions();
     });
   }, []);
 
