@@ -218,7 +218,7 @@ Feature: OpenId Provider Configuration API
     }
     """
 
-    # Invalid PUT request: invalid value passed to property
+    # Invalid PUT request: invalid value type passed to a property
     When I send a PUT request to '/api/latest/administration/authentication/providers/openid' with body:
     """
       {
