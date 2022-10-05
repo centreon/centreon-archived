@@ -869,7 +869,7 @@ class OpenIdProvider implements OpenIdProviderInterface
      * Log Authentication information
      *
      * @param string $message
-     * @param array<string|int,string>|null $content
+     * @param array<mixed>|null $content
      */
     private function logAuthenticationInfo(string $message, ?array $content = null): void
     {

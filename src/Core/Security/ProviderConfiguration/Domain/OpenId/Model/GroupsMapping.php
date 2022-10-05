@@ -111,7 +111,6 @@ class GroupsMapping
      *
      * @param boolean $isEnabled
      * @param string $attributePath
-     * @param ContactGroupRelation[] $contactGroupRelations
      * @throws OpenIdConfigurationException
      */
     private function validateMandatoryParametersForEnabledGroupsMapping(
