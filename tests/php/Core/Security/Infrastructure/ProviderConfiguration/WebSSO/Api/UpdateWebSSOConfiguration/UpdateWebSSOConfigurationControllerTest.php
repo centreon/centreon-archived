@@ -48,7 +48,7 @@ beforeEach(function () {
         ->setAdmin(true)
         ->setTimezone($timezone);
     $adminContact->addTopologyRule(Contact::ROLE_ADMINISTRATION_AUTHENTICATION_READ_WRITE);
-    
+
     $authorizationChecker = $this->createMock(AuthorizationCheckerInterface::class);
     $authorizationChecker->expects($this->once())
         ->method('isGranted')
