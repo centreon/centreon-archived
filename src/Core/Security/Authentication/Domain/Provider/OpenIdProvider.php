@@ -869,7 +869,7 @@ class OpenIdProvider implements OpenIdProviderInterface
      * Log Authentication information
      *
      * @param string $message
-     * @param array<string|int,string>|null $content
+     * @param array<mixed>|null $content
      */
     private function logAuthenticationInfo(string $message, ?array $content = null): void
     {
@@ -1250,6 +1250,7 @@ class OpenIdProvider implements OpenIdProviderInterface
     private function validateGroupsMappingOrFail(GroupsMapping $groupsMapping): void
     {
         if ($groupsMapping->isEnabled()) {
+            $this->logAuthenticationInfo("Groups Mapping Enabled");
             $groups = $this->getGroupsFromProvider($groupsMapping->getEndpoint());
             $this->validateGroupsMapping($groups, $groupsMapping);
         } else {
@@ -1286,6 +1287,18 @@ class OpenIdProvider implements OpenIdProviderInterface
     {
         $groupsAttributePath = explode(".", $groupsMapping->getAttributePath());
         $this->logAuthenticationInfo("Configured groups mapping attribute path found", $groupsAttributePath);
+        $this->logAuthenticationInfo(
+            "Groups Relations",
+            array_map(
+                function (ContactGroupRelation $contactGroupRelation) {
+                    return [
+                        "group claim" => $contactGroupRelation->getClaimValue(),
+                        "contact group" => $contactGroupRelation->getContactGroup()->getName()
+                    ];
+                },
+                $groupsMapping->getContactGroupRelations()
+            )
+        );
         foreach ($groupsAttributePath as $attribute) {
             $providerGroups = [];
             if (array_key_exists($attribute, $groups)) {
