@@ -7,7 +7,6 @@ import makeStyles from '@mui/styles/makeStyles';
 import { LoadingSkeleton } from '@centreon/ui';
 
 import PageLoader from '../components/PageLoader';
-import { headerHeight } from '../Header';
 
 import useApp from './useApp';
 
