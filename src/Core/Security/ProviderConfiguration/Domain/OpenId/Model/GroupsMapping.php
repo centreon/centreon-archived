@@ -117,15 +117,11 @@ class GroupsMapping
     private function validateMandatoryParametersForEnabledGroupsMapping(
         bool $isEnabled,
         string $attributePath,
-        array $contactGroupRelations
     ): void {
         if ($isEnabled) {
             $mandatoryParameters = [];
             if (empty($attributePath)) {
                 $mandatoryParameters[] = "attribute_path";
-            }
-            if (empty($contactGroupRelations)) {
-                $mandatoryParameters[] = "relations";
             }
             if (! empty($mandatoryParameters)) {
                 throw OpenIdConfigurationException::missingMandatoryParameters($mandatoryParameters);
