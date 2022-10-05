@@ -48,7 +48,7 @@ default:
       paths: [ "%paths.base%/features/OpenIdProviderConfiguration.feature" ]
       contexts:
         - Centreon\Test\Api\Context\OpenIdProviderConfigurationContext
-    websso_provide_configuration:
+    websso_provider_configuration:
       paths: [ "%paths.base%/features/WebSSOProviderConfiguration.feature" ]
       contexts:
         - Centreon\Test\Api\Context\WebSSOProviderConfigurationContext
