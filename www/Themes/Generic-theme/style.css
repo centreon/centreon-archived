@@ -1820,6 +1820,7 @@ span.show-disabled[disabled]::after {
 }
 .ToolbarTable {
     margin: 6px 0px;
+    font-size: 0;
 }
 .ToolbarTR          {padding-left:10px;}
 .ToolbarTR td:first-child {
