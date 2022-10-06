@@ -17106,3 +17106,6 @@ msgstr "Modèles (simplifiés)"
 
 msgid "Host Groups (simplified)"
 msgstr "Groupes d'hôtes (simplifiés)"
+
+msgid "Services (simplified)"
+msgstr "Services (simplifiés)"
