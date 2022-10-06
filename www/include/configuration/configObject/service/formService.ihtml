@@ -398,7 +398,7 @@
             <h4>{$form.header.furtherInfos}</h4>
           </td>
         </tr>
-        <tr class="list_one"><td class="FormRowField">{$form.service_activate.label}</td><td class="FormRowValue">{$form.service_activate.html}</td></tr>
+        <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="service_activate"> {$form.service_activate.label}</td><td class="FormRowValue">{$form.service_activate.html}</td></tr>
         <tr class="list_two"><td class="FormRowField">{$form.service_comment.label}</td><td class="FormRowValue">{$form.service_comment.html}</td></tr>
      </table>
 </div>

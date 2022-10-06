@@ -119,4 +119,19 @@ abstract class AbstractController extends AbstractFOSRestController
             throw new \InvalidArgumentException($message);
         }
     }
+
+
+    /**
+     * Validate the data sent and retrieve it.
+     *
+     * @param Request $request Request sent by client
+     * @param string $jsonValidationFile Json validation file
+     * @return array<string, mixed>
+     * @throws \InvalidArgumentException
+     */
+    protected function validateAndRetrieveDataSent(Request $request, string $jsonValidationFile): array
+    {
+        $this->validateDataSent($request, $jsonValidationFile);
+        return json_decode((string) $request->getContent(), true);
+    }
 }

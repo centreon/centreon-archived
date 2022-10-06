@@ -183,7 +183,7 @@ class Local implements ProviderAuthenticationInterface
      */
     public function canRefreshToken(): bool
     {
-        return false;
+        return $this->provider->canRefreshToken();
     }
 
     /**
@@ -192,7 +192,7 @@ class Local implements ProviderAuthenticationInterface
      */
     public function refreshToken(AuthenticationTokens $authenticationTokens): ?AuthenticationTokens
     {
-        return null;
+        return $this->provider->refreshToken($authenticationTokens);
     }
 
     /**

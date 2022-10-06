@@ -71,7 +71,7 @@ class CentreonWorker implements CentreonClapiServiceInterface
              * mark task as being worked on
              */
             $this->getDi()['centreon.taskservice']->updateStatus($task->getId(), Task::STATE_PROGRESS);
-            $serializedParams = htmlspecialchars($task->getParams());
+            $serializedParams = htmlspecialchars($task->getParams(), ENT_NOQUOTES);
             if (empty($serializedParams)) {
                 throw new \Exception('Invalid Parameters');
             }

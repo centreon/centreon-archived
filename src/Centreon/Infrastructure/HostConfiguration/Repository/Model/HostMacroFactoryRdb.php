@@ -44,6 +44,6 @@ class HostMacroFactoryRdb
             ->setDescription($data['description'])
             ->setOrder((int) $data['macro_order'])
             ->setHostId((int) $data['host_host_id'])
-            ->setPassword($data['is_password'] === '1');
+            ->setPassword($data['is_password'] === 1);
     }
 }

@@ -218,8 +218,7 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
         $toplogySubquery =
             $contact->isAdmin()
             ? 'SELECT topology.topology_id, 1 AS access_right
-                FROM topology
-                WHERE topology.is_react = \'0\''
+                FROM topology'
             : 'SELECT topology.topology_id, acltr.access_right
                 FROM `:db`.contact contact
                 LEFT JOIN `:db`.contactgroup_contact_relation cgcr
@@ -235,8 +234,7 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
                     ON acltr.acl_topo_id = agtr.acl_topology_id
                 INNER JOIN `:db`.topology
                     ON topology.topology_id = acltr.topology_topology_id
-                WHERE contact.contact_id = :contact_id
-                    AND topology.is_react = \'0\'';
+                WHERE contact.contact_id = :contact_id';
 
         $request =
             'SELECT topology.topology_name, topology.topology_page,
@@ -271,7 +269,7 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
         if ($rightsCounter > 0) {
             foreach ($topologies as $topologyPage => $details) {
                 $originalTopologyPage = $topologyPage;
-                if ($details['right'] === 0 || strlen((string) $topologyPage) < 5) {
+                if ($details['right'] === 0) {
                     continue;
                 }
                 $ruleName = null;
@@ -418,8 +416,8 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
             ->setAdmin($contact['contact_admin'] === '1')
             ->setToken($contact['contact_autologin_key'])
             ->setEncodedPassword($contact['contact_passwd'])
-            ->setAccessToApiRealTime($contact['reach_api_rt'] === '1')
-            ->setAccessToApiConfiguration($contact['reach_api'] === '1')
+            ->setAccessToApiRealTime($contact['reach_api_rt'] === 1)
+            ->setAccessToApiConfiguration($contact['reach_api'] === 1)
             ->setTimezone(new \DateTimeZone($contactTimezoneName))
             ->setTimezoneId((int) $contact['contact_location'])
             ->setLocale($contactLocale)

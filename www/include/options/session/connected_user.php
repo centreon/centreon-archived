@@ -128,9 +128,9 @@ for ($cpt = 0; $r = $res->fetch(); $cpt++) {
         // checking if the user account is linked to an LDAP
         if ($r['contact_auth_type'] === "ldap") {
             // adding the last synchronization time
-            if ((int)$r["contact_ldap_last_sync"] > 0) {
+            if ($r["contact_ldap_last_sync"] > 0) {
                 $session_data[$cpt]["last_sync"] = (int)$r["contact_ldap_last_sync"];
-            } elseif ($r["contact_ldap_last_sync"] === '0' || $r["contact_ldap_last_sync"] === null) {
+            } elseif ($r["contact_ldap_last_sync"] === 0 || $r["contact_ldap_last_sync"] === null) {
                 $session_data[$cpt]["last_sync"] = "-";
             }
             $session_data[$cpt]["synchronize"] =

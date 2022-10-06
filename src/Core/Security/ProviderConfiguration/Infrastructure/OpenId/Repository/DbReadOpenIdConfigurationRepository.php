@@ -116,7 +116,8 @@ class DbReadOpenIdConfigurationRepository extends AbstractRepositoryDRB implemen
         $statement = $this->db->prepare(
             "SELECT * from security_provider_access_group_relation spagn
                 INNER JOIN acl_groups ON acl_group_id = spagn.access_group_id
-                WHERE spagn.provider_configuration_id = :providerConfigurationId"
+                WHERE spagn.provider_configuration_id = :providerConfigurationId
+                ORDER BY spagn.priority asc"
         );
         $statement->bindValue(':providerConfigurationId', $providerConfigurationId, \PDO::PARAM_INT);
         $statement->execute();

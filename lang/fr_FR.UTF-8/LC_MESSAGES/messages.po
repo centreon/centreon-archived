@@ -17058,3 +17058,51 @@ msgstr "Les roles récupérés depuis le serveur d'identité sont incorrects"
 
 msgid "Role mapping conditions do not match"
 msgstr "Aucune correspondance trouvée pour le couple rôles/groupe d'accès"
+
+msgid "Are you sure you want to change the size of the envelope? The new envelope size will be applied immediately."
+msgstr "Voulez-vous vraiment modifier la taille de l'enveloppe ? Le nouveau format d'enveloppe sera appliqué immédiatement."
+
+msgid "Changes to the envelope size will be applied immediately"
+msgstr "Les modifications apportées à la taille de l'enveloppe seront appliquées immédiatement"
+
+msgid "Manage envelope size"
+msgstr "Gérer la taille de l'enveloppe"
+
+msgid "use default value"
+msgstr "utiliser la valeur par défaut"
+
+msgid "points out of envelope"
+msgstr "points hors enveloppe"
+
+msgid "Edit anomaly detection data"
+msgstr "Modifier les données de détection d'anomalie"
+
+msgid "Enable/disable resource"
+msgstr "Activer/désactiver la ressource"
+
+msgid "Note"
+msgstr "Note"
+
+msgid "Note URL"
+msgstr "URL de la note"
+
+msgid "Geographic coordinates"
+msgstr "Coordonnées géographiques"
+
+msgid "Members"
+msgstr "Membres"
+
+msgid "Monitoring settings"
+msgstr "Paramètres de supervision"
+
+msgid "Classification"
+msgstr "Classification"
+
+msgid "Hosts (simplified)"
+msgstr "Hôtes (simplifiés)"
+
+msgid "Templates (simplified)"
+msgstr "Modèles (simplifiés)"
+
+msgid "Host Groups (simplified)"
+msgstr "Groupes d'hôtes (simplifiés)"

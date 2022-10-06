@@ -276,8 +276,8 @@ class MonitoringResourceController extends AbstractController
     {
         $parameters = [
             'internalId' => $resource->getInternalId(),
-            'hostId' => $resource->getParent() !== null ? $resource->getParent()->getId() : $resource->getId(),
-            'serviceId' => $resource->getId(),
+            'hostId' => $resource->getHostId(),
+            'serviceId' => $resource->getServiceId(),
             'hasGraphData' => $resource->hasGraph()
         ];
 
@@ -309,6 +309,32 @@ class MonitoringResourceController extends AbstractController
     }
 
     /**
+     * Generates a resource details redirection link
+     *
+     * @param string $resourceType
+     * @param integer $resourceId
+     * @param array<string, integer> $parameters
+     * @return string
+     */
+    private function buildResourceDetailsUri(string $resourceType, int $resourceId, array $parameters): string
+    {
+        $resourceDetailsEndpoint = null;
+        foreach ($this->hyperMediaProviders as $hyperMediaProvider) {
+            if ($hyperMediaProvider->isValidFor($resourceType)) {
+                $resourceDetailsEndpoint = $hyperMediaProvider->generateResourceDetailsUri($parameters);
+            }
+        }
+
+        return $this->buildListingUri([
+            'details' => json_encode([
+                'id' => $resourceId,
+                'tab' => self::TAB_DETAILS_NAME,
+                'resourcesDetailsEndpoint' => $this->getBaseUri() . $resourceDetailsEndpoint
+            ])
+        ]);
+    }
+
+    /**
      * Build uri to access host panel with details tab
      *
      * @param integer $hostId
@@ -316,7 +342,11 @@ class MonitoringResourceController extends AbstractController
      */
     public function buildHostDetailsUri(int $hostId): string
     {
-        return $this->buildHostUri($hostId, self::TAB_DETAILS_NAME);
+        return $this->buildResourceDetailsUri(
+            ResourceEntity::TYPE_HOST,
+            $hostId,
+            ['hostId' => $hostId]
+        );
     }
 
     /**
@@ -351,7 +381,14 @@ class MonitoringResourceController extends AbstractController
      */
     public function buildServiceDetailsUri(int $hostId, int $serviceId): string
     {
-        return $this->buildServiceUri($hostId, $serviceId, self::TAB_DETAILS_NAME);
+        return $this->buildResourceDetailsUri(
+            ResourceEntity::TYPE_SERVICE,
+            $serviceId,
+            [
+                'hostId' => $hostId,
+                'serviceId' => $serviceId
+            ]
+        );
     }
 
     /**
@@ -375,7 +412,7 @@ class MonitoringResourceController extends AbstractController
                 'type' => ResourceEntity::TYPE_SERVICE,
                 'id' => $serviceId,
                 'tab' => $tab,
-                'uuid' => 's' . $serviceId
+                'uuid' => 'h' . $hostId . '-s' . $serviceId
             ]),
         ]);
     }
@@ -384,25 +421,17 @@ class MonitoringResourceController extends AbstractController
      * Build uri to access meta service panel
      *
      * @param integer $metaId
-     * @param string $tab tab name
      * @return string
      */
-    public function buildMetaServiceDetailsUri(int $metaId, string $tab = self::TAB_DETAILS_NAME): string
+    public function buildMetaServiceDetailsUri(int $metaId): string
     {
-        if (!in_array($tab, self::ALLOWED_TABS)) {
-            throw new ResourceException(sprintf(_('Cannot build uri to unknown tab : %s'), $tab));
-        }
-
-        return $this->buildListingUri([
-            'details' => json_encode([
-                'parentType' => null,
-                'parentId' => null,
-                'type' => ResourceEntity::TYPE_META,
-                'id' => $metaId,
-                'tab' => $tab,
-                'uuid' => 'm' . $metaId
-            ]),
-        ]);
+        return $this->buildResourceDetailsUri(
+            ResourceEntity::TYPE_META,
+            $metaId,
+            [
+                'metaId' => $metaId
+            ]
+        );
     }
 
     /**

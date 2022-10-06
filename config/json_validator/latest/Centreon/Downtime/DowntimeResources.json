@@ -1,0 +1,73 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "Downtime on resources",
+    "type": "object",
+    "required": ["downtime", "resources"],
+    "additionalProperties": false,
+    "properties": {
+        "downtime": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["start_time", "end_time", "is_fixed", "duration", "comment"],
+            "properties": {
+                "start_time": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "end_time" : {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "is_fixed": {
+                    "type": "boolean"
+                },
+                "duration": {
+                    "type": "integer"
+                },
+                "author_id": {
+                    "type": "integer"
+                },
+                "comment": {
+                    "type": "string"
+                },
+                "with_services": {
+                    "type": "boolean",
+                    "default": false
+                }
+            }
+        },
+        "resources": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "type",
+                    "id",
+                    "parent"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                    "type": {
+                        "type": "string"
+                    },
+                    "id": {
+                        "type": "integer"
+                    },
+                    "parent": {
+                        "type": [
+                            "object",
+                            "null"
+                        ],
+                        "additionalProperties": false,
+                        "required": ["id"],
+                        "properties": {
+                            "id": {
+                                "type": "integer"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

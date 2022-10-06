@@ -84,7 +84,7 @@ if (($o === HOST_TEMPLATE_MODIFY || $o === HOST_TEMPLATE_WATCH) && isset($host_i
          * Set criticality
          */
         $statement = $pearDB->prepare(
-            'SELECT hc.hc_id 
+            'SELECT hc.hc_id
             FROM hostcategories hc
             INNER JOIN hostcategories_relation hcr
                 ON hcr.hostcategories_hc_id = hc.hc_id
@@ -268,7 +268,7 @@ if ($o !== HOST_TEMPLATE_MASSIVE_CHANGE) {
     $form->addElement('text', 'host_name', _("Name"), $attrsText);
     $form->addElement('text', 'host_alias', _("Alias"), $attrsText);
 }
-$form->addElement('text', 'host_address', _("IP Address / DNS"), $attrsText);
+$form->addElement('text', 'host_address', _("Address"), $attrsText);
 $form->addElement('select', 'host_snmp_version', _("Version"), array(null => null, 1 => "1", "2c" => "2c", 3 => "3"));
 $form->addElement('text', 'host_snmp_community', _("SNMP Community"), $attrsText);
 
@@ -282,7 +282,7 @@ $attrTimezones = array(
     'multiple' => false,
     'linkedObject' => 'centreonGMT'
 );
-$form->addElement('select2', 'host_location', _("Timezone / Location"), array(), $attrTimezones);
+$form->addElement('select2', 'host_location', _("Timezone"), array(), $attrTimezones);
 
 $form->addElement('text', 'host_parallel_template', _("Templates"), $hTpls);
 
@@ -569,7 +569,7 @@ $attrHostcategory1 = array_merge(
     $attrHostcategories,
     array('defaultDatasetRoute' => $hostCatRoute)
 );
-$form->addElement('select2', 'host_hcs', _("Parent Host Categories"), array(), $attrHostcategory1);
+$form->addElement('select2', 'host_hcs', _("Host Categories"), array(), $attrHostcategory1);
 
 if ($o === HOST_TEMPLATE_MASSIVE_CHANGE) {
     $mc_mod_notifopt_notification_interval = array();
@@ -689,7 +689,7 @@ $form->addGroup($hostStalOpt, 'host_stalOpts', _("Stalking Options"), '&nbsp;&nb
 $form->addElement('header', 'furtherInfos', _("Additional Information"));
 $hostActivation[] = $form->createElement('radio', 'host_activate', null, _("Enabled"), '1');
 $hostActivation[] = $form->createElement('radio', 'host_activate', null, _("Disabled"), '0');
-$form->addGroup($hostActivation, 'host_activate', _("Status"), '&nbsp;');
+$form->addGroup($hostActivation, 'host_activate', _("Enable/disable resource"), '&nbsp;');
 if ($o !== HOST_TEMPLATE_MASSIVE_CHANGE) {
     $form->setDefaults(array('host_activate' => '1'));
 }
@@ -807,8 +807,8 @@ if ($o === HOST_TEMPLATE_ADD) {
 }
 
 $form->addElement('header', 'nagios', _("Monitoring engine"));
-$form->addElement('text', 'ehi_notes', _("Notes"), $attrsText);
-$form->addElement('text', 'ehi_notes_url', _("URL"), $attrsText);
+$form->addElement('text', 'ehi_notes', _("Note"), $attrsText);
+$form->addElement('text', 'ehi_notes_url', _("Note URL"), $attrsText);
 $form->addElement('text', 'ehi_action_url', _("Action URL"), $attrsText);
 $form->addElement('select', 'ehi_icon_image', _("Icon"), $extImg, array(
     "id" => "ehi_icon_image",
@@ -833,7 +833,7 @@ $criticalityIds = array(null => null);
 foreach ($critList as $critId => $critData) {
     $criticalityIds[$critId] = $critData['hc_name'] . ' (' . $critData['level'] . ')';
 }
-$form->addElement('select', 'criticality_id', _('Severity level'), $criticalityIds);
+$form->addElement('select', 'criticality_id', _('Host severity'), $criticalityIds);
 
 $form->addElement('header', 'oreon', _("Centreon"));
 

@@ -529,7 +529,7 @@ class CentreonService
 
                     $valPassword = null;
                     if (isset($row['is_password'])) {
-                        if ($row['is_password'] === '1') {
+                        if ($row['is_password'] === 1) {
                             $valPassword = '1';
                         } else {
                             $valPassword = null;
@@ -821,7 +821,7 @@ class CentreonService
             }
         }
 
-        $iIdCommande = $form['command_command_id'];
+        $iIdCommande = $form['command_command_id'] ?? [];
 
         $templateName = "";
         if (empty($iIdCommande)) {

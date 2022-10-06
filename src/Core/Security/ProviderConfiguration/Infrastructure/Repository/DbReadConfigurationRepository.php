@@ -167,20 +167,20 @@ final class DbReadConfigurationRepository extends AbstractRepositoryDRB implemen
 
     /**
      * @param int $configurationId
-     * @param array<string,bool|string|string[]> $roles_mapping
+     * @param array<string,bool|string|string[]> $rolesMapping
      * @return ACLConditions
      * @throws ACLConditionsException
      * @throws InvalidEndpointException
      */
-    private function createAclConditions(int $configurationId, array $roles_mapping): ACLConditions
+    private function createAclConditions(int $configurationId, array $rolesMapping): ACLConditions
     {
         $rules = $this->readOpenIdConfigurationRepository->getAuthorizationRulesByConfigurationId($configurationId);
 
         return new ACLConditions(
-            $roles_mapping['is_enabled'],
-            $roles_mapping['apply_only_first_role'],
-            $roles_mapping['attribute_path'],
-            new Endpoint($roles_mapping['endpoint']['type'], $roles_mapping['endpoint']['custom_endpoint']),
+            $rolesMapping['is_enabled'],
+            $rolesMapping['apply_only_first_role'],
+            $rolesMapping['attribute_path'],
+            new Endpoint($rolesMapping['endpoint']['type'], $rolesMapping['endpoint']['custom_endpoint']),
             $rules
         );
     }

@@ -65,9 +65,9 @@ if (($o == SERVICE_TEMPLATE_MODIFY || $o == SERVICE_TEMPLATE_WATCH) && isset($se
         $o = SERVICE_TEMPLATE_WATCH;
     }
     $statement = $pearDB->prepare(
-        'SELECT * 
+        'SELECT *
         FROM service srv
-        LEFT JOIN extended_service_information esi 
+        LEFT JOIN extended_service_information esi
             ON esi.service_service_id = srv.service_id
         WHERE srv.service_id = :service_id  LIMIT 1'
     );
@@ -97,7 +97,7 @@ if (($o == SERVICE_TEMPLATE_MODIFY || $o == SERVICE_TEMPLATE_WATCH) && isset($se
      * Set criticality
      */
     $statement = $pearDB->prepare(
-        "SELECT sc.sc_id 
+        "SELECT sc.sc_id
         FROM service_categories sc
         INNER JOIN service_categories_relation scr
             ON scr.sc_id = sc.sc_id
@@ -334,7 +334,7 @@ $attrHosttemplate1 = array_merge(
     $attrHosttemplates,
     array('defaultDatasetRoute' => $hostTplRoute)
 );
-$form->addElement('select2', 'service_hPars', _("Linked to host templates"), array(), $attrHosttemplate1);
+$form->addElement('select2', 'service_hPars', _("Host Templates"), array(), $attrHosttemplate1);
 
 #
 ## Check information
@@ -698,7 +698,7 @@ $form->addGroup($serviceStalOpt, 'service_stalOpts', _("Stalking Options"), '&nb
 $form->addElement('header', 'furtherInfos', _("Additional Information"));
 $serviceActivation[] = $form->createElement('radio', 'service_activate', null, _("Enabled"), '1');
 $serviceActivation[] = $form->createElement('radio', 'service_activate', null, _("Disabled"), '0');
-$form->addGroup($serviceActivation, 'service_activate', _("Status"), '&nbsp;');
+$form->addGroup($serviceActivation, 'service_activate', _("Enable/disable resource"), '&nbsp;');
 if ($o != SERVICE_TEMPLATE_MASSIVE_CHANGE) {
     $form->setDefaults(array('service_activate' => '1'));
 }
@@ -834,8 +834,8 @@ if ($o == SERVICE_TEMPLATE_ADD) {
 }
 
 $form->addElement('header', 'nagios', _("Monitoring Engine"));
-$form->addElement('text', 'esi_notes', _("Notes"), $attrsText);
-$form->addElement('text', 'esi_notes_url', _("URL"), $attrsText);
+$form->addElement('text', 'esi_notes', _("Note"), $attrsText);
+$form->addElement('text', 'esi_notes_url', _("Note URL"), $attrsText);
 $form->addElement('text', 'esi_action_url', _("Action URL"), $attrsText);
 $form->addElement('select', 'esi_icon_image', _("Icon"), $extImg, array(
     "id" => "esi_icon_image",
@@ -853,7 +853,7 @@ $criticalityIds = array(null => null);
 foreach ($critList as $critId => $critData) {
     $criticalityIds[$critId] = $critData['sc_name'] . ' (' . $critData['level'] . ')';
 }
-$form->addElement('select', 'criticality_id', _('Severity level'), $criticalityIds);
+$form->addElement('select', 'criticality_id', _('Service severity'), $criticalityIds);
 
 $form->addElement('header', 'oreon', _("Centreon"));
 
@@ -879,7 +879,7 @@ $attrServicecategory1 = array_merge(
     $attrServicecategories,
     array('defaultDatasetRoute' => $servCatDeRoute)
 );
-$form->addElement('select2', 'service_categories', _("Categories"), array(), $attrServicecategory1);
+$form->addElement('select2', 'service_categories', _("Service Categories"), array(), $attrServicecategory1);
 
 /*
  * Sort 5 - Macros - Nagios 3

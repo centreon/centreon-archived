@@ -41,6 +41,7 @@ function get_error($str)
 
 require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.config.php");
 include_once _CENTREON_PATH_ . "www/class/centreonDB.class.php";
+include_once _CENTREON_PATH_ . "www/class/HtmlAnalyzer.php";
 
 $pearDB = new CentreonDB();
 $pearDBO = new CentreonDB("centstorage");

@@ -61,4 +61,10 @@ interface HypermediaProviderInterface
      * @return array<int, array<string, string|int|null>>
      */
     public function convertCategoriesForPresenter(array $categories): array;
+
+    /**
+     * @param array<string, int> $parameters
+     * @return string
+     */
+    public function generateResourceDetailsUri(array $parameters): string;
 }

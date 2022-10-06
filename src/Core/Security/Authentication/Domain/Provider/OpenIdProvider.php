@@ -869,7 +869,7 @@ class OpenIdProvider implements OpenIdProviderInterface
      * Log Authentication information
      *
      * @param string $message
-     * @param array<string|int,string>|null $content
+     * @param array<mixed>|null $content
      */
     private function logAuthenticationInfo(string $message, ?array $content = null): void
     {
@@ -877,7 +877,8 @@ class OpenIdProvider implements OpenIdProviderInterface
             CentreonUserLog::TYPE_LOGIN,
             "[Openid] [INFO] $message" . ($content !== null ? ' : ' . json_encode($content) : '')
         );
-        $this->info("$message : ", $content);
+
+        $this->info("$message : ", $content ?: []);
     }
 
     /**
@@ -1058,13 +1059,13 @@ class OpenIdProvider implements OpenIdProviderInterface
         $conditionMatches = array_intersect($providerAuthenticationConditions, $configuredAuthorizedValues);
         if (empty($conditionMatches)) {
             $this->error(
-                "Configured attribute path not found in conditions endpoint",
+                "Configured attribute value not found in conditions endpoint",
                 [
                     "configured_authorized_values" => $configuredAuthorizedValues
                 ]
             );
             $this->logExceptionInLoginLogFile(
-                "Configured attribute path not found in conditions endpoint: %s, message: %s",
+                "Configured attribute value not found in conditions endpoint: %s, message: %s",
                 AuthenticationConditionsException::conditionsNotFound()
             );
             throw AuthenticationConditionsException::conditionsNotFound();
@@ -1145,6 +1146,7 @@ class OpenIdProvider implements OpenIdProviderInterface
     {
         $aclConditions = $customConfiguration->getACLConditions();
         if (!$aclConditions->isEnabled()) {
+            $this->logAuthenticationInfo("Roles mapping is disabled");
             return;
         }
 
@@ -1160,8 +1162,9 @@ class OpenIdProvider implements OpenIdProviderInterface
             }
         }
 
-        if ($aclConditions->onlyFirstRoleIsApplied() && !empty($providerConditions)) {
-            $providerConditions = [$providerConditions[0]];
+        $configuredClaimValues = $aclConditions->getClaimValues();
+        if ($aclConditions->onlyFirstRoleIsApplied() && !empty($configuredClaimValues)) {
+            $configuredClaimValues = [$configuredClaimValues[0]];
         }
 
         $this->rolesMappingFromProvider = $providerConditions;
@@ -1170,7 +1173,7 @@ class OpenIdProvider implements OpenIdProviderInterface
             $providerConditions = explode(",", $providerConditions);
         }
 
-        $this->validateAclAttributeOrFail($providerConditions, $aclConditions->getClaimValues());
+        $this->validateAclAttributeOrFail($providerConditions, $configuredClaimValues);
     }
 
     /**
@@ -1248,6 +1251,7 @@ class OpenIdProvider implements OpenIdProviderInterface
     private function validateGroupsMappingOrFail(GroupsMapping $groupsMapping): void
     {
         if ($groupsMapping->isEnabled()) {
+            $this->logAuthenticationInfo("Groups Mapping Enabled");
             $groups = $this->getGroupsFromProvider($groupsMapping->getEndpoint());
             $this->validateGroupsMapping($groups, $groupsMapping);
         } else {
@@ -1284,6 +1288,18 @@ class OpenIdProvider implements OpenIdProviderInterface
     {
         $groupsAttributePath = explode(".", $groupsMapping->getAttributePath());
         $this->logAuthenticationInfo("Configured groups mapping attribute path found", $groupsAttributePath);
+        $this->logAuthenticationInfo(
+            "Groups Relations",
+            array_map(
+                function (ContactGroupRelation $contactGroupRelation) {
+                    return [
+                        "group claim" => $contactGroupRelation->getClaimValue(),
+                        "contact group" => $contactGroupRelation->getContactGroup()->getName()
+                    ];
+                },
+                $groupsMapping->getContactGroupRelations()
+            )
+        );
         foreach ($groupsAttributePath as $attribute) {
             $providerGroups = [];
             if (array_key_exists($attribute, $groups)) {
@@ -1339,16 +1355,16 @@ class OpenIdProvider implements OpenIdProviderInterface
         }
         if (empty($groupsMatches)) {
             $this->error(
-                "Configured attribute path not found in conditions endpoint",
+                "Configured attribute value not found in groups mapping endpoint",
                 [
-                    "configured_groups_mapping" => $providerGroupsMapping
+                    "provider_groups_mapping" => $providerGroupsMapping,
+                    "configured_groups_mapping" => $claimsFromProvider
                 ]
             );
             $this->logExceptionInLoginLogFile(
-                "Configured attribute path not found in conditions endpoint: %s, message: %s",
+                "Configured attribute value not found in groups mapping endpoint: %s, message: %s",
                 AuthenticationConditionsException::conditionsNotFound()
             );
-            throw AuthenticationConditionsException::conditionsNotFound();
         }
         $this->info("Groups found", ["group" => $groupsMatches]);
         $this->logAuthenticationInfo("Groups found", $groupsMatches);
