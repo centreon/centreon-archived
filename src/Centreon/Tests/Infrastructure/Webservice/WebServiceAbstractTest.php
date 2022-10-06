@@ -34,7 +34,7 @@
  *
  */
 
-namespace Centreon\Tests\Infrastructure\CentreonLegacyDB;
+namespace Centreon\Tests\Infrastructure\Webservice;
 
 use PHPUnit\Framework\TestCase;
 use Centreon\Infrastructure\Webservice\WebServiceAbstract;

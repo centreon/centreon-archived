@@ -19,7 +19,7 @@
  *
  */
 
-namespace Tests\Centreon\Application\Controller\Monitoring\Metric;
+namespace Tests\Centreon\Application\Controller\Monitoring;
 
 use Centreon\Domain\Contact\Contact;
 use Centreon\Domain\Monitoring\Host;

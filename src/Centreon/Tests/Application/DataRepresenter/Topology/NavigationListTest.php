@@ -33,7 +33,7 @@
  *
  *
  */
-namespace Centreon\Tests\Application\DataRepresenter;
+namespace Centreon\Tests\Application\DataRepresenter\Topology;
 
 use PHPUnit\Framework\TestCase;
 use Centreon\Domain\Entity\Topology;
