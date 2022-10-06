@@ -4,10 +4,11 @@ import { equals, last } from 'ramda';
 
 import { Resource, Status } from '../../../models';
 import ServiceCard from '../Details/ServiceCard';
+import { ResourceDetailsAtom } from '../../models';
 
 interface Props {
   infiniteScrollTriggerRef: RefObject<HTMLDivElement>;
-  onSelectService: (service: Resource) => void;
+  onSelectService: (service: ResourceDetailsAtom | null) => void;
   services: Array<Resource>;
 }
 
@@ -29,7 +30,12 @@ const ServiceList = ({
               name={name}
               status={status as Status}
               subInformation={duration}
-              onSelect={(): void => onSelectService(service)}
+              onSelect={(): void =>
+                onSelectService({
+                  resourceId: service.id,
+                  resourcesDetailsEndpoint: service.links?.endpoints?.details,
+                })
+              }
             />
             {isLastService && <div ref={infiniteScrollTriggerRef} />}
           </div>
