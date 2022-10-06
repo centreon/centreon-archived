@@ -15422,10 +15422,10 @@ msgid "Conditions attribute path"
 msgstr "Caminho de atributos de condições"
 
 msgid "Which endpoint does the conditions attribute path come from?"
-msgstr "De que ponto final as condições atribuem o caminho?"
+msgstr "De que endpoint as condições atribuem o caminho?"
 
 msgid "Introspection endpoint"
-msgstr "Ponto final da introspecção"
+msgstr "endpoint da introspecção"
 
 msgid "User information"
 msgstr "Informações ao usuário"
@@ -15455,7 +15455,7 @@ msgid "Roles attribute path"
 msgstr "Atributos dos papéis"
 
 msgid "Which endpoint does the roles attribute path come from?"
-msgstr "De qual ponto final os papéis atribuem o caminho?"
+msgstr "De qual endpoint os papéis atribuem o caminho?"
 
 msgid "Define the relation between roles and ACL access groups"
 msgstr "Definir a relação entre as funções e os grupos de acesso ACL"
@@ -15470,7 +15470,7 @@ msgid "Groups attribute path"
 msgstr "Caminho de atributos de grupos"
 
 msgid "Which endpoint does the groups attribute path come from?"
-msgstr "De que ponto final os grupos atribuem o caminho?"
+msgstr "De que endpoint os grupos atribuem o caminho?"
 
 msgid "Define the relation between groups and contact groups"
 msgstr "Definir a relação entre grupos e grupos de contato"
@@ -15479,13 +15479,8 @@ msgid "Group value"
 msgstr "Valor do grupo"
 
 msgid "Define your endpoint"
-msgstr "Defina seu ponto final"
+msgstr "Defina seu endpoint"
 
-msgid "Roles mapping"
-msgstr "Associação de papéis"
-
-msgid "Groups mapping"
-msgstr "Associação de grupos"
 # msgid "Mixed"
 # msgstr ""
 
