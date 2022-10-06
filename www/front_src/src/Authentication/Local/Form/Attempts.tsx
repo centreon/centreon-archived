@@ -83,7 +83,7 @@ const Attempts = (): JSX.Element => {
           helperText={attemptsError}
           inputProps={{
             'aria-label': t(labelNumberOfAttemptsBeforeUserIsBlocked),
-            'data-testid': 'local_NumberOfAttemptsBeforeUserIsBlocked',
+            'data-testid': 'local_numberOfAttemptsBeforeUserIsBlocked',
             min: 1,
           }}
           label={t(labelNumberOfAttemptsBeforeUserIsBlocked)}

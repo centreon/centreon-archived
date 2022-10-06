@@ -162,7 +162,7 @@ const TimeInput = ({
         <SelectField
           inputProps={{
             'aria-label': `${t(inputLabel)} ${t(label)}`,
-            ...(dataTestId ? { 'data-testid': dataTestId } : {}),
+            'data-testid': dataTestId,
           }}
           name={name}
           options={getTimeOptions[unit]({ max: maxOption, min: minOption })}
