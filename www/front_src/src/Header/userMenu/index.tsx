@@ -86,6 +86,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'none',
     [theme.breakpoints.up(648)]: {
       display: 'block',
+      textAlign: 'right',
     },
   },
   containerList: {
