@@ -3908,6 +3908,12 @@ paths:
               application/json:
                 schema:
                   $ref: '#/components/schemas/AuthenticationLocalProvider'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
     put:
       tags:
         - Administration
@@ -3921,6 +3927,10 @@ paths:
       responses:
         '204':
             description: "OK"
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
   /administration/authentication/providers/openid:
     get:
       tags:
@@ -3933,6 +3943,12 @@ paths:
               application/json:
                 schema:
                   $ref: '#/components/schemas/ReadAuthenticationOpenIdProvider'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
     put:
       tags:
         - Administration
@@ -3946,6 +3962,10 @@ paths:
       responses:
         '204':
             description: "Configuration updated"
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
   /administration/authentication/providers/web-sso:
     get:
       tags:
@@ -3958,6 +3978,12 @@ paths:
               application/json:
                 schema:
                   $ref: '#/components/schemas/AuthenticationWebSSOProvider'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
     put:
       tags:
         - "Administration"
@@ -3971,6 +3997,10 @@ paths:
       responses:
         '204':
             description: "Configuration updated"
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
   /administration/parameters:
     post:
       tags:
