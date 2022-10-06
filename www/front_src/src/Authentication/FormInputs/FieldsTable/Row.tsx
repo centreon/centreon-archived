@@ -19,6 +19,7 @@ const useStyles = makeStyles<Theme, { columns }, string>((theme) => ({
     columnGap: theme.spacing(2),
     display: 'grid',
     gridTemplateColumns: `repeat(${columns}, 1fr) ${theme.spacing(6)}`,
+    gridTemplateRows: 'min-content',
   }),
 }));
 

@@ -100,18 +100,19 @@ class CentreonHostgroups
         }
 
         $hosts = array();
-        $DBRESULT = $this->DB->query(
-            "SELECT hgr.host_host_id " .
+        $statement = $this->DB->prepare("SELECT hgr.host_host_id " .
             "FROM hostgroup_relation hgr, host h " .
-            "WHERE hgr.hostgroup_hg_id = '" . $this->DB->escape($hg_id) . "' " .
+            "WHERE hgr.hostgroup_hg_id = :hgId " .
             "AND h.host_id = hgr.host_host_id " .
-            "ORDER by h.host_name"
-        );
-        while ($elem = $DBRESULT->fetchRow()) {
+            "ORDER by h.host_name");
+        $statement->bindValue(':hgId', (int) $hg_id, \PDO::PARAM_INT);
+        $statement->execute();
+
+        while ($elem = $statement->fetchRow()) {
             $ref[$elem["host_host_id"]] = $elem["host_host_id"];
             $hosts[] = $elem["host_host_id"];
         }
-        $DBRESULT->closeCursor();
+        $statement->closeCursor();
         unset($elem);
 
         if (isset($hostgroups) && count($hostgroups)) {
@@ -334,6 +335,12 @@ class CentreonHostgroups
             return $items;
         }
 
+        $hostgroups = [];
+        // $values structure: ['1,2,3,4'], keeping the foreach in case it could have more than one index
+        foreach ($values as $value) {
+            $hostgroups = array_merge($hostgroups, explode(',', $value));
+        }
+
         // get list of authorized hostgroups
         if (!$centreon->user->access->admin) {
             $hgAcl = $centreon->user->access->getHostGroupAclConf(
@@ -347,7 +354,7 @@ class CentreonHostgroups
                     'conditions' => array(
                         'hostgroup.hg_id' => array(
                             'IN',
-                            $values
+                            $hostgroups
                         )
                     )
                 ),
@@ -359,15 +366,13 @@ class CentreonHostgroups
         $listValues = '';
         $queryValues = array();
 
-        foreach ($values as $k => $v) {
-            //As it happens that $v could be like "X,Y" when two hostgroups are selected, we added a second foreach
-            $multiValues = explode(',', $v);
-            foreach ($multiValues as $item) {
-                $ids = explode('-', $item);
-                $listValues .= ':hgId_' . $ids[0] . ', ';
-                $queryValues['hgId_' . $ids[0]] = (int)$ids[0];
-            }
+        foreach ($hostgroups as $item) {
+            // the below explode may not be useful
+            $ids = explode('-', $item);
+            $listValues .= ':hgId_' . $ids[0] . ', ';
+            $queryValues['hgId_' . $ids[0]] = (int)$ids[0];
         }
+
         $listValues = rtrim($listValues, ', ');
         $query = 'SELECT hg_id, hg_name FROM hostgroup WHERE hg_id IN (' . $listValues . ') ORDER BY hg_name ';
         $stmt = $this->DB->prepare($query);

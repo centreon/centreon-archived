@@ -10237,10 +10237,6 @@ msgstr "Checagem de Manutenção"
 msgid "Preexec definition"
 msgstr "Definição de pré-execução"
 
-#: centreon-web/www/include/configuration/configObject/traps/formTraps.php:376
-msgid "The same OID element already exists"
-msgstr "O mesmo OID já existe"
-
 #: centreon-web/www/include/configuration/configObject/traps/formTraps.php:384
 msgid "Advanced matching rules"
 msgstr "Regras de correspondencia avançada"
@@ -11800,7 +11796,7 @@ msgstr "Escala"
 
 #: centreon-web/www/install/smarty_translate.php:414
 msgid "Service category"
-msgstr "Categoria do Serviço"
+msgstr "Categoria de Serviço"
 
 #: centreon-web/www/install/smarty_translate.php:438
 msgid "Service Scheduling Options"
@@ -15617,3 +15613,7 @@ msgstr ""
 
 #  msgid "Warning, maximum size exceeded for input '%s' (max: %d), it will be truncated upon saving"
 #  msgstr ""
+# msgid "Parent alias"
+# msgstr ""
+
+

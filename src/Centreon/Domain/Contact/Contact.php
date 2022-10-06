@@ -71,6 +71,7 @@ class Contact implements UserInterface, ContactInterface
     public const ROLE_CONFIGURATION_CONTACTS_READ = 'ROLE_CONFIGURATION_USERS_CONTACTS__USERS_R';
     public const ROLE_CONFIGURATION_USERS_CONTACT_GROUPS_READ_WRITE = 'ROLE_CONFIGURATION_USERS_CONTACT_GROUPS_RW';
     public const ROLE_CONFIGURATION_USERS_CONTACT_GROUPS_READ = 'ROLE_CONFIGURATION_USERS_CONTACT_GROUPS_R';
+    public const ROLE_ADMINISTRATION_AUTHENTICATION_READ_WRITE = 'ROLE_ADMINISTRATION_AUTHENTICATION_RW';
 
     /**
      * @var string
@@ -163,6 +164,11 @@ class Contact implements UserInterface, ContactInterface
     private $timezone;
 
     /**
+     * @var int
+     */
+    private int $timezoneId;
+
+    /**
      * @var string|null $locale locale of the user
      */
     private $locale;
@@ -188,6 +194,25 @@ class Contact implements UserInterface, ContactInterface
      * @var string|null
      */
     private $theme;
+
+    /**
+     * @param int $timezoneId
+     * @return self
+     */
+    public function setTimezoneId(int $timezoneId): self
+    {
+        $this->timezoneId = $timezoneId;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getTimezoneId(): int
+    {
+        return $this->timezoneId;
+    }
 
     /**
      * @return int

@@ -1584,12 +1584,12 @@ class CentreonService extends CentreonObject
         $arr = array();
         $i = 0;
         if ($serviceId) {
-            $res = $this->db->query("SELECT svc_macro_name, svc_macro_value, is_password, description
-                                FROM on_demand_macro_service
-                                WHERE svc_svc_id = " .
-                $serviceId . "
-                                ORDER BY macro_order ASC");
-            while ($row = $res->fetch()) {
+            $statement = $this->db->prepare("SELECT svc_macro_name, svc_macro_value, is_password, description " .
+                "FROM on_demand_macro_service " .
+                "WHERE svc_svc_id = :serviceId ORDER BY macro_order ASC");
+            $statement->bindValue(':serviceId', (int) $serviceId, \PDO::PARAM_INT);
+            $statement->execute();
+            while ($row = $statement->fetch()) {
                 if (preg_match('/\$_SERVICE(.*)\$$/', $row['svc_macro_name'], $matches)) {
                     $arr[$i]['svc_macro_name'] = $matches[1];
                     $arr[$i]['svc_macro_value'] = $row['svc_macro_value'];

@@ -1,5 +1,5 @@
 import axios, { AxiosResponse, CancelToken } from 'axios';
-import { map, pick } from 'ramda';
+import { pick } from 'ramda';
 
 import { Resource } from '../../models';
 import { AcknowledgeFormValues } from '../Resource/Acknowledge';
@@ -7,9 +7,9 @@ import { DowntimeToPost } from '../Resource/Downtime';
 
 import {
   acknowledgeEndpoint,
-  downtimeEndpoint,
   checkEndpoint,
   commentEndpoint,
+  downtimeEndpoint,
 } from './endpoint';
 
 interface ResourcesWithAcknowledgeParams {
@@ -24,18 +24,23 @@ const acknowledgeResources =
     resources,
     params,
   }: ResourcesWithAcknowledgeParams): Promise<Array<AxiosResponse>> => {
+    const payload = resources.map(({ type, id, parent }) => ({
+      id,
+      parent: parent ? { id: parent?.id } : null,
+      type,
+    }));
+
     return axios.post(
       acknowledgeEndpoint,
       {
         acknowledgement: {
           comment: params.comment,
-          force_active_checks: params.forceActiveChecks,
           is_notify_contacts: params.notify,
           is_persistent_comment: params.persistent,
           is_sticky: params.isSticky,
           with_services: params.acknowledgeAttachedResources,
         },
-        resources: map(pick(['type', 'id', 'parent']), resources),
+        resources: payload,
       },
       { cancelToken },
     );
@@ -52,6 +57,12 @@ const setDowntimeOnResources =
     resources,
     params,
   }: ResourcesWithDowntimeParams): Promise<AxiosResponse> => {
+    const payload = resources.map(({ type, id, parent }) => ({
+      id,
+      parent: parent ? { id: parent?.id } : null,
+      type,
+    }));
+
     return axios.post(
       downtimeEndpoint,
       {
@@ -63,7 +74,7 @@ const setDowntimeOnResources =
           start_time: params.startTime,
           with_services: params.isDowntimeWithServices,
         },
-        resources: map(pick(['type', 'id', 'parent']), resources),
+        resources: payload,
       },
       { cancelToken },
     );
@@ -78,10 +89,16 @@ const checkResources = ({
   resources,
   cancelToken,
 }: ResourcesWithRequestParams): Promise<AxiosResponse> => {
+  const payload = resources.map(({ type, id, parent }) => ({
+    id,
+    parent: parent ? { id: parent?.id } : null,
+    type,
+  }));
+
   return axios.post(
     checkEndpoint,
     {
-      resources: map(pick(['type', 'id', 'parent']), resources),
+      resources: payload,
     },
     { cancelToken },
   );
@@ -107,9 +124,10 @@ const commentResources =
       commentEndpoint,
       {
         resources: resources.map((resource) => ({
-          ...pick(['id', 'type', 'parent'], resource),
+          ...pick(['id', 'type'], resource),
           comment: parameters.comment,
           date: parameters.date,
+          parent: resource?.parent ? { id: resource?.parent?.id } : null,
         })),
       },
       { cancelToken },

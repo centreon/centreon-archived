@@ -6,6 +6,10 @@ if [ -z "$VERSION" -o -z "$RELEASE" -o -z "$DISTRIB" ] ; then
   exit 1
 fi
 
+# Upgrade image before
+apt update
+apt upgrade -y
+
 echo "################################################## PACKAGING WEB ##################################################"
 
 AUTHOR="Luiz Costa"
@@ -18,6 +22,7 @@ MAJOR_VERSION="$(echo $VERSION | egrep -o '^[0-9][0-9].[0-9][0-9]')"
 cd centreon/
 
 # Replace basic macros.
+COMMIT=$(git log -1 HEAD --pretty=format:%h)
 find ./www/include/Administration/about -type f | xargs --delimiter='\n' sed -i -e "s/@COMMIT@/$COMMIT/g"
 
 # set locale
@@ -34,9 +39,8 @@ done
 rm -rf lang
 
 # Generate API documentation.
-apt install -y npm && sleep 30
-npm install -g redoc-cli
-/usr/local/bin/redoc-cli bundle --options.hideDownloadButton=true doc/API/centreon-api-v${MAJOR_VERSION}.yaml -o ../centreon-api-v${MAJOR_VERSION}.html
+npm i -g redoc-cli
+redoc-cli build --options.hideDownloadButton=true doc/API/centreon-api-v${MAJOR_VERSION}.yaml -o ../centreon-api-v${MAJOR_VERSION}.html
 
 # Make tar with original content
 cd ..

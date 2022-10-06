@@ -4408,7 +4408,7 @@ msgstr "Sauvegarde du mot de passe LDAP"
 
 #: centreon-web/www/include/Administration/parameters/ldap/form.php:78
 msgid "Auto import users"
-msgstr "Import automatiques des utilisateurs"
+msgstr "Import automatique des utilisateurs"
 
 #: centreon-web/www/include/Administration/parameters/ldap/form.php:96
 msgid "Use service DNS"
@@ -9554,10 +9554,6 @@ msgstr "Contrôle si le service est en plage de maintenance"
 msgid "Preexec definition"
 msgstr "Définition de la commande PREEXEC"
 
-#: centreon-web/www/include/configuration/configObject/traps/formTraps.php:360
-msgid "The same OID element already exists"
-msgstr "Le même OID existe déjà"
-
 #: centreon-web/www/include/configuration/configObject/traps/formTraps.php:368
 msgid "Advanced matching rules"
 msgstr "Règles de correspondance avancées"
@@ -13653,11 +13649,11 @@ msgstr "Configurer une plage de maintenance pour les services des hôtes"
 #~ msgid "No downtime scheduled for services"
 #~ msgstr "Aucune plage de maintenance planifiée pour les services"
 
-#~ msgid "Host category"
-#~ msgstr "Catégorie d'hôtes"
+ msgid "Host category"
+ msgstr "Catégorie d'hôtes"
 
-#~ msgid "Service category"
-#~ msgstr "Catégories de service"
+ msgid "Service category"
+ msgstr "Catégorie de service"
 
 #~ msgid "Inclusion"
 #~ msgstr "Inclusion"
@@ -16914,3 +16910,69 @@ msgstr "Les attributs liés suivants sont manquants : %s"
 
 msgid "Warning, maximum size exceeded for input '%s' (max: %d), it will be truncated upon saving"
 msgstr "Attention, taille maximale dépassée pour le champ '%s' (max: %d), il sera tronqué à l'enregistrement"
+
+msgid "Update already in progress"
+msgstr "Une mise à jour est déjà en cours"
+
+msgid "An error occurred when retrieving the current version"
+msgstr "Une erreur s'est produite lors de la récupération de la version actuelle"
+
+msgid "Cannot retrieve the current version"
+msgstr "La version actuelle n'a pas pu être récupérée"
+
+msgid "An error occurred when retrieving available updates"
+msgstr "Une erreur s'est produite lors de la récupération des mises à jour disponibles"
+
+msgid "An error occurred when applying the update %s (%s)"
+msgstr "Une erreur s'est produite lors de l'application de la mise à jour %s (%s)"
+
+msgid "Error while locking the update process"
+msgstr "Erreur lors du verrouillage du processus de mise à jour"
+
+msgid "Error while unlocking the update process"
+msgstr "Erreur lors du déverrouillage du processus de mise à jour"
+
+msgid "An error occurred when applying post update actions"
+msgstr "Une erreur s'est produite lors de l'application des actions postérieures à la mise à jour"
+
+msgid "Updates not found"
+msgstr "Les mises à jour n'ont pas été trouvées"
+
+msgid "PHP version %s required (%s installed)"
+msgstr "La version %s de PHP est requise (%s installée)"
+
+msgid "PHP extension %s not loaded"
+msgstr "L'extension %s de PHP n'est pas chargée"
+
+msgid "Error when retrieving the database version"
+msgstr "Erreur lors de la récupération de la version de la base de données"
+
+msgid "Cannot retrieve the database version information"
+msgstr "Les informations de version de la base de données n'ont pas pu être récupérées"
+
+msgid "MariaDB version %s required (%s installed)"
+msgstr "La version %s de MariaDB est requise (%s installée)"
+
+msgid "Service severity"
+msgstr "Criticité du service"
+
+msgid "Service severity level"
+msgstr "Niveau de criticité du service"
+
+msgid "Host severity"
+msgstr "Criticité d'hôte"
+
+msgid "Host severity level"
+msgstr "Niveau de criticité d'hôte"
+
+msgid "Centreon database schema does not seem to be installed."
+msgstr "Le schema de base de données de Centreon ne semble pas installé."
+
+msgid "Centreon database schema version is \"%s\" (\"%s\" required)."
+msgstr "La version du schema de base de données de Centreon est \"%s\" (\"%s\" requise)."
+
+msgid "Please use Web UI to install Centreon."
+msgstr "Veuillez utiliser l'interface Web pour installer Centreon."
+
+msgid "Please use Web UI to update Centreon."
+msgstr "Veuillez utiliser l'interface Web pour mettre à jour Centreon."

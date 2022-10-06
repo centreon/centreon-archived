@@ -279,20 +279,27 @@ class CentreonContactgroup
         $msg = array();
         $ldapServerConnError = array();
 
-        $cgRes = $this->db->query("SELECT cg.cg_id, cg.cg_name, cg.cg_ldap_dn, cg.ar_id " .
-            "FROM contactgroup as cg, auth_ressource as ar " .
-            "WHERE cg.cg_type = 'ldap' AND cg.ar_id = ar.ar_id AND ar.ar_enable = '1' AND (" .
-            "EXISTS(SELECT 1 FROM contactgroup_host_relation chr WHERE chr.contactgroup_cg_id = cg.cg_id LIMIT 1) "
-            . " OR " .
-            "EXISTS(SELECT 1 FROM contactgroup_service_relation csr WHERE csr.contactgroup_cg_id = cg.cg_id LIMIT 1)"
-            . " OR " .
-            "EXISTS(SELECT 1 FROM contactgroup_hostgroup_relation chr WHERE chr.contactgroup_cg_id = cg.cg_id LIMIT 1)"
-            . " OR " .
-            "EXISTS(SELECT 1 FROM contactgroup_servicegroup_relation csr " .
-            "WHERE csr.contactgroup_cg_id = cg.cg_id LIMIT 1)"
-            . " OR " .
-            "EXISTS(SELECT 1 FROM escalation_contactgroup_relation ecr WHERE ecr.contactgroup_cg_id = cg.cg_id LIMIT 1)"
-            . ") ORDER BY cg.ar_id");
+        $cgRes = $this->db->query(
+            "SELECT cg.cg_id, cg.cg_name, cg.cg_ldap_dn, cg.ar_id, ar.ar_name
+            FROM contactgroup as cg, auth_ressource as ar
+            WHERE cg.cg_type = 'ldap'
+            AND cg.ar_id = ar.ar_id
+            AND ar.ar_enable = '1'
+            AND (
+                EXISTS (
+                    SELECT 1 FROM contactgroup_host_relation chr WHERE chr.contactgroup_cg_id = cg.cg_id LIMIT 1
+                ) OR EXISTS (
+                    SELECT 1 FROM contactgroup_service_relation csr WHERE csr.contactgroup_cg_id = cg.cg_id LIMIT 1
+                ) OR EXISTS (
+                    SELECT 1 FROM contactgroup_hostgroup_relation chr WHERE chr.contactgroup_cg_id = cg.cg_id LIMIT 1
+                ) OR EXISTS (
+                    SELECT 1 FROM contactgroup_servicegroup_relation csr WHERE csr.contactgroup_cg_id = cg.cg_id LIMIT 1
+                ) OR EXISTS (
+                    SELECT 1 FROM escalation_contactgroup_relation ecr WHERE ecr.contactgroup_cg_id = cg.cg_id LIMIT 1
+                )
+            )
+            ORDER BY cg.ar_id"
+        );
 
         $currentLdapId = 0; // the chosen LDAP configuration which should never stay to 0 if the LDAP is found
         $ldapConn = null;
@@ -310,10 +317,7 @@ class CentreonContactgroup
                 $connectionResult = $ldapConn->connect();
                 if ($connectionResult == false) {
                     $ldapServerConnError[$cgRow['ar_id']] = 1;
-                    $stmt = $this->db->query("SELECT ar_name FROM auth_ressource " .
-                        "WHERE ar_id = " . (int)$cgRow['ar_id']);
-                    $res = $stmt->fetch();
-                    $msg[] = "Unable to connect to LDAP server : " . $res['ar_name'] . ".";
+                    $msg[] = "Unable to connect to LDAP server : " . $cgRow['ar_name'] . ".";
                     continue;
                 }
             }
@@ -331,9 +335,7 @@ class CentreonContactgroup
 
             if (!$contact) {
                 // no need to continue. If there's no contact, there's no relation to insert.
-                $stmt = $this->db->query("SELECT ar_name FROM auth_ressource WHERE ar_id = " . (int)$cgRow['ar_id']);
-                $res = $stmt->fetch();
-                $msg[] = "Error : there's no contact to update for LDAP : " . $res['ar_name'] . ".";
+                $msg[] = "Error : there's no contact to update for LDAP : " . $cgRow['ar_name'] . ".";
                 return $msg;
             }
             try {
@@ -436,18 +438,19 @@ class CentreonContactgroup
                                     throw $e;
                                 }
                                 continue;
-                            } else {
-                                // Update the ldap group in contactgroup
-                                $queryUpdateDn = "UPDATE contactgroup SET cg_ldap_dn = '" . $dn .
-                                    "' WHERE cg_id = " . $row['cg_id'];
+                            } else { // Update the ldap group dn in contactgroup
                                 try {
-                                    $this->db->query($queryUpdateDn);
+                                    $updateDnStatement = $this->db->prepare(
+                                        "UPDATE contactgroup SET cg_ldap_dn = :cg_dn WHERE cg_id = :cg_id"
+                                    );
+                                    $updateDnStatement->bindValue(':cg_dn', $dn, \PDO::PARAM_STR);
+                                    $updateDnStatement->bindValue(':cg_id', $row['cg_id'], \PDO::PARAM_INT);
+                                    $updateDnStatement->execute();
                                     $row['cg_ldap_dn'] = $dn;
                                 } catch (\PDOException $e) {
                                     $msg[] = "Error processing update contactgroup request of ldap group : " .
                                         $row['cg_name'];
                                     throw $e;
-                                    continue;
                                 }
                             }
                         }
@@ -460,16 +463,16 @@ class CentreonContactgroup
                         );
                         $deleteStmt->bindValue(':cgId', $row['cg_id'], \PDO::PARAM_INT);
                         $deleteStmt->execute();
-                        $contact = '';
+                        $contactDns = '';
                         foreach ($members as $member) {
-                            $contact .= $this->db->quote($member) . ',';
+                            $contactDns .= $this->db->quote($member) . ',';
                         }
-                        $contact = rtrim($contact, ",");
+                        $contactDns = rtrim($contactDns, ",");
 
-                        if ($contact !== '') {
+                        if ($contactDns !== '') {
                             try {
                                 $resContact = $this->db->query(
-                                    "SELECT contact_id FROM contact WHERE contact_ldap_dn IN (" . $contact . ")"
+                                    "SELECT contact_id FROM contact WHERE contact_ldap_dn IN (" . $contactDns . ")"
                                 );
                             } catch (\PDOException $e) {
                                 $msg[] = "Error in getting contact id from members.";

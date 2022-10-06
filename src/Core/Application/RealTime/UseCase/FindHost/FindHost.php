@@ -102,6 +102,14 @@ class FindHost
             $host->addHostgroup($hostgroup);
         }
 
+        $acknowledgement = $host->isAcknowledged() === true
+            ? $this->acknowledgementRepository->findOnGoingAcknowledgementByHostId($hostId)
+            : null;
+
+        $downtimes = $host->isInDowntime() === true
+            ? $this->downtimeRepository->findOnGoingDowntimesByHostId($hostId)
+            : [];
+
         /**
          * Obfuscate the passwords in Host commandLine
          * @todo Re-write this code when monitoring repository will be migrated to new architecture
@@ -111,8 +119,8 @@ class FindHost
         $presenter->present(
             $this->createResponse(
                 $host,
-                $this->downtimeRepository->findOnGoingDowntimesByHostId($hostId),
-                $this->acknowledgementRepository->findOnGoingAcknowledgementByHostId($hostId)
+                $downtimes,
+                $acknowledgement
             )
         );
     }

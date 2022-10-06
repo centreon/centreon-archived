@@ -3528,6 +3528,8 @@ paths:
                       moduleName:
                         type: object
                         $ref: '#/components/schemas/Platform.Versions'
+  /platform/updates:
+    $ref: "./v22.04/Administration/updates.yaml"
   /platform/installation/status:
     get:
       tags:
@@ -3541,7 +3543,7 @@ paths:
             application/json:
               schema:
                 type: object
-                required: ["installed_version", "has_upgrade_available"]
+                required: ["is_installed", "has_upgrade_available"]
                 properties:
                   is_installed:
                     type: boolean
@@ -5332,6 +5334,11 @@ components:
           description: "Indicates if the acknowledgment will be maintained in case of non-OK status change."
           example: false
           default: true
+        force_active_checks:
+          type: boolean
+          description: "Indicates if after acknowledgement resource should be forced check"
+          example: false
+          default: true
     Disacknowledgement.Resource:
       type: object
       properties:
@@ -5347,9 +5354,7 @@ components:
         resources:
           type: array
           items:
-            allOf:
-              - $ref: '#/components/schemas/Monitoring.Resource.Disacknowledge.Host'
-              - $ref: '#/components/schemas/Monitoring.Resource.Disacknowledge.Service'
+            $ref: '#/components/schemas/Monitoring.Resource.Action'
     Acknowledgement.Disacknowledge.Bulk:
       type: object
       properties:
@@ -5358,9 +5363,7 @@ components:
         resources:
           type: array
           items:
-            allOf:
-              - $ref: '#/components/schemas/Monitoring.Resource.Disacknowledge.Host'
-              - $ref: '#/components/schemas/Monitoring.Resource.Disacknowledge.Service'
+            $ref: '#/components/schemas/Monitoring.Resource.Action'
     Acknowledgement.Host:
       type: object
       nullable: true
@@ -5632,9 +5635,7 @@ components:
         resources:
           type: array
           items:
-            allOf:
-              - $ref: '#/components/schemas/Monitoring.Resource.Disacknowledge.Host'
-              - $ref: '#/components/schemas/Monitoring.Resource.Disacknowledge.Service'
+            $ref: '#/components/schemas/Monitoring.Resource.Action'
     Check.Host:
       type: object
       properties:
@@ -5776,19 +5777,7 @@ components:
                 nullable: true
                 description: "Performance data result of the check sent"
                 example: "'used'=453849088B;;;0;1927262208"
-    Monitoring.Resource.Disacknowledge.Host:
-      type: object
-      properties:
-        type:
-          type: string
-          description: "Type of the resource"
-          example: "service|host"
-        id:
-          type: integer
-          format: int32
-          description: "ID of the resource"
-          example: 12
-    Monitoring.Resource.Disacknowledge.Service:
+    Monitoring.Resource.Action:
       type: object
       properties:
         type:
@@ -5801,6 +5790,7 @@ components:
           description: "ID of the resource"
           example: 12
         parent:
+          nullable: true
           type: object
           properties:
             id:
@@ -6728,6 +6718,10 @@ components:
           type: boolean
           example: true
           description: "Platform is a remote server"
+        address:
+          type: string
+          example: "10.0.0.1"
+          description: "The address of the platform"
         centralServerAddress:
           type: string
           example: "192.168.0.1"

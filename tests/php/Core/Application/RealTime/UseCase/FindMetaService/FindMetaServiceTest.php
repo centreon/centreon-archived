@@ -257,7 +257,9 @@ class FindMetaServiceTest extends TestCase
             ->setAdmin(false);
 
         $metaServiceConfiguration = MetaServiceConfigurationTest::createMetaServiceModel();
-        $metaService = MetaServiceTest::createMetaServiceModel();
+        $metaService = (MetaServiceTest::createMetaServiceModel())
+            ->setIsAcknowledged(true)
+            ->setIsInDowntime(true);
 
         $downtimes[] = (new Downtime(1, 1, 10))
             ->setCancelled(false);

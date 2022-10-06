@@ -9,7 +9,7 @@ def stableBranch = "22.04.x"
 def devBranch = "dev-22.04.x"
 env.REF_BRANCH = stableBranch
 env.PROJECT='centreon-web'
-if (env.BRANCH_NAME.startsWith('release-')) {
+if (env.BRANCH_NAME.startsWith("hotfix-") || env.BRANCH_NAME.startsWith("release-")) {
   env.BUILD = 'RELEASE'
   env.REPO = 'testing'
   env.DELIVERY_STAGE = 'Delivery to testing'
@@ -135,12 +135,9 @@ def checkoutCentreonBuild() {
 */
 stage('Deliver sources') {
   node {
+    cleanWs()
     dir('centreon-web') {
       checkout scm
-      if (!isStableBuild()) {
-        hasFrontendChanges = hasChanges(frontendFiles)
-        hasBackendChanges = hasChanges(backendFiles)
-      }
     }
 
     checkoutCentreonBuild()
@@ -169,17 +166,20 @@ stage('Deliver sources') {
       reportTitles: ''
     ])
 
+
     // get api feature files
     apiFeatureFiles = sh(
       script: 'find centreon-web/tests/api/features -type f -name "*.feature" -printf "%P\n" | sort',
       returnStdout: true
     ).split()
 
+
     // get tests E2E feature files
     e2eFeatureFiles = sh(
       script: 'find centreon-web/tests/e2e/cypress/integration -type f -name "*.feature" -printf "%P\n" | sort',
       returnStdout: true
     ).split()
+
 
     //FIXME : reintegrate ldap features after fixing them
     featureFiles = sh(
@@ -308,7 +308,7 @@ try {
           checkout scm
         }
         sh 'rm -rf *.deb'
-        sh 'docker run -i --entrypoint /src/centreon/ci/scripts/centreon-deb-package.sh -w "/src" -v "$PWD:/src" -e DISTRIB="bullseye" -e VERSION=$VERSION -e RELEASE=$RELEASE registry.centreon.com/centreon-debian11-dependencies:22.04'
+        sh 'docker run -i --entrypoint /src/centreon/ci/scripts/centreon-deb-package.sh -w "/src" -v "$PWD:/src" -e DISTRIB="bullseye" -e VERSION=$VERSION -e RELEASE=$RELEASE registry.centreon.com/mon-build-dependencies-22.04:debian11'
         stash name: 'Debian11', includes: '*.deb'
         archiveArtifacts artifacts: "*"
         sh 'rm -rf *.deb'

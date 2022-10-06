@@ -136,6 +136,7 @@ let context: ResourceContext;
 
 const host = {
   id: 0,
+  parent: null,
   passive_checks: true,
   type: 'host',
 } as Resource;
@@ -336,7 +337,6 @@ describe(Actions, () => {
         {
           acknowledgement: {
             comment: labelAcknowledgedByAdmin,
-            force_active_checks: false,
             is_notify_contacts: true,
             is_persistent_comment: true,
             is_sticky: true,

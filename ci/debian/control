@@ -17,8 +17,7 @@ Package: centreon
 Architecture: all
 Depends: 
     centreon-central (>= ${centreon:version}~),
-    centreon-database (>= ${centreon:version}~),
-    sudo
+    centreon-database (>= ${centreon:version}~)
 Description: Centreon is a network, system, applicative supervision and monitoring tool,
  it is based upon the most effective Open Source monitoring engine : Nagios.
  Centreon provides a new frontend and new functionnalities to Nagios.
@@ -54,11 +53,45 @@ Depends:
     centreon-widget-live-top10-memory-usage,
     centreon-widget-service-monitoring,
     centreon-widget-servicegroup-monitoring,
-    centreon-widget-tactical-overview
+    centreon-widget-tactical-overview,
+    centreon-widget-single-metric
 Description: The package contains base configuration for Centreon Engine and Centreon Broker.
  It provides one default monitoring engine running with Centreon Engine and
  two Centreon Broker instances to store real-time information in database and
  performance data in RRD files.
+
+Package: centreon-poller
+Architecture: all
+Depends: 
+    centreon-common (>= ${centreon:version}~),
+    centreon-poller-centreon-engine (>= ${centreon:version}~),
+    centreon-trap (>= ${centreon:version}~),
+    centreon-engine (>= ${centreon:version}~),
+    centreon-broker (>= ${centreon:version}~),
+    centreon-broker-cbmod (>= ${centreon:version}~),
+    centreon-broker-storage (>= ${centreon:version}~),
+    centreon-connector (>= ${centreon:version}~),
+    centreon-gorgone (>= ${centreon:version}~),
+    libdbd-mysql-perl,
+    libdbd-sqlite3-perl,
+    centreon-plugin-applications-databases-mysql,
+    centreon-plugin-applications-monitoring-centreon-central,
+    centreon-plugin-applications-monitoring-centreon-database,
+    centreon-plugin-applications-monitoring-centreon-map4-jmx,
+    centreon-plugin-applications-monitoring-centreon-poller,
+    centreon-plugin-applications-protocol-dns,
+    centreon-plugin-applications-protocol-ftp,
+    centreon-plugin-applications-protocol-http,
+    centreon-plugin-applications-protocol-ldap,
+    centreon-plugin-applications-databases-mysql,
+    centreon-plugin-hardware-printers-generic-snmp,
+    centreon-plugin-hardware-ups-standard-rfc1628-snmp,
+    centreon-plugin-network-cisco-standard-snmp,
+    centreon-plugin-operatingsystems-linux-snmp,
+    centreon-plugin-operatingsystems-windows-snmp,
+    monitoring-plugins-basic
+Description: This package add rights and default directories for a poller
+ managed by Centreon. This includes the default central poller.
 
 Package: centreon-web-common
 Architecture: all
@@ -90,11 +123,9 @@ Depends:
     php8.0-readline,
     php8.0-sqlite3,
     php-pear,
-    ntp,
-    rrdtool,
-    bsd-mailx,
-    sudo,
-    nagios-images
+    rrdtool
+Recommends: ntp | bsd-mailx
+Suggests: nagios-images
 Description: This package contains WebUI files.
 
 Package: centreon-perl-libs
@@ -151,6 +182,7 @@ Depends:
     centreon-broker (>= ${centreon:version}~),
     centreon-engine (>= ${centreon:version}~),
     centreon-gorgone (>= ${centreon:version}~),
+    centreon-engine-extcommands (>= ${centreon:version}~),
     centreon-trap (>= ${centreon:version}~),
     centreon-plugin-applications-databases-mysql,
     centreon-plugin-applications-monitoring-centreon-central,
@@ -161,7 +193,7 @@ Depends:
     centreon-plugin-applications-protocol-ftp,
     centreon-plugin-applications-protocol-ldap,
     centreon-plugin-hardware-printers-generic-snmp,
-    centreon-plugin-hardware-ups-standard-rfc1628-Snmp,
+    centreon-plugin-hardware-ups-standard-rfc1628-snmp,
     centreon-plugin-network-cisco-standard-snmp,
     centreon-plugin-operatingsystems-linux-snmp,
     centreon-plugin-operatingsystems-windows-snmp,

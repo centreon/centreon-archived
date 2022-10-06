@@ -201,7 +201,9 @@ class FindHostTest extends TestCase
         /**
          * @var Host
          */
-        $host = HostTest::createHostModel();
+        $host = (HostTest::createHostModel())
+            ->setIsAcknowledged(true)
+            ->setIsInDowntime(true);
 
         $this->repository
             ->expects($this->once())
@@ -308,7 +310,9 @@ class FindHostTest extends TestCase
         /**
          * @var Host
          */
-        $host = HostTest::createHostModel();
+        $host = (HostTest::createHostModel())
+            ->setIsAcknowledged(true)
+            ->setIsInDowntime(true);
 
         $this->repository
             ->expects($this->once())

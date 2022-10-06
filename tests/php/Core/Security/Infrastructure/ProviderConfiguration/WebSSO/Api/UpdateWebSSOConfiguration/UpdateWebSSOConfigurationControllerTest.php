@@ -47,6 +47,8 @@ beforeEach(function () {
         ->setName('admin')
         ->setAdmin(true)
         ->setTimezone($timezone);
+    $adminContact->addTopologyRule(Contact::ROLE_ADMINISTRATION_AUTHENTICATION_READ_WRITE);
+
     $authorizationChecker = $this->createMock(AuthorizationCheckerInterface::class);
     $authorizationChecker->expects($this->once())
         ->method('isGranted')
@@ -67,10 +69,12 @@ beforeEach(function () {
         ->method('get')
         ->withConsecutive(
             [$this->equalTo('security.authorization_checker')],
+            [$this->equalTo('security.token_storage')],
             [$this->equalTo('parameter_bag')]
         )
         ->willReturnOnConsecutiveCalls(
             $authorizationChecker,
+            $tokenStorage,
             new class () {
                 public function get(): string
                 {

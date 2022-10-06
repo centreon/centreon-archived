@@ -173,12 +173,17 @@ print "<b>&nbsp;&nbsp;" . _("Media Detection") . "</b>";
             $gdCounter++;
         }
 
-        $DBRESULT = $pearDB->query("SELECT img_id " .
+        $statement = $pearDB->prepare(
+            "SELECT img_id " .
             "FROM view_img, view_img_dir_relation vidh " .
-            "WHERE img_path = '" . $picture . "' " .
-            "	AND vidh.dir_dir_parent_id = '" . $dir_id . "'" .
-            "	AND vidh.img_img_id = img_id");
-        if (!$DBRESULT->rowCount()) {
+            "WHERE img_path = :img_path " .
+            "AND vidh.dir_dir_parent_id = :dir_dir_parent_id " .
+            "AND vidh.img_img_id = img_id"
+        );
+        $statement->bindValue(':img_path', $picture, \PDO::PARAM_STR);
+        $statement->bindValue(':dir_dir_parent_id', (int) $dir_id, \PDO::PARAM_INT);
+        $statement->execute();
+        if (!$statement->rowCount()) {
             $DBRESULT = $pearDB->query(
                 "INSERT INTO view_img (`img_name`, `img_path`) VALUES ('"
                 . $img_info["filename"] . "', '" . $picture . "')"
@@ -189,13 +194,16 @@ print "<b>&nbsp;&nbsp;" . _("Media Detection") . "</b>";
             );
             $data = $DBRESULT->fetchRow();
             $regCounter++;
-            $DBRESULT = $pearDB->query(
-                "INSERT INTO view_img_dir_relation (`dir_dir_parent_id`, `img_img_id`) VALUES ('"
-                . $dir_id . "', '" . $data['img_id'] . "')"
+            $statement = $pearDB->prepare(
+                "INSERT INTO view_img_dir_relation (`dir_dir_parent_id`, `img_img_id`) 
+                VALUES (:dir_dir_parent_id, :img_img_id)"
             );
+            $statement->bindValue(':dir_dir_parent_id', (int) $dir_id, \PDO::PARAM_INT);
+            $statement->bindValue(':img_img_id', (int) $data['img_id'], \PDO::PARAM_INT);
+            $statement->execute();
             return $data['img_id'];
         } else {
-            $data = $DBRESULT->fetchRow();
+            $data = $statement->fetchRow(\PDO::FETCH_ASSOC);
             return 0;
         }
     }
@@ -211,9 +219,11 @@ print "<b>&nbsp;&nbsp;" . _("Media Detection") . "</b>";
             . "view_img_dir vid, view_img_dir_relation vidr "
             . "WHERE vidr.img_img_id = vi.img_id AND vid.dir_id = vidr.dir_dir_parent_id"
         );
+        $statement = $pearDB->prepare("DELETE FROM view_img WHERE img_id = :img_id");
         while ($row2 = $DBRESULT->fetchRow()) {
             if (!file_exists("./img/media/" . $row2["dir_alias"] . "/" . $row2["img_path"])) {
-                $pearDB->query("DELETE FROM view_img WHERE img_id = '" . $row2["img_id"] . "'");
+                $statement->bindValue(':img_id', (int) $row2["img_id"], \PDO::PARAM_INT);
+                $statement->execute();
                 $fileRemoved++;
             }
         }

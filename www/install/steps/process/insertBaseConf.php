@@ -65,7 +65,7 @@ try {
  * Create tables
  */
 try {
-    $result = $link->query('use ' . $parameters['db_configuration']);
+    $result = $link->query('use `' . $parameters['db_configuration'] . '`');
     if (!$result) {
         throw new \Exception('Cannot access to "' . $parameters['db_configuration'] . '" database');
     }
@@ -124,23 +124,24 @@ if ($row = $centralServerQuery->fetch()) {
 
 // Manage timezone
 $timezone = date_default_timezone_get();
-$resTimezone = $link->query("SELECT timezone_id FROM timezone WHERE timezone_name= '" . $timezone . "'");
-if (!$resTimezone) {
+$statement = $link->prepare("SELECT timezone_id FROM timezone WHERE timezone_name= :timezone_name");
+$statement->bindValue(':timezone_name', $timezone, \PDO::PARAM_STR);
+if (!$statement->execute()) {
     $return['msg'] = _('Cannot get timezone information');
     echo json_encode($return);
     exit;
 }
-if ($row = $resTimezone->fetch()) {
+if ($row = $statement->fetch(\PDO::FETCH_ASSOC)) {
     $timezoneId = $row['timezone_id'];
 } else {
     $timezoneId = '334'; # Europe/London timezone
 }
-$link->exec("INSERT INTO `options` (`key`, `value`) VALUES ('gmt','" . $timezoneId . "')");
+$statement = $link->prepare("INSERT INTO `options` (`key`, `value`) VALUES ('gmt', :value)");
+$statement->bindValue(':value', $timezoneId, \PDO::PARAM_STR);
+$statement->execute();
 
 # Generate random key for this instance and set it to be not central and not remote
-$uniqueKey = md5(uniqid(rand(), true));
 $informationsTableInsert = "INSERT INTO `informations` (`key`,`value`) VALUES
-    ('appKey', '{$uniqueKey}'),
     ('isRemote', 'no'),
     ('isCentral', 'yes')";
 
