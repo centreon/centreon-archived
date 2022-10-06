@@ -19,7 +19,7 @@
  *
  */
 
-namespace Tests\Centreon\Application\Controller\Filter;
+namespace Tests\Centreon\Application\Controller;
 
 use Centreon\Domain\Contact\Contact;
 use Centreon\Application\Controller\FilterController;

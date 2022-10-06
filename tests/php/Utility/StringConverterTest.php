@@ -19,7 +19,7 @@
  *
  */
 
-namespace Tests\Centreon\Domain\Monitoring;
+namespace Tests\Utility;
 
 use PHPUnit\Framework\TestCase;
 use Utility\StringConverter;

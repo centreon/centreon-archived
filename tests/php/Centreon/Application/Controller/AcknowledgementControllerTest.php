@@ -19,7 +19,7 @@
  *
  */
 
-namespace Tests\Centreon\Application\Controller\Monitoring;
+namespace Tests\Centreon\Application\Controller;
 
 use FOS\RestBundle\View\View;
 use PHPUnit\Framework\TestCase;

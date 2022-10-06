@@ -19,7 +19,7 @@
  *
  */
 
-namespace Tests\Centreon\Domain\Monitoring;
+namespace Tests\Centreon\Domain\Filter;
 
 use Centreon\Domain\Filter\FilterService;
 use Centreon\Domain\Filter\Interfaces\FilterRepositoryInterface;

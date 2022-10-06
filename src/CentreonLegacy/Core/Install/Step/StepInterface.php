@@ -35,7 +35,7 @@
 
 namespace CentreonLegacy\Core\Install\Step;
 
-interface stepInterface
+interface StepInterface
 {
     public function getContent();
 }
