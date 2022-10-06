@@ -2963,4 +2963,7 @@ ul.module_list {
 .me-1 {
     margin-right: 8px;
 }
+.fs-0 {
+    font-size: 0;
+}
 
