@@ -87,24 +87,89 @@ Feature: WebSSO Provider Configuration API
     }
     """
 
-  # Invalid PUT request: invalid value passed to "blacklist_client_addresses"
-  When I send a PUT request to '/api/latest/administration/authentication/providers/web-sso' with body:
-  """
+    # Invalid PUT request: invalid value passed to "blacklist_client_addresses"
+    When I send a PUT request to '/api/latest/administration/authentication/providers/web-sso' with body:
+    """
+        {
+          "is_active": true,
+          "is_forced": false,
+          "trusted_client_addresses": ["127.0.0.2"],
+          "blacklist_client_addresses": [".@"],
+          "login_header_attribute": "REMOTE_USER",
+          "pattern_matching_login": null,
+          "pattern_replace_login": null
+        }
+      """
+      Then the response code should be "500"
+      And the JSON should be equal to:
+      """
+        {
+          "code": 500,
+          "message": "[WebSSOConfiguration::blacklistClientAddresses] The value '.@' was expected to be a valid ip address"
+        }
+      """
+
+  Scenario: Update and retrieve WebSSO Provider Configuration information as logged non-admin user without Reach API rights
+    Given the following CLAPI import data:
+    """
+      CONTACT;ADD;kev;kev;kev@localhost;Centreon@2022;0;1;en_US;local
+    """
+    And I am logged in with "kev"/"Centreon@2022"
+
+    # Forbidden PUT request
+    When I send a PUT request to '/api/latest/administration/authentication/providers/web-sso' with body:
+    """
       {
         "is_active": true,
         "is_forced": false,
         "trusted_client_addresses": ["127.0.0.2"],
-        "blacklist_client_addresses": [".@"],
+        "blacklist_client_addresses": ["127.0.0.3"],
         "login_header_attribute": "REMOTE_USER",
         "pattern_matching_login": null,
         "pattern_replace_login": null
       }
     """
-    Then the response code should be "500"
+    Then the response code should be "403"
+
+    # Forbidden GET request
+    When I send a GET request to '/api/latest/administration/authentication/providers/web-sso'
+    Then the response code should be "403"
+
+  Scenario: Update and retrieve WebSSO Provider Configuration information as logged non-admin user with Reach API rights
+    Given the following CLAPI import data:
+    """
+      CONTACT;ADD;kev;kev;kev@localhost;Centreon@2022;1;1;en_US;local
+      CONTACT;setparam;kev;reach_api;1
+    """
+    And I am logged in with "kev"/"Centreon@2022"
+
+    # Valid PUT request
+    When I send a PUT request to '/api/latest/administration/authentication/providers/web-sso' with body:
+    """
+      {
+        "is_active": true,
+        "is_forced": false,
+        "trusted_client_addresses": ["127.0.0.5"],
+        "blacklist_client_addresses": ["127.0.0.6"],
+        "login_header_attribute": "REMOTE_USER",
+        "pattern_matching_login": null,
+        "pattern_replace_login": null
+      }
+    """
+    Then the response code should be "204"
+
+    # Valid GET request
+    When I send a GET request to '/api/latest/administration/authentication/providers/web-sso'
+    Then the response code should be "200"
     And the JSON should be equal to:
     """
       {
-        "code": 500,
-        "message": "[WebSSOConfiguration::blacklistClientAddresses] The value '.@' was expected to be a valid ip address"
+        "is_active": true,
+        "is_forced": false,
+        "trusted_client_addresses": ["127.0.0.5"],
+        "blacklist_client_addresses": ["127.0.0.6"],
+        "login_header_attribute": "REMOTE_USER",
+        "pattern_matching_login": null,
+        "pattern_replace_login": null
       }
     """
