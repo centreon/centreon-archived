@@ -60,8 +60,8 @@ const commonDecoders = {
   id: JsonDecoder.number,
   in_downtime: JsonDecoder.optional(JsonDecoder.boolean),
   information: JsonDecoder.optional(JsonDecoder.string),
-
   last_check: JsonDecoder.optional(JsonDecoder.string),
+
   links: JsonDecoder.optional(
     JsonDecoder.object<ResourceLinks>(
       {
@@ -72,8 +72,10 @@ const commonDecoders = {
             downtime: JsonDecoder.optional(JsonDecoder.string),
             metrics: JsonDecoder.optional(JsonDecoder.string),
             performance_graph: JsonDecoder.optional(JsonDecoder.string),
+            sensitivity: JsonDecoder.optional(JsonDecoder.string),
             status_graph: JsonDecoder.optional(JsonDecoder.string),
             timeline: JsonDecoder.optional(JsonDecoder.string),
+            timeline_download: JsonDecoder.optional(JsonDecoder.string),
           },
           'ResourceLinksEndpoints',
         ),
@@ -107,6 +109,7 @@ const commonDecoders = {
   name: JsonDecoder.string,
   notification_enabled: JsonDecoder.optional(JsonDecoder.boolean),
   passive_checks: JsonDecoder.optional(JsonDecoder.boolean),
+  service_id: JsonDecoder.optional(JsonDecoder.number),
   severity: JsonDecoder.optional(severityDecoder),
   severity_level: JsonDecoder.optional(JsonDecoder.number),
   short_type: JsonDecoder.oneOf<ResourceShortType>(

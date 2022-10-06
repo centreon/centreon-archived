@@ -105,7 +105,11 @@ const EditAnomalyDetectionDataDialog = ({
   };
 
   return (
-    <Dialog className={classes.container} open={isOpen}>
+    <Dialog
+      className={classes.container}
+      data-testid="modal_edit_anomaly_detection"
+      open={isOpen}
+    >
       <div>
         <div className={classes.spacing}>
           <TimePeriodButtonGroup />

@@ -272,6 +272,7 @@ const AnomalyDetectionSlider = ({
           <Slider
             aria-label="Small"
             className={classes.slider}
+            data-testid="slider"
             marks={marks}
             max={sensitivity.maximum_value}
             min={sensitivity.minimum_value}
@@ -307,6 +308,7 @@ const AnomalyDetectionSlider = ({
         </Button>
         <Button
           className={classes.confirmButton}
+          data-testid="save"
           disabled={!isResizingConfirmed}
           size="small"
           variant="contained"
