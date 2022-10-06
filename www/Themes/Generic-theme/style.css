@@ -2956,3 +2956,11 @@ ul.module_list {
     background-color: var(--gorgone-config-file-background-color);
 }
 
+/* utilities */
+.ms-1 {
+    margin-left: 8px;
+}
+.me-1 {
+    margin-right: 8px;
+}
+
