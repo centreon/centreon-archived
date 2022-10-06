@@ -1150,6 +1150,8 @@ class OpenIdProvider implements OpenIdProviderInterface
             return;
         }
 
+        $this->logAuthenticationInfo("Roles mapping is enabled");
+
         $conditions = $this->getAclConditionsFromProvider($customConfiguration);
         $attributePath = explode(".", $aclConditions->getAttributePath());
         foreach ($attributePath as $attribute) {
@@ -1222,19 +1224,20 @@ class OpenIdProvider implements OpenIdProviderInterface
         $conditionMatches = array_intersect($conditions, $configuredAuthorizedValues);
         if (empty($conditionMatches)) {
             $this->error(
-                "Configured roles do not match",
+                "Configured attribute value not found in roles mapping configuration",
                 [
-                    "configured_authorized_values" => $configuredAuthorizedValues
+                    "configured_authorized_values" => $configuredAuthorizedValues,
+                    "provider_conditions" => $conditions
                 ]
             );
             $this->logExceptionInLoginLogFile(
-                "Configured roles do not match",
+                "Configured attribute value not found in roles mapping configuration",
                 AclConditionsException::conditionsNotFound()
             );
             throw AclConditionsException::conditionsNotFound();
         }
-        $this->info("Role mapping found (ACL)", ["conditions" => $conditionMatches]);
-        $this->logAuthenticationInfo("Role mapping found (ACL)", $conditionMatches);
+        $this->info("Role mapping relation found", ["conditions" => $conditionMatches]);
+        $this->logAuthenticationInfo("Role mapping relation found", $conditionMatches);
     }
 
     /**
