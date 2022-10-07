@@ -23,7 +23,7 @@ declare(strict_types=1);
 
 namespace Core\Application\Common\UseCase;
 
-class CreatedResponse implements ResponseStatusInterface
+final class CreatedResponse implements ResponseStatusInterface
 {
     /**
      * @inheritDoc

@@ -23,7 +23,7 @@ declare(strict_types=1);
 
 namespace Core\Application\Configuration\User\UseCase\PatchUser;
 
-class PatchUserRequest
+final class PatchUserRequest
 {
     public int $userId;
     public string $theme;

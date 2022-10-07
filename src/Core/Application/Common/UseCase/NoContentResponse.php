@@ -23,7 +23,7 @@ declare(strict_types=1);
 
 namespace Core\Application\Common\UseCase;
 
-class NoContentResponse implements ResponseStatusInterface
+final class NoContentResponse implements ResponseStatusInterface
 {
     /**
      * @inheritDoc

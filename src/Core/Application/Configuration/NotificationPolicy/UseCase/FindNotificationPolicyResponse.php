@@ -26,7 +26,7 @@ use Core\Domain\Configuration\Notification\Model\NotifiedContact;
 use Core\Domain\Configuration\Notification\Model\NotifiedContactGroup;
 use Core\Domain\Configuration\TimePeriod\Model\TimePeriod;
 
-class FindNotificationPolicyResponse
+final class FindNotificationPolicyResponse
 {
     /**
      * @var array<array<string, mixed>>

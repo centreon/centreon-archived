@@ -23,7 +23,7 @@ declare(strict_types=1);
 
 namespace Core\Application\Common\UseCase;
 
-class NotFoundResponse implements ResponseStatusInterface
+final class NotFoundResponse implements ResponseStatusInterface
 {
     /**
      * @param string $objectNotFound

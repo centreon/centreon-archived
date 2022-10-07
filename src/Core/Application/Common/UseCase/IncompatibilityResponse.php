@@ -23,6 +23,6 @@ declare(strict_types=1);
 
 namespace Core\Application\Common\UseCase;
 
-class IncompatibilityResponse extends ErrorResponse
+final class IncompatibilityResponse extends ErrorResponse
 {
 }

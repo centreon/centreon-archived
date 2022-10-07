@@ -23,7 +23,7 @@ declare(strict_types=1);
 
 namespace Core\Application\Common\UseCase;
 
-class InvalidArgumentResponse implements ResponseStatusInterface
+final class InvalidArgumentResponse implements ResponseStatusInterface
 {
     /**
      * @param string $message

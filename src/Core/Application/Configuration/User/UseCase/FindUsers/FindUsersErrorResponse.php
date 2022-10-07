@@ -25,6 +25,6 @@ namespace Core\Application\Configuration\User\UseCase\FindUsers;
 
 use Core\Application\Common\UseCase\ErrorResponse;
 
-class FindUsersErrorResponse extends ErrorResponse
+final class FindUsersErrorResponse extends ErrorResponse
 {
 }

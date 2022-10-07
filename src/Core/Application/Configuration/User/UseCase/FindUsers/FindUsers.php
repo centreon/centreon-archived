@@ -28,7 +28,7 @@ use Core\Application\Configuration\User\Repository\ReadUserRepositoryInterface;
 use Core\Application\Configuration\User\UseCase\FindUsers\FindUsersPresenterInterface;
 use Core\Domain\Configuration\User\Model\User;
 
-class FindUsers
+final class FindUsers
 {
     use LoggerTrait;
 

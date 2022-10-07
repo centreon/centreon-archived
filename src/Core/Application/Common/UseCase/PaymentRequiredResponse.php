@@ -22,7 +22,7 @@ declare(strict_types=1);
 
 namespace Core\Application\Common\UseCase;
 
-class PaymentRequiredResponse implements ResponseStatusInterface
+final class PaymentRequiredResponse implements ResponseStatusInterface
 {
     /**
      * @param string $message

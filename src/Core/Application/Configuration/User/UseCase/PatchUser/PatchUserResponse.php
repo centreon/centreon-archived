@@ -23,6 +23,6 @@ declare(strict_types=1);
 
 namespace Core\Application\Configuration\User\UseCase\PatchUser;
 
-class PatchUserResponse
+final class PatchUserResponse
 {
 }
