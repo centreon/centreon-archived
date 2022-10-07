@@ -294,6 +294,7 @@ const AnomalyDetectionSlider = ({
           control={
             <Checkbox
               checked={isDefaultValue}
+              disabled={isDefaultValue}
               onChange={handleChangeCheckBox}
             />
           }

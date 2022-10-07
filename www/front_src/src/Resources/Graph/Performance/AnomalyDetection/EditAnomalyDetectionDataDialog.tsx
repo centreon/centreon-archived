@@ -119,6 +119,11 @@ const EditAnomalyDetectionDataDialog = ({
     setIsModalConfirmationOpened(false);
   };
 
+  const closeModal = (): void => {
+    setIsOpen(false);
+    setCountedRedCircles(null);
+  };
+
   return (
     <Dialog className={classes.container} open={isOpen} onClose={handleClose}>
       <div>
@@ -153,7 +158,7 @@ const EditAnomalyDetectionDataDialog = ({
           sendCancel={(): void =>
             setIsModalEditAnomalyDetectionConfirmationOpened(true)
           }
-          sendConfirm={(): void => setIsOpen(false)}
+          sendConfirm={closeModal}
           setOpen={setIsModalEditAnomalyDetectionConfirmationOpened}
         >
           {t(labelEditAnomalyDetectionClosing)}
