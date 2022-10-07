@@ -539,7 +539,7 @@ function migrateBrokerConfigOutputsToUnifiedSql(CentreonDB $pearDB): void
             AND config_value IN ($blockIdBinds)");
         $grpIdStatement->bindValue(':configId', (int) $configId, PDO::PARAM_INT);
         foreach ($blockIdsQueryBinds as $key => $value) {
-            $grpIdStatement->bindValue($key, (int) $value, PDO::PARAM_INT);
+            $grpIdStatement->bindValue($key, $value, PDO::PARAM_STR);
         }
         $grpIdStatement->execute();
         $configGroupIds = $grpIdStatement->fetchAll(\PDO::FETCH_COLUMN, 0);
