@@ -168,7 +168,7 @@ describe('Anomaly detection', () => {
     // cy.matchImageSnapshot();
   });
 
-  it.only('display the modal of edit anomaly-detection when wrench icon is clicked ', () => {
+  it('display the modal of edit anomaly-detection when wrench icon is clicked ', () => {
     cy.contains('ad').click();
     cy.get('[data-testid="3"]').click();
     cy.get('[data-testid="editAnomalyDetectionIcon"]').click();

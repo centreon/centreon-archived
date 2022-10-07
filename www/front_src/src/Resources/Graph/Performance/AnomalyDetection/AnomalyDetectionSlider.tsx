@@ -272,6 +272,7 @@ const AnomalyDetectionSlider = ({
           <Slider
             aria-label="Small"
             className={classes.slider}
+            data-testid="slider"
             marks={marks}
             max={sensitivity.maximum_value}
             min={sensitivity.minimum_value}
