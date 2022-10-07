@@ -3,10 +3,16 @@ import { Dispatch, ReactNode, SetStateAction, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useUpdateAtom } from 'jotai/utils';
 
-import { Button, Dialog, Paper } from '@mui/material';
+import { Button, Dialog, Paper, Typography } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 
-import { labelClose } from '../../../translatedLabels';
+import {
+  labelClose,
+  labelEditAnomalyDetectionConfirmation,
+  labelEditAnomalyDetectionClosing,
+  labelSave,
+  labelConfirm,
+} from '../../../translatedLabels';
 import TimePeriodButtonGroup from '../TimePeriods';
 
 import AnomalyDetectionExclusionPeriod from './AnomalyDetectionExclusionPeriod';
@@ -80,11 +86,20 @@ const EditAnomalyDetectionDataDialog = ({
     useState(false);
 
   const [isResizeEnvelope, setIsResizeEnvelope] = useState(false);
+  const [
+    isModalEditAnomalyDetectionConfirmationOpened,
+    setIsModalEditAnomalyDetectionConfirmationOpened,
+  ] = useState(false);
   const setCountedRedCircles = useUpdateAtom(countedRedCirclesAtom);
 
   const handleClose = (): void => {
-    setIsOpen(false);
-    setCountedRedCircles(null);
+    if (!factorsData?.isResizing) {
+      setIsOpen(false);
+      setCountedRedCircles(null);
+
+      return;
+    }
+    setIsModalEditAnomalyDetectionConfirmationOpened(true);
   };
 
   const getFactors = (data: CustomFactorsData): void => {
@@ -105,7 +120,7 @@ const EditAnomalyDetectionDataDialog = ({
   };
 
   return (
-    <Dialog className={classes.container} open={isOpen}>
+    <Dialog className={classes.container} open={isOpen} onClose={handleClose}>
       <div>
         <div className={classes.spacing}>
           <TimePeriodButtonGroup />
@@ -123,11 +138,26 @@ const EditAnomalyDetectionDataDialog = ({
           </Paper>
         </div>
         <EditAnomalyDetectionDataDialog.ModalConfirmation
+          labelConfirm={labelSave}
           open={isModalConfirmationOpened}
           sendCancel={cancelResizeEnvelope}
           sendConfirm={resizeEnvelope}
           setOpen={setIsModalConfirmationOpened}
-        />
+        >
+          <Typography> {t(labelEditAnomalyDetectionConfirmation)} </Typography>
+        </EditAnomalyDetectionDataDialog.ModalConfirmation>
+
+        <EditAnomalyDetectionDataDialog.ModalClosing
+          labelConfirm={labelConfirm}
+          open={isModalEditAnomalyDetectionConfirmationOpened}
+          sendCancel={(): void =>
+            setIsModalEditAnomalyDetectionConfirmationOpened(true)
+          }
+          sendConfirm={(): void => setIsOpen(false)}
+          setOpen={setIsModalEditAnomalyDetectionConfirmationOpened}
+        >
+          {t(labelEditAnomalyDetectionClosing)}
+        </EditAnomalyDetectionDataDialog.ModalClosing>
         <div className={classes.close}>
           <Button onClick={handleClose}>{t(labelClose)}</Button>
         </div>
@@ -141,5 +171,6 @@ EditAnomalyDetectionDataDialog.ExclusionPeriod =
   AnomalyDetectionExclusionPeriod;
 EditAnomalyDetectionDataDialog.ModalConfirmation =
   AnomalyDetectionModalConfirmation;
+EditAnomalyDetectionDataDialog.ModalClosing = AnomalyDetectionModalConfirmation;
 
 export default EditAnomalyDetectionDataDialog;
