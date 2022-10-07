@@ -41,8 +41,7 @@
         <td><h4>{t}Poller{/t}</h4></td>
       </tr>
       <tr>
-        <td><input type="text" name="searchP" value="{$searchP}"></td>
-        <td><input type="submit" value="{t}Search{/t}" class="btc bt_success"></td>
+        <td><input type="text" name="searchP" value="{$searchP}" class="me-1"><input type="submit" value="{t}Search{/t}" class="btc bt_success"></td>
       </tr>
     </tbody>
     </table>
