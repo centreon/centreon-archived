@@ -10,6 +10,13 @@ addMatchImageSnapshotCommand({
   failureThresholdType: 'percent',
 });
 
+Cypress.Commands.add('displayFilterMenu', () => {
+  cy.get('[aria-label="Filter options"]').click();
+  cy.contains('Type').should('be.visible').click();
+});
+
+Cypress.Commands.add('clickOutside', () => cy.get('body').click(0, 0));
+
 declare global {
   namespace Cypress {
     interface Chainable {

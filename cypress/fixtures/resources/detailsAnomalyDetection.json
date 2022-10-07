@@ -1,0 +1,80 @@
+{
+    "uuid":"a1",
+    "id":1,
+    "name":"ad",
+    "service_name":"Ping",
+    "type":"anomaly-detection",
+    "short_type":"a",
+    "status":{
+       "name":"OK",
+       "code":0,
+       "severity_code":5,
+       "type":0
+    },
+    "in_downtime":false,
+    "acknowledged":false,
+    "flapping":false,
+    "performance_data":"rta=0.000ms;;;0; rta_lower_thresholds=1.10ms;;;0; rta_upper_thresholds=11.12ms;;;0; rta_fit=2.78ms;;;0; rta_lower_margin=-0.56ms;;;0; rta_upper_margin=2.78ms;;;0;",
+    "information":"OK: Regular activity, rta=0.00ms\n",
+    "command_line":"/usr/lib64/nagios/plugins/check_icmp -H 127.0.0.1 -n  -w  -c ",
+    "notification_number":0,
+    "latency":2.498,
+    "percent_state_change":5.986842105263158,
+    "passive_checks":true,
+    "execution_time":3.5080970000000002,
+    "active_checks":true,
+    "groups":[
+       
+    ],
+    "parent":{
+       "type":"host",
+       "id":14,
+       "name":"Centreon-Server",
+       "status":{
+          "name":"UP",
+          "code":0,
+          "severity_code":5,
+          "type":1
+       },
+       "monitoring_server_name":"Central"
+    },
+    "monitoring_server_name":"Central",
+    "categories":[
+       
+    ],
+    "metric_name":"Centreon-Server - Ping - rta",
+    "sensitivity":{
+       "maximum_value":5,
+       "minimum_value":0,
+       "default_value":3,
+       "current_value":3
+    },
+    "acknowledgement":null,
+    "downtimes":[
+       
+    ],
+    "duration":"19s",
+    "next_check":"2022-10-05T17:06:24+0200",
+    "last_check":"2022-10-05T17:01:24+0200",
+    "last_time_with_no_issue":"2022-10-05T17:01:24+0200",
+    "last_status_change":"2022-10-05T17:01:24+0200",
+    "last_notification":"1970-01-01T01:00:00+0100",
+    "tries":"3/4(S)",
+    "links":{
+       "endpoints":{
+          "notification_policy":"/centreon/api/latest/configuration/hosts/14/services/27/notification-policy",
+          "timeline":"/centreon/api/latest/monitoring/hosts/14/services/27/timeline",
+          "timeline_download":"/centreon/api/latest/monitoring/hosts/14/services/27/timeline/download",
+          "status_graph":"/centreon/api/latest/monitoring/hosts/14/services/27/metrics/status",
+          "performance_graph":"/centreon/api/latest/monitoring/hosts/14/services/27/metrics/performance",
+          "details":"/centreon/api/latest/monitoring/resources/anomaly-detection/1",
+          "sensitivity":"/centreon/api/latest/configuration/anomaly-detection/1/sensitivity"
+       },
+       "uris":{
+          "configuration":"/centreon/main.php?p=60220&o=c&service_id=27",
+          "logs":"/centreon/main.php?p=20301&svc=14_27",
+          "reporting":"/centreon/main.php?p=30702&period=yesterday&start=&end=&host_id=14&item=27"
+       }
+    }
+ }
+ 

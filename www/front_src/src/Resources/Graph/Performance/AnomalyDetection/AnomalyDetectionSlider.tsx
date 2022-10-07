@@ -307,6 +307,7 @@ const AnomalyDetectionSlider = ({
         </Button>
         <Button
           className={classes.confirmButton}
+          data-testid="save"
           disabled={!isResizingConfirmed}
           size="small"
           variant="contained"
