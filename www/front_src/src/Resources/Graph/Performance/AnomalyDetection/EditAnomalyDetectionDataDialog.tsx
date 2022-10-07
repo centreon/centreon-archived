@@ -133,7 +133,9 @@ const EditAnomalyDetectionDataDialog = ({
           setOpen={setIsModalConfirmationOpened}
         />
         <div className={classes.close}>
-          <Button onClick={handleClose}>{t(labelClose)}</Button>
+          <Button data-testid="closeEditModal" onClick={handleClose}>
+            {t(labelClose)}
+          </Button>
         </div>
       </div>
     </Dialog>

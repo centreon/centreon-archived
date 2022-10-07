@@ -64,9 +64,8 @@ const searchWords = filtersToBeDisplayedInSearchBar.reduce(
 
 document.getElementById('cy-root').style = 'min-height:750px;display:flex';
 
-describe('Anomaly detection', () => {
+describe('Anomaly detection ', () => {
   beforeEach(() => {
-    cy.server();
     cy.viewport(1200, 750);
     cy.fixture('resources/resourceListing.json').as('listResource');
     cy.fixture('resources/userFilter.json').as('userFilter');
@@ -76,6 +75,7 @@ describe('Anomaly detection', () => {
     cy.fixture('resources/performanceGraphAnomalyDetection.json').as(
       'graphAnomalyDetection',
     );
+    cy.server();
     cy.route('GET', '**/resources?*', '@listResource').as('getResourceList');
     cy.route('GET', '**/events-view?*', '@userFilter').as('filter');
     cy.route(
@@ -107,67 +107,14 @@ describe('Anomaly detection', () => {
     );
   });
 
-  it('display the filters of anomaly-detection in filter Menu when the module centreon-anomaly-detection is installed', () => {
-    cy.displayFilterMenu();
-
-    filtersToBeDisplayedInTypeMenu.map((item) =>
-      cy.contains(item).should('be.visible'),
-    );
-
-    // cy.matchImageSnapshot();
-  });
-
-  it('display the filters of anomaly detection on search bar when  filters of anomaly-detection in filter Menu are checked ', () => {
-    cy.displayFilterMenu();
-
-    filtersToBeDisplayedInTypeMenu.map((item) => {
-      cy.contains(item).should('be.visible').click();
-      cy.get('input[type="checkbox"]').should('be.checked');
-
-      return null;
-    });
-
-    cy.get('[data-testid="searchBar"]')
-      .find('input')
-      .should('have.value', `type:${searchWords.type} `);
-
-    // cy.matchImageSnapshot();
-  });
-
-  it('display resource of type anomaly-detection when  filters of anomaly detection are checked and search button is clicked', () => {
-    cy.fixture('resources/resourceListingByTypeAnomalyDetection.json').as(
-      'listResourceByType',
-    );
-    cy.route('GET', '**/resources?*', '@listResourceByType').as(
-      'getResourceListByType',
-    );
-    cy.displayFilterMenu();
-
-    filtersToBeDisplayedInTypeMenu.map((item) =>
-      cy.contains(item).should('be.visible').click(),
-    );
-
-    cy.get('[data-testid="Search"]').click();
-
-    cy.clickOutside();
-
-    cy.fixture('resources/resourceListingByTypeAnomalyDetection.json').then(
-      (data) => {
-        data.result.map((item) => cy.contains(item.name).should('be.visible'));
-      },
-    );
-    // cy.matchImageSnapshot();
-  });
-
   it('display the wrench icon on graph actions when one row of resource anomaly-detection is clicked ', () => {
     cy.contains('ad').click();
     cy.get('[data-testid="3"]').contains(labelGraph).click();
-    cy.clickOutside();
     cy.get('[data-testid="editAnomalyDetectionIcon"]').should('be.visible');
 
-    // cy.matchImageSnapshot();
+    cy.matchImageSnapshot();
+    cy.get(`[aria-label="Close"]`).click();
   });
-
   it('display the modal of edit anomaly-detection when wrench icon is clicked ', () => {
     cy.contains('ad').click();
     cy.get('[data-testid="3"]').click();
@@ -208,7 +155,55 @@ describe('Anomaly detection', () => {
         .should('be.visible');
       cy.contains('Default').should('be.visible');
 
-      // cy.matchImageSnapshot();
+      cy.matchImageSnapshot();
+
+      cy.get('[data-testid="closeEditModal"]').click();
+
+      cy.get(`[aria-label="Close"]`).click();
     });
+  });
+
+  it('display the filters of anomaly-detection in filter Menu when the module centreon-anomaly-detection is installed', () => {
+    cy.displayFilterMenu();
+
+    filtersToBeDisplayedInTypeMenu.map((item) =>
+      cy.contains(item).should('be.visible'),
+    );
+
+    cy.matchImageSnapshot();
+  });
+
+  it('display resource of type anomaly-detection when  filters of anomaly detection are checked and search button is clicked', () => {
+    cy.fixture('resources/resourceListingByTypeAnomalyDetection.json').as(
+      'listResourceByType',
+    );
+    cy.route('GET', '**/resources?*', '@listResourceByType').as(
+      'getResourceListByType',
+    );
+    cy.displayFilterMenu();
+
+    filtersToBeDisplayedInTypeMenu.map((item) => {
+      cy.contains(item).should('be.visible').click();
+      cy.get('input[type="checkbox"]').should('be.checked');
+
+      return null;
+    });
+
+    cy.get('[data-testid="searchBar"]')
+      .find('input')
+      .should('have.value', `type:${searchWords.type} `);
+
+    cy.matchImageSnapshot(
+      'display the filters of anomaly detection on search bar when  filters of anomaly-detection in filter Menu are checked ',
+    );
+
+    cy.get('[data-testid="Search"]').click();
+
+    cy.fixture('resources/resourceListingByTypeAnomalyDetection.json').then(
+      (data) => {
+        data.result.map((item) => cy.contains(item.name).should('be.visible'));
+      },
+    );
+    cy.matchImageSnapshot();
   });
 });

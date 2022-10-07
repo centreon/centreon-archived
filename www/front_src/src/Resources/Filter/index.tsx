@@ -566,7 +566,7 @@ const Filter = (): JSX.Element => {
             <Criterias />
           </Suspense>
           <ClickAwayListener onClickAway={closeSuggestionPopover}>
-            <div data-testid={labelClearFilter}>
+            <div data-testid="searchBar">
               <SearchField
                 fullWidth
                 EndAdornment={renderClearFilter(clearFilter)}
