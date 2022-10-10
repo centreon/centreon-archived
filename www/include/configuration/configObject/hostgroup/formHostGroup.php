@@ -146,7 +146,7 @@ $form->addElement(
 $form->addElement('text', 'hg_rrd_retention', _('RRD retention'), array('size' => 5));
 
 $form->registerRule('validate_geo_coords', 'function', 'validateGeoCoords');
-$form->addElement('text', 'geo_coords', _("Geo coordinates"), $attrsText);
+$form->addElement('text', 'geo_coords', _("Geographic coordinates"), $attrsText);
 $form->addRule('geo_coords', _("geo coords are not valid"), 'validate_geo_coords');
 
 $form->addElement('header', 'furtherInfos', _("Additional Information"));
@@ -154,7 +154,7 @@ $form->addElement('textarea', 'hg_comment', _("Comments"), $attrsTextarea);
 
 $hgActivation[] = $form->createElement('radio', 'hg_activate', null, _("Enabled"), '1');
 $hgActivation[] = $form->createElement('radio', 'hg_activate', null, _("Disabled"), '0');
-$form->addGroup($hgActivation, 'hg_activate', _("Status"), '&nbsp;');
+$form->addGroup($hgActivation, 'hg_activate', _("Enable/disable resource"), '&nbsp;');
 $form->setDefaults(array('hg_activate' => '1'));
 
 $form->addElement('hidden', 'hg_id');
