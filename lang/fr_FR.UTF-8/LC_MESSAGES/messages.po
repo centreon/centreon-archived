@@ -5337,11 +5337,11 @@ msgstr "Mode SSO"
 
 #: centreon-web/www/include/Administration/parameters/general/form.php:197
 msgid "SSO trusted client addresses"
-msgstr "Adresses des clients de confiance SSO"
+msgstr "Adresses des clients de confiance"
 
 #: centreon-web/www/include/Administration/parameters/general/form.php:198
 msgid "SSO blacklist client addresses"
-msgstr "Adresses des clients de bloqués"
+msgstr "Adresses de clients sur liste noire"
 
 #: centreon-web/www/include/Administration/parameters/general/form.php:199
 msgid "SSO pattern matching login"
@@ -16562,7 +16562,10 @@ msgid "Login attribute path"
 msgstr "Chemin de l'attribut d'identifiant"
 
 msgid "Blacklist client addresses"
-msgstr "Liste noire d'adresses de clients"
+msgstr "Adresses de clients sur liste noire"
+
+msgid "Authentication conditions"
+msgstr "Conditions d'authentification"
 
 msgid "Enable conditions on identity provider"
 msgstr "Activer les conditions sur le fournisseur d'identité"
