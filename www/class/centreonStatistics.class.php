@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2018 Centreon
+ * Copyright 2005-2022 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -135,6 +135,127 @@ class CentreonStatistics
         return array(
             'timezone' => $timezone
         );
+    }
+
+    /**
+     * get LDAP configured authentications options
+     *
+     * @return array
+     */
+    public function getLDAPAuthenticationOptions()
+    {
+        $data = [];
+
+        # Get the number of LDAP directories configured by LDAP configuration
+        $query = "SELECT ar.ar_id, COUNT(arh.auth_ressource_id) AS configured_ad
+        FROM auth_ressource_host AS arh
+        INNER JOIN auth_ressource AS ar ON (arh.auth_ressource_id = ar.ar_id)
+        WHERE ar.ar_enable = '1'
+        GROUP BY ar_id";
+        $result = $this->dbConfig->query($query);
+        while ($row = $result->fetch()) {
+            $data[$row['ar_id']] = [
+                "nb_ar_servers" => $row['configured_ad']
+            ];
+        }
+
+        # Get configured options by LDAP configuration
+        $query = "SELECT ar.ar_id, ari.ari_name, ari.ari_value
+        FROM auth_ressource_host AS arh
+        INNER JOIN auth_ressource AS ar ON (arh.auth_ressource_id = ar.ar_id)
+        INNER JOIN auth_ressource_info AS ari ON (ari.ar_id = ar.ar_id)
+        WHERE ari.ari_name IN ('ldap_template', 'ldap_auto_sync', 'ldap_sync_interval', 'ldap_auto_import',
+            'ldap_search_limit', 'ldap_search_timeout', 'ldap_srv_dns', 'ldap_store_password', 'protocol_version')";
+        $result = $this->dbConfig->query($query);
+        while ($row = $result->fetch()) {
+            $data[$row['ar_id']][$row['ari_name']] = $row['ari_value'];
+        }
+
+        return $data;
+    }
+
+    /**
+     * get Local / SSO configured authentications options
+     *
+     * @return array
+     */
+    public function getNewAuthenticationOptions()
+    {
+        $data = [];
+
+        // Get contact groups relations defined
+        $query = "SELECT COUNT(*) AS cg_relation FROM security_provider_contact_group_relation";
+        $result = $this->dbConfig->query($query);
+        $cg_relation = $result->fetchRow()['cg_relation'];
+
+         // Get ACL groups relations defined
+        $query = " SELECT COUNT(*) AS acl_relation FROM security_provider_access_group_relation";
+        $result = $this->dbConfig->query($query);
+        $acl_relation = $result->fetchRow()['acl_relation'];
+
+        // Get authentication configuration
+        $query = "SELECT * FROM provider_configuration WHERE is_active = '1'";
+        $result = $this->dbConfig->query($query);
+        while ($row = $result->fetch()) {
+            $custom_configuration = json_decode($row['custom_configuration'], true);
+            if ($row['type'] === 'local') {
+                $data['local'] = $custom_configuration['password_security_policy'];
+            } elseif ($row['type'] === 'web-sso') {
+                $data['web-sso'] = [
+                    'is_forced' => $row['is_forced'] ? true : false,
+                    'trusted_client_addresses' => count($custom_configuration['trusted_client_addresses']) ?? 0,
+                    'blacklist_client_addresses' => count($custom_configuration['blacklist_client_addresses']) ?? 0,
+                    'pattern_matching_login' => ($custom_configuration['pattern_matching_login'] ? true : false),
+                    'pattern_replace_login' => ($custom_configuration['pattern_replace_login'] ? true : false),
+                ];
+            } elseif ($row['type'] === 'openid') {
+                $authentication_conditions = $custom_configuration['authentication_conditions'];
+                $groups_mapping = $custom_configuration['groups_mapping'];
+                $roles_mapping = $custom_configuration['roles_mapping'];
+                $data['openid'] = [
+                    'is_forced' => $row['is_forced'] ? true : false,
+                    'authentication_conditions' => [
+                        'is_enabled' => $authentication_conditions['is_enabled'] ? true : false,
+                        'trusted_client_addresses' => count($authentication_conditions['trusted_client_addresses']) ?? 0,
+                        'blacklist_client_addresses' => count($authentication_conditions['blacklist_client_addresses']) ?? 0,
+                        'authorized_values' => count($authentication_conditions['authorized_values']) ?? 0,
+                    ],
+                    'groups_mapping' => [
+                        'is_enabled' => $groups_mapping['is_enabled'] ? true : false,
+                        'relation' => $cg_relation
+                    ],
+                    'roles_mapping' => [
+                        'is_enabled' => $roles_mapping['is_enabled'] ? true : false,
+                        'apply_only_first_role' => $roles_mapping['apply_only_first_role'] ? true : false,
+                        'relation' => $acl_relation
+                    ],
+                    'introspection_token_endpoint' => ($custom_configuration['introspection_token_endpoint'] ? true : false),
+                    'userinfo_endpoint' => ($custom_configuration['userinfo_endpoint'] ? true : false),
+                    'endsession_endpoint' => ($custom_configuration['endsession_endpoint'] ? true : false),
+                    'connection_scopes' => count($custom_configuration['connection_scopes']) ?? 0,
+                    'authentication_type' => $custom_configuration['authentication_type'],
+                    'verify_peer' => ($custom_configuration['verify_peer'] ? true : false),
+                    'auto_import' => ($custom_configuration['auto_import'] ? true : false)
+                ];
+            }
+        }
+
+        return $data;
+    }
+
+    /**
+     * get configured authentications options
+     *
+     * @return array
+     */
+    public function getAuthenticationOptions()
+    {
+        $data = array_merge(
+            ['LDAP' => $this->getLDAPAuthenticationOptions()],
+            [$this->getNewAuthenticationOptions()][0]
+        );
+
+        return $data;
     }
 
     /**
