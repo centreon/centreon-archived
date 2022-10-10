@@ -4,6 +4,7 @@ import { isNil } from 'ramda';
 
 import { resourcesEndpoint } from '../api/endpoint';
 import { replaceBasename } from '../helpers';
+import { Resource } from '../models';
 
 import {
   GraphTabParameters,
@@ -33,7 +34,7 @@ export const defaultSelectedCustomTimePeriodAtom = atom<
 
 export const selectResourceDerivedAtom = atom(
   null,
-  (get, set, resource: ResourceDetails) => {
+  (get, set, resource: ResourceDetails | Resource) => {
     set(openDetailsTabIdAtom, detailsTabId);
     set(selectedResourceUuidAtom, resource?.uuid);
     set(selectedResourcesDetailsAtom, {
