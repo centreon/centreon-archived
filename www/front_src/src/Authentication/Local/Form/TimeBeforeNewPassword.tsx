@@ -49,8 +49,16 @@ const TimeBeforeNewPassword = (): JSX.Element => {
   );
 
   const timeInputConfigurations: Array<TimeInputConfiguration> = [
-    { maxOption: 7, unit: 'days' },
-    { maxOption: maxHoursOption, unit: 'hours' },
+    {
+      dataTestId: 'local_timeBetweenPasswordChangesDays',
+      maxOption: 7,
+      unit: 'days',
+    },
+    {
+      dataTestId: 'local_timeBetweenPasswordChangesHours',
+      maxOption: maxHoursOption,
+      unit: 'hours',
+    },
   ];
 
   return useMemoComponent({
