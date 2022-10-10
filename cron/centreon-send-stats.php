@@ -141,8 +141,6 @@ if ($isRemote === false) {
             'additional' => $additional
         );
 
-        echo json_encode($data);
-        /*
         $returnData = $http->call(CENTREON_STATS_URL, 'POST', $data, array(), true);
         logger(
             sprintf(
@@ -152,7 +150,6 @@ if ($isRemote === false) {
                 $returnData['body']
             )
         );
-        */
     } catch (Exception $ex) {
         logger('Got error while sending data to [' . CENTREON_STATS_URL . ']', $ex);
     }
