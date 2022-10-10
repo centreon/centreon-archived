@@ -16604,7 +16604,7 @@ msgid "Apply only first role"
 msgstr "Appliquer uniquement le premier rôle"
 
 msgid "Roles attribute path"
-msgstr "Chemin d'accès à l'attribut de rôles"
+msgstr "Chemin de l'attribut de rôles"
 
 msgid "Which endpoint does the roles attribute path come from?"
 msgstr "De quel point d'entrée provient le chemin d'accès de l'attribut de rôles ?"
