@@ -24,8 +24,6 @@ declare(strict_types=1);
 namespace Tests\Core\Security\ProviderConfiguration\Infrastructure\OpenId\Api\UpdateOpenIdConfiguration;
 
 use Centreon\Domain\Contact\Contact;
-use Core\Security\ProviderConfiguration\Domain\OpenId\Model\ACLConditions;
-use Core\Security\ProviderConfiguration\Domain\OpenId\Model\Endpoint;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
@@ -50,6 +48,7 @@ beforeEach(function () {
         ->setName('admin')
         ->setAdmin(true)
         ->setTimezone($timezone);
+    $adminContact->addTopologyRule(Contact::ROLE_ADMINISTRATION_AUTHENTICATION_READ_WRITE);
 
     $authorizationChecker = $this->createMock(AuthorizationCheckerInterface::class);
     $authorizationChecker->expects($this->once())
@@ -72,10 +71,12 @@ beforeEach(function () {
         ->method('get')
         ->withConsecutive(
             [$this->equalTo('security.authorization_checker')],
+            [$this->equalTo('security.token_storage')],
             [$this->equalTo('parameter_bag')]
         )
         ->willReturnOnConsecutiveCalls(
             $authorizationChecker,
+            $tokenStorage,
             new class () {
                 public function get(): string
                 {
