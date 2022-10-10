@@ -70,6 +70,7 @@ export interface UnitValueLimit {
 export type PartialUnitValueLimit = Partial<UnitValueLimit>;
 
 export interface TimeInputConfiguration {
+  dataTestId?: string;
   maxOption?: number;
   minOption?: number;
   unit: Unit;

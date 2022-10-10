@@ -109,6 +109,7 @@ const CaseButtons = (): JSX.Element => {
             aria-label={t(labelPasswordMustContainLowerCase)}
             className={clsx(classes.lowerCaseButton, classes.button)}
             color="primary"
+            data-testid="local_lowerCaseButton"
             size="small"
             variant="outlined"
             onClick={selectCase(hasLowerCaseName)}
@@ -123,6 +124,7 @@ const CaseButtons = (): JSX.Element => {
             aria-label={t(labelPasswordMustContainUpperCase)}
             className={classes.button}
             color="primary"
+            data-testid="local_upperCaseButton"
             size="small"
             variant="outlined"
             onClick={selectCase(hasUpperCaseName)}
@@ -137,6 +139,7 @@ const CaseButtons = (): JSX.Element => {
             aria-label={t(labelPasswordMustContainNumbers)}
             className={classes.button}
             color="primary"
+            data-testid="local_numbersButton"
             size="small"
             variant="outlined"
             onClick={selectCase(hasNumberName)}
@@ -151,6 +154,7 @@ const CaseButtons = (): JSX.Element => {
             aria-label={t(labelPasswordMustContainSpecialCharacters)}
             className={classes.button}
             color="primary"
+            data-testid="local_specialCharactersButton"
             size="small"
             variant="outlined"
             onClick={selectCase(hasSpecialCharacterName)}
