@@ -32,6 +32,9 @@ const useStyles = makeStyles((theme) => ({
     zIndex: 1500,
   },
   mainContent: {
+    '& iframe': {
+      display: 'block',
+    },
     flexGrow: 1,
   },
   wrapper: {
