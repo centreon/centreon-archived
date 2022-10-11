@@ -42,10 +42,11 @@ require_once "centreonService.class.php";
 require_once "Centreon/Object/Acknowledgement/RtAcknowledgement.php";
 require_once "Centreon/Object/Host/Host.php";
 require_once "Centreon/Object/Service/Service.php";
-require_once realpath(dirname(__FILE__) . '/../centreonExternalCommand.class.php');
-require_once realpath(dirname(__FILE__) . '/../centreonDB.class.php');
-require_once realpath(dirname(__FILE__) . '/../centreonUser.class.php');
-require_once realpath(dirname(__FILE__) . '/../centreonGMT.class.php');
+require_once dirname(__FILE__, 2) . '/centreonExternalCommand.class.php';
+require_once dirname(__FILE__, 2) . '/centreonDB.class.php';
+require_once dirname(__FILE__, 2) . '/centreonUser.class.php';
+require_once dirname(__FILE__, 2) . '/centreonGMT.class.php';
+require_once __DIR__ . "/Validator/RtValidator.php";
 
 /**
  * Manage Acknowledgement with clapi
@@ -99,6 +100,11 @@ class CentreonRtAcknowledgement extends CentreonObject
     protected $author;
 
     /**
+     * @var \CentreonClapi\Validator\RtValidator
+     */
+    protected $rtValidator;
+
+    /**
      * CentreonRtAcknowledgement constructor.
      * @param \Pimple\Container $dependencyInjector
      */
@@ -112,6 +118,7 @@ class CentreonRtAcknowledgement extends CentreonObject
         $this->externalCmdObj = new \CentreonExternalCommand();
         $this->action = "RTACKNOWLEDGEMENT";
         $this->author = CentreonUtils::getUserName();
+        $this->rtValidator = new \CentreonClapi\Validator\RtValidator($this->hostObject, $this->serviceObject);
 
         $this->externalCmdObj->setUserAlias($this->author);
         $this->externalCmdObj->setUserId(CentreonUtils::getUserId());
@@ -421,7 +428,7 @@ class CentreonRtAcknowledgement extends CentreonObject
         $listHost = explode('|', $resource);
 
         foreach ($listHost as $host) {
-            if ($this->hostObject->getHostID($host)) {
+            if ($this->rtValidator->isHostNameValid($host)) {
                 $this->externalCmdObj->acknowledgeHost(
                     $host,
                     $sticky,
@@ -465,7 +472,7 @@ class CentreonRtAcknowledgement extends CentreonObject
         // check if service exist
         foreach ($listService as $service) {
             $serviceData = explode(',', $service);
-            if ($this->serviceObject->serviceExists($serviceData[0], $serviceData[1])) {
+            if ($this->rtValidator->isServiceNameValid($serviceData[0], $serviceData[1])) {
                 $existingService[] = $serviceData;
             } else {
                 $unknownService[] = $service;
@@ -509,7 +516,10 @@ class CentreonRtAcknowledgement extends CentreonObject
 
             if ($serviceName) {
                 $serviceId = $this->serviceObject->getObjectId($hostName . ";" . $serviceName);
-                if ($this->object->svcIsAcknowledged($serviceId)) {
+                if (
+                    $this->rtValidator->isServiceNameValid($hostName, $serviceName)
+                    && $this->object->svcIsAcknowledged($serviceId)
+                ) {
                     $this->externalCmdObj->deleteAcknowledgement(
                         'SVC',
                         array($hostName . ';' . $serviceName => 'on')

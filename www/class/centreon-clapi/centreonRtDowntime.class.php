@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2017 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -45,13 +46,14 @@ require_once "Centreon/Object/Service/Group.php";
 require_once "Centreon/Object/Relation/Downtime/Host.php";
 require_once "Centreon/Object/Relation/Downtime/Hostgroup.php";
 require_once "Centreon/Object/Relation/Downtime/Servicegroup.php";
-require_once realpath(dirname(__FILE__) . '/../centreonExternalCommand.class.php');
-require_once realpath(dirname(__FILE__) . '/../centreonDB.class.php');
-require_once realpath(dirname(__FILE__) . '/../centreonUser.class.php');
-require_once realpath(dirname(__FILE__) . '/../centreonGMT.class.php');
-require_once realpath(dirname(__FILE__) . '/../centreonHostgroups.class.php');
-require_once realpath(dirname(__FILE__) . '/../centreonServicegroups.class.php');
-require_once realpath(dirname(__FILE__) . '/../centreonInstance.class.php');
+require_once dirname(__FILE__, 2) . '/centreonExternalCommand.class.php';
+require_once dirname(__FILE__, 2) . '/centreonDB.class.php';
+require_once dirname(__FILE__, 2) . '/centreonUser.class.php';
+require_once dirname(__FILE__, 2) . '/centreonGMT.class.php';
+require_once dirname(__FILE__, 2) . '/centreonHostgroups.class.php';
+require_once dirname(__FILE__, 2) . '/centreonServicegroups.class.php';
+require_once dirname(__FILE__, 2) . '/centreonInstance.class.php';
+require_once __DIR__ . "/Validator/RtValidator.php";
 
 class CentreonRtDowntime extends CentreonObject
 {
@@ -77,6 +79,21 @@ class CentreonRtDowntime extends CentreonObject
     protected $dServices;
 
     /**
+     * @var \CentreonClapi\CentreonHost
+     */
+    protected $hostObject;
+
+    /**
+     * @var \CentreonClapi\CentreonService
+     */
+    protected $serviceObject;
+
+    /**
+     * @var \CentreonClapi\Validator\RtValidator
+     */
+    protected $rtValidator;
+
+    /**
      * CentreonRtDowntime constructor.
      */
     public function __construct(\Pimple\Container $dependencyInjector)
@@ -93,6 +110,7 @@ class CentreonRtDowntime extends CentreonObject
         $this->action = "RTDOWNTIME";
         $this->externalCmdObj->setUserAlias(CentreonUtils::getUserName());
         $this->externalCmdObj->setUserId(CentreonUtils::getUserId());
+        $this->rtValidator = new \CentreonClapi\Validator\RtValidator($this->hostObject, $this->serviceObject);
     }
 
     /**
@@ -135,8 +153,9 @@ class CentreonRtDowntime extends CentreonObject
         }
 
         // Check duration parameters
-        if (($fixed == 0 && (!preg_match('/^\d+$/', $duration) || $duration <= 0)) ||
-            $fixed == 1 && !preg_match('/(^$)||(^\d+$)/', $duration)
+        if (
+            ($fixed == 0 && (!preg_match('/^\d+$/', $duration) || $duration <= 0))
+            || ($fixed == 1 && !preg_match('/(^$)||(^\d+$)/', $duration))
         ) {
             throw new CentreonClapiException('Bad duration parameter');
         }
@@ -197,27 +216,22 @@ class CentreonRtDowntime extends CentreonObject
             $this->dHosts = $this->object->getHostDowntimes();
             $this->dServices = $this->object->getSvcDowntimes();
 
-            $list = '';
             //all host
-            if (count($this->dHosts) !== 0) {
-                foreach ($this->dHosts as $host) {
-                    $list .= $host['name'] . '|';
-                }
-                $list = rtrim($list, '|');
+            $hostsToReturn = [];
+            foreach ($this->dHosts as $host) {
+                $hostsToReturn[] = $host['name'];
             }
-            $list .= ';';
 
             //all service
-            if (count($this->dServices) !== 0) {
-                foreach ($this->dServices as $service) {
-                    $list .= $service['name'] . ',' . $service['description'] . '|';
-                }
-                $list = rtrim($list, '|');
+            $servicesToReturn = [];
+            foreach ($this->dServices as $service) {
+                $servicesToReturn[] = $service['name'] . ',' . $service['description'];
             }
-            $list .= ';';
 
             echo "hosts;services\n";
-            echo $list . "\n";
+            if ([] !== $hostsToReturn || [] !== $servicesToReturn) {
+                echo implode('|', $hostsToReturn) . ';' . implode('|', $servicesToReturn) . "\n";
+            }
         }
     }
 
@@ -480,7 +494,7 @@ class CentreonRtDowntime extends CentreonObject
         $listHost = explode('|', $resource);
 
         foreach ($listHost as $host) {
-            if ($this->hostObject->getHostID($host)) {
+            if ($this->rtValidator->isHostNameValid($host)) {
                 $this->externalCmdObj->addHostDowntime(
                     $host,
                     $comment,
@@ -522,11 +536,12 @@ class CentreonRtDowntime extends CentreonObject
         }
         $unknownService = array();
         $listService = explode('|', $resource);
+        $existingService = [];
 
         // check if service exist
         foreach ($listService as $service) {
             $serviceData = explode(',', $service);
-            if ($this->serviceObject->serviceExists($serviceData[0], $serviceData[1])) {
+            if ($this->rtValidator->isServiceNameValid($serviceData[0], $serviceData[1])) {
                 $existingService[] = $serviceData;
             } else {
                 $unknownService[] = $service;
