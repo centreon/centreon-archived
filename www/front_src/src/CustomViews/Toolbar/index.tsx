@@ -5,16 +5,13 @@ import { makeStyles } from 'tss-react/mui';
 
 import { Button } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
-import AddIcon from '@mui/icons-material/Add';
 
 import { SaveButton } from '@centreon/ui';
 
-import {
-  addWidgetDerivedAtom,
-  isEditingAtom,
-  setLayoutModeDerivedAtom,
-} from '../atoms';
-import { labelAddWidget, labelEdit, labelSave } from '../translatedLabels';
+import { isEditingAtom, setLayoutModeDerivedAtom } from '../atoms';
+import { labelEdit, labelSave } from '../translatedLabels';
+
+import AddWidgetDialog from './AddWidgetDialog';
 
 const useStyles = makeStyles()((theme) => ({
   toolbarButtons: {
@@ -29,7 +26,6 @@ const Toolbar: FC = () => {
 
   const isEditing = useAtomValue(isEditingAtom);
   const setLayoutMode = useSetAtom(setLayoutModeDerivedAtom);
-  const addWidget = useSetAtom(addWidgetDerivedAtom);
 
   const setEditionMode = (): void => setLayoutMode(true);
 
@@ -44,9 +40,7 @@ const Toolbar: FC = () => {
             size="small"
             onClick={setViewMode}
           />
-          <Button size="small" startIcon={<AddIcon />} onClick={addWidget}>
-            {labelAddWidget}
-          </Button>
+          <AddWidgetDialog />
         </>
       ) : (
         <Button

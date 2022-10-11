@@ -3,10 +3,9 @@ import { lazy, Suspense, useEffect, useMemo, useState } from 'react';
 import { atom, useAtom } from 'jotai';
 import { isEmpty } from 'ramda';
 
-import { MenuSkeleton, PageSkeleton } from '@centreon/ui';
+import { MenuSkeleton, PageSkeleton, useMemoComponent } from '@centreon/ui';
 
 import NotFoundPage from '../../FallbackPages/NotFoundPage';
-import memoizeComponent from '../../Resources/memoizedComponent';
 
 import loadComponent from './loadComponent';
 
@@ -16,6 +15,7 @@ interface UseDynamicLoadRemoteEntryState {
 }
 
 interface UseDynamicLoadRemoteEntryProps {
+  isFederatedWidget?: boolean;
   moduleName: string;
   remoteEntry: string;
 }
@@ -25,6 +25,7 @@ const remoteEntriesLoadedAtom = atom([] as Array<string>);
 const useDynamicLoadRemoteEntry = ({
   remoteEntry,
   moduleName,
+  isFederatedWidget,
 }: UseDynamicLoadRemoteEntryProps): UseDynamicLoadRemoteEntryState => {
   const [failed, setFailed] = useState(false);
 
@@ -43,8 +44,10 @@ const useDynamicLoadRemoteEntry = ({
       return undefined;
     }
 
+    const prefix = isFederatedWidget ? 'widgets' : 'modules';
+
     const element = document.createElement('script');
-    element.src = `./modules/${moduleName}/static/${remoteEntry}`;
+    element.src = `./${prefix}/${moduleName}/static/${remoteEntry}`;
     element.type = 'text/javascript';
     element.id = moduleName;
 
@@ -75,13 +78,17 @@ const useDynamicLoadRemoteEntry = ({
 interface LoadComponentProps {
   component: string;
   isFederatedModule?: boolean;
+  memoProps: Array<unknown>;
   moduleFederationName: string;
+  name: string;
 }
 
 const LoadComponent = ({
+  name,
   moduleFederationName,
   component,
   isFederatedModule,
+  memoProps,
   ...props
 }: LoadComponentProps): JSX.Element => {
   const Component = useMemo(
@@ -89,21 +96,21 @@ const LoadComponent = ({
     [moduleFederationName],
   );
 
-  return (
-    <Suspense
-      fallback={isFederatedModule ? <MenuSkeleton /> : <PageSkeleton />}
-    >
-      <Component {...props} />
-    </Suspense>
-  );
+  return useMemoComponent({
+    Component: (
+      <Suspense
+        fallback={isFederatedModule ? <MenuSkeleton /> : <PageSkeleton />}
+      >
+        <Component {...props} />
+      </Suspense>
+    ),
+    memoProps: [name, component, isFederatedModule, memoProps],
+  });
 };
 
-const MemoizedLoadComponent = memoizeComponent<LoadComponentProps>({
-  Component: LoadComponent,
-  memoProps: ['name', 'component', 'isFederatedModule'],
-});
-
 interface RemoteProps extends LoadComponentProps {
+  isFederatedWidget?: boolean;
+  memoProps: Array<unknown>;
   moduleName: string;
   remoteEntry: string;
 }
@@ -114,9 +121,12 @@ export const Remote = ({
   moduleName,
   moduleFederationName,
   isFederatedModule,
+  isFederatedWidget,
+  memoProps,
   ...props
 }: RemoteProps): JSX.Element => {
   const { ready, failed } = useDynamicLoadRemoteEntry({
+    isFederatedWidget,
     moduleName,
     remoteEntry,
   });
@@ -130,11 +140,13 @@ export const Remote = ({
   }
 
   return (
-    <MemoizedLoadComponent
+    <LoadComponent
+      {...props}
       component={component}
       isFederatedModule={isFederatedModule}
+      memoProps={memoProps}
       moduleFederationName={moduleFederationName}
-      {...props}
+      name={moduleName}
     />
   );
 };

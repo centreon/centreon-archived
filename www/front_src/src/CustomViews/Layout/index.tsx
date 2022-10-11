@@ -3,6 +3,7 @@ import { FC } from 'react';
 import { Responsive } from '@visx/visx';
 import GridLayout, { WidthProvider } from 'react-grid-layout';
 import { useAtom, useAtomValue } from 'jotai';
+import { find, map, propEq } from 'ramda';
 
 import { Responsive as ResponsiveHeight } from '@centreon/ui';
 
@@ -21,6 +22,20 @@ const Layout: FC = () => {
   const isEditing = useAtomValue(isEditingAtom);
   const columns = useAtomValue(columnsAtom);
 
+  const changeLayout = (newLayout): void => {
+    setLayout((currentLayout) =>
+      map(({ i, ...other }) => {
+        const widget = find(propEq('i', i), currentLayout);
+
+        return {
+          ...other,
+          i,
+          widgetConfiguration: widget?.widgetConfiguration,
+        };
+      }, newLayout),
+    );
+  };
+
   return (
     <ResponsiveHeight>
       <Responsive.ParentSize>
@@ -31,15 +46,18 @@ const Layout: FC = () => {
               cols={columns}
               containerPadding={[0, 0]}
               layout={layout}
+              resizeHandles={['s', 'w', 'e', 'n', 'sw', 'nw', 'se', 'ne']}
               rowHeight={30}
               width={width}
-              onLayoutChange={setLayout}
+              onLayoutChange={changeLayout}
             >
-              {layout.map(({ i }) => (
-                <div key={i}>
-                  <Widget key={i} title={i} />
-                </div>
-              ))}
+              {layout.map(({ i, widgetConfiguration }) => {
+                return (
+                  <div key={i}>
+                    <Widget key={i} path={widgetConfiguration.path} title={i} />
+                  </div>
+                );
+              })}
             </ReactGridLayout>
           </>
         )}
