@@ -20,6 +20,8 @@ Cypress.Commands.add('clickOutside', () => cy.get('body').click(0, 0));
 declare global {
   namespace Cypress {
     interface Chainable {
+      clickOutside: () => Cypress.Chainable<JQuery<HTMLBodyElement>>;
+      displayFilterMenu: () => Cypress.Chainable<MountReturn>;
       mount: (
         component: JSX.Element,
         options?: object,

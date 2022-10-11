@@ -193,6 +193,7 @@ describe('Anomaly detection -Graph-', () => {
 
   it('displays the threshold  when add or minus buttons are clicked on slider of modal edit anomaly detection', () => {
     cy.get(`[data-testid="${labelPerformanceGraphAD}"]`).click();
+    cy.wait('@getGraphDataAnomalyDetection');
 
     cy.get('[data-testid="add"]').click();
     cy.matchImageSnapshot();
@@ -304,6 +305,7 @@ describe('Anomaly detection -Global-', () => {
     cy.get('[data-testid="3"]').click();
     cy.wait('@getGraphDataAnomalyDetection');
     cy.get(`[data-testid="${labelPerformanceGraphAD}"]`).click();
+    cy.wait('@getGraphDataAnomalyDetection');
     cy.matchImageSnapshot();
     cy.get('[data-testid="closeEditModal"]').click();
     cy.get(`[aria-label="Close"]`).click();
