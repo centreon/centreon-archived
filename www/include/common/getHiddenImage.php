@@ -51,10 +51,11 @@ $logos_path = "../../img/media/";
 
 if (isset($_GET["id"]) && $_GET["id"] && is_numeric($_GET["id"])) {
     $query = "SELECT dir_name, img_path FROM view_img_dir, view_img, view_img_dir_relation vidr " .
-        "WHERE view_img_dir.dir_id = vidr.dir_dir_parent_id AND vidr.img_img_id = img_id AND img_id = '" .
-        $pearDB->escape($_GET["id"]) . "'";
-    $result = $pearDB->query($query);
-    while ($img = $result->fetchRow()) {
+        "WHERE view_img_dir.dir_id = vidr.dir_dir_parent_id AND vidr.img_img_id = img_id AND img_id = :img_id";
+    $statement = $pearDB->prepare($query);
+    $statement->bindValue(':img_id', $_GET["id"], \PDO::PARAM_INT);
+    $statement->execute();
+    while ($img = $statement->fetch(\PDO::FETCH_ASSOC)) {
         $imgpath = $logos_path . $img["dir_name"] . "/" . $img["img_path"];
         if (!is_file($imgpath)) {
             $imgpath = _CENTREON_PATH_ . 'www/img/media/' . $img["dir_name"] . "/" . $img["img_path"];
