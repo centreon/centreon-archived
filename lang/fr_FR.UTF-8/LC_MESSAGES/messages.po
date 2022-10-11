@@ -16562,7 +16562,7 @@ msgid "Login attribute path"
 msgstr "Chemin de l'attribut d'identifiant"
 
 msgid "Blacklist client addresses"
-msgstr "Adresses de clients sur liste noire"
+msgstr "Adresses des clients sur liste noire"
 
 msgid "Authentication conditions"
 msgstr "Conditions d'authentification"
