@@ -17,13 +17,18 @@ const disacknowledgeResources =
     resources,
     disacknowledgeAttachedResources,
   }: ResourcesWithDisacknowledgeParams): Promise<Array<AxiosResponse>> => {
+    const payload = resources.map(({ type, id, parent }) => ({
+      id,
+      parent: parent ? { id: parent?.id } : null,
+      type,
+    }));
     return axios.delete(disacknowledgeEndpoint, {
       cancelToken,
       data: {
         disacknowledgement: {
           with_services: disacknowledgeAttachedResources,
         },
-        resources: map(pick(['type', 'id', 'parent']), resources),
+        resources: payload,
       },
     });
   };
