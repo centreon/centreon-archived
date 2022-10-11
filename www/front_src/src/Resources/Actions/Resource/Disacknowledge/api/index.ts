@@ -1,6 +1,4 @@
 import axios, { AxiosResponse, CancelToken } from 'axios';
-import { map, pick } from 'ramda';
-
 import { resourcesEndpoint } from '../../../../api/endpoint';
 import { Resource } from '../../../../models';
 
