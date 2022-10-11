@@ -3,6 +3,8 @@ import 'cypress-wait-until';
 import { refreshButton } from '../integration/Resources-status/common';
 import { apiActionV1, executeActionViaClapi } from '../commons';
 
+const apiLogout = '/centreon/api/latest/authentication/logout';
+
 Cypress.Commands.add(
   'getByLabel',
   ({ tag = '', label }: GetByLabelProps): Cypress.Chainable => {
@@ -61,10 +63,8 @@ Cypress.Commands.add(
 Cypress.Commands.add('getIframeBody', (): Cypress.Chainable => {
   return cy
     .get('iframe#main-content')
-    .its('0.contentDocument')
-    .should('exist')
-    .its('body')
-
+    .its('0.contentDocument.body')
+    .should('not.be.empty')
     .then(cy.wrap);
 });
 
@@ -89,6 +89,14 @@ Cypress.Commands.add(
     cy.hoverRootMenuItem(rootItemNumber).contains(page).click();
   },
 );
+
+Cypress.Commands.add('logout', (): Cypress.Chainable => {
+  return cy.request({
+    body: {},
+    method: 'POST',
+    url: apiLogout,
+  });
+});
 
 interface GetByLabelProps {
   label: string;
@@ -117,6 +125,7 @@ declare global {
         username,
         password,
       }: AdminCredentialsProps) => Cypress.Chainable;
+      logout: () => Cypress.Chainable;
       navigateTo: ({
         page,
         rootItemNumber,
