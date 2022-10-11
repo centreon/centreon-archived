@@ -189,11 +189,11 @@ class Request
         preg_match("/^([0-9]*)\/([0-9]*)\/([0-9]*)/", $dateString, $matchesD);
         preg_match("/([0-9]*):([0-9]*)/", $dateString, $matchesT);
 
-        $heur = array_key_exists(1, $matchesT) ? (int) $matchesT[1] : 0;
+        $hour = array_key_exists(1, $matchesT) ? (int) $matchesT[1] : 0;
         $minute = array_key_exists(2, $matchesT) ? (int) $matchesT[2] : 0;
 
         $tmstp = mktime(
-            $heur,
+            $hour,
             $minute,
             0,
             (int) $matchesD[1],
