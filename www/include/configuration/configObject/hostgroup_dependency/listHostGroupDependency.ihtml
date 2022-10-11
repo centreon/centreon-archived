@@ -9,8 +9,7 @@
         <td><h4>{t}Hostgroup dependency{/t}</h4></td>
       </tr>
       <tr>
-        <td><input type="text" name="searchHGD" value="{$searchHGD}"></td>
-	    <td>{$form.Search.html}</td>
+        <td><input type="text" name="searchHGD" value="{$searchHGD}" class="mr-1">{$form.Search.html}</td>
       </tr>
     </table>
 	<table class="ToolbarTable table">
@@ -18,8 +17,7 @@
 			{ if $mode_access == 'w' }
 			<td>
 				{$form.o1.html}
-				&nbsp;&nbsp;&nbsp;
-				<a href="{$msg.addL}" class="btc bt_success">{$msg.addT}</a>
+				<a href="{$msg.addL}" class="btc bt_success ml-1">{$msg.addT}</a>
 			</td>
 			{ else }
 			<td>&nbsp;</td>
@@ -58,8 +56,7 @@
 			{ if $mode_access == 'w' }
 			<td>
 				{$form.o2.html}
-				&nbsp;&nbsp;&nbsp;
-				<a href="{$msg.addL}" class="btc bt_success">{$msg.addT}</a>
+				<a href="{$msg.addL}" class="btc bt_success ml-1">{$msg.addT}</a>
 			</td>
 			{ else }
 			<td>&nbsp;</td>

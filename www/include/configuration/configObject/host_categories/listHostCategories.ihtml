@@ -9,8 +9,7 @@
             <td><h4>{t}Name{/t}</h4></td>
         </tr>
         <tr>
-            <td><input name="searchH" value="{$searchHC}"></td>
-            <td>{$form.Search.html}</td>
+            <td><input name="searchH" value="{$searchHC}" class="mr-1">{$form.Search.html}</td>
         </tr>
         </tbody>
     </table>
@@ -19,8 +18,7 @@
             { if $mode_access == 'w' }
             <td>
                 {$form.o1.html}
-                &nbsp;&nbsp;&nbsp;
-                <a href="{$msg.addL}" class="btc bt_success">{$msg.addT}</a>
+                <a href="{$msg.addL}" class="btc bt_success ml-1">{$msg.addT}</a>
             </td>
             { else }
             <td>&nbsp;</td>
@@ -65,8 +63,7 @@
             { if $mode_access == 'w' }
             <td>
                 {$form.o2.html}
-                &nbsp;&nbsp;&nbsp;
-                <a href="{$msg.addL}" class="btc bt_success">{$msg.addT}</a>
+                <a href="{$msg.addL}" class="btc bt_success ms="1">{$msg.addT}</a>
             </td>
             { else }
             <td>&nbsp;</td>
