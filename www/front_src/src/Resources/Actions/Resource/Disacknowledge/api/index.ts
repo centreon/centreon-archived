@@ -1,4 +1,5 @@
 import axios, { AxiosResponse, CancelToken } from 'axios';
+
 import { resourcesEndpoint } from '../../../../api/endpoint';
 import { Resource } from '../../../../models';
 
@@ -20,6 +21,7 @@ const disacknowledgeResources =
       parent: parent ? { id: parent?.id } : null,
       type,
     }));
+
     return axios.delete(disacknowledgeEndpoint, {
       cancelToken,
       data: {
