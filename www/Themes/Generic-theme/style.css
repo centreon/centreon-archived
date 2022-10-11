@@ -2957,10 +2957,10 @@ ul.module_list {
 }
 
 /* utilities */
-.ms-1 {
+.ml-1 {
     margin-left: 8px;
 }
-.me-1 {
+.mr-1 {
     margin-right: 8px;
 }
 .fs-0 {

@@ -9,7 +9,7 @@
         </tr>
         <tr>
             <td>
-                <input type="text" name="searchGT" value="{$searchGT}" class="me-1">{$form.Search.html}
+                <input type="text" name="searchGT" value="{$searchGT}" class="mr-1">{$form.Search.html}
             </td>
         </tr>
     </table>
@@ -17,7 +17,7 @@
         <tr class="ToolbarTR">
             <td>
                 {$form.o1.html}
-                <a href="{$msg.addL}" class="btc bt_success ms-1">{$msg.addT}</a>
+                <a href="{$msg.addL}" class="btc bt_success ml-1">{$msg.addT}</a>
             </td>
             {php}
                 include('./include/common/pagination.php');
@@ -53,7 +53,7 @@
         <tr class="ToolbarTR">
             <td>
                 {$form.o2.html}
-                <a href="{$msg.addL}" class="btc bt_success ms-1">{$msg.addT}</a>
+                <a href="{$msg.addL}" class="btc bt_success ml-1">{$msg.addT}</a>
             </td>
             {php}
                 include('./include/common/pagination.php');

@@ -9,7 +9,7 @@
         <td><h4>{t}Media{/t}</h4></td>
       </tr>
       <tr>
-        <td><input type="text" name="searchM" value="{$searchM}" class="me-1"><input type="submit" value="{t}Search{/t}" class="btc bt_success"></td>
+        <td><input type="text" name="searchM" value="{$searchM}" class="mr-1"><input type="submit" value="{t}Search{/t}" class="btc bt_success"></td>
       </tr>
     </tbody>
     </table>
@@ -17,8 +17,8 @@
 		<tr class="ToolbarTR">
 			<td>
 				{$form.o1.html}
-				<a href="{$msg.addL}" class="btc bt_success ms-1">{$msg.addT}</a>
-				<a href='#' class="btc bt_info ms-1" onClick="window.open('./main.php?p={$p}&o=sd&min=1','','toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no, width=350, height=250');">{$syncDir}</a>
+				<a href="{$msg.addL}" class="btc bt_success ml-1">{$msg.addT}</a>
+				<a href='#' class="btc bt_info ml-1" onClick="window.open('./main.php?p={$p}&o=sd&min=1','','toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no, width=350, height=250');">{$syncDir}</a>
 			</td>
 			{php}
 			   include('./include/common/pagination.php');
@@ -64,8 +64,8 @@
 		<tr class="ToolbarTR">
 			<td>
 				{$form.o2.html}
-				<a href="{$msg.addL}" class="btc bt_success ms-1">{$msg.addT}</a>&nbsp;&nbsp;
-				<a href='#' class="btc bt_info ms-1" onClick="window.open('./main.php?p={$p}&o=sd&min=1','','toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no, width=350, height=250');">{$syncDir}</a>
+				<a href="{$msg.addL}" class="btc bt_success ml-1">{$msg.addT}</a>&nbsp;&nbsp;
+				<a href='#' class="btc bt_info ml-1" onClick="window.open('./main.php?p={$p}&o=sd&min=1','','toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no, width=350, height=250');">{$syncDir}</a>
 			</td>
 			
 			{php}
