@@ -1,3 +1,6 @@
+.bam_back_btn , .bam_report_btn {
+    color: var(--btc-color)!important;
+}
 .ListTable a:link, #ListTable a:link, .ListTable a:visited, #ListTable a:visited {
     color:var(--table-font-color) ;
 }
