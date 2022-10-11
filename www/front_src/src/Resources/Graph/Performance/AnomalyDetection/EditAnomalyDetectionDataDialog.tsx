@@ -107,7 +107,7 @@ const EditAnomalyDetectionDataDialog = ({
   return (
     <Dialog
       className={classes.container}
-      data-testid="modal_edit_anomaly_detection"
+      data-testid="modalEditAnomalyDetection"
       open={isOpen}
     >
       <div>
@@ -127,6 +127,7 @@ const EditAnomalyDetectionDataDialog = ({
           </Paper>
         </div>
         <EditAnomalyDetectionDataDialog.ModalConfirmation
+          dataTestid="modalConfirmation"
           open={isModalConfirmationOpened}
           sendCancel={cancelResizeEnvelope}
           sendConfirm={resizeEnvelope}

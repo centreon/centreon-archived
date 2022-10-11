@@ -12,6 +12,7 @@ import {
 } from '../../../translatedLabels';
 
 interface Props {
+  dataTestid: string;
   open: boolean;
   sendCancel: (value: boolean) => void;
   sendConfirm: (value: boolean) => void;
@@ -23,6 +24,7 @@ const AnomalyDetectionModalConfirmation = ({
   setOpen,
   sendCancel,
   sendConfirm,
+  dataTestid,
 }: Props): JSX.Element => {
   const { t } = useTranslation();
 
@@ -33,6 +35,7 @@ const AnomalyDetectionModalConfirmation = ({
 
   return (
     <Dialog
+      data-testid={dataTestid}
       labelCancel={t(labelCancel)}
       labelConfirm={t(labelSave)}
       labelTitle={t(labelMenageEnvelope)}

@@ -169,7 +169,7 @@ const GraphActions = ({
             <IconButton
               disableTouchRipple
               ariaLabel={t(labelPerformanceGraphAD)}
-              data-testid="editAnomalyDetectionIcon"
+              data-testid={labelPerformanceGraphAD}
               size="small"
               title={t(labelPerformanceGraphAD)}
               onClick={openModalAnomalyDetection}
