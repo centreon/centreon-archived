@@ -5341,7 +5341,7 @@ msgstr "Adresses des clients de confiance"
 
 #: centreon-web/www/include/Administration/parameters/general/form.php:198
 msgid "SSO blacklist client addresses"
-msgstr "Adresses de clients sur liste noire"
+msgstr "Adresses des clients sur liste noire"
 
 #: centreon-web/www/include/Administration/parameters/general/form.php:199
 msgid "SSO pattern matching login"
