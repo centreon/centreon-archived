@@ -16580,7 +16580,7 @@ msgid "Introspection endpoint"
 msgstr "Point d'entrée d'introspection"
 
 msgid "User information"
-msgstr "Point d'entrée d'information utilisateur"
+msgstr "Point d'entrée d'informations utilisateur"
 
 msgid "Other"
 msgstr "Autre"
