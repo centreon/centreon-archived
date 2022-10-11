@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next';
+import { makeStyles } from 'tss-react/mui';
 
-import { MenuItem, MenuItemProps, Tooltip } from '@mui/material';
+import { MenuItem, MenuItemProps, Theme, Tooltip } from '@mui/material';
 
 import { labelActionNotPermitted } from '../../translatedLabels';
 
@@ -9,12 +10,27 @@ type Props = {
   permitted: boolean;
 } & Pick<MenuItemProps, 'onClick' | 'disabled'>;
 
+const useStyles = makeStyles()((theme: Theme) => ({
+  menuItem: {
+    '&.Mui-selected': {
+      '&:hover': {
+        background: theme.palette.primary.dark,
+      },
+      background: theme.palette.primary.dark,
+    },
+    '&:hover': {
+      background: theme.palette.primary.dark,
+    },
+  },
+}));
+
 const ActionMenuItem = ({
   permitted,
   label,
   onClick,
   disabled,
 }: Props): JSX.Element => {
+  const { classes } = useStyles();
   const { t } = useTranslation();
 
   const title = permitted ? '' : t(labelActionNotPermitted);
@@ -22,7 +38,11 @@ const ActionMenuItem = ({
   return (
     <Tooltip title={title}>
       <div>
-        <MenuItem disabled={disabled} onClick={onClick}>
+        <MenuItem
+          className={classes.menuItem}
+          disabled={disabled}
+          onClick={onClick}
+        >
           {t(label)}
         </MenuItem>
       </div>
