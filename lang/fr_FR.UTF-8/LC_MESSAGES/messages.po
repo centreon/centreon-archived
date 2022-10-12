@@ -17186,7 +17186,7 @@ msgid "Services (simplified)"
 msgstr "Services (simplifiés)"
 
 msgid "You have unsaved changed, do you want to proceed?"
-msgstr "vous avez des modifications non enregistrées, voulez-vous continuer?"
+msgstr "Vous avez des modifications non enregistrées, voulez-vous continuer?"
 
 #  msgid "Confirm"
 #  msgstr "Confirmer"
