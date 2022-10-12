@@ -89,7 +89,6 @@ include "./include/common/autoNumLimit.php";
 $rows = 0;
 $tmp = null;
 $tmp2 = null;
-$searchHG = $pearDB->escape($searchHG);
 
 $aclFrom = "";
 $aclCond = "";
