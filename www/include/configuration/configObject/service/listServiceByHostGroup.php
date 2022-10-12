@@ -90,15 +90,21 @@ $rows = 0;
 $tmp = null;
 $tmp2 = null;
 $searchHG = $pearDB->escape($searchHG);
-$searchS = $pearDB->escape($searchS);
 
 $aclFrom = "";
 $aclCond = "";
 $distinct = "";
 if (!$centreon->user->admin) {
+    $aclAccessGroupStrings = $acl->getAccessGroupsString();
+    $aclAccessGroupStringsExploded = explode(',', $aclAccessGroupStrings);
+    $aclAccessGroupStringsParams = [];
+    foreach ($aclAccessGroupStringsExploded as $key => $value) {
+        $aclAccessGroupStringsParams[':access' . $key] = str_replace("'", "", $value);
+    }
+    $queryParams = implode(',', array_keys($aclAccessGroupStringsParams));
     $aclFrom = ", $aclDbName.centreon_acl acl ";
     $aclCond = " AND sv.service_id = acl.service_id
-                 AND acl.group_id IN (" . $acl->getAccessGroupsString() . ") ";
+                 AND acl.group_id IN (" . $queryParams . ") ";
     $distinct = " DISTINCT ";
 }
 
@@ -107,20 +113,35 @@ if (!$centreon->user->admin) {
  * could match for each service with a Template.
  */
 
-$templateStr = isset($template) && $template ? " AND service_template_model_stm_id = '" . $template . "' " : "";
+$templateStr = isset($template) && $template ? " AND service_template_model_stm_id = :service_template " : "";
 
 if ($searchS != "" || $searchHG != "") {
-    if ($searchS && !$searchHG) {
-        $dbResult = $pearDB->query(
-            "SELECT " . $distinct . " hostgroup_hg_id, sv.service_id, sv.service_description, " .
-            "service_template_model_stm_id " .
-            "FROM service sv, host_service_relation hsr " . $aclFrom .
-            " WHERE sv.service_register = '1' " . $sqlFilterCase .
-            " AND hsr.service_service_id = sv.service_id " . $aclCond .
-            " AND hsr.host_host_id IS NULL" .
-            " AND (sv.service_description LIKE '%" . $searchS . "%')" . $templateStr
+    $statement = $pearDB->prepare(
+        "SELECT " . $distinct . " hostgroup_hg_id, sv.service_id, sv.service_description, " .
+        "service_template_model_stm_id " .
+        "FROM service sv, host_service_relation hsr, hostgroup hg " . $aclFrom .
+        "WHERE sv.service_register = '1' " . $sqlFilterCase .
+        " AND hsr.service_service_id = sv.service_id " . $aclCond .
+        " AND hsr.host_host_id IS NULL " .
+        ($searchS ? "AND sv.service_description LIKE :service_description " : "") .
+        ($searchHG ? "AND hsr.hostgroup_hg_id = hg.hg_id AND hg.hg_name LIKE :hg_name " : "") . $templateStr
+    );
+    if (isset($template) && $template) {
+        $statement->bindValue(
+            ':service_template',
+            (int) $template,
+            \PDO::PARAM_INT
         );
-        while ($service = $dbResult->fetch()) {
+    }
+    if (!$centreon->user->admin) {
+        foreach ($aclAccessGroupStringsParams as $key => $param) {
+            $statement->bindValue($key, (int) $param, \PDO::PARAM_INT);
+        }
+    }
+    if ($searchS && !$searchHG) {
+        $statement->bindValue(':service_description', '%' . $searchS . '%', \PDO::PARAM_STR);
+        $statement->execute();
+        while ($service = $statement->fetch(\PDO::PARAM_INT)) {
             if (!isset($tab_buffer[$service["service_id"]])) {
                 $tmp ? $tmp .= ", " . $service["service_id"] : $tmp = $service["service_id"];
             }
@@ -129,46 +150,43 @@ if ($searchS != "" || $searchHG != "") {
             $rows++;
         }
     } elseif (!$searchS && $searchHG) {
-        $dbResult = $pearDB->query(
-            "SELECT " . $distinct . " hostgroup_hg_id, sv.service_id, sv.service_description, " .
-            "service_template_model_stm_id " .
-            "FROM service sv, host_service_relation hsr, hostgroup hg " . $aclFrom .
-            "WHERE sv.service_register = '1' " . $sqlFilterCase .
-            " AND hsr.service_service_id = sv.service_id " . $aclCond .
-            " AND hsr.host_host_id IS NULL " .
-            " AND (hg.hg_name LIKE '%" . $searchHG . "%')" .
-            " AND hsr.hostgroup_hg_id = hg.hg_id" . $templateStr
-        );
-        while ($service = $dbResult->fetch()) {
+        $statement->bindValue(':hg_name', '%' . $searchHG . '%', \PDO::PARAM_STR);
+        $statement->execute();
+        while ($service = $statement->fetch(\PDO::FETCH_ASSOC)) {
             $tmp ? $tmp .= ", " . $service["service_id"] : $tmp = $service["service_id"];
             $tmp2 ? $tmp2 .= ", " . $service["hostgroup_hg_id"] : $tmp2 = $service["hostgroup_hg_id"];
             $rows++;
         }
     } else {
-        $dbResult = $pearDB->query(
-            "SELECT " . $distinct . " hostgroup_hg_id, sv.service_id, sv.service_description, " .
-            "service_template_model_stm_id " .
-            "FROM service sv, host_service_relation hsr, hostgroup hg " . $aclFrom .
-            "WHERE sv.service_register = '1' " . $sqlFilterCase .
-            " AND hsr.service_service_id = sv.service_id " . $aclCond .
-            " AND hsr.host_host_id IS NULL " .
-            " AND hg.hg_name LIKE '%" . $searchHG . "%'" .
-            " AND sv.service_description LIKE '%" . $searchS . "%'" .
-            " AND hsr.hostgroup_hg_id = hg.hg_id" . $templateStr
-        );
-        while ($service = $dbResult->fetch()) {
+        $statement->bindValue(':service_description', '%' . $searchS . '%', \PDO::PARAM_STR);
+        $statement->bindValue(':hg_name', '%' . $searchHG . '%', \PDO::PARAM_STR);
+        $statement->execute();
+        while ($service = $statement->fetch(\PDO::FETCH_ASSOC)) {
             $tmp ? $tmp .= ", " . $service["service_id"] : $tmp = $service["service_id"];
             $tmp2 ? $tmp2 .= ", " . $service["hostgroup_hg_id"] : $tmp2 = $service["hostgroup_hg_id"];
             $rows++;
         }
     }
 } else {
-    $dbResult = $pearDB->query(
+    $statement = $pearDB->prepare(
         "SELECT " . $distinct . " sv.service_description FROM service sv, host_service_relation hsr " . $aclFrom .
         "WHERE service_register = '1' " . $sqlFilterCase . $templateStr .
         " AND hsr.service_service_id = sv.service_id AND hsr.host_host_id IS NULL " . $aclCond
     );
-    $rows = $dbResult->rowCount();
+    if (!$centreon->user->admin) {
+        foreach ($aclAccessGroupStringsParams as $key => $param) {
+            $statement->bindValue($key, (int) $param, \PDO::PARAM_INT);
+        }
+    }
+    if (isset($template) && $template) {
+        $statement->bindValue(
+            ':service_template',
+            (int) $template,
+            \PDO::PARAM_INT
+        );
+    }
+    $statement->execute();
+    $rows = $statement->rowCount();
 }
 
 /*
@@ -249,6 +267,11 @@ $statement->bindValue(':limit', (int) $limit, \PDO::PARAM_INT);
 if ((isset($template) && $template)) {
     $statement->bindValue(':template', (int) $template, \PDO::PARAM_INT);
 }
+if (!$centreon->user->admin) {
+    foreach ($aclAccessGroupStringsParams as $key => $param) {
+        $statement->bindValue($key, (int) $param, \PDO::PARAM_INT);
+    }
+}
 $statement->execute();
 $form = new HTML_QuickFormCustom('select_form', 'POST', "?p=" . $p);
 
@@ -290,7 +313,7 @@ $fgHostgroup = array("value" => null, "print" => null);
 
 $centreonToken = createCSRFToken();
 
-for ($i = 0; $service = $statement->fetch(); $i++) {
+for ($i = 0; $service = $statement->fetch(\PDO::FETCH_ASSOC); $i++) {
     $moptions = "";
     $fgHostgroup["value"] != $service["hg_name"]
         ? ($fgHostgroup["print"] = true && $fgHostgroup["value"] = $service["hg_name"])
