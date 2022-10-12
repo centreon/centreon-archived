@@ -3917,7 +3917,7 @@ msgstr "Problemas"
 #: centreon-web/www/include/monitoring/status/ServicesHostGroups/serviceSummaryByHG.php:68
 #: centreon-web/www/include/monitoring/status/Services/serviceSummary.php:95
 #: centreon-web/www/include/monitoring/status/Services/serviceGrid.php:75
-msgid "Acknowledge"
+msgid "Acknowledged"
 msgstr "Conhecimento"
 
 #: centreon-web/www/include/monitoring/status/ServicesServiceGroups/serviceGridBySG.php:73

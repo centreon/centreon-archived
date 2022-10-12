@@ -69,7 +69,7 @@ $aTypeAffichageLevel1 = array(
 $aTypeAffichageLevel2 = array(
     "" => _("All"),
     "pb" => _("Problems"),
-    "ack_1" => _("Acknowledge"),
+    "ack_1" => _("Acknowledged"),
     "ack_0" => _("Not Acknowledged"),
 );
 
