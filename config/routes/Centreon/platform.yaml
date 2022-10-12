@@ -41,3 +41,8 @@ centreon_application_platform_get_installation_status:
   path: /platform/installation/status
   controller: 'Core\Infrastructure\Platform\Api\FindInstallationStatus\FindInstallationStatusController'
   condition: "request.attributes.get('version') >= 22.04"
+
+centreon_application_platform_new_add_platform_topology:
+  methods: POST
+  path: /platform/topology/add/bulk
+  cntroller: 'Core\Infrastructure\Platform\Api\AddPlatformsToTopology\AddPlatformsToTopologyController'

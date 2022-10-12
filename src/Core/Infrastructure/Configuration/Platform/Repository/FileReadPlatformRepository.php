@@ -21,25 +21,29 @@
 
 declare(strict_types=1);
 
-namespace Core\Infrastructure\Platform\Api\FindInstallationStatus;
+namespace Core\Infrastructure\Configuration\Platform\Repository;
 
-use Centreon\Application\Controller\AbstractController;
-use Core\Application\Platform\UseCase\FindInstallationStatus\FindInstallationStatus;
-use Core\Application\Platform\UseCase\FindInstallationStatus\FindInstallationStatusPresenterInterface;
+use Core\Application\Platform\Repository\ReadPlatformRepositoryInterface;
 
-class FindInstallationStatusController extends AbstractController
+class FileReadPlatformRepository implements ReadPlatformRepositoryInterface
 {
-    /**
-     * @param FindInstallationStatus $useCase
-     * @param FindInstallationStatusPresenterInterface $presenter
-     * @return object
-     */
-    public function __invoke(
-        FindInstallationStatus $useCase,
-        FindInstallationStatusPresenterInterface $presenter
-    ): object {
-        $useCase($presenter);
+    public function __construct(private string $etcDir, private string $installDir)
+    {
+    }
 
-        return $presenter->show();
+    /**
+     * @inheritdoc
+     */
+    public function isCentreonWebInstalled(): bool
+    {
+        return file_exists($this->etcDir . '/centreon.conf.php');
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function isCentreonWebUpgradeAvailable(): bool
+    {
+        return is_dir($this->installDir);
     }
 }

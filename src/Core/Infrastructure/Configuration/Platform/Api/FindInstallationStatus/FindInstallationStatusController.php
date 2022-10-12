@@ -21,25 +21,25 @@
 
 declare(strict_types=1);
 
-namespace Core\Infrastructure\Platform\Api\FindInstallationStatus;
+namespace Core\Infrastructure\Configuration\Platform\Api\FindInstallationStatus;
 
-use Core\Application\Common\UseCase\AbstractPresenter;
+use Centreon\Application\Controller\AbstractController;
+use Core\Application\Platform\UseCase\FindInstallationStatus\FindInstallationStatus;
 use Core\Application\Platform\UseCase\FindInstallationStatus\FindInstallationStatusPresenterInterface;
-use Core\Application\Platform\UseCase\FindInstallationStatus\FindInstallationStatusResponse;
 
-class FindInstallationStatusPresenter extends AbstractPresenter implements FindInstallationStatusPresenterInterface
+class FindInstallationStatusController extends AbstractController
 {
     /**
-     * {@inheritDoc}
-     * @param FindInstallationStatusResponse $data
+     * @param FindInstallationStatus $useCase
+     * @param FindInstallationStatusPresenterInterface $presenter
+     * @return object
      */
-    public function present(mixed $data): void
-    {
-        $presenterResponse = [
-            'is_installed' => $data->isCentreonWebInstalled,
-            'has_upgrade_available' => $data->isCentreonWebUpgradeAvailable
-        ];
+    public function __invoke(
+        FindInstallationStatus $useCase,
+        FindInstallationStatusPresenterInterface $presenter
+    ): object {
+        $useCase($presenter);
 
-        parent::present($presenterResponse);
+        return $presenter->show();
     }
 }

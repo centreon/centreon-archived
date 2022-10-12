@@ -21,29 +21,20 @@
 
 declare(strict_types=1);
 
-namespace Core\Infrastructure\Platform\Repository;
+namespace Core\Application\Platform\UseCase\AddPlatformsToTopology;
 
-use Core\Application\Platform\Repository\ReadPlatformRepositoryInterface;
-
-class FileReadPlatformRepository implements ReadPlatformRepositoryInterface
+class AddPlatformsToTopologyRequest
 {
-    public function __construct(private string $etcDir, private string $installDir)
-    {
-    }
-
     /**
-     * @inheritdoc
+     * @var array{
+     *  array{
+     *    address: string,
+     *    hostname: string|null
+     *    name: string,
+     *    type: string,
+     *    parent: string|null,
+     *  }
+     * }
      */
-    public function isCentreonWebInstalled(): bool
-    {
-        return file_exists($this->etcDir . '/centreon.conf.php');
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function isCentreonWebUpgradeAvailable(): bool
-    {
-        return is_dir($this->installDir);
-    }
+    public array $nodes;
 }
