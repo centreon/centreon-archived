@@ -26,6 +26,7 @@ import makeStyles from '@mui/styles/makeStyles';
 import CloseIcon from '@mui/icons-material/Close';
 import { ClickAwayListener, MenuItem, Paper, Popper } from '@mui/material';
 
+import { ThemeMode } from '@centreon/ui-context';
 import {
   MemoizedFilter,
   SearchField,
@@ -56,6 +57,24 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
   },
   loader: { display: 'flex', justifyContent: 'center' },
+  paper: {
+    '& .MuiMenuItem-root': {
+      '&:hover, &.Mui-selected, &.Mui-selected:hover': {
+        background: equals(theme.palette.mode, ThemeMode.dark)
+          ? theme.palette.primary.dark
+          : theme.palette.primary.light,
+        color: equals(theme.palette.mode, ThemeMode.dark)
+          ? theme.palette.common.white
+          : theme.palette.primary.main,
+      },
+      fontSize: theme.typography.body2.fontSize,
+    },
+    backgroundColor: theme.palette.background.default,
+    border: 'none',
+    boxShadow: theme.shadows[3],
+    paddingBottom: theme.spacing(1),
+    paddingTop: theme.spacing(1),
+  },
 }));
 
 const Criterias = lazy(() => import('./Criterias'));
@@ -345,7 +364,7 @@ const Filter = (): JSX.Element => {
                   width: searchRef?.current?.clientWidth,
                 }}
               >
-                <Paper square>
+                <Paper square className={classes.paper}>
                   {autoCompleteSuggestions.map((suggestion, index) => {
                     return (
                       <MenuItem

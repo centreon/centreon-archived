@@ -92,7 +92,7 @@
     "@visx/threshold": "^2.12.2",
     "@visx/visx": "2.9.0",
     "axios": "^0.25.0",
-    "centreon-frontend": "git+https://centreon@github.com/centreon/centreon-frontend.git#develop",
+    "centreon-frontend": "git+https://centreon@github.com/centreon/centreon-frontend.git#MON-15314-standardize-sub-menus-and-hovers-ressources-status",
     "classnames": "^2.3.1",
     "clsx": "^1.1.1",
     "connected-react-router": "^6.9.2",
