@@ -47,6 +47,7 @@ const useStyles = makeStyles((theme) => ({
   },
   defaultButton: {
     justifyContent: 'flex-start',
+    textTransform: 'none',
   },
   divider: {
     margin: theme.spacing(0.5, 0, 2, 0),
@@ -294,15 +295,14 @@ const AnomalyDetectionSlider = ({
             </div>
           </IconButton>
         </div>
-        <div className={classes.defaultButton}>
-          <Button
-            disabled={isDefaultValue}
-            startIcon={<ResetIcon />}
-            onClick={setToDefaultValue}
-          >
-            {t(labelUseDefaultValue)}
-          </Button>
-        </div>
+        <Button
+          className={classes.defaultButton}
+          disabled={isDefaultValue}
+          startIcon={<ResetIcon />}
+          onClick={setToDefaultValue}
+        >
+          {t(labelUseDefaultValue)}
+        </Button>
       </div>
 
       <Divider className={classes.divider} />
