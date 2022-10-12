@@ -98,16 +98,20 @@ $calcType = array("AVE" => _("Average"), "SOM" => _("Sum"), "MIN" => _("Min"), "
  * Meta Service list
  */
 if ($search) {
-    $rq = "SELECT * FROM meta_service " .
-        "WHERE meta_name LIKE '%" . $search . "%' " .
+    $statement = $pearDB->prepare("SELECT * FROM meta_service " .
+        "WHERE meta_name LIKE :search " .
         $acl->queryBuilder("AND", "meta_id", $metaStr) .
-        " ORDER BY meta_name LIMIT " . $num * $limit . ", " . $limit;
+        " ORDER BY meta_name LIMIT :offset, :limit");
+    $statement->bindValue(':search', '%' . $search . '%', \PDO::PARAM_STR);
 } else {
-    $rq = "SELECT * FROM meta_service " .
+    $statement = $pearDB->prepare("SELECT * FROM meta_service " .
         $acl->queryBuilder("WHERE", "meta_id", $metaStr) .
-        " ORDER BY meta_name LIMIT " . $num * $limit . ", " . $limit;
+        " ORDER BY meta_name LIMIT :offset, :limit");
 }
-$dbResult = $pearDB->query($rq);
+
+$statement->bindValue(':offset', $num * $limit, \PDO::PARAM_INT);
+$statement->bindValue(':limit', $limit, \PDO::PARAM_INT);
+$statement->execute();
 
 $form = new HTML_QuickFormCustom('select_form', 'GET', "?p=" . $p);
 
@@ -125,7 +129,7 @@ $form->addElement('submit', 'Search', _("Search"), $attrBtnSuccess);
 $elemArr = array();
 $centreonToken = createCSRFToken();
 
-for ($i = 0; $ms = $dbResult->fetch(); $i++) {
+for ($i = 0; $ms = $statement->fetch(\PDO::FETCH_ASSOC); $i++) {
     $moptions = "";
     $selectedElements = $form->addElement('checkbox', "select[" . $ms['meta_id'] . "]");
     if ($ms["meta_select_mode"] == 1) {
