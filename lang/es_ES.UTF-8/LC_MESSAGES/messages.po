@@ -12233,7 +12233,7 @@ msgstr "Dificultades"
 #: centreon-web/www/include/monitoring/status/Services/serviceSummary.php:95
 #: centreon-web/www/include/monitoring/status/Services/serviceGrid.php:75
 #: centreon-web/www/include/monitoring/status/ServicesHostGroups/serviceSummaryByHG.php:68
-#: centreon-web/www/include/monitoring/status/ServicesHostGroups/serviceGridByHG.php:61
+#: centreon-web/www/include/monitoring/status/ServicesHostGroups/serviceGridByHG.php:119
 #: centreon-web/www/include/monitoring/status/ServicesServiceGroups/serviceSummaryBySG.php:69
 #: centreon-web/www/include/monitoring/status/ServicesServiceGroups/serviceGridBySG.php:69
 msgid "Acknowledged"
