@@ -15821,4 +15821,4 @@ msgid "you have unsaved changed, do you want to proceed?"
 msgstr "você não salvou as alterações, deseja continuar?"
 
 #  msgid "Confirm"
-#  msgstr "confirme"
+#  msgstr "Confirme"
