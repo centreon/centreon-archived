@@ -231,6 +231,14 @@ class CentreonAuth
             || $this->userInfos["contact_auth_type"] == "local"
             || $this->autologin
         ) {
+            if (
+                array_key_exists('contact_oreon', $this->userInfos)
+                && $this->userInfos['contact_oreon'] !== '1'
+            ) {
+                $this->passwdOk = 0;
+                return;
+            }
+
             if ($this->autologin
                 && $this->userInfos["contact_autologin_key"]
                 && $this->userInfos["contact_autologin_key"] === $token
