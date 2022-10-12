@@ -48,9 +48,6 @@ const useStyles = makeStyles((theme) => ({
   defaultButton: {
     justifyContent: 'flex-start',
   },
-  defaultValue: {
-    color: theme.palette.text.primary,
-  },
   divider: {
     margin: theme.spacing(0.5, 0, 2, 0),
   },
