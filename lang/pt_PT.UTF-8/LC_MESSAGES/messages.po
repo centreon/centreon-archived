@@ -15806,7 +15806,7 @@ msgstr "Editar dados de detecção de anomalias"
 #  msgstr ""
 
 msgid "you have unsaved changed, do you want to proceed?"
-msgstr "você não salvou as alterações, deseja continuar?"
+msgstr "Você não salvou as alterações, deseja continuar?"
 
 #  msgid "Confirm"
 #  msgstr "confirme"
