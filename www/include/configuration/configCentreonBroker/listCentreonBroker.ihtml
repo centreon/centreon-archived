@@ -9,8 +9,7 @@
         <td><h4>{t}Centreon Broker{/t}</h4></td>
       </tr>
       <tr>
-        <td><input type="text" name="searchCB" value="{$searchCB}"></td>
-        <td><input type="submit" value="{t}Search{/t}" class="btc bt_success"></td>
+        <td><input type="text" name="searchCB" value="{$searchCB}" class="mr-1"><input type="submit" value="{t}Search{/t}" class="btc bt_success"></td>
       </tr>
     </tbody>
     </table>
@@ -19,8 +18,7 @@
             { if $mode_access == 'w' }
             <td>
                 {$form.o1.html}
-                &nbsp;&nbsp;&nbsp;
-                <a href="{$msg.addL}" class="btc bt_success">{$msg.addT}</a>
+                <a href="{$msg.addL}" class="btc bt_success ml-1">{$msg.addT}</a>
             </td>
             { else }
             <td>&nbsp;</td>
@@ -62,8 +60,7 @@
             { if $mode_access == 'w' }
             <td>
                 {$form.o2.html}
-                &nbsp;&nbsp;&nbsp;
-                <a href="{$msg.addL}" class="btc bt_success">{$msg.addT}</a>
+                <a href="{$msg.addL}" class="btc bt_success ml-1">{$msg.addT}</a>
             </td>
             { else }
             <td>&nbsp;</td>

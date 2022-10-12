@@ -63,31 +63,34 @@ const TimeInputs = ({
 
   return (
     <div className={classes.timeInputs}>
-      {timeInputConfigurations.map(({ unit, maxOption, minOption }, idx) => {
-        const { pluralLabel, singularLabel } = find(
-          propEq('unit', unit),
-          mapUnitAndLabels,
-        ) as UnitAndLabels;
+      {timeInputConfigurations.map(
+        ({ dataTestId, unit, maxOption, minOption }, idx) => {
+          const { pluralLabel, singularLabel } = find(
+            propEq('unit', unit),
+            mapUnitAndLabels,
+          ) as UnitAndLabels;
 
-        return (
-          <TimeInput
-            getAbsoluteValue={equals(idx, 0)}
-            inputLabel={inputLabel}
-            key={singularLabel}
-            labels={{
-              plural: pluralLabel,
-              singular: singularLabel,
-            }}
-            maxDuration={maxDuration}
-            maxOption={maxOption}
-            minOption={minOption}
-            name={`${baseName}_${singularLabel}`}
-            timeValue={timeValue}
-            unit={unit}
-            onChange={onChange}
-          />
-        );
-      })}
+          return (
+            <TimeInput
+              dataTestId={dataTestId}
+              getAbsoluteValue={equals(idx, 0)}
+              inputLabel={inputLabel}
+              key={singularLabel}
+              labels={{
+                plural: pluralLabel,
+                singular: singularLabel,
+              }}
+              maxDuration={maxDuration}
+              maxOption={maxOption}
+              minOption={minOption}
+              name={`${baseName}_${singularLabel}`}
+              timeValue={timeValue}
+              unit={unit}
+              onChange={onChange}
+            />
+          );
+        },
+      )}
     </div>
   );
 };

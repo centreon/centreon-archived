@@ -43,6 +43,7 @@ require_once _CENTREON_PATH_ . '/www/class/centreonACL.class.php';
 require_once _CENTREON_PATH_ . '/www/class/centreonGraph.class.php';
 require_once _CENTREON_PATH_ . '/www/class/centreonDB.class.php';
 require_once _CENTREON_PATH_ . '/www/class/centreonBroker.class.php';
+require_once _CENTREON_PATH_ . '/www/class/HtmlAnalyzer.php';
 
 $pearDB = new CentreonDB();
 

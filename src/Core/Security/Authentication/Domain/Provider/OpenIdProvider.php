@@ -869,7 +869,7 @@ class OpenIdProvider implements OpenIdProviderInterface
      * Log Authentication information
      *
      * @param string $message
-     * @param array<string|int,string>|null $content
+     * @param array<mixed>|null $content
      */
     private function logAuthenticationInfo(string $message, ?array $content = null): void
     {
@@ -1146,8 +1146,11 @@ class OpenIdProvider implements OpenIdProviderInterface
     {
         $aclConditions = $customConfiguration->getACLConditions();
         if (!$aclConditions->isEnabled()) {
+            $this->logAuthenticationInfo("Roles mapping is disabled");
             return;
         }
+
+        $this->logAuthenticationInfo("Roles mapping is enabled");
 
         $conditions = $this->getAclConditionsFromProvider($customConfiguration);
         $attributePath = explode(".", $aclConditions->getAttributePath());
@@ -1221,19 +1224,28 @@ class OpenIdProvider implements OpenIdProviderInterface
         $conditionMatches = array_intersect($conditions, $configuredAuthorizedValues);
         if (empty($conditionMatches)) {
             $this->error(
-                "Configured roles do not match",
+                "Configured attribute value not found in roles mapping configuration",
                 [
-                    "configured_authorized_values" => $configuredAuthorizedValues
+                    "configured_authorized_values" => $configuredAuthorizedValues,
+                    "provider_conditions" => $conditions
                 ]
             );
             $this->logExceptionInLoginLogFile(
-                "Configured roles do not match",
+                "Configured attribute value not found in roles mapping configuration",
                 AclConditionsException::conditionsNotFound()
             );
             throw AclConditionsException::conditionsNotFound();
         }
-        $this->info("Role mapping found (ACL)", ["conditions" => $conditionMatches]);
-        $this->logAuthenticationInfo("Role mapping found (ACL)", $conditionMatches);
+        $this->info("Role mapping relation found", [
+            "conditions_matches" => $conditionMatches,
+            "provider" => $conditions,
+            "configured" => $configuredAuthorizedValues
+        ]);
+        $this->logAuthenticationInfo("Role mapping relation found", [
+            "conditions_matches" => $conditionMatches,
+            "provider" => $conditions,
+            "configured" => $configuredAuthorizedValues
+        ]);
     }
 
     /**
@@ -1250,6 +1262,7 @@ class OpenIdProvider implements OpenIdProviderInterface
     private function validateGroupsMappingOrFail(GroupsMapping $groupsMapping): void
     {
         if ($groupsMapping->isEnabled()) {
+            $this->logAuthenticationInfo("Groups Mapping Enabled");
             $groups = $this->getGroupsFromProvider($groupsMapping->getEndpoint());
             $this->validateGroupsMapping($groups, $groupsMapping);
         } else {
@@ -1286,6 +1299,18 @@ class OpenIdProvider implements OpenIdProviderInterface
     {
         $groupsAttributePath = explode(".", $groupsMapping->getAttributePath());
         $this->logAuthenticationInfo("Configured groups mapping attribute path found", $groupsAttributePath);
+        $this->logAuthenticationInfo(
+            "Groups Relations",
+            array_map(
+                function (ContactGroupRelation $contactGroupRelation) {
+                    return [
+                        "group claim" => $contactGroupRelation->getClaimValue(),
+                        "contact group" => $contactGroupRelation->getContactGroup()->getName()
+                    ];
+                },
+                $groupsMapping->getContactGroupRelations()
+            )
+        );
         foreach ($groupsAttributePath as $attribute) {
             $providerGroups = [];
             if (array_key_exists($attribute, $groups)) {

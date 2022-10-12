@@ -84,6 +84,14 @@ $inputGet = array(
     'select' => \HtmlAnalyzer::sanitizeAndRemoveTags($_GET['select'] ?? ''),
     'id' => \HtmlAnalyzer::sanitizeAndRemoveTags($_GET['id'] ?? ''),
 );
+
+$sanitizedPostSelect = [];
+if (isset($_POST['select']) && is_array($_POST['select'])) {
+    foreach ($_POST['select'] as $key => $value) {
+        $sanitizedPostSelect[$key] = \HtmlAnalyzer::sanitizeAndRemoveTags($value);
+    }
+}
+
 $inputPost = array(
     'Search' => \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['Search'] ?? ''),
     'searchH' => \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['searchH'] ?? ''),
@@ -94,7 +102,7 @@ $inputPost = array(
     'o' => \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['o'] ?? ''),
     'o1' => \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['o1'] ?? ''),
     'o2' => \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['o2'] ?? ''),
-    'select' => \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['select'] ?? ''),
+    'select' => $sanitizedPostSelect,
     'id' => \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['id'] ?? ''),
 );
 

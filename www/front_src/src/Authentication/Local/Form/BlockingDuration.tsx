@@ -104,9 +104,17 @@ const BlockingDuration = (): JSX.Element => {
   );
 
   const timeInputConfigurations: Array<TimeInputConfiguration> = [
-    { maxOption: 7, unit: 'days' },
-    { maxOption: maxHoursAndMinutesOption, unit: 'hours' },
-    { maxOption: maxHoursAndMinutesOption, unit: 'minutes' },
+    { dataTestId: 'local_blockingDurationDays', maxOption: 7, unit: 'days' },
+    {
+      dataTestId: 'local_blockingDurationHours',
+      maxOption: maxHoursAndMinutesOption,
+      unit: 'hours',
+    },
+    {
+      dataTestId: 'local_blockingDurationMinutes',
+      maxOption: maxHoursAndMinutesOption,
+      unit: 'minutes',
+    },
   ];
 
   return useMemoComponent({

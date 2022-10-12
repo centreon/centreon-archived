@@ -15400,6 +15400,75 @@ msgstr ""
 # msgid "OpenID Connect only"
 # msgstr ""
 
+msgid "Login attribute path"
+msgstr "Caminho de atributo de acesso"
+
+msgid "Enable conditions on identity provider"
+msgstr "Habilitar condições sobre o fornecedor de identidade"
+
+msgid "Conditions attribute path"
+msgstr "Caminho de atributos de condições"
+
+msgid "Which endpoint does the conditions attribute path come from?"
+msgstr "De que endpoint é que as condições atribuem o caminho?"
+
+msgid "Introspection endpoint"
+msgstr "endpoint da introspecção"
+
+msgid "User information"
+msgstr "Informação ao utilizador"
+
+msgid "Other"
+msgstr "Outros"
+
+msgid "Define authorized conditions values"
+msgstr "Definir valores de condições autorizadas"
+
+msgid "Condition value"
+msgstr "Valor da condição"
+
+msgid "Email attribute path"
+msgstr "Caminho de atributo de e-mail"
+
+msgid "Fullname attribute path"
+msgstr "Caminho do atributo do nome completo"
+
+msgid "Enable automatic management"
+msgstr "Activar a gestão automática"
+
+msgid "Apply only first role"
+msgstr "Aplicar apenas o primeiro papel"
+
+msgid "Roles attribute path"
+msgstr "Atributo de funções caminho"
+
+msgid "Which endpoint does the roles attribute path come from?"
+msgstr "De que endpoint é que os papéis atribuem o caminho?"
+
+msgid "Define the relation between roles and ACL access groups"
+msgstr "Definir a relação entre os papéis e os grupos de acesso ACL"
+
+msgid "Role value"
+msgstr "Valor do papel"
+
+msgid "ACL access group"
+msgstr "Grupo de acesso ACL"
+
+msgid "Groups attribute path"
+msgstr "Caminho de atributo de grupos"
+
+msgid "Which endpoint does the groups attribute path come from?"
+msgstr "De que endpoint é que os grupos atribuem o caminho?"
+
+msgid "Define the relation between groups and contact groups"
+msgstr "Definir a relação entre grupos e grupos de contacto"
+
+msgid "Group value"
+msgstr "Valor do grupo"
+
+msgid "Define your endpoint"
+msgstr "Defina o seu endpoint"
+
 # msgid "Mixed"
 # msgstr ""
 

@@ -83,7 +83,7 @@ function updateOpenIdConfiguration(CentreonDB $pearDB): void
         $openIdCustomConfiguration["email_bind_attribute"] = null;
         $openIdCustomConfiguration["fullname_bind_attribute"] = null;
         $openIdCustomConfiguration["contact_group_id"] = $defaultContactGroupId;
-        $openIdCustomConfiguration["claim_name"] = Configuration::DEFAULT_CLAIM_NAME;
+        $openIdCustomConfiguration["claim_name"] = 'groups';
 
         $statement = $pearDB->prepare(
             "UPDATE provider_configuration SET custom_configuration = :customConfiguration

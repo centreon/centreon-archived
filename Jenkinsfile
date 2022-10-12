@@ -9,7 +9,15 @@ def stableBranch = "master"
 def devBranch = "develop"
 env.REF_BRANCH = stableBranch
 env.PROJECT='centreon-web'
-if (env.BRANCH_NAME.startsWith('release-')) {
+
+
+
+
+if (env.BRANCH_NAME.startsWith('release-22.10.0-next')) {
+  env.BUILD = 'QA'
+  env.REPO = 'unstable'
+  env.DELIVERY_STAGE = 'Delivery to unstable'
+} else if (env.BRANCH_NAME.startsWith('release-')) {
   env.BUILD = 'RELEASE'
   env.REPO = 'testing'
   env.DELIVERY_STAGE = 'Delivery to testing'
@@ -370,8 +378,7 @@ try {
 
   stage('Docker packaging') {
     def parallelSteps = [:]
-    def osBuilds = isStableBuild() ? ['centos7', 'alma8'] : ['centos7']
-    for (x in osBuilds) {
+    for (x in ['centos7', 'alma8']) {
       def osBuild = x
       parallelSteps[osBuild] = {
         node {

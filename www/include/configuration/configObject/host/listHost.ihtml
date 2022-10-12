@@ -27,7 +27,7 @@
         <tr class="ToolbarTR">
             { if $mode_access == 'w' }
             <td>
-                 {$form.o1.html}<a href="{$msg.addL}" class="btc bt_success">{$msg.addT}</a>
+                 {$form.o1.html}<a href="{$msg.addL}" class="btc bt_success ml-1">{$msg.addT}</a>
             </td>
             { else }
             <td>&nbsp;</td>
@@ -95,7 +95,7 @@
         <tr class="ToolbarTR">
             { if $mode_access == 'w' }
             <td class="Toolbar_TDSelectAction_Bottom">
-                 {$form.o2.html}<a href="{$msg.addL}" class="btc bt_success">{$msg.addT}</a>
+                 {$form.o2.html}<a href="{$msg.addL}" class="btc bt_success ml-1">{$msg.addT}</a>
             </td>
             { else }
             <td>&nbsp;</td>

@@ -44,6 +44,20 @@ try {
         $pearDBO->query("ALTER TABLE `services` MODIFY `notification_number` BIGINT(20) UNSIGNED DEFAULT NULL");
     }
 
+    $errorMessage = "Impossible to create 'security_provider_contact_group_relation'";
+    $pearDB->query("CREATE TABLE IF NOT EXISTS `security_provider_contact_group_relation` (
+        `claim_value` VARCHAR(255) NOT NULL,
+        `contact_group_id` int(11) NOT NULL,
+        `provider_configuration_id` int(11) NOT NULL,
+        PRIMARY KEY (`claim_value`, `contact_group_id`, `provider_configuration_id`),
+        CONSTRAINT `security_provider_contact_group_id`
+          FOREIGN KEY (`contact_group_id`)
+          REFERENCES `contactgroup` (`cg_id`) ON DELETE CASCADE,
+        CONSTRAINT `security_provider_configuration_provider_id`
+          FOREIGN KEY (`provider_configuration_id`)
+          REFERENCES `provider_configuration` (`id`) ON DELETE CASCADE
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8");
+
     $pearDB->beginTransaction();
 
     $errorMessage = "Unable to delete 'oreon_web_path' and color options from database";
@@ -644,7 +658,7 @@ function updateOpenIdCustomConfiguration(CentreonDB $pearDB): void
         $customConfiguration['authentication_conditions'] = [
             'is_enabled' => false,
             'attribute_path' => '',
-            'endpoint' => '',
+            'endpoint' => ['type' => 'introspection_endpoint', 'custom_endpoint' => ''],
             'authorized_values' => [],
             'trusted_client_addresses' => $trustedClientAddresses,
             'blacklist_client_addresses' => $blacklistClientAddresses
@@ -664,7 +678,7 @@ function updateOpenIdCustomConfiguration(CentreonDB $pearDB): void
         $encodedConfiguration = json_encode($customConfiguration);
 
         $statement = $pearDB->prepare(
-            "UPDATE custom_configuration SET custom_configuration = :customConfiguration WHERE `name`='openid'"
+            "UPDATE provider_configuration SET custom_configuration = :customConfiguration WHERE `name`='openid'"
         );
         $statement->bindValue(':customConfiguration', $encodedConfiguration, \PDO::PARAM_STR);
         $statement->execute();

@@ -20,7 +20,7 @@ class VirtualMetricHandleContext extends CentreonContext
     public function iAddAVirtualMetric()
     {
         $this->page = new MetricsConfigurationListingPage($this);
-        $this->assertFind('css', 'a[class="btc bt_success"]')->click();
+        $this->assertFind('css', 'a[class*="btc bt_success"]')->click();
         $this->page = new MetricsConfigurationPage($this);
         $this->page->setProperties(array(
             'name' => $this->vmName,

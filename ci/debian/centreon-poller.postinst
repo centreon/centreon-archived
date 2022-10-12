@@ -1,0 +1,13 @@
+#!/bin/sh
+
+if [ "$1" = "configure" ]; then
+
+    if [ "$(getent passwd centreon-engine)" ]; then
+        chmod -v -R 0775 \
+            /var/lib/centreon/centplugins
+        chown -v -R centreon-engine:centreon-engine \
+            /var/lib/centreon/centplugins
+    fi
+
+fi
+exit 0
