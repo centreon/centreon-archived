@@ -41,6 +41,7 @@ import {
 interface Props {
   customTimePeriod?: CustomTimePeriod;
   getIsModalOpened: (value: boolean) => void;
+  open: boolean;
   performanceGraphRef: MutableRefObject<HTMLDivElement | null>;
   resourceName: string;
   resourceParentName?: string;
@@ -65,7 +66,8 @@ const GraphActions = ({
   timeline,
   performanceGraphRef,
   getIsModalOpened,
-}: Props): JSX.Element => {
+  open,
+}: Props): JSX.Element | null => {
   const classes = useStyles();
   const theme = useTheme();
   const { t } = useTranslation();
@@ -134,6 +136,10 @@ const GraphActions = ({
   const openModalAnomalyDetection = (): void => {
     getIsModalOpened(true);
   };
+
+  if (!open) {
+    return null;
+  }
 
   return (
     <div className={classes.buttonGroup}>

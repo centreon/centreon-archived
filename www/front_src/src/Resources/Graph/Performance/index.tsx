@@ -425,14 +425,11 @@ const PerformanceGraph = ({
       )}
 
       <div>
-        {displayTimeValues &&
-          timeTick &&
-          containsMetrics &&
-          !isEditAnomalyDetectionDataDialogOpen && (
-            <Typography align="center" variant="body1">
-              {toDateTime(timeTick)}
-            </Typography>
-          )}
+        {displayTimeValues && timeTick && containsMetrics && (
+          <Typography align="center" variant="body1">
+            {toDateTime(timeTick)}
+          </Typography>
+        )}
       </div>
       <div>
         <Responsive.ParentSize>
@@ -468,9 +465,6 @@ const PerformanceGraph = ({
         base={base as number}
         displayCompleteGraph={displayCompleteGraph}
         displayTimeValues={displayTimeValues}
-        isEditAnomalyDetectionDataDialogOpen={
-          isEditAnomalyDetectionDataDialogOpen
-        }
         limitLegendRows={limitLegendRows}
         lines={newSortedLines}
         timeSeries={timeSeries}

@@ -208,19 +208,18 @@ const ExportablePerformanceGraphWithTimeline = ({
           endpoint={graphEndpoint}
           getPerformanceGraphRef={getPerformanceGraphRef}
           graphActions={
-            !isEditAnomalyDetectionDataDialogOpen && (
-              <MemoizedGraphActions
-                customTimePeriod={customTimePeriod}
-                getIsModalOpened={getIsModalOpened}
-                performanceGraphRef={
-                  performanceGraphRef as unknown as MutableRefObject<HTMLDivElement | null>
-                }
-                resourceName={resource?.name as string}
-                resourceParentName={resource?.parent?.name}
-                resourceType={resource?.type}
-                timeline={timeline}
-              />
-            )
+            <MemoizedGraphActions
+              customTimePeriod={customTimePeriod}
+              getIsModalOpened={getIsModalOpened}
+              open={!isEditAnomalyDetectionDataDialogOpen}
+              performanceGraphRef={
+                performanceGraphRef as unknown as MutableRefObject<HTMLDivElement | null>
+              }
+              resourceName={resource?.name as string}
+              resourceParentName={resource?.parent?.name}
+              resourceType={resource?.type}
+              timeline={timeline}
+            />
           }
           graphHeight={graphHeight}
           isEditAnomalyDetectionDataDialogOpen={
@@ -229,44 +228,42 @@ const ExportablePerformanceGraphWithTimeline = ({
           isInViewport={isInViewport}
           limitLegendRows={limitLegendRows}
           modal={
-            isOpenModalAD && (
-              <EditAnomalyDetectionDataDialog
-                isOpen={isOpenModalAD}
-                setIsOpen={setIsOpenModalAD}
-              >
-                {({
-                  factorsData,
-                  getFactors,
-                  openModalConfirmation,
-                  isEnvelopeResizingCanceled,
-                  isResizeEnvelope,
-                  setIsResizeEnvelope,
-                }): JSX.Element => (
-                  <>
-                    {factorsData && (
-                      <ExportablePerformanceGraphWithTimeline
-                        isEditAnomalyDetectionDataDialogOpen
-                        graphHeight={180}
-                        resizeEnvelopeData={factorsData}
-                        resource={resource}
-                      />
-                    )}
-                    {getFactors && details && details?.sensitivity && (
-                      <EditAnomalyDetectionDataDialog.Slider
-                        details={details}
-                        isEnvelopeResizingCanceled={isEnvelopeResizingCanceled}
-                        isResizeEnvelope={isResizeEnvelope}
-                        openModalConfirmation={openModalConfirmation}
-                        sendFactors={getFactors}
-                        sendReloadGraphPerformance={sendReloadGraphPerformance}
-                        sensitivity={details.sensitivity}
-                        setIsResizeEnvelope={setIsResizeEnvelope}
-                      />
-                    )}
-                  </>
-                )}
-              </EditAnomalyDetectionDataDialog>
-            )
+            <EditAnomalyDetectionDataDialog
+              isOpen={isOpenModalAD}
+              setIsOpen={setIsOpenModalAD}
+            >
+              {({
+                factorsData,
+                getFactors,
+                openModalConfirmation,
+                isEnvelopeResizingCanceled,
+                isResizeEnvelope,
+                setIsResizeEnvelope,
+              }): JSX.Element => (
+                <>
+                  {factorsData && (
+                    <ExportablePerformanceGraphWithTimeline
+                      isEditAnomalyDetectionDataDialogOpen
+                      graphHeight={180}
+                      resizeEnvelopeData={factorsData}
+                      resource={resource}
+                    />
+                  )}
+                  {getFactors && details && details?.sensitivity && (
+                    <EditAnomalyDetectionDataDialog.Slider
+                      details={details}
+                      isEnvelopeResizingCanceled={isEnvelopeResizingCanceled}
+                      isResizeEnvelope={isResizeEnvelope}
+                      openModalConfirmation={openModalConfirmation}
+                      sendFactors={getFactors}
+                      sendReloadGraphPerformance={sendReloadGraphPerformance}
+                      sensitivity={details.sensitivity}
+                      setIsResizeEnvelope={setIsResizeEnvelope}
+                    />
+                  )}
+                </>
+              )}
+            </EditAnomalyDetectionDataDialog>
           }
           resizeEnvelopeData={resizeEnvelopeData}
           resource={resource as Resource}

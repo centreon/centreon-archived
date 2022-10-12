@@ -28,6 +28,7 @@ interface Props {
   date: Date;
   onClose: () => void;
   onSuccess: (comment) => void;
+  open: boolean;
   resource: Resource | ResourceDetails;
 }
 
@@ -36,7 +37,8 @@ const AddCommentForm = ({
   onSuccess,
   resource,
   date,
-}: Props): JSX.Element => {
+  open,
+}: Props): JSX.Element | null => {
   const { t } = useTranslation();
   const { toIsoString, toDateTime } = useLocaleDateTimeFormat();
   const { showSuccessMessage } = useSnackbar();
@@ -78,6 +80,10 @@ const AddCommentForm = ({
   };
 
   const canConfirm = isNil(getError()) && !isNil(comment) && !sending;
+
+  if (!open) {
+    return null;
+  }
 
   return (
     <Dialog

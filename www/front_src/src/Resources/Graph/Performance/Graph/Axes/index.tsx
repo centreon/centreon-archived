@@ -16,7 +16,6 @@ interface Props {
   base: number;
   graphHeight: number;
   graphWidth: number;
-  isEditAnomalyDetectionDataDialogOpen?: boolean;
   leftScale: ScaleLinear<number, number>;
   lines: Array<Line>;
   rightScale: ScaleLinear<number, number>;
@@ -32,7 +31,6 @@ const Axes = ({
   rightScale,
   xScale,
   xAxisTickFormat,
-  isEditAnomalyDetectionDataDialogOpen,
   base,
 }: Props): JSX.Element => {
   const { format } = useLocaleDateTimeFormat();
@@ -42,17 +40,10 @@ const Axes = ({
 
   const xTickCount = Math.ceil(graphWidth / 82);
 
-  const xTickCountEditAnomalyDetectionDataDialog =
-    xTickCount > 10 ? 10 : xTickCount;
-
   return (
     <>
       <Axis.AxisBottom
-        numTicks={
-          isEditAnomalyDetectionDataDialogOpen
-            ? xTickCountEditAnomalyDetectionDataDialog
-            : xTickCount
-        }
+        numTicks={xTickCount > 10 ? 10 : xTickCount}
         scale={xScale}
         tickFormat={formatXAxisTick}
         tickLabelProps={(): Record<string, unknown> => ({

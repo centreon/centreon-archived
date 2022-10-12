@@ -23,14 +23,13 @@ import RegularLine from './RegularLine';
 import StackedLines from './StackedLines';
 
 interface Props {
-  anomalyDetectionEnvelope?: ReactNode;
-  anomalyDetectionResizeEnvelope: ReactNode;
   displayTimeValues: boolean;
+  estimatedThresholdEnvelope: ReactNode;
   graphHeight: number;
-  isEditAnomalyDetectionDataDialogOpen?: boolean;
   leftScale: ScaleLinear<number, number>;
   lines: Array<Line>;
   rightScale: ScaleLinear<number, number>;
+  thresholdEnvelope?: ReactNode;
   timeSeries: Array<TimeValue>;
   timeTick: Date | null;
   xScale: ScaleTime<number, number>;
@@ -84,9 +83,8 @@ const Lines = ({
   graphHeight,
   timeTick,
   displayTimeValues,
-  isEditAnomalyDetectionDataDialogOpen,
-  anomalyDetectionEnvelope,
-  anomalyDetectionResizeEnvelope,
+  thresholdEnvelope,
+  estimatedThresholdEnvelope,
 }: Props): JSX.Element => {
   const [, secondUnit, thirdUnit] = getUnits(lines);
 
@@ -127,8 +125,8 @@ const Lines = ({
         yScale={stackedYScale}
       />
       <g>
-        {anomalyDetectionEnvelope}
-        {anomalyDetectionResizeEnvelope}
+        {thresholdEnvelope}
+        {estimatedThresholdEnvelope}
         {regularLines.map(
           ({
             metric,
@@ -151,19 +149,17 @@ const Lines = ({
 
             return (
               <g key={metric}>
-                {!isEditAnomalyDetectionDataDialogOpen && (
-                  <RegularAnchorPoint
-                    areaColor={areaColor}
-                    displayTimeValues={displayTimeValues}
-                    lineColor={lineColor}
-                    metric={metric}
-                    timeSeries={timeSeries}
-                    timeTick={timeTick}
-                    transparency={transparency}
-                    xScale={xScale}
-                    yScale={yScale}
-                  />
-                )}
+                <RegularAnchorPoint
+                  areaColor={areaColor}
+                  displayTimeValues={displayTimeValues}
+                  lineColor={lineColor}
+                  metric={metric}
+                  timeSeries={timeSeries}
+                  timeTick={timeTick}
+                  transparency={transparency}
+                  xScale={xScale}
+                  yScale={yScale}
+                />
                 <RegularLine
                   areaColor={areaColor}
                   filled={filled}

@@ -94,8 +94,16 @@ import {
 const propsAreEqual = (prevProps, nextProps): boolean =>
   equals(prevProps, nextProps);
 
+const Bar = ({ open, ...restProps }: any): JSX.Element | null => {
+  if (!open) {
+    return null;
+  }
+
+  return <Shape.Bar {...restProps} />;
+};
+
 const MemoizedAxes = memo(Axes, propsAreEqual);
-const MemoizedBar = memo(Shape.Bar, propsAreEqual);
+const MemoizedBar = memo(Bar, propsAreEqual);
 const MemoizedGridColumns = memo(Grid.GridColumns, propsAreEqual);
 const MemoizedGridRows = memo(Grid.GridRows, propsAreEqual);
 const MemoizedLines = memo(Lines, propsAreEqual);
@@ -558,9 +566,6 @@ const GraphContent = ({
               base={base}
               graphHeight={graphHeight}
               graphWidth={graphWidth}
-              isEditAnomalyDetectionDataDialogOpen={
-                isEditAnomalyDetectionDataDialogOpen
-              }
               leftScale={leftScale}
               lines={lines}
               rightScale={rightScale}
@@ -568,12 +573,8 @@ const GraphContent = ({
               xScale={xScale}
             />
             <MemoizedLines
-              anomalyDetectionEnvelope={
-                isDisplayedThreshold && (
-                  <AnomalyDetectionEnvelopeThreshold {...thresholdProps} />
-                )
-              }
-              anomalyDetectionResizeEnvelope={
+              displayTimeValues={displayTimeValues}
+              estimatedThresholdEnvelope={
                 resizeEnvelopeData?.isResizing &&
                 isDisplayedThreshold && (
                   <AnomalyDetectionEnvelopeThreshold
@@ -582,14 +583,15 @@ const GraphContent = ({
                   />
                 )
               }
-              displayTimeValues={displayTimeValues}
               graphHeight={graphHeight}
-              isEditAnomalyDetectionDataDialogOpen={
-                isEditAnomalyDetectionDataDialogOpen
-              }
               leftScale={leftScale}
               lines={lines}
               rightScale={rightScale}
+              thresholdEnvelope={
+                isDisplayedThreshold && (
+                  <AnomalyDetectionEnvelopeThreshold {...thresholdProps} />
+                )
+              }
               timeSeries={timeSeries}
               timeTick={timeTick}
               xScale={xScale}
@@ -603,6 +605,7 @@ const GraphContent = ({
               />
             )}
             <MemoizedBar
+              open
               fill={alpha(theme.palette.primary.main, 0.2)}
               height={graphHeight}
               stroke={alpha(theme.palette.primary.main, 0.5)}
@@ -612,10 +615,7 @@ const GraphContent = ({
             />
             {useMemoComponent({
               Component:
-                displayTimeValues &&
-                containsMetrics &&
-                position &&
-                !isEditAnomalyDetectionDataDialogOpen ? (
+                displayTimeValues && containsMetrics && position ? (
                   <g>
                     <Shape.Line
                       from={{ x: mousePositionX, y: 0 }}
@@ -637,20 +637,20 @@ const GraphContent = ({
                 ),
               memoProps: [mousePosition],
             })}
-            {!isEditAnomalyDetectionDataDialogOpen && (
-              <MemoizedBar
-                className={classes.overlay}
-                fill="transparent"
-                height={graphHeight}
-                width={graphWidth}
-                x={0}
-                y={0}
-                onMouseDown={displayZoomPreview}
-                onMouseLeave={closeTooltip}
-                onMouseMove={displayTooltip}
-                onMouseUp={displayAddCommentTooltip}
-              />
-            )}
+
+            <MemoizedBar
+              className={classes.overlay}
+              fill="transparent"
+              height={graphHeight}
+              open={!isEditAnomalyDetectionDataDialogOpen}
+              width={graphWidth}
+              x={0}
+              y={0}
+              onMouseDown={displayZoomPreview}
+              onMouseLeave={closeTooltip}
+              onMouseMove={displayTooltip}
+              onMouseUp={displayAddCommentTooltip}
+            />
           </Group.Group>
           <TimeShiftContext.Provider
             value={useMemo(
@@ -676,7 +676,7 @@ const GraphContent = ({
             <TimeShiftZones />
           </TimeShiftContext.Provider>
         </svg>
-        {addCommentTooltipOpen && !isEditAnomalyDetectionDataDialogOpen && (
+        {addCommentTooltipOpen && (
           <Paper
             className={classes.addCommentTooltip}
             style={{
@@ -706,8 +706,9 @@ const GraphContent = ({
             </Tooltip>
           </Paper>
         )}
-        {addingComment && !isEditAnomalyDetectionDataDialogOpen && (
+        {addingComment && (
           <AddCommentForm
+            open
             date={commentDate as Date}
             resource={resource}
             onClose={(): void => {
