@@ -203,6 +203,14 @@ class CentreonAuth
     private function checkAutologinKey($password, $token): void
     {
         if (
+            array_key_exists('contact_oreon', $this->userInfos)
+            && $this->userInfos['contact_oreon'] !== '1'
+        ) {
+            $this->passwdOk = self::PASSWORD_INVALID;
+            return;
+        }
+
+        if (
             !empty($this->userInfos["contact_autologin_key"])
             && $this->userInfos["contact_autologin_key"] === $token
         ) {
