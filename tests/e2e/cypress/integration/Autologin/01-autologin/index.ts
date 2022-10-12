@@ -1,14 +1,11 @@
 import { When, Then, Given } from 'cypress-cucumber-preprocessor/steps';
 
-import { logout, loginAsAdminViaApiV2 } from '../../../commons';
-import { insertContactFixture, removeContact } from '../common';
+import { removeContact, initializeConfigACLAndGetLoginPage } from '../common';
 
 let link = '';
 
 before(() => {
-  insertContactFixture();
-  loginAsAdminViaApiV2();
-  cy.visit('/centreon/monitoring/resources');
+  initializeConfigACLAndGetLoginPage();
 });
 beforeEach(() => {
   cy.intercept({
@@ -19,29 +16,24 @@ beforeEach(() => {
     method: 'GET',
     url: '/centreon/include/common/userTimezone.php',
   }).as('getTimeZone');
+  cy.intercept({
+    method: 'GET',
+    url: 'http://0.0.0.0:4000/centreon/api/latest/users/filters/events-view?page=1&limit=100',
+  }).as('getfilterData');
 });
 
-Given(
-  'an authenticated user and autologin configuration menus can be accessed',
-  () => {
-    return cy
-      .get('header')
-      .get('svg[aria-label="Profile"]')
-      .click()
-      .get('div[role="tooltip"]')
-      .contains('Edit profile');
-  },
-);
 Given('an Administrator is logged in the platform', () => {
   return cy
+    .loginByTypeOfUser({ jsonName: 'admin', preserveToken: true })
+    .wait('@getNavigationList')
+    .wait('@getfilterData')
     .navigateTo({
       page: 'Centreon UI',
       rootItemNumber: 4,
       subMenu: 'Parameters',
     })
     .wait('@getTimeZone')
-    .getFormFieldByIndex(30)
-    .contains('Enable Autologin');
+    .getIframeBody();
 });
 
 When('the administrator activates autologin on the platform', () => {
@@ -52,7 +44,8 @@ When('the administrator activates autologin on the platform', () => {
     .should('be.checked')
     .getIframeBody()
     .find('input[name="submitC"]')
-    .click({ force: true });
+    .click({ force: true })
+    .reload();
 });
 
 Then(
@@ -66,12 +59,37 @@ Then(
       .contains('Edit profile')
       .visit('/centreon/main.php?p=50104&o=c')
       .wait('@getTimeZone')
-      .wait('@getNavigationList')
       .getIframeBody()
       .find('form')
-      .scrollIntoView()
-      .find('#tab1 table tbody tr input[name="contact_autologin_key"]')
-      .should('be.visible');
+      .find('#tab1')
+      .within(() => {
+        cy.get('input[name="contact_gen_akey"]').should('be.visible');
+        cy.get('#aKey').invoke('val').should('not.be.undefined');
+      });
+  },
+);
+Given(
+  'an authenticated user and autologin configuration menus can be accessed',
+  () => {
+    return cy
+      .logout()
+      .reload()
+      .loginByTypeOfUser({ jsonName: 'user', preserveToken: true })
+      .wait('@getNavigationList')
+      .get('header')
+      .get('svg[aria-label="Profile"]')
+      .click()
+      .get('div[role="tooltip"]')
+      .contains('Edit profile')
+      .visit('/centreon/main.php?p=50104&o=c')
+      .wait('@getTimeZone')
+      .getIframeBody()
+      .find('form')
+      .find('#tab1')
+      .within(() => {
+        cy.get('input[name="contact_gen_akey"]').should('be.visible');
+        cy.get('#aKey').should('be.visible');
+      });
   },
 );
 
@@ -79,11 +97,11 @@ When('a user generate his autologin key', () => {
   return cy
     .getIframeBody()
     .find('form')
-    .scrollIntoView()
     .find('#tab1 table tbody tr')
     .within(() => {
       cy.get('input[name="contact_gen_akey"]').click();
       cy.log('Key generated !');
+      cy.get('#aKey').invoke('val').should('not.be.undefined');
     });
 });
 
@@ -91,42 +109,58 @@ Then('the key is properly generated and displayed', () => {
   return cy
     .getIframeBody()
     .find('form')
-    .scrollIntoView()
     .find('#tab1 table tbody tr')
     .within(() => {
       cy.get('input[name="contact_autologin_key"]')
         .invoke('val')
         .should('not.be.undefined');
-    });
+    })
+    .getIframeBody()
+    .find('form')
+    .find('input[name="submitC"]')
+    .eq(0)
+    .click()
+    .reload();
 });
 
 Given('a User with autologin key generated', () => {
-  cy.getIframeBody()
-    .find('form')
-    .scrollIntoView()
-    .within(() => {
-      cy.get('#tab1 table tbody tr input[name="contact_autologin_key"]')
-        .should('not.be.undefined')
-        .invoke('val')
-        .then((text) => cy.log('Key autologin => ', text));
-    });
+  cy.get('header')
+    .get('svg[aria-label="Profile"]')
+    .click()
+    .get('div[role="tooltip"]')
+    .get('textarea#autologin-input')
+    .should('be.exist');
 });
 
 When('a User generates an autologin link', () => {
   return cy
+    .navigateTo({
+      page: 'Templates',
+      rootItemNumber: 2,
+      subMenu: 'Hosts',
+    })
+    .wait('@getTimeZone')
     .getIframeBody()
-    .find('input[name="submitC"]')
-    .eq(0)
-    .click({ force: true })
-    .reload();
+    .find('form')
+    .should('be.exist')
+    .get('header')
+    .get('svg[aria-label="Profile"]')
+    .click()
+    .get('div[role="tooltip"]')
+    .get('textarea#autologin-input')
+    .invoke('text')
+    .then((text) => {
+      expect(text.trim());
+      link = text;
+    });
 });
+
 Then('the autologin link is copied in the clipboard', () => {
   cy.get('header')
     .get('svg[aria-label="Profile"]')
     .click()
     .get('div[role="tooltip"]')
     .get('textarea#autologin-input')
-
     .invoke('text')
     .then((text) => {
       expect(text.trim());
@@ -137,7 +171,16 @@ Then('the autologin link is copied in the clipboard', () => {
 Given(
   'a plateform with autologin enabled and a user with autologin key generated and a user with autologin link generated',
   () => {
-    cy.log(link);
+    cy.get('header')
+      .get('svg[aria-label="Profile"]')
+      .click()
+      .get('div[role="tooltip"]')
+      .get('textarea#autologin-input')
+      .should('not.be.undefined')
+      .logout()
+      .reload()
+      .url()
+      .should('include', '/centreon/login');
   },
 );
 
@@ -146,7 +189,15 @@ When('the user opens the autologin link in a browser', () => {
 });
 
 Then('the page is accessed without manual login', () => {
-  cy.getIframeBody();
+  cy.url()
+    .should('include', '/main.php?p=60103')
+    .wait('@getTimeZone')
+    .getIframeBody()
+    .find('form')
+    .should('be.exist');
 });
 
-after(() => removeContact());
+after(() => {
+  cy.removeACL();
+  removeContact();
+});

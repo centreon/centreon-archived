@@ -1,17 +1,13 @@
 import {
   applyConfigurationViaClapi,
   executeActionViaClapi,
-  insertFixture,
 } from '../../commons';
 
-const initializeContactData = (): Cypress.Chainable => {
-  const files = ['resources/clapi/contact1/01-add.json'];
-
-  return cy.wrap(Promise.all(files.map(insertFixture)));
-};
-
-const insertContactFixture = (): Cypress.Chainable => {
-  return initializeContactData()
+const initializeConfigACLAndGetLoginPage = (): Cypress.Chainable => {
+  return cy
+    .executeCommandsViaClapi(
+      'resources/clapi/config-ACL/autologin-configuration-acl-user.json',
+    )
     .then(applyConfigurationViaClapi)
     .then(() => cy.visit(`${Cypress.config().baseUrl}`))
     .then(() => cy.fixture('users/admin.json'));
@@ -27,4 +23,4 @@ const removeContact = (): Cypress.Chainable => {
   });
 };
 
-export { insertContactFixture, removeContact };
+export { removeContact, initializeConfigACLAndGetLoginPage };

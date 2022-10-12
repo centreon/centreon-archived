@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 import 'cypress-wait-until';
 import { refreshButton } from '../integration/Resources-status/common';
-import { apiActionV1, executeActionViaClapi } from '../commons';
+import { apiActionV1, executeActionViaClapi, ActionClapi } from '../commons';
 
 const apiLogout = '/centreon/api/latest/authentication/logout';
+const apiLoginV2 = '/centreon/authentication/providers/configurations/local';
 
 Cypress.Commands.add(
   'getByLabel',
@@ -45,12 +46,37 @@ Cypress.Commands.add('setUserTokenApiV1', (): Cypress.Chainable => {
 });
 
 Cypress.Commands.add(
-  'loginContactWithAdminCredentials',
-  ({ username, password }): Cypress.Chainable => {
-    cy.getByLabel({ label: 'Alias', tag: 'input' }).type(username);
-    cy.getByLabel({ label: 'Password', tag: 'input' }).type(password);
+  'loginByTypeOfUser',
+  ({ jsonName, preserveToken }): Cypress.Chainable => {
+    if (preserveToken) {
+      cy.fixture(`users/${jsonName}.json`)
+        .then((user) => {
+          return cy.request({
+            body: {
+              login: user.login,
+              password: user.password,
+            },
+            method: 'POST',
+            url: apiLoginV2,
+          });
+        })
+        .then(() => {
+          Cypress.Cookies.defaults({
+            preserve: 'PHPSESSID',
+          });
+        });
+    }
 
-    return cy.getByLabel({ label: 'Connect', tag: 'button' }).click();
+    return cy
+      .fixture(`users/${jsonName}.json`)
+      .then((credential) => {
+        cy.getByLabel({ label: 'Alias', tag: 'input' }).type(credential.login);
+        cy.getByLabel({ label: 'Password', tag: 'input' }).type(
+          credential.password,
+        );
+      })
+      .getByLabel({ label: 'Connect', tag: 'button' })
+      .click();
   },
 );
 
@@ -60,6 +86,22 @@ Cypress.Commands.add(
     return cy.get('li').eq(rootItemNumber).trigger('mouseover');
   },
 );
+
+Cypress.Commands.add(
+  'executeCommandsViaClapi',
+  (fixtureFile: string): Cypress.Chainable => {
+    return cy.fixture(fixtureFile).then((listRequestConfig) => {
+      cy.wrap(
+        Promise.all(
+          listRequestConfig.map((request: ActionClapi) =>
+            executeActionViaClapi(request),
+          ),
+        ),
+      );
+    });
+  },
+);
+
 Cypress.Commands.add('getIframeBody', (): Cypress.Chainable => {
   return cy
     .get('iframe#main-content')
@@ -98,14 +140,24 @@ Cypress.Commands.add('logout', (): Cypress.Chainable => {
   });
 });
 
+Cypress.Commands.add('removeACL', (): Cypress.Chainable => {
+  return cy.setUserTokenApiV1().then(() => {
+    executeActionViaClapi({
+      action: 'DEL',
+      object: 'ACLMENU',
+      values: 'acl_menu_test',
+    });
+    executeActionViaClapi({
+      action: 'DEL',
+      object: 'ACLGROUP',
+      values: 'ACL Group test',
+    });
+  });
+});
+
 interface GetByLabelProps {
   label: string;
   tag?: string;
-}
-
-interface AdminCredentialsProps {
-  password: string;
-  username: string;
 }
 
 interface NavigateToProps {
@@ -114,17 +166,23 @@ interface NavigateToProps {
   subMenu?: string;
 }
 
+interface loginByTypeOfUserProps {
+  jsonName?: string;
+  preserveToken?: boolean;
+}
+
 declare global {
   namespace Cypress {
     interface Chainable {
+      executeCommandsViaClapi: (fixtureFile: string) => Cypress.Chainable;
       getByLabel: ({ tag, label }: GetByLabelProps) => Cypress.Chainable;
       getFormFieldByIndex: (rootItemNumber: number) => Cypress.Chainable;
       getIframeBody: () => Cypress.Chainable;
       hoverRootMenuItem: (rootItemNumber: number) => Cypress.Chainable;
-      loginContactWithAdminCredentials: ({
-        username,
-        password,
-      }: AdminCredentialsProps) => Cypress.Chainable;
+      loginByTypeOfUser: ({
+        jsonName = 'admin',
+        preserveToken = false,
+      }: loginByTypeOfUserProps) => Cypress.Chainable;
       logout: () => Cypress.Chainable;
       navigateTo: ({
         page,
@@ -132,6 +190,7 @@ declare global {
         subMenu,
       }: NavigateToProps) => Cypress.Chainable;
       refreshListing: () => Cypress.Chainable;
+      removeACL: () => Cypress.Chainable;
       removeResourceData: () => Cypress.Chainable;
       setUserTokenApiV1: () => Cypress.Chainable;
     }

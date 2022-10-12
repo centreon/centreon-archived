@@ -175,6 +175,7 @@ const logout = (): Cypress.Chainable =>
   });
 
 export {
+  ActionClapi,
   checkThatConfigurationIsExported,
   checkThatFixtureServicesExistInDatabase,
   executeActionViaClapi,
