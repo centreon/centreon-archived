@@ -69,7 +69,7 @@ const CriteriasContent = (): JSX.Element => {
 
   return (
     <PopoverMenu
-      icon={<TuneIcon fontSize="small" />}
+      icon={<TuneIcon />}
       popperPlacement="bottom-start"
       title={t(labelSearchOptions)}
       onClose={applyCurrentFilter}
