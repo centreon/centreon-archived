@@ -15357,7 +15357,7 @@ msgstr "Editar datos de detección de anomalías"
 #  msgstr ""
 
 msgid "You have unsaved changed, do you want to proceed?"
-msgstr "no ha guardado los cambios, ¿quiere continuar?"
+msgstr "No ha guardado los cambios, ¿quiere continuar?"
 
 #  msgid "Confirm"
 #  msgstr "Confirmar"
