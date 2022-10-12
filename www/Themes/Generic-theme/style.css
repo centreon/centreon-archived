@@ -38,16 +38,17 @@
 }
 html {
     height: 100%;
+    font-size:12px;
 }
 body {
     background-color:var(--body-background);
     font-family: "Roboto","Helvetica","Arial",sans-serif;
+    font-size:1rem;
     color:var(--body-color);
-    font-size:12px;
     height: 100%;
 }
 .link a {
-    font-size:12px;
+    font-size:1rem;
 }
 
 /* Set Basic objects properties */
@@ -1819,12 +1820,13 @@ span.show-disabled[disabled]::after {
 }
 .ToolbarTable {
     margin: 6px 0px;
+    font-size: 0;
 }
 .ToolbarTR          {padding-left:10px;}
 .ToolbarTR td:first-child {
     width: 50%;
 }
-.ToolbarTR a.btc { display: inline-block; height: 28px; line-height: 31px; padding: 0 10px; }
+.ToolbarTR a.btc { display: inline-block; font-size: 1rem; height: 28px; line-height: 28px; padding: 0 10px; }
 
 .Toolbar_TDSelectAction_Top {
     border: 1px solid var(--toolbar-td-select-top-action-border-color);
@@ -2936,7 +2938,7 @@ ul.module_list {
 .bt-poller-action{
     line-height: 20px;
     font-size: 13.3333px;
-    margin: 4px 6px 0px 0px !important;
+    margin: 4px 8px 0px 0px !important;
 }
 
 .bt-poller-action:disabled {
@@ -2952,5 +2954,16 @@ ul.module_list {
     padding: 4px;
     color: var(--gorgone-config-file-font-color);
     background-color: var(--gorgone-config-file-background-color);
+}
+
+/* utilities */
+.ml-1 {
+    margin-left: 8px;
+}
+.mr-1 {
+    margin-right: 8px;
+}
+.fs-0 {
+    font-size: 0;
 }
 

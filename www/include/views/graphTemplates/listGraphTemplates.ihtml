@@ -8,14 +8,16 @@
             <td><h4>{t}Graph template{/t}</h4></td>
         </tr>
         <tr>
-            <td><input type="text" name="searchGT" value="{$searchGT}"></td>
-            <td>{$form.Search.html}</td>
+            <td>
+                <input type="text" name="searchGT" value="{$searchGT}" class="mr-1">{$form.Search.html}
+            </td>
         </tr>
     </table>
     <table class="ToolbarTable table">
         <tr class="ToolbarTR">
             <td>
-                {$form.o1.html}&nbsp;&nbsp;&nbsp;<a href="{$msg.addL}" class="btc bt_success">{$msg.addT}</a>
+                {$form.o1.html}
+                <a href="{$msg.addL}" class="btc bt_success ml-1">{$msg.addT}</a>
             </td>
             {php}
                 include('./include/common/pagination.php');
@@ -50,7 +52,8 @@
     <table class="ToolbarTable table">
         <tr class="ToolbarTR">
             <td>
-                {$form.o2.html}&nbsp;&nbsp;&nbsp;<a href="{$msg.addL}" class="btc bt_success">{$msg.addT}</a>
+                {$form.o2.html}
+                <a href="{$msg.addL}" class="btc bt_success ml-1">{$msg.addT}</a>
             </td>
             {php}
                 include('./include/common/pagination.php');

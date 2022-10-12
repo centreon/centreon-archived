@@ -10,14 +10,17 @@
         <td><h4>{t}ACL Resource{/t}</h4></td>
       </tr>
       <tr>
-        <td><input type="text" name="searchACLR" value="{$searchACLR}"></td>
-        <td><input type="submit" value="{t}Search{/t}" class="btc bt_success"></td>
+        <td><input type="text" name="searchACLR" value="{$searchACLR}" class="mr-1"><input type="submit" value="{t}Search{/t}" class="btc bt_success"></td>
       </tr>
     </tbody>
     </table>
 	<table class="ToolbarTable table">
 		<tr class="ToolbarTR">
-			<td> {$form.o1.html}&nbsp;&nbsp;&nbsp;<a href="{$msg.addL}" class="btc bt_success">{$msg.addT}</a>&nbsp;&nbsp;<a href= '#' class="btc bt_info" onClick="window.open('{$msg.testL}','','toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no, width=500, height=700');">{$msg.testT}</a></td>
+			<td> 
+				{$form.o1.html}
+				<a href="{$msg.addL}" class="btc bt_success ml-1">{$msg.addT}</a>
+				<a href= '#' class="btc bt_info ml-1" onClick="window.open('{$msg.testL}','','toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no, width=500, height=700');">{$msg.testT}</a>
+			</td>
 			{php}
 			   include('./include/common/pagination.php');
 			{/php}
@@ -54,7 +57,11 @@
 	</table>
 	<table class="ToolbarTable table">
 		<tr class="ToolbarTR">
-			<td> {$form.o2.html}&nbsp;&nbsp;&nbsp;<a href="{$msg.addL}" class="btc bt_success">{$msg.addT}</a>&nbsp;&nbsp;<a href= '#' class="btc bt_info" onClick="window.open('{$msg.testL}','','toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no, width=500, height=700');">{$msg.testT}</a></td>
+			<td> 
+				{$form.o2.html}
+				<a href="{$msg.addL}" class="btc bt_success ml-1">{$msg.addT}</a>
+				<a href= '#' class="btc bt_info ml-1" onClick="window.open('{$msg.testL}','','toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no, width=500, height=700');">{$msg.testT}</a>
+			</td>
 			{php}
 			   include('./include/common/pagination.php');
 			{/php}

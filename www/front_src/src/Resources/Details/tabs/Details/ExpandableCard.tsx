@@ -25,16 +25,22 @@ const useStyles = makeStyles<Theme, { severityCode?: number }>((theme) => {
       theme,
     }).backgroundColor;
 
+  const getStatusTextColor = (severityCode): string =>
+    getStatusColors({
+      severityCode,
+      theme,
+    }).text;
+
   return {
     card: ({ severityCode }): CreateCSSProperties => ({
       ...(severityCode && {
-        borderColor: getStatusBackgroundColor(severityCode),
-        borderStyle: 'solid',
-        borderWidth: 2,
+        backgroundColor: getStatusBackgroundColor(severityCode),
+        border: 0,
+        color: getStatusTextColor(severityCode),
       }),
     }),
     title: ({ severityCode }): CreateCSSProperties => ({
-      ...(severityCode && { color: getStatusBackgroundColor(severityCode) }),
+      ...(severityCode && { color: getStatusTextColor(severityCode) }),
     }),
   };
 });
@@ -73,12 +79,7 @@ const ExpandableCard = ({
 
   return (
     <Card className={classes.card}>
-      <Typography
-        gutterBottom
-        className={classes.title}
-        color="textSecondary"
-        variant="subtitle2"
-      >
+      <Typography gutterBottom className={classes.title} variant="subtitle2">
         {title}
       </Typography>
       {threeFirstLines.map(Line)}

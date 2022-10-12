@@ -7,7 +7,6 @@ import makeStyles from '@mui/styles/makeStyles';
 import { LoadingSkeleton } from '@centreon/ui';
 
 import PageLoader from '../components/PageLoader';
-import { headerHeight } from '../Header';
 
 import useApp from './useApp';
 
@@ -15,11 +14,10 @@ const useStyles = makeStyles((theme) => ({
   content: {
     display: 'flex',
     flexDirection: 'column',
+    flexGrow: 1,
     height: '100%',
     overflow: 'hidden',
     position: 'relative',
-    transition: 'all 0.3s',
-    width: '100%',
   },
   fullScreenWrapper: {
     flexGrow: 1,
@@ -34,11 +32,12 @@ const useStyles = makeStyles((theme) => ({
     zIndex: 1500,
   },
   mainContent: {
-    height: `calc(100vh - ${theme.spacing(headerHeight)})`,
-    width: '100%',
+    '& iframe': {
+      display: 'block',
+    },
+    flexGrow: 1,
   },
   wrapper: {
-    alignItems: 'stretch',
     backgroundColor: theme.palette.background.paper,
     display: 'flex',
     fontFamily: theme.typography.fontFamily,

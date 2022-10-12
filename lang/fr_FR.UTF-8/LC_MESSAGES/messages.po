@@ -16555,6 +16555,81 @@ msgstr "Configuration OpenID Connect sauvegardée"
 msgid "Enable OpenID Connect authentication"
 msgstr "Activer l'authentification OpenID Connect"
 
+msgid "Trusted client addresses"
+msgstr "Adresses des clients de confiance"
+
+msgid "Login attribute path"
+msgstr "Chemin de l'attribut d'identifiant"
+
+msgid "Blacklist client addresses"
+msgstr "Liste noire d'adresses de clients"
+
+msgid "Enable conditions on identity provider"
+msgstr "Activer les conditions sur le fournisseur d'identité"
+
+msgid "Conditions attribute path"
+msgstr "Chemin de l'attribut des conditions"
+
+msgid "Which endpoint does the conditions attribute path come from?"
+msgstr "De quel point d'entrée provient le chemin de l'attribut des conditions ?"
+
+msgid "Introspection endpoint"
+msgstr "Point d'entrée d'introspection"
+
+msgid "User information"
+msgstr "Informations utilisateur"
+
+msgid "Other"
+msgstr "Autre"
+
+msgid "Define authorized conditions values"
+msgstr "Définir les valeurs des conditions autorisées"
+
+msgid "Condition value"
+msgstr "Valeur de la condition"
+
+msgid "Email attribute path"
+msgstr "Chemin de l'attribut de l'email"
+
+msgid "Fullname attribute path"
+msgstr "Chemin de l'attribut du nom complet"
+
+msgid "Enable automatic management"
+msgstr "Activer la gestion automatique"
+
+msgid "Apply only first role"
+msgstr "Appliquer uniquement le premier rôle"
+
+msgid "Roles attribute path"
+msgstr "Chemin d'accès à l'attribut de rôles"
+
+msgid "Which endpoint does the roles attribute path come from?"
+msgstr "De quel point d'entrée provient le chemin d'accès de l'attribut de rôles ?"
+
+msgid "Define the relation between roles and ACL access groups"
+msgstr "Définir la relation entre les rôles et les groupes d'accès ACL"
+
+msgid "Role value"
+msgstr "Valeur du rôle"
+
+msgid "ACL access group"
+msgstr "Groupe d'accès ACL"
+
+msgid "Groups attribute path"
+msgstr "Chemin de l'attribut de groupes"
+
+msgid "Which endpoint does the groups attribute path come from?"
+msgstr "De quel point d'entrée provient le chemin de l'attribut des groupes ?"
+
+msgid "Define the relation between groups and contact groups"
+msgstr "Définir la relation entre les groupes et les groupes de contact"
+
+msgid "Group value"
+msgstr "Valeur du groupe"
+
+msgid "Define your endpoint"
+msgstr "Définissez votre point d'entrée"
+
 msgid "Authentication mode"
 msgstr "Mode d'authentification"
 

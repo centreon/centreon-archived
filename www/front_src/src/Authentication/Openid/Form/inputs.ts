@@ -86,6 +86,7 @@ const authenticationConditions: Array<InputProps> = [
       creatable: true,
       options: [],
     },
+    dataTestId: 'oidc_authenticationConditions.trustedClientAddresses',
     fieldName: 'authenticationConditions.trustedClientAddresses',
     group: labelAuthenticationConditions,
     label: labelTrustedClientAddresses,
@@ -96,24 +97,28 @@ const authenticationConditions: Array<InputProps> = [
       creatable: true,
       options: [],
     },
+    dataTestId: 'oidc_authenticationConditions.blacklistClientAddresses',
     fieldName: 'authenticationConditions.blacklistClientAddresses',
     group: labelAuthenticationConditions,
     label: labelBlacklistClientAddresses,
     type: InputType.MultiAutocomplete,
   },
   {
+    dataTestId: 'oidc_authenticationConditions.isEnabled',
     fieldName: 'authenticationConditions.isEnabled',
     group: labelAuthenticationConditions,
     label: labelEnableConditionsOnIdentityProvider,
     type: InputType.Switch,
   },
   {
+    dataTestId: 'oidc_authenticationConditions.attributePath',
     fieldName: 'authenticationConditions.attributePath',
     group: labelAuthenticationConditions,
     label: labelConditionsAttributePath,
     type: InputType.Text,
   },
   {
+    dataTestId: 'oidc_authenticationConditions.endpoint.type',
     fieldName: 'authenticationConditions.endpoint.type',
     group: labelAuthenticationConditions,
     label: labelWhichEndpointTheConditionsAttributePathComeFrom,
@@ -136,6 +141,7 @@ const authenticationConditions: Array<InputProps> = [
     type: InputType.Radio,
   },
   {
+    dataTestId: 'oidc_authenticationConditions.endpoint.customEndpoint',
     fieldName: 'authenticationConditions.endpoint.customEndpoint',
     group: labelAuthenticationConditions,
     hideInput: hideCustomEndpoint('authenticationConditions'),
@@ -147,6 +153,7 @@ const authenticationConditions: Array<InputProps> = [
     fieldsTable: {
       columns: [
         {
+          dataTestId: 'oidc_authenticationConditions.authorizedValues',
           fieldName: '',
           label: labelConditionValue,
           type: InputType.Text,
@@ -166,25 +173,28 @@ const authenticationConditions: Array<InputProps> = [
 
 const rolesMapping: Array<InputProps> = [
   {
+    dataTestId: 'oidc_rolesMapping.isEnabled',
     fieldName: 'rolesMapping.isEnabled',
     group: labelRolesMapping,
     label: labelEnableAutoManagement,
     type: InputType.Switch,
   },
   {
+    dataTestId: 'oidc_rolesMapping.applyOnlyFirstRole',
     fieldName: 'rolesMapping.applyOnlyFirstRole',
     group: labelRolesMapping,
     label: labelApplyOnlyFirtsRole,
     type: InputType.Switch,
   },
   {
+    dataTestId: 'oidc_rolesMapping.attributePath',
     fieldName: 'rolesMapping.attributePath',
     group: labelRolesMapping,
     label: labelRolesAttributePath,
-
     type: InputType.Text,
   },
   {
+    dataTestId: 'oidc_rolesMapping.endpoint.type',
     fieldName: 'rolesMapping.endpoint.type',
     group: labelRolesMapping,
     label: labelWhichEndpointTheRolesAttributePathComeFrom,
@@ -207,6 +217,7 @@ const rolesMapping: Array<InputProps> = [
     type: InputType.Radio,
   },
   {
+    dataTestId: 'oidc_rolesMapping.endpoint.customEndpoint',
     fieldName: 'rolesMapping.endpoint.customEndpoint',
     group: labelRolesMapping,
     hideInput: hideCustomEndpoint('rolesMapping'),
@@ -218,6 +229,7 @@ const rolesMapping: Array<InputProps> = [
     fieldsTable: {
       columns: [
         {
+          dataTestId: 'oidc_claimValue',
           fieldName: 'claimValue',
           label: labelRoleValue,
           type: InputType.Text,
@@ -227,6 +239,7 @@ const rolesMapping: Array<InputProps> = [
             additionalConditionParameters: [],
             endpoint: accessGroupsEndpoint,
           },
+          dataTestId: 'oidc_accessGroup',
           fieldName: 'accessGroup',
           label: labelAclAccessGroup,
           type: InputType.SingleConnectedAutocomplete,
@@ -246,18 +259,21 @@ const rolesMapping: Array<InputProps> = [
 
 const groupsMapping: Array<InputProps> = [
   {
+    dataTestId: 'oidc_groupsMapping.isEnabled',
     fieldName: 'groupsMapping.isEnabled',
     group: labelGroupsMapping,
     label: labelEnableAutoManagement,
     type: InputType.Switch,
   },
   {
+    dataTestId: 'oidc_groupsMapping.attributePath',
     fieldName: 'groupsMapping.attributePath',
     group: labelGroupsMapping,
     label: labelGroupsAttributePath,
     type: InputType.Text,
   },
   {
+    dataTestId: 'oidc_groupsMapping.endpoint.type',
     fieldName: 'groupsMapping.endpoint.type',
     group: labelGroupsMapping,
     label: labelWhichEndpointTheGroupsAttributePathComeFrom,
@@ -280,6 +296,7 @@ const groupsMapping: Array<InputProps> = [
     type: InputType.Radio,
   },
   {
+    dataTestId: 'oidc_groupsMapping.endpoint.customEndpoint',
     fieldName: 'groupsMapping.endpoint.customEndpoint',
     group: labelGroupsMapping,
     hideInput: hideCustomEndpoint('groupsMapping'),
@@ -291,6 +308,7 @@ const groupsMapping: Array<InputProps> = [
     fieldsTable: {
       columns: [
         {
+          dataTestId: 'oidc_groupValue',
           fieldName: 'groupValue',
           label: labelGroupValue,
           type: InputType.Text,
@@ -300,6 +318,7 @@ const groupsMapping: Array<InputProps> = [
             additionalConditionParameters: [],
             endpoint: contactGroupsEndpoint,
           },
+          dataTestId: 'oidc_contactGroup',
           fieldName: 'contactGroup',
           label: labelContactGroup,
           type: InputType.SingleConnectedAutocomplete,
@@ -319,12 +338,14 @@ const groupsMapping: Array<InputProps> = [
 
 export const inputs: Array<InputProps> = [
   {
+    dataTestId: 'oidc_enableOpenIDConnectAuthentication',
     fieldName: 'isActive',
     group: labelActivation,
     label: labelEnableOpenIDConnectAuthentication,
     type: InputType.Switch,
   },
   {
+    dataTestId: 'oidc_activationMode',
     fieldName: 'isForced',
     group: labelActivation,
     label: labelAuthenticationMode,
@@ -343,6 +364,7 @@ export const inputs: Array<InputProps> = [
     type: InputType.Radio,
   },
   {
+    dataTestId: 'oidc_baseUrl',
     fieldName: 'baseUrl',
     group: labelIdentityProvider,
     label: labelBaseUrl,
@@ -350,6 +372,7 @@ export const inputs: Array<InputProps> = [
     type: InputType.Text,
   },
   {
+    dataTestId: 'oidc_authorizationEndpoint',
     fieldName: 'authorizationEndpoint',
     group: labelIdentityProvider,
     label: labelAuthorizationEndpoint,
@@ -357,6 +380,7 @@ export const inputs: Array<InputProps> = [
     type: InputType.Text,
   },
   {
+    dataTestId: 'oidc_tokenEndpoint',
     fieldName: 'tokenEndpoint',
     group: labelIdentityProvider,
     label: labelTokenEndpoint,
@@ -364,6 +388,7 @@ export const inputs: Array<InputProps> = [
     type: InputType.Text,
   },
   {
+    dataTestId: 'oidc_clientId',
     fieldName: 'clientId',
     group: labelIdentityProvider,
     label: labelClientID,
@@ -371,6 +396,7 @@ export const inputs: Array<InputProps> = [
     type: InputType.Text,
   },
   {
+    dataTestId: 'oidc_clientSecret',
     fieldName: 'clientSecret',
     group: labelIdentityProvider,
     label: labelClientSecret,
@@ -382,18 +408,21 @@ export const inputs: Array<InputProps> = [
       creatable: true,
       options: [],
     },
+    dataTestId: 'oidc_connectionScopes',
     fieldName: 'connectionScopes',
     group: labelIdentityProvider,
     label: labelScopes,
     type: InputType.MultiAutocomplete,
   },
   {
+    dataTestId: 'oidc_loginClaim',
     fieldName: 'loginClaim',
     group: labelIdentityProvider,
     label: labelLoginAttributePath,
     type: InputType.Text,
   },
   {
+    dataTestId: 'oidc_endSessionEndpoint',
     fieldName: 'endSessionEndpoint',
     group: labelIdentityProvider,
     label: labelEndSessionEndpoint,
@@ -401,12 +430,14 @@ export const inputs: Array<InputProps> = [
   },
   {
     additionalLabel: labelAtLeastOneOfTheTwoFollowingFieldsMustBeFilled,
+    dataTestId: 'oidc_introspectionTokenEndpoint',
     fieldName: 'introspectionTokenEndpoint',
     group: labelIdentityProvider,
     label: labelIntrospectionTokenEndpoint,
     type: InputType.Text,
   },
   {
+    dataTestId: 'oidc_userinfoEndpoint',
     fieldName: 'userinfoEndpoint',
     group: labelIdentityProvider,
     label: labelUserInformationEndpoint,
@@ -421,6 +452,7 @@ export const inputs: Array<InputProps> = [
           : AuthenticationType.ClientSecretPost,
       );
     },
+    dataTestId: 'oidc_authenticationType',
     fieldName: 'authenticationType',
     group: labelIdentityProvider,
     label: labelUseBasicAuthenticatonForTokenEndpointAuthentication,
@@ -431,12 +463,14 @@ export const inputs: Array<InputProps> = [
     type: InputType.Switch,
   },
   {
+    dataTestId: 'oidc_verifyPeer',
     fieldName: 'verifyPeer',
     group: labelIdentityProvider,
     label: labelDisableVerifyPeer,
     type: InputType.Switch,
   },
   {
+    dataTestId: 'oidc_autoImport',
     fieldName: 'autoImport',
     group: labelAutoImportUsers,
     label: labelEnableAutoImport,
@@ -447,6 +481,7 @@ export const inputs: Array<InputProps> = [
       additionalConditionParameters: [],
       endpoint: contactTemplatesEndpoint,
     },
+    dataTestId: 'oidc_contactTemplate',
     fieldName: 'contactTemplate',
     getDisabled: isAutoImportDisabled,
     getRequired: isAutoImportEnabled,
@@ -455,6 +490,7 @@ export const inputs: Array<InputProps> = [
     type: InputType.SingleConnectedAutocomplete,
   },
   {
+    dataTestId: 'oidc_emailBindAttribute',
     fieldName: 'emailBindAttribute',
     getDisabled: isAutoImportDisabled,
     getRequired: isAutoImportEnabled,
@@ -463,6 +499,7 @@ export const inputs: Array<InputProps> = [
     type: InputType.Text,
   },
   {
+    dataTestId: 'oidc_fullnameBindAttribute',
     fieldName: 'fullnameBindAttribute',
     getDisabled: isAutoImportDisabled,
     getRequired: isAutoImportEnabled,

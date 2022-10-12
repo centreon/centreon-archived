@@ -9,8 +9,7 @@
             <td><h4>{t}Virtual metrics{/t}</h4></td>
         </tr>
         <tr>
-            <td><input type="text" name="searchVM" value="{$searchVM}"></td>
-            <td>{$form.Search.html}</td>
+            <td><input type="text" name="searchVM" value="{$searchVM}" class="mr-1">{$form.Search.html}</td>
         </tr>
         </tbody>
     </table>
@@ -18,8 +17,7 @@
         <tr class="ToolbarTR">
             <td>
                 {$form.o1.html}
-                &nbsp;&nbsp;&nbsp;
-                <a href="{$msg.addL}" class="btc bt_success">{$msg.addT}</a>
+                <a href="{$msg.addL}" class="btc bt_success ml-1">{$msg.addT}</a>
             </td>
             {php}
             include('./include/common/pagination.php');
@@ -87,8 +85,7 @@
         <tr class="ToolbarTR">
             <td>
                 {$form.o2.html}
-                &nbsp;&nbsp;&nbsp;
-                <a href="{$msg.addL}" class="btc bt_success">{$msg.addT}</a>
+                <a href="{$msg.addL}" class="btc bt_success ml-1">{$msg.addT}</a>
             </td>
             {php}
             include('./include/common/pagination.php');

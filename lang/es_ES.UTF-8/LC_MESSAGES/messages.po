@@ -14961,6 +14961,74 @@ msgstr ""
 # msgid "OpenID Connect only"
 # msgstr ""
 
+msgid "Login attribute path"
+msgstr "Ruta del atributo de inicio de sesión"
+
+msgid "Enable conditions on identity provider"
+msgstr "Habilitar las condiciones del proveedor de identidad"
+
+msgid "Conditions attribute path"
+msgstr "Condiciones ruta de atributos"
+
+msgid "Which endpoint does the conditions attribute path come from?"
+msgstr "De qué endpoint proviene la ruta de atributos de las condiciones?"
+
+msgid "Introspection endpoint"
+msgstr "endpoint de introspección"
+
+msgid "User information"
+msgstr "Información para el usuario"
+
+msgid "Other"
+msgstr "Otros"
+
+msgid "Define authorized conditions values"
+msgstr "Definir los valores de las condiciones autorizadas"
+
+msgid "Condition value"
+msgstr "Condition value"
+
+msgid "Email attribute path"
+msgstr "Ruta de atributos del correo electrónico"
+
+msgid "Fullname attribute path"
+msgstr "Ruta del atributo nombre completo"
+
+msgid "Enable automatic management"
+msgstr "Activar la gestión automática"
+
+msgid "Apply only first role"
+msgstr "Aplicar sólo el primer papel"
+
+msgid "Roles attribute path"
+msgstr "Ruta del atributo Roles"
+
+msgid "Which endpoint does the roles attribute path come from?"
+msgstr "De qué endpoint proviene la ruta del atributo roles?"
+
+msgid "Define the relation between roles and ACL access groups"
+msgstr "Definir la relación entre los roles y los grupos de acceso ACL"
+
+msgid "Role value"
+msgstr "Valor de la función"
+
+msgid "ACL access group"
+msgstr "Grupo de acceso ACL"
+
+msgid "Groups attribute path"
+msgstr "Ruta de atributos de los grupos"
+
+msgid "Which endpoint does the groups attribute path come from?"
+msgstr "De qué endpoint proviene la ruta de atributos de los grupos?"
+
+msgid "Define the relation between groups and contact groups"
+msgstr "Definir la relación entre grupos y grupos de contacto"
+
+msgid "Group value"
+msgstr "Valor del grupo"
+
+msgid "Define your endpoint"
+msgstr "Defina su endpoint"
 # msgid "Mixed"
 # msgstr ""
 

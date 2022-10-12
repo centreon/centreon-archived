@@ -1236,8 +1236,16 @@ class OpenIdProvider implements OpenIdProviderInterface
             );
             throw AclConditionsException::conditionsNotFound();
         }
-        $this->info("Role mapping relation found", ["conditions" => $conditionMatches]);
-        $this->logAuthenticationInfo("Role mapping relation found", $conditionMatches);
+        $this->info("Role mapping relation found", [
+            "conditions_matches" => $conditionMatches,
+            "provider" => $conditions,
+            "configured" => $configuredAuthorizedValues
+        ]);
+        $this->logAuthenticationInfo("Role mapping relation found", [
+            "conditions_matches" => $conditionMatches,
+            "provider" => $conditions,
+            "configured" => $configuredAuthorizedValues
+        ]);
     }
 
     /**

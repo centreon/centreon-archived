@@ -38,6 +38,7 @@ interface Labels {
 }
 
 export interface TimeInputProps {
+  dataTestId?: string;
   getAbsoluteValue?: boolean;
   inputLabel: string;
   labels: Labels;
@@ -66,6 +67,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const TimeInput = ({
+  dataTestId,
   timeValue,
   unit,
   onChange,
@@ -160,6 +162,7 @@ const TimeInput = ({
         <SelectField
           inputProps={{
             'aria-label': `${t(inputLabel)} ${t(label)}`,
+            'data-testid': dataTestId,
           }}
           name={name}
           options={getTimeOptions[unit]({ max: maxOption, min: minOption })}

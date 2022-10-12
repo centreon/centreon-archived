@@ -9,8 +9,7 @@
             <td><h4>{t}Contact group{/t}</h4></td>
         </tr>
         <tr>
-            <td><input type="text" name="searchCG" value="{$searchCG}"></td>
-            <td>{$form.Search.html}</td>
+            <td><input type="text" name="searchCG" value="{$searchCG}" class="mr-1">{$form.Search.html}</td>
         </tr>
         </tbody>
     </table>
@@ -18,9 +17,9 @@
         <tr class="ToolbarTR">
             { if $mode_access == 'w' }
             <td>
-                {$form.o1.html}&nbsp;&nbsp;&nbsp;
-                <a href="{$msg.addL}" class="btc bt_success">{$msg.addT}</a>
-                <a href='#' class="btc bt_info"
+                {$form.o1.html}
+                <a href="{$msg.addL}" class="btc bt_success ml-1">{$msg.addT}</a>
+                <a href='#' class="btc bt_info ml-1"
                    onclick="window.open('?p=60302&o=dn&min=1', '', 'toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no, width=500, height=700');">{$msg.view_notif}</a>
             </td>
             { else }
@@ -61,8 +60,8 @@
         <tr class="ToolbarTR">
             { if $mode_access == 'w' }
             <td>
-                {$form.o2.html}&nbsp;&nbsp;&nbsp;<a href="{$msg.addL}"
-                                                                   class="btc bt_success">{$msg.addT}</a>
+                {$form.o2.html}
+                <a href="{$msg.addL}" class="btc bt_success ml-1">{$msg.addT}</a>
             </td>
             { else }
             <td>&nbsp;</td>
