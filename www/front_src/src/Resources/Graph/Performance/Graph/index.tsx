@@ -25,6 +25,7 @@ import { bisector } from 'd3-array';
 import { ScaleLinear } from 'd3-scale';
 import { useTranslation } from 'react-i18next';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
+import { AddSVGProps } from '@visx/shape/lib/types';
 
 import {
   Button,
@@ -94,7 +95,16 @@ import {
 const propsAreEqual = (prevProps, nextProps): boolean =>
   equals(prevProps, nextProps);
 
-const Bar = ({ open, ...restProps }: any): JSX.Element | null => {
+interface BarProps {
+  className?: string;
+  innerRef?: React.Ref<SVGRectElement>;
+  open: boolean;
+}
+
+const Bar = ({
+  open,
+  ...restProps
+}: AddSVGProps<BarProps, SVGRectElement>): JSX.Element | null => {
   if (!open) {
     return null;
   }
@@ -708,7 +718,6 @@ const GraphContent = ({
         )}
         {addingComment && (
           <AddCommentForm
-            open
             date={commentDate as Date}
             resource={resource}
             onClose={(): void => {

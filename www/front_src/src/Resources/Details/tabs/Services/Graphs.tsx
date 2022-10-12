@@ -50,6 +50,7 @@ const ServiceGraphs = ({
             <ExportableGraphWithTimeline
               limitLegendRows
               graphHeight={120}
+              isEditAnomalyDetectionDataDialogOpen={false}
               resource={service}
             />
             {isLastService && <div ref={infiniteScrollTriggerRef} />}
