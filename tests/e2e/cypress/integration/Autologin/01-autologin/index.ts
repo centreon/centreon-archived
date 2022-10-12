@@ -100,7 +100,6 @@ When('a user generate his autologin key', () => {
     .find('#tab1 table tbody tr')
     .within(() => {
       cy.get('input[name="contact_gen_akey"]').click();
-      cy.log('Key generated !');
       cy.get('#aKey').invoke('val').should('not.be.undefined');
     });
 });
@@ -149,10 +148,7 @@ When('a User generates an autologin link', () => {
     .get('div[role="tooltip"]')
     .get('textarea#autologin-input')
     .invoke('text')
-    .then((text) => {
-      expect(text.trim());
-      link = text;
-    });
+    .should('not.be.undefined');
 });
 
 Then('the autologin link is copied in the clipboard', () => {
