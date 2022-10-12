@@ -44,9 +44,10 @@ const Layout: FC = () => {
             {isEditing && <EditionGrid height={height} width={width} />}
             <ReactGridLayout
               cols={columns}
+              compactType="horizontal"
               containerPadding={[0, 0]}
               layout={layout}
-              resizeHandles={['s', 'w', 'e', 'n', 'sw', 'nw', 'se', 'ne']}
+              resizeHandles={['s', 'e', 'se']}
               rowHeight={30}
               width={width}
               onLayoutChange={changeLayout}

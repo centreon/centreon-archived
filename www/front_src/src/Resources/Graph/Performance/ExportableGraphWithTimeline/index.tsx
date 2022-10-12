@@ -2,9 +2,9 @@ import { MutableRefObject, useEffect, useMemo, useRef, useState } from 'react';
 
 import { path, isNil, or, not } from 'ramda';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
+import { makeStyles } from 'tss-react/mui';
 
-import { Paper, Theme } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
+import { Paper } from '@mui/material';
 
 import { useRequest, ListingModel } from '@centreon/ui';
 import { userAtom } from '@centreon/ui-context';
@@ -32,19 +32,21 @@ import EditAnomalyDetectionDataDialog from '../AnomalyDetection/EditAnomalyDetec
 
 import { graphOptionsAtom } from './graphOptionsAtoms';
 
-const useStyles = makeStyles((theme: Theme) => ({
-  graph: {
-    height: '100%',
-    margin: 'auto',
-    width: '100%',
-  },
-  graphContainer: {
-    display: 'grid',
-    gridTemplateRows: '1fr',
-    height: '93%',
-    padding: theme.spacing(2, 1, 1),
-  },
-}));
+const useStyles = makeStyles()((theme) => {
+  return {
+    graph: {
+      height: '100%',
+      margin: 'auto',
+      width: '100%',
+    },
+    graphContainer: {
+      display: 'grid',
+      gridTemplateRows: '1fr',
+      height: '93%',
+      padding: theme.spacing(2, 1, 1),
+    },
+  };
+});
 
 interface Props {
   graphHeight: number;
@@ -63,7 +65,7 @@ const ExportablePerformanceGraphWithTimeline = ({
   resizeEnvelopeData,
   onReload,
 }: Props): JSX.Element => {
-  const classes = useStyles();
+  const { classes } = useStyles();
   const [timeline, setTimeline] = useState<Array<TimelineEvent>>();
   const [performanceGraphRef, setPerformanceGraphRef] =
     useState<HTMLDivElement | null>(null);
@@ -161,6 +163,7 @@ const ExportablePerformanceGraphWithTimeline = ({
     customTimePeriod.start.toISOString(),
     customTimePeriod.end.toISOString(),
     details,
+    resource,
   ]);
 
   const addCommentToTimeline = ({ date, comment }): void => {

@@ -5,10 +5,10 @@ import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
 import { and, cond, equals } from 'ramda';
 import { useTranslation } from 'react-i18next';
 import { useAtomValue } from 'jotai/utils';
+import { makeStyles } from 'tss-react/mui';
 
 import { FormHelperText, Typography, Button, Popover } from '@mui/material';
 import { LocalizationProvider } from '@mui/lab';
-import makeStyles from '@mui/styles/makeStyles';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 
 import { dateTimeFormat, useLocaleDateTimeFormat } from '@centreon/ui';
@@ -43,7 +43,7 @@ interface Props {
 
 dayjs.extend(isSameOrAfter);
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
   button: {
     height: '100%',
     padding: theme.spacing(0, 0.5),
@@ -118,7 +118,7 @@ const CustomTimePeriodPickers = ({
   acceptDate,
   isCompact: isMinimalWidth,
 }: Props): JSX.Element => {
-  const classes = useStyles(isMinimalWidth);
+  const { classes } = useStyles();
   const { t } = useTranslation();
   const [anchorEl, setAnchorEl] = useState<Element | null>(null);
   const [start, setStart] = useState<Date>(customTimePeriod.start);

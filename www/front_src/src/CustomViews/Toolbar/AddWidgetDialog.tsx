@@ -52,6 +52,8 @@ const AddWidgetDialog: FC = () => {
     addWidget({
       moduleName: selectedWidget?.moduleName,
       path: selectedWidget?.federatedComponentsConfiguration.path,
+      widgetMinHeight:
+        selectedWidget?.federatedComponentsConfiguration.widgetMinHeight,
     });
     close();
   };

@@ -44,7 +44,7 @@ export const addWidgetDerivedAtom = atom(
     const title = `Widget ${length(currentLayout)}`;
 
     const baseWidgetLayout = {
-      h: 4,
+      h: widgetConfiguration?.widgetMinHeight || 4,
       i: title,
       minH: 4,
       static: false,
@@ -64,11 +64,14 @@ export const addWidgetDerivedAtom = atom(
       return;
     }
 
-    const maxY = Math.max(...map(({ y, h }) => y + h, currentLayout));
+    const maxYWithHeight = Math.max(...map(({ y, h }) => y + h, currentLayout));
+    const maxY = Math.max(...map(({ y }) => y, currentLayout));
+
     const lastLineWidgets = filter(
-      ({ h, y }) => equals(maxY, y + h),
+      ({ h, y }) => equals(maxYWithHeight, y + h),
       currentLayout,
     );
+
     const maxXFromLastLineWidgets = Math.max(
       ...map(({ x, w }) => x + w, lastLineWidgets),
     );
@@ -79,7 +82,7 @@ export const addWidgetDerivedAtom = atom(
         {
           ...baseWidgetLayout,
           x: 0,
-          y: maxY + 1,
+          y: maxYWithHeight,
         },
       ]);
 
