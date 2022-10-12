@@ -271,7 +271,7 @@ const ResourceActions = (): JSX.Element => {
       </div>
 
       <PopoverMenu
-        icon={<IconMore color="primary" fontSize="small" />}
+        icon={<IconMore color="primary" />}
         title={t(labelMoreActions) as string}
       >
         {({ close }): JSX.Element => (
