@@ -27,10 +27,11 @@ import { criteriaNameSortOrder } from './searchQueryLanguage/models';
 
 const useStyles = makeStyles((theme) => ({
   container: {
-    padding: theme.spacing(2),
+    paddingLeft: theme.spacing(1),
+    paddingRight: theme.spacing(1),
   },
   searchButton: {
-    marginTop: theme.spacing(1),
+    marginTop: 0,
   },
 }));
 
