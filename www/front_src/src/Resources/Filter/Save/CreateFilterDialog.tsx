@@ -5,6 +5,8 @@ import * as Yup from 'yup';
 import { path, not, or } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
+import { useTheme } from '@mui/material';
+
 import { Dialog, TextField, useRequest } from '@centreon/ui';
 
 import {
@@ -32,6 +34,7 @@ const CreateFilterDialog = ({
   open,
   onCancel,
 }: Props): JSX.Element => {
+  const theme = useTheme();
   const { t } = useTranslation();
 
   const { sendRequest, sending } = useRequest<Filter>({
@@ -73,6 +76,7 @@ const CreateFilterDialog = ({
       labelConfirm={t(labelSave)}
       labelTitle={t(labelNewFilter)}
       open={open}
+      style={{ zIndex: theme.zIndex.tooltip }}
       submitting={sending}
       onCancel={onCancel}
       onConfirm={form.submitForm}
