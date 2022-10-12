@@ -1,30 +1,26 @@
-import { useState, useEffect, Dispatch, SetStateAction } from 'react';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 
-import { useTranslation } from 'react-i18next';
-import { equals, path } from 'ramda';
 import { useAtom } from 'jotai';
+import { equals, path } from 'ramda';
+import { useTranslation } from 'react-i18next';
 
-import { Tooltip } from '@mui/material';
-import Typography from '@mui/material/Typography';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
-import Slider from '@mui/material/Slider';
+import ResetIcon from '@mui/icons-material/SettingsBackupRestore';
+import { Button, Divider, Slider, Tooltip, Typography } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
-import Button from '@mui/material/Button';
 
-import { IconButton, useRequest, putData } from '@centreon/ui';
+import { IconButton, putData, useRequest } from '@centreon/ui';
 
+import { ResourceDetails, Sensitivity } from '../../../Details/models';
 import {
+  labelCancel,
   labelMenageEnvelope,
   labelMenageEnvelopeSubTitle,
-  labelCancel,
+  labelPointsOutsideOfEnvelopeCount,
   labelSave,
   labelUseDefaultValue,
-  labelPointsOutsideOfEnvelopeCount,
 } from '../../../translatedLabels';
-import { ResourceDetails, Sensitivity } from '../../../Details/models';
 
 import { countedRedCirclesAtom } from './anomalyDetectionAtom';
 import { CustomFactorsData } from './models';
@@ -40,6 +36,11 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: theme.spacing(2),
     marginTop: theme.spacing(5),
   },
+  buttonSetDefault: {
+    color: theme.palette.text.primary,
+    justifyContent: 'flex-start',
+    textTransform: 'none',
+  },
   confirmButton: {
     marginLeft: theme.spacing(2),
   },
@@ -49,9 +50,12 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'space-evenly',
     padding: theme.spacing(2),
   },
+  divider: {
+    margin: theme.spacing(0.5, 0, 2, 0),
+  },
   footer: {
     display: 'flex',
-    justifyContent: 'flex-end',
+    justifyContent: 'space-between',
   },
   header: {
     display: 'flex',
@@ -74,6 +78,8 @@ const useStyles = makeStyles((theme) => ({
     '& .MuiSlider-valueLabel': {
       backgroundColor: theme.palette.primary.main,
       borderRadius: '50%',
+      height: theme.spacing(2.25),
+      width: theme.spacing(1.25),
     },
     '& .MuiSlider-valueLabel:before': {
       width: 0,
@@ -164,12 +170,12 @@ const AnomalyDetectionSlider = ({
     setOpenTooltip(true);
   };
 
-  const handleChangeCheckBox = (event): void => {
+  const setToDefaultValue = (): void => {
     setIsResizingConfirmed(true);
     if (isDefaultValue) {
       return;
     }
-    setIsDefaultValue(event.target.checked);
+    setIsDefaultValue(true);
     setOpenTooltip(true);
   };
 
@@ -290,20 +296,26 @@ const AnomalyDetectionSlider = ({
             </div>
           </IconButton>
         </div>
-        <FormControlLabel
-          control={
-            <Checkbox
-              checked={isDefaultValue}
-              disabled={isDefaultValue}
-              onChange={handleChangeCheckBox}
-            />
-          }
-          label={t(labelUseDefaultValue)}
-        />
+        <Button
+          className={classes.buttonSetDefault}
+          disabled={isDefaultValue}
+          size="small"
+          variant="text"
+          onClick={setToDefaultValue}
+        >
+          <ResetIcon color={isDefaultValue ? 'disabled' : 'primary'} />
+          {t(labelUseDefaultValue)}
+        </Button>
       </div>
 
+      <Divider className={classes.divider} />
+
       <div className={classes.footer}>
-        <Button size="small" variant="text" onClick={cancelResizingEnvelope}>
+        <Button
+          size="small"
+          variant="outlined"
+          onClick={cancelResizingEnvelope}
+        >
           {t(labelCancel)}
         </Button>
         <Button

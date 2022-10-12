@@ -17068,8 +17068,8 @@ msgstr "Les modifications apportées à la taille de l'enveloppe seront appliqu�
 msgid "Manage envelope size"
 msgstr "Gérer la taille de l'enveloppe"
 
-msgid "use default value"
-msgstr "utiliser la valeur par défaut"
+msgid "Set to default value"
+msgstr "Définir sur la valeur par défaut"
 
 msgid "points out of envelope"
 msgstr "points hors enveloppe"
