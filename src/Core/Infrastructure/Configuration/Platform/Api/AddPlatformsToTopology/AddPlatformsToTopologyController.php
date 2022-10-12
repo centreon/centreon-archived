@@ -52,7 +52,7 @@ class AddPlatformsToTopologyController extends AbstractController
         if(! $user->hasTopologyRole(Contact::ROLE_CONFIGURATION_MONITORING_SERVER_READ_WRITE)) {
             return new Response(null, Response::HTTP_UNAUTHORIZED);
         }
-        
+
         $decodedRequest = json_decode($request->getContent(), true);
         $addPlatformsToTopologyRequest = $this->createAddPlatformsToTopologyRequest($decodedRequest);
 
@@ -71,7 +71,7 @@ class AddPlatformsToTopologyController extends AbstractController
     {
         $addPlatformsToTopologyRequest = new AddPlatformsToTopologyRequest();
         $addPlatformsToTopologyRequest->nodes = $request["nodes"];
-        
+
         return $addPlatformsToTopologyRequest;
     }
 }

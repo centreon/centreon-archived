@@ -38,7 +38,16 @@ class PlatformFactory
     public static function createNewPlatform(array $data): NewPlatform
     {
         //Check that Address is a correctly formed ip
+        if (
+            ! filter_var($data['address'], FILTER_VALIDATE_IP)
+            && ! filter_var($data['address'], FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME)
+        ) {
+            throw new \Exception('invalid address');
+        }
         //Check that type is valid
+        if (! in_array($data['type'], AbstractPlatform::ALLOWED_TYPES)) {
+            throw new \Exception('invalid type');
+        }
         return new NewPlatform($data['address'],$data['hostname'], $data['name'], $data['type']);
     }
 

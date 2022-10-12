@@ -232,8 +232,8 @@ services:
         calls:
             - [setEncryptionFirstKey, ['%env(APP_SECRET)%']]
 
-    Core\Infrastructure\Platform\Repository\FileReadPlatformRepository:
-        class: Core\Infrastructure\Platform\Repository\FileReadPlatformRepository
+    Core\Infrastructure\Configuration\Platform\Repository\FileReadPlatformRepository:
+        class: Core\Infrastructure\Configuration\Platform\Repository\FileReadPlatformRepository
         arguments: ['%centreon_etc_path%', '%centreon_install_path%']
 
     Core\Platform\Application\Validator\RequirementValidatorsInterface:

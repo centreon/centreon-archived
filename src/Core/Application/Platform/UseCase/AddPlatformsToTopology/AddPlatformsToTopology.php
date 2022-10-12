@@ -23,17 +23,77 @@ declare(strict_types=1);
 
 namespace Core\Application\Platform\UseCase\AddPlatformsToTopology;
 
+use Centreon\Domain\Log\LoggerTrait;
 use Core\Domain\Configuration\Platform\PlatformFactory;
+use Core\Application\Platform\Repository\ReadPlatformTopologyRepositoryInterface;
+use Core\Domain\Configuration\Platform\NewPlatform;
 
 class AddPlatformsToTopology
 {
+    use LoggerTrait;
+
+    /**
+     * @param ReadPlatformTopologyRepositoryInterface $readRepository
+     */
+    public function __construct(private ReadPlatformTopologyRepositoryInterface $readRepository)
+    {
+    }
+
+    /**
+     * @param AddPlatformsToTopologyPresenterInterface $presenter
+     * @param AddPlatformsToTopologyRequest $request
+     */
     public function invoke(
         AddPlatformsToTopologyPresenterInterface $presenter,
         AddPlatformsToTopologyRequest $request
     ): void {
         $platforms = [];
         foreach ($request->nodes as $node) {
-            $platforms[] = PlatformFactory::createNewPlatform($node);
+            $platform = PlatformFactory::createNewPlatform($node);
+            $this->setParentPlatform($request->nodes, $node['parent'], $platform);
+            $platforms[] = $platform;
+        }
+    }
+
+    /**
+     * Retrieve the parent information into the request nodes
+     *
+     * @param string $address
+     * @param array $nodes
+     * @return array
+     */
+    private function findParentInNodes(string $address, array $nodes): array {
+        foreach ($nodes as $key => $val) {
+            if ($val['address'] === $address) {
+                return $nodes[$key];
+            }
+        }
+
+        return [];
+    }
+
+    /**
+     * set Parent to the current platform
+     *
+     * @param array $nodes
+     * @param string $parentAddress
+     * @param NewPlatform $platform
+     */
+    private function setParentPlatform(array $nodes, string $parentAddress, NewPlatform &$platform): void
+    {
+        if ($parentAddress !== null) {
+            $parent = $this->readRepository->findPlatformByAddress($parentAddress);
+            if ($parent === null) {
+                $parentNode = $this->findParentInNodes($parentAddress, $nodes);
+                if (empty($parentNode)) {
+                    $this->error('Parent not found, linking platform to Central');
+                } else {
+                    $platformParent = PlatformFactory::createNewPlatform($parentNode);
+                    $platform->setParent($platformParent);
+                }
+            } else {
+                $platform->setParent($parent);
+            }
         }
     }
 }
