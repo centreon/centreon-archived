@@ -157,10 +157,11 @@ function multipleServiceCategorieInDB($sc = [], $nbrDup = [])
                 $maxId = $statement->fetch();
                 $scAcl[$maxId['maxid']] = $key;
                 $query = "INSERT INTO service_categories_relation (service_service_id, sc_id) " .
-                    "(SELECT service_service_id, " . $maxId['maxid'] .
+                    "(SELECT service_service_id, :max_id" .
                     " FROM service_categories_relation WHERE sc_id = :sc_id)";
                 $statement = $pearDB->prepare($query);
                 $statement->bindValue(':sc_id', $key, \PDO::PARAM_INT);
+                $statement->bindValue(':max_id', $maxId['maxid'], \PDO::PARAM_INT);
                 $statement->execute();
             }
         }
