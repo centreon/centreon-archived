@@ -17185,7 +17185,7 @@ msgstr "Groupes d'hôtes (simplifiés)"
 msgid "Services (simplified)"
 msgstr "Services (simplifiés)"
 
-msgid "You have unsaved changed, do you want to proceed?"
+msgid "You have unsaved changes, do you want to proceed?"
 msgstr "Vous avez des modifications non enregistrées, voulez-vous continuer?"
 
 #  msgid "Confirm"
