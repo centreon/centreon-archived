@@ -15308,10 +15308,10 @@ msgstr "Nivel de criticidad del host"
 #  msgid "Deploy configuration"
 #  msgstr ""
 
-msgid "Are you sure you want to change the size of the envelope? The new envelope size will be applied immediately."
+msgid "Are you sure you want to change the size of the envelope? Please note that the new envelope size will only be applied from now on. The old envelope will stay the same."
 msgstr "¿Está seguro de que desea cambiar el tamaño del sobre? El nuevo tamaño de sobre se aplicará inmediatamente."
 
-msgid "Changes to the envelope size will be applied immediately"
+msgid "Changes to the envelope size will be applied only from now on."
 msgstr "Los cambios en el tamaño del sobre se aplicarán inmediatamente."
 
 msgid "Manage envelope size"

@@ -15769,10 +15769,10 @@ msgstr "Nível de Severidade de host"
 #  msgid "Deploy configuration"
 #  msgstr ""
 
-msgid "Are you sure you want to change the size of the envelope? The new envelope size will be applied immediately."
+msgid "Are you sure you want to change the size of the envelope? Please note that the new envelope size will only be applied from now on. The old envelope will stay the same."
 msgstr "Tem certeza de que deseja alterar o tamanho do envelope? O novo tamanho de envelope será aplicado imediatamente."
 
-msgid "Changes to the envelope size will be applied immediately"
+msgid "Changes to the envelope size will be applied only from now on."
 msgstr "As alterações no tamanho do envelope serão aplicadas imediatamente"
 
 msgid "Manage envelope size"
