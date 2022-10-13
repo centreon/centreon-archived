@@ -5337,11 +5337,11 @@ msgstr "Mode SSO"
 
 #: centreon-web/www/include/Administration/parameters/general/form.php:197
 msgid "SSO trusted client addresses"
-msgstr "Adresses des clients de confiance SSO"
+msgstr "Adresses des clients de confiance"
 
 #: centreon-web/www/include/Administration/parameters/general/form.php:198
 msgid "SSO blacklist client addresses"
-msgstr "Adresses des clients de bloqués"
+msgstr "Adresses des clients sur liste noire"
 
 #: centreon-web/www/include/Administration/parameters/general/form.php:199
 msgid "SSO pattern matching login"
@@ -16562,7 +16562,10 @@ msgid "Login attribute path"
 msgstr "Chemin de l'attribut d'identifiant"
 
 msgid "Blacklist client addresses"
-msgstr "Liste noire d'adresses de clients"
+msgstr "Adresses des clients sur liste noire"
+
+msgid "Authentication conditions"
+msgstr "Conditions d'authentification"
 
 msgid "Enable conditions on identity provider"
 msgstr "Activer les conditions sur le fournisseur d'identité"
@@ -16577,7 +16580,7 @@ msgid "Introspection endpoint"
 msgstr "Point d'entrée d'introspection"
 
 msgid "User information"
-msgstr "Informations utilisateur"
+msgstr "Point d'entrée d'informations utilisateur"
 
 msgid "Other"
 msgstr "Autre"
@@ -16601,7 +16604,7 @@ msgid "Apply only first role"
 msgstr "Appliquer uniquement le premier rôle"
 
 msgid "Roles attribute path"
-msgstr "Chemin d'accès à l'attribut de rôles"
+msgstr "Chemin de l'attribut de rôles"
 
 msgid "Which endpoint does the roles attribute path come from?"
 msgstr "De quel point d'entrée provient le chemin d'accès de l'attribut de rôles ?"
