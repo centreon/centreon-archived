@@ -1,45 +1,51 @@
-import { memo, MouseEvent, useEffect, useMemo, useRef, useState } from 'react';
+import {
+  memo,
+  MouseEvent,
+  ReactNode,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 
 import {
-  equals,
-  isNil,
-  identity,
-  min,
-  max,
-  not,
-  lt,
-  gte,
-  difference,
-  lte,
-  length,
-} from 'ramda';
-import {
-  Shape,
-  Grid,
-  Scale,
-  Group,
-  Tooltip as VisxTooltip,
   Event,
+  Grid,
+  Group,
+  Scale,
+  Shape,
+  Tooltip as VisxTooltip,
 } from '@visx/visx';
 import { bisector } from 'd3-array';
 import { ScaleLinear } from 'd3-scale';
-import { useTranslation } from 'react-i18next';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
-import { AddSVGProps } from '@visx/shape/lib/types';
+import {
+  difference,
+  equals,
+  gte,
+  identity,
+  isNil,
+  length,
+  lt,
+  lte,
+  max,
+  min,
+  not,
+} from 'ramda';
+import { useTranslation } from 'react-i18next';
 
 import {
+  alpha,
   Button,
+  CircularProgress,
   ClickAwayListener,
   Paper,
-  Typography,
   Theme,
-  alpha,
-  useTheme,
-  CircularProgress,
   Tooltip,
+  Typography,
 } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
 import { grey } from '@mui/material/colors';
+import makeStyles from '@mui/styles/makeStyles';
 
 import {
   dateTimeFormat,
@@ -47,73 +53,55 @@ import {
   useMemoComponent,
 } from '@centreon/ui';
 
-import AnomalyDetectionEnvelopeThreshold from '../AnomalyDetection/AnomalyDetectionEnvelopeThreshold';
-import { TimeValue, Line as LineModel, AdjustTimePeriodProps } from '../models';
-import {
-  getTime,
-  getMin,
-  getMax,
-  getDates,
-  getUnits,
-  getMetricValuesForUnit,
-  getMetricValuesForLines,
-  getSortedStackedLines,
-  getStackedMetricValues,
-  hasUnitStackedLines,
-} from '../timeSeries';
-import Lines from '../Lines';
+import { CommentParameters } from '../../../Actions/api';
+import useAclQuery from '../../../Actions/Resource/aclQuery';
+import { ResourceDetails } from '../../../Details/models';
+import { TimelineEvent } from '../../../Details/tabs/Timeline/models';
+import memoizeComponent from '../../../memoizedComponent';
+import { Resource, ResourceType } from '../../../models';
 import {
   labelActionNotPermitted,
   labelAddComment,
 } from '../../../translatedLabels';
-import { TimelineEvent } from '../../../Details/tabs/Timeline/models';
-import { Resource, ResourceType } from '../../../models';
-import { ResourceDetails } from '../../../Details/models';
-import { CommentParameters } from '../../../Actions/api';
-import useAclQuery from '../../../Actions/Resource/aclQuery';
-import memoizeComponent from '../../../memoizedComponent';
+import AnomalyDetectionEnvelopeThreshold from '../AnomalyDetection/AnomalyDetectionEnvelopeThreshold';
 import { CustomFactorsData } from '../AnomalyDetection/models';
+import Lines from '../Lines';
+import { AdjustTimePeriodProps, Line as LineModel, TimeValue } from '../models';
+import {
+  getDates,
+  getMax,
+  getMetricValuesForLines,
+  getMetricValuesForUnit,
+  getMin,
+  getSortedStackedLines,
+  getStackedMetricValues,
+  getTime,
+  getUnits,
+  hasUnitStackedLines,
+} from '../timeSeries';
 
 import AddCommentForm from './AddCommentForm';
 import Annotations from './Annotations';
+import {
+  annotationHoveredAtom,
+  changeAnnotationHoveredDerivedAtom,
+} from './annotationsAtoms';
 import Axes from './Axes';
-import TimeShiftZones, {
-  TimeShiftContext,
-  TimeShiftDirection,
-} from './TimeShiftZones';
 import {
   changeMousePositionAndTimeValueDerivedAtom,
   changeTimeValueDerivedAtom,
   MousePosition,
   mousePositionAtom,
 } from './mouseTimeValueAtoms';
-import {
-  annotationHoveredAtom,
-  changeAnnotationHoveredDerivedAtom,
-} from './annotationsAtoms';
+import TimeShiftZones, {
+  TimeShiftContext,
+  TimeShiftDirection,
+} from './TimeShiftZones';
 
 const propsAreEqual = (prevProps, nextProps): boolean =>
   equals(prevProps, nextProps);
 
-interface BarProps {
-  className?: string;
-  innerRef?: React.Ref<SVGRectElement>;
-  open: boolean;
-}
-
-const Bar = ({
-  open,
-  ...restProps
-}: AddSVGProps<BarProps, SVGRectElement>): JSX.Element | null => {
-  if (!open) {
-    return null;
-  }
-
-  return <Shape.Bar {...restProps} />;
-};
-
 const MemoizedAxes = memo(Axes, propsAreEqual);
-const MemoizedBar = memo(Bar, propsAreEqual);
 const MemoizedGridColumns = memo(Grid.GridColumns, propsAreEqual);
 const MemoizedGridRows = memo(Grid.GridRows, propsAreEqual);
 const MemoizedLines = memo(Lines, propsAreEqual);
@@ -209,6 +197,7 @@ interface GraphContentProps {
   applyZoom?: (props: AdjustTimePeriodProps) => void;
   base: number;
   canAdjustTimePeriod: boolean;
+  children?: (args: any) => ReactNode;
   containsMetrics: boolean;
   displayEventAnnotations: boolean;
   displayTimeValues: boolean;
@@ -218,7 +207,6 @@ interface GraphContentProps {
   isInViewport?: boolean;
   lines: Array<LineModel>;
   loading: boolean;
-  modalEditAnomalyDetectionOpened?: boolean;
   onAddComment?: (commentParameters: CommentParameters) => void;
   resizeEnvelopeData?: CustomFactorsData;
   resource: Resource | ResourceDetails;
@@ -272,7 +260,7 @@ const GraphContent = ({
   displayEventAnnotations,
   containsMetrics,
   isInViewport,
-  modalEditAnomalyDetectionOpened,
+  children,
   displayTimeValues,
   resizeEnvelopeData,
 }: GraphContentProps): JSX.Element => {
@@ -298,8 +286,6 @@ const GraphContent = ({
   const changeAnnotationHovered = useUpdateAtom(
     changeAnnotationHoveredDerivedAtom,
   );
-
-  const theme = useTheme();
 
   const graphWidth = width > 0 ? width - margin.left - margin.right : 0;
   const graphHeight = height > 0 ? height - margin.top - margin.bottom : 0;
@@ -614,15 +600,11 @@ const GraphContent = ({
                 xScale={xScale}
               />
             )}
-            <MemoizedBar
-              open
-              fill={alpha(theme.palette.primary.main, 0.2)}
-              height={graphHeight}
-              stroke={alpha(theme.palette.primary.main, 0.5)}
-              width={zoomBarWidth}
-              x={zoomBoundaries?.start || 0}
-              y={0}
-            />
+            {children?.({
+              zoomBarWidth,
+              zoomBoundaries,
+            })}
+
             {useMemoComponent({
               Component:
                 displayTimeValues && containsMetrics && position ? (
@@ -647,20 +629,15 @@ const GraphContent = ({
                 ),
               memoProps: [mousePosition],
             })}
-
-            <MemoizedBar
-              className={classes.overlay}
-              fill="transparent"
-              height={graphHeight}
-              open={!modalEditAnomalyDetectionOpened}
-              width={graphWidth}
-              x={0}
-              y={0}
-              onMouseDown={displayZoomPreview}
-              onMouseLeave={closeTooltip}
-              onMouseMove={displayTooltip}
-              onMouseUp={displayAddCommentTooltip}
-            />
+            {children?.({
+              BarHeight: graphHeight,
+              closeTooltip,
+              displayAddCommentTooltip,
+              displayTooltip,
+              displayZoomPreview,
+              graphWidth,
+              style: { overlay: classes.overlay },
+            })}
           </Group.Group>
           <TimeShiftContext.Provider
             value={useMemo(

@@ -4,9 +4,11 @@ import {
   useEffect,
   useRef,
   useState,
+  memo,
 } from 'react';
 
-import { Responsive } from '@visx/visx';
+import { AddSVGProps } from '@visx/shape/lib/types';
+import { Responsive, Shape } from '@visx/visx';
 import { useAtomValue } from 'jotai/utils';
 import {
   add,
@@ -28,7 +30,7 @@ import {
 } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
-import { Skeleton, Theme, Typography } from '@mui/material';
+import { alpha, Skeleton, Theme, Typography, useTheme } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 
 import {
@@ -144,6 +146,23 @@ const useStyles = makeStyles<Theme, MakeStylesProps>((theme) => ({
 
 const shiftRatio = 2;
 
+interface BarProps {
+  className?: string;
+  innerRef?: React.Ref<SVGRectElement>;
+  open: boolean;
+}
+
+const Bar = ({
+  open,
+  ...restProps
+}: AddSVGProps<BarProps, SVGRectElement>): JSX.Element | null => {
+  if (!open) {
+    return null;
+  }
+
+  return <Shape.Bar {...restProps} />;
+};
+
 const PerformanceGraph = ({
   endpoint,
   graphHeight,
@@ -172,6 +191,7 @@ const PerformanceGraph = ({
     graphHeight,
   });
   const { t } = useTranslation();
+  const theme = useTheme();
 
   const [timeSeries, setTimeSeries] = useState<Array<TimeValue>>([]);
   const [lineData, setLineData] = useState<Array<LineModel>>();
@@ -404,6 +424,11 @@ const PerformanceGraph = ({
 
   const displayTimeValues = not(isListingGraphOpen) || isDisplayedInListing;
 
+  const propsAreEqual = (prevProps, nextProps): boolean =>
+    equals(prevProps, nextProps);
+
+  const MemoizedBar = memo(Bar, propsAreEqual);
+
   return (
     <div
       className={classes.container}
@@ -446,7 +471,6 @@ const PerformanceGraph = ({
               loading={
                 not(resourceDetailsUpdated) && sendingGetGraphDataRequest
               }
-              modalEditAnomalyDetectionOpened={modalEditAnomalyDetectionOpened}
               resizeEnvelopeData={resizeEnvelopeData}
               resource={resource}
               shiftTime={shiftTime}
@@ -455,7 +479,48 @@ const PerformanceGraph = ({
               width={width}
               xAxisTickFormat={xAxisTickFormat}
               onAddComment={onAddComment}
-            />
+            >
+              {({
+                closeTooltip,
+                displayAddCommentTooltip,
+                displayTooltip,
+                displayZoomPreview,
+                BarHeight,
+                graphWidth,
+                style,
+                zoomBarWidth,
+                zoomBoundaries,
+              }): JSX.Element => (
+                <>
+                  {zoomBarWidth && (
+                    <MemoizedBar
+                      open
+                      fill={alpha(theme.palette.primary.main, 0.2)}
+                      height={graphHeight}
+                      stroke={alpha(theme.palette.primary.main, 0.5)}
+                      width={zoomBarWidth}
+                      x={zoomBoundaries?.start || 0}
+                      y={0}
+                    />
+                  )}
+                  {displayAddCommentTooltip && (
+                    <MemoizedBar
+                      className={style.overlay}
+                      fill="transparent"
+                      height={BarHeight}
+                      open={!modalEditAnomalyDetectionOpened}
+                      width={graphWidth}
+                      x={0}
+                      y={0}
+                      onMouseDown={displayZoomPreview}
+                      onMouseLeave={closeTooltip}
+                      onMouseMove={displayTooltip}
+                      onMouseUp={displayAddCommentTooltip}
+                    />
+                  )}
+                </>
+              )}
+            </Graph>
           )}
         </Responsive.ParentSize>
       </div>
