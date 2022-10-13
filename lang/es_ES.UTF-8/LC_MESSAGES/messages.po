@@ -15320,7 +15320,7 @@ msgstr "Administrar el tamaño del sobre"
 msgid "Reset to default value"
 msgstr "Establecer en el valor predeterminado"
 
-msgid "points out of envelope"
+msgid "points outside of the envelope"
 msgstr "puntos fuera del sobre"
 
 msgid "Edit anomaly detection data"
