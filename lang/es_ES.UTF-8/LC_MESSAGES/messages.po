@@ -15317,7 +15317,7 @@ msgstr "Los cambios en el tamaño del sobre se aplicarán inmediatamente."
 msgid "Manage envelope size"
 msgstr "Administrar el tamaño del sobre"
 
-msgid "Set to default value"
+msgid "Reset to default value"
 msgstr "Establecer en el valor predeterminado"
 
 msgid "points out of envelope"
