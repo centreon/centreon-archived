@@ -15766,8 +15766,8 @@ msgstr "As alterações no tamanho do envelope serão aplicadas imediatamente"
 msgid "Manage envelope size"
 msgstr "Gerenciar o tamanho do envelope"
 
-msgid "use default value"
-msgstr "usar valor padrão"
+msgid "Set to default value"
+msgstr "Definir para o valor padrão
 
 msgid "points out of envelope"
 msgstr "pontos fora do envelope"
@@ -15804,3 +15804,9 @@ msgstr "Editar dados de detecção de anomalias"
 
 #  msgid "Host Groups (simplified)"
 #  msgstr ""
+
+msgid "You have unsaved changed, do you want to proceed?"
+msgstr "Você não salvou as alterações, deseja continuar?"
+
+msgid "Confirm"
+msgstr "Confirme"

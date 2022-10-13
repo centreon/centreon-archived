@@ -15317,8 +15317,8 @@ msgstr "Los cambios en el tamaño del sobre se aplicarán inmediatamente."
 msgid "Manage envelope size"
 msgstr "Administrar el tamaño del sobre"
 
-msgid "use default value"
-msgstr "usar el valor predeterminado"
+msgid "Set to default value"
+msgstr "Establecer en el valor predeterminado"
 
 msgid "points out of envelope"
 msgstr "puntos fuera del sobre"
@@ -15355,3 +15355,9 @@ msgstr "Editar datos de detección de anomalías"
 
 #  msgid "Host Groups (simplified)"
 #  msgstr ""
+
+msgid "You have unsaved changed, do you want to proceed?"
+msgstr "No ha guardado los cambios, ¿quiere continuar?"
+
+msgid "Confirm"
+msgstr "Confirmar"
