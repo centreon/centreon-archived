@@ -31,7 +31,8 @@ const useStyles = makeStyles((theme) => ({
     paddingRight: theme.spacing(1),
   },
   searchButton: {
-    marginTop: 0,
+    marginBottom: theme.spacing(1),
+    marginTop: theme.spacing(1),
   },
 }));
 
