@@ -92,7 +92,6 @@ $tmp2 = null;
 $searchHG = \HtmlAnalyzer::sanitizeAndRemoveTags(
     $searchHG
 );
-
 $searchS = \HtmlAnalyzer::sanitizeAndRemoveTags(
     $searchS
 );
@@ -101,13 +100,12 @@ $aclFrom = "";
 $aclCond = "";
 $distinct = "";
 if (!$centreon->user->admin) {
-    $aclAccessGroupStrings = $acl->getAccessGroupsString();
-    $aclAccessGroupStringsExploded = explode(',', $aclAccessGroupStrings);
-    $aclAccessGroupStringsParams = [];
-    foreach ($aclAccessGroupStringsExploded as $key => $value) {
-        $aclAccessGroupStringsParams[':access' . $key] = str_replace("'", "", $value);
+    $aclAccessGroupList = explode(',', $acl->getAccessGroupsString());
+    $aclAccessGroupsParams = [];
+    foreach ($aclAccessGroupList as $index => $accessGroupId) {
+        $aclAccessGroupsParams[':access_' . $index] = $accessGroupId;
     }
-    $queryParams = implode(',', array_keys($aclAccessGroupStringsParams));
+    $queryParams = implode(',', array_keys($aclAccessGroupsParams));
     $aclFrom = ", $aclDbName.centreon_acl acl ";
     $aclCond = " AND sv.service_id = acl.service_id
                  AND acl.group_id IN (" . $queryParams . ") ";
@@ -140,8 +138,8 @@ if ($searchS != "" || $searchHG != "") {
         );
     }
     if (!$centreon->user->admin) {
-        foreach ($aclAccessGroupStringsParams as $key => $param) {
-            $statement->bindValue($key, (int) $param, \PDO::PARAM_INT);
+        foreach ($aclAccessGroupsParams as $key => $accessGroupId) {
+            $statement->bindValue($key, (int) $accessGroupId, \PDO::PARAM_INT);
         }
     }
     if ($searchS && !$searchHG) {
@@ -180,8 +178,8 @@ if ($searchS != "" || $searchHG != "") {
         " AND hsr.service_service_id = sv.service_id AND hsr.host_host_id IS NULL " . $aclCond
     );
     if (!$centreon->user->admin) {
-        foreach ($aclAccessGroupStringsParams as $key => $param) {
-            $statement->bindValue($key, (int) $param, \PDO::PARAM_INT);
+        foreach ($aclAccessGroupsParams as $key => $accessGroupId) {
+            $statement->bindValue($key, (int) $accessGroupId, \PDO::PARAM_INT);
         }
     }
     if (isset($template) && $template) {
@@ -274,8 +272,8 @@ if ((isset($template) && $template)) {
     $statement->bindValue(':template', (int) $template, \PDO::PARAM_INT);
 }
 if (!$centreon->user->admin) {
-    foreach ($aclAccessGroupStringsParams as $key => $param) {
-        $statement->bindValue($key, (int) $param, \PDO::PARAM_INT);
+    foreach ($aclAccessGroupsParams as $key => $accessGroupId) {
+        $statement->bindValue($key, (int) $accessGroupId, \PDO::PARAM_INT);
     }
 }
 $statement->execute();
