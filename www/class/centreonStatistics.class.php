@@ -202,7 +202,8 @@ class CentreonStatistics
                     'is_forced' => $row['is_forced'] ? true : false,
                     'trusted_client_addresses' => count($custom_configuration['trusted_client_addresses']) ?? 0,
                     'blacklist_client_addresses' => count($custom_configuration['blacklist_client_addresses']) ?? 0,
-                    'introspection_token_endpoint' => ($custom_configuration['introspection_token_endpoint'] ? true : false),
+                    'introspection_token_endpoint' => ($custom_configuration['introspection_token_endpoint']
+                        ? true : false),
                     'userinfo_endpoint' => ($custom_configuration['userinfo_endpoint'] ? true : false),
                     'endsession_endpoint' => ($custom_configuration['endsession_endpoint'] ? true : false),
                     'connection_scopes' => count($custom_configuration['connection_scopes']) ?? 0,
