@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2022 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -216,8 +217,10 @@ class CentreonStatistics
                     'is_forced' => $row['is_forced'] ? true : false,
                     'authentication_conditions' => [
                         'is_enabled' => $authentication_conditions['is_enabled'] ? true : false,
-                        'trusted_client_addresses' => count($authentication_conditions['trusted_client_addresses']) ?? 0,
-                        'blacklist_client_addresses' => count($authentication_conditions['blacklist_client_addresses']) ?? 0,
+                        'trusted_client_addresses'
+                            => count($authentication_conditions['trusted_client_addresses']) ?? 0,
+                        'blacklist_client_addresses'
+                            => count($authentication_conditions['blacklist_client_addresses']) ?? 0,
                         'authorized_values' => count($authentication_conditions['authorized_values']) ?? 0,
                     ],
                     'groups_mapping' => [
@@ -229,7 +232,8 @@ class CentreonStatistics
                         'apply_only_first_role' => $roles_mapping['apply_only_first_role'] ? true : false,
                         'relation' => $acl_relation
                     ],
-                    'introspection_token_endpoint' => ($custom_configuration['introspection_token_endpoint'] ? true : false),
+                    'introspection_token_endpoint' => ($custom_configuration['introspection_token_endpoint']
+                        ? true : false),
                     'userinfo_endpoint' => ($custom_configuration['userinfo_endpoint'] ? true : false),
                     'endsession_endpoint' => ($custom_configuration['endsession_endpoint'] ? true : false),
                     'connection_scopes' => count($custom_configuration['connection_scopes']) ?? 0,
