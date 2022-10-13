@@ -3,6 +3,7 @@ export interface FederatedModule {
     federatedComponents: Array<string>;
     path: string;
     widgetMinHeight?: number;
+    widgetMinWidth?: { lg: number; md: number };
   };
   federatedPages: Array<PageComponent>;
   moduleFederationName: string;

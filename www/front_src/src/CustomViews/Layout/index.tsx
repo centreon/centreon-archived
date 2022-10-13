@@ -1,13 +1,21 @@
-import { FC } from 'react';
+import { FC, useEffect } from 'react';
 
 import { Responsive } from '@visx/visx';
 import GridLayout, { WidthProvider } from 'react-grid-layout';
-import { useAtom, useAtomValue } from 'jotai';
-import { find, map, propEq } from 'ramda';
+import { useAtom, useAtomValue, useSetAtom } from 'jotai';
+import { always, cond, equals, find, gt, map, propEq, T } from 'ramda';
 
 import { Responsive as ResponsiveHeight } from '@centreon/ui';
 
-import { columnsAtom, isEditingAtom, layoutAtom } from '../atoms';
+import {
+  breakpointAtom,
+  changeLayoutDerivedAtom,
+  columnsAtom,
+  getBreakpoint,
+  isEditingAtom,
+  layoutByBreakpointDerivedAtom,
+  responsiveLayoutAtom,
+} from '../atoms';
 
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
@@ -18,14 +26,17 @@ import Widget from './Widget';
 const ReactGridLayout = WidthProvider(GridLayout);
 
 const Layout: FC = () => {
-  const [layout, setLayout] = useAtom(layoutAtom);
+  const [layout, setLayout] = useAtom(layoutByBreakpointDerivedAtom);
+  const [columns, setColumn] = useAtom(columnsAtom);
+  const [breakpoint, setBreakpoint] = useAtom(breakpointAtom);
   const isEditing = useAtomValue(isEditingAtom);
-  const columns = useAtomValue(columnsAtom);
+  const responsiveLayout = useAtomValue(responsiveLayoutAtom);
+  const changeWidgetsLayout = useSetAtom(changeLayoutDerivedAtom);
 
   const changeLayout = (newLayout): void => {
-    setLayout((currentLayout) =>
+    setLayout(
       map(({ i, ...other }) => {
-        const widget = find(propEq('i', i), currentLayout);
+        const widget = find(propEq('i', i), layout);
 
         return {
           ...other,
@@ -35,6 +46,32 @@ const Layout: FC = () => {
       }, newLayout),
     );
   };
+
+  const resize = (): void => {
+    const newBreakpoint = getBreakpoint(window.innerWidth);
+
+    const newColumns = cond([
+      [equals('sm'), always(1)],
+      [equals('md'), always(2)],
+      [T, always(3)],
+    ])(newBreakpoint);
+
+    if (!equals(breakpoint, newBreakpoint)) {
+      changeWidgetsLayout({ breakpoint: newBreakpoint, columns: newColumns });
+    }
+  };
+
+  useEffect(() => {
+    resize();
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener('resize', resize);
+
+    return () => {
+      window.removeEventListener('resize', resize);
+    };
+  }, [breakpoint]);
 
   return (
     <ResponsiveHeight>

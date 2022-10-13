@@ -1,65 +1,164 @@
 import { atom } from 'jotai';
+import { atomWithDefault } from 'jotai/utils';
 import {
+  always,
+  cond,
+  dec,
   equals,
   filter,
   find,
   findIndex,
+  gt,
+  gte,
   isEmpty,
   isNil,
+  keys,
   length,
+  Lens,
   lensPath,
   lensProp,
   map,
+  max,
   propEq,
+  reduce,
   reject,
   set,
+  T,
   update,
 } from 'ramda';
 
-import { WidgetConfiguration, WidgetLayout } from './models';
+import {
+  Breakpoint,
+  ResponsiveWidgetLayout,
+  WidgetConfiguration,
+  WidgetLayout,
+} from './models';
 
 export const columnsAtom = atom(3);
 
-export const layoutAtom = atom<Array<WidgetLayout>>([]);
+export const breakpointAtom = atomWithDefault<Breakpoint>(() =>
+  getBreakpoint(window.innerWidth),
+);
+
+export const responsiveLayoutAtom = atom<ResponsiveWidgetLayout>({
+  [Breakpoint.sm]: [],
+  [Breakpoint.md]: [],
+  [Breakpoint.lg]: [],
+});
 
 export const isEditingAtom = atom(false);
+
+export const getBreakpoint = cond<[width: number], Breakpoint>([
+  [gt(1000), always(Breakpoint.sm)],
+  [gt(1500), always(Breakpoint.md)],
+  [T, always(Breakpoint.lg)],
+]);
+
+export const getDefaultColumnsByBreakpoint = cond([
+  [equals('sm'), always(1)],
+  [equals('md'), always(2)],
+  [T, always(3)],
+]);
+
+export const layoutByBreakpointDerivedAtom = atom(
+  (get) => {
+    const breakpoint = get(breakpointAtom);
+
+    return get(responsiveLayoutAtom)?.[breakpoint] || [];
+  },
+  (get, setAtom, newLayout: Array<WidgetLayout>) => {
+    const breakpoint = get(breakpointAtom);
+    const responsiveLayout = get(responsiveLayoutAtom);
+
+    const newResponsiveLayout = isNil(responsiveLayout)
+      ? responsiveLayout
+      : set(lensProp(breakpoint), newLayout, responsiveLayout);
+
+    setAtom(responsiveLayoutAtom, newResponsiveLayout);
+  },
+);
 
 export const setLayoutModeDerivedAtom = atom(
   null,
   (get, setAtom, isEditing: boolean) => {
     setAtom(isEditingAtom, isEditing);
 
-    const newLayout = map(set(lensProp('static'), !isEditing), get(layoutAtom));
+    const layouts = get(responsiveLayoutAtom);
 
-    setAtom(layoutAtom, newLayout);
+    const newLayout = isNil(layouts)
+      ? layouts
+      : reduce<[string, Array<WidgetLayout>], ResponsiveWidgetLayout>(
+          (acc, [key, layout]) => ({
+            ...acc,
+            [key]: map<WidgetLayout, WidgetLayout>(
+              set(lensProp('static'), !isEditing),
+              layout,
+            ),
+          }),
+          {},
+          Object.entries(layouts),
+        );
+
+    setAtom(responsiveLayoutAtom, newLayout);
   },
 );
 
 export const addWidgetDerivedAtom = atom(
   null,
   (get, setAtom, widgetConfiguration: WidgetConfiguration) => {
-    const currentLayout = get(layoutAtom);
+    const responsiveLayout = get(responsiveLayoutAtom);
+    const currentLayout = get(layoutByBreakpointDerivedAtom);
     const columns = get(columnsAtom);
 
     const title = `Widget ${length(currentLayout)}`;
 
+    const widgetWidth = gt(widgetConfiguration?.widgetMinWidth || 1, columns)
+      ? widgetConfiguration?.widgetMinWidth || 1
+      : 1;
+
     const baseWidgetLayout = {
       h: widgetConfiguration?.widgetMinHeight || 4,
       i: title,
-      minH: 4,
+      minH: widgetConfiguration?.widgetMinHeight || 4,
       static: false,
-      w: 1,
+      w: widgetWidth,
       widgetConfiguration,
     };
 
+    const updateResponsiveLayoutAtom = ({ x, y }): void => {
+      const newResponsiveLayout = reduce<Breakpoint, ResponsiveWidgetLayout>(
+        (acc, key) => ({
+          ...acc,
+          [key]: [
+            ...(responsiveLayout[key] || []),
+            {
+              ...baseWidgetLayout,
+              x: gte(x, getDefaultColumnsByBreakpoint(key))
+                ? max(0, x - dec(columns))
+                : x,
+              y:
+                gte(x, getDefaultColumnsByBreakpoint(key)) ||
+                equals(getDefaultColumnsByBreakpoint(key), 1)
+                  ? Math.max(
+                      0,
+                      ...map(
+                        ({ y: widgetY, h }) => widgetY + h,
+                        responsiveLayout[key] as Array<WidgetLayout>,
+                      ),
+                    )
+                  : y,
+            },
+          ],
+        }),
+        {},
+        keys(responsiveLayout),
+      );
+
+      setAtom(responsiveLayoutAtom, newResponsiveLayout);
+    };
+
     if (isEmpty(currentLayout)) {
-      setAtom(layoutAtom, [
-        {
-          ...baseWidgetLayout,
-          x: 0,
-          y: 0,
-        },
-      ]);
+      updateResponsiveLayoutAtom({ x: 0, y: 0 });
 
       return;
     }
@@ -77,42 +176,43 @@ export const addWidgetDerivedAtom = atom(
     );
 
     if (equals(maxXFromLastLineWidgets, columns)) {
-      setAtom(layoutAtom, [
-        ...currentLayout,
-        {
-          ...baseWidgetLayout,
-          x: 0,
-          y: maxYWithHeight,
-        },
-      ]);
+      updateResponsiveLayoutAtom({ x: 0, y: maxYWithHeight });
 
       return;
     }
 
-    setAtom(layoutAtom, [
-      ...currentLayout,
-      {
-        ...baseWidgetLayout,
-        x: maxXFromLastLineWidgets,
-        y: maxY,
-      },
-    ]);
+    updateResponsiveLayoutAtom({
+      x: maxXFromLastLineWidgets,
+      y: maxY,
+    });
   },
 );
 
 export const removeWidgetDerivedAtom = atom(
   null,
-  (_, setAtom, widgetKey: string) => {
-    setAtom(layoutAtom, (currentLayout) =>
-      reject(propEq('i', widgetKey), currentLayout),
-    );
+  (get, setAtom, widgetKey: string) => {
+    const layouts = get(responsiveLayoutAtom);
+
+    const newLayout = isNil(layouts)
+      ? layouts
+      : reduce<[string, Array<WidgetLayout>], ResponsiveWidgetLayout>(
+          (acc, [key, layout]) => ({
+            ...acc,
+            [key]: reject(propEq('i', widgetKey), layout),
+          }),
+          {},
+          Object.entries(layouts),
+        );
+
+    setAtom(responsiveLayoutAtom, newLayout);
   },
 );
 
 export const getWidgetOptionsDerivedAtom = atom(
   (get) =>
     (title: string): object | null => {
-      const widget = find(propEq('i', title), get(layoutAtom));
+      const currentLayout = get(layoutByBreakpointDerivedAtom);
+      const widget = find(propEq('i', title), currentLayout);
 
       if (isNil(widget)) {
         return null;
@@ -130,33 +230,64 @@ interface SetWidgetOptionsProps {
 export const setWidgetOptionsDerivedAtom = atom(
   null,
   (get, setAtom, { title, options }: SetWidgetOptionsProps) => {
-    const widgets = get(layoutAtom);
-    const widget = find(propEq('i', title), widgets);
-    const widgetIndex = findIndex(propEq('i', title), widgets);
+    const updateWidget = (widgets): WidgetLayout | undefined => {
+      const widget = find<WidgetLayout>(
+        propEq('i', title),
+        widgets,
+      ) as WidgetLayout;
 
-    if (isNil(widget)) {
-      return;
-    }
+      if (isNil(widget?.widgetConfiguration)) {
+        return widget;
+      }
 
-    const newWidget = set(
-      lensPath(['widgetConfiguration', 'options']),
-      options,
-      widget,
+      const newWidget = set(
+        lensPath(['widgetConfiguration', 'options']) as Lens<
+          WidgetLayout,
+          object
+        >,
+        options,
+        widget,
+      );
+
+      return newWidget;
+    };
+
+    setAtom(responsiveLayoutAtom, (currentLayouts) =>
+      isNil(currentLayouts)
+        ? currentLayouts
+        : reduce<[string, Array<WidgetLayout>], ResponsiveWidgetLayout>(
+            (acc, [key, layout]) => {
+              const widgetIndex = findIndex(propEq('i', title), layout);
+
+              return {
+                ...acc,
+                [key]: update(widgetIndex, updateWidget(layout), layout),
+              };
+            },
+            {},
+            Object.entries(currentLayouts),
+          ),
     );
-
-    setAtom(layoutAtom, update(widgetIndex, newWidget, widgets));
   },
 );
 
 export const duplicateWidgetDerivedAtom = atom(
   null,
   (get, setAtom, title: string) => {
-    const widget = find(propEq('i', title), get(layoutAtom));
+    const widget = find(propEq('i', title), get(layoutByBreakpointDerivedAtom));
 
     if (isNil(widget)) {
       return;
     }
 
     setAtom(addWidgetDerivedAtom, widget.widgetConfiguration);
+  },
+);
+
+export const changeLayoutDerivedAtom = atom(
+  null,
+  (get, setAtom, { columns, breakpoint }) => {
+    setAtom(columnsAtom, columns);
+    setAtom(breakpointAtom, breakpoint);
   },
 );

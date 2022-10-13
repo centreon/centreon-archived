@@ -54,6 +54,8 @@ const AddWidgetDialog: FC = () => {
       path: selectedWidget?.federatedComponentsConfiguration.path,
       widgetMinHeight:
         selectedWidget?.federatedComponentsConfiguration.widgetMinHeight,
+      widgetMinWidth:
+        selectedWidget?.federatedComponentsConfiguration.widgetMinWidth,
     });
     close();
   };
