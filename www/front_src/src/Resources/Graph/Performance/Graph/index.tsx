@@ -190,6 +190,17 @@ interface ZoomBoundaries {
   start: number;
 }
 
+interface childrenProps {
+  BarHeight?: number;
+  closeTooltip?: () => void;
+  displayAddCommentTooltip?: (event) => void;
+  displayTooltip?: (event: MouseEvent<SVGRectElement>) => void;
+  displayZoomPreview?: (event) => void;
+  graphWidth?: number;
+  style?: Record<string, string>;
+  zoomBarWidth?: number;
+  zoomBoundaries?: ZoomBoundaries | null;
+}
 interface GraphContentProps {
   addCommentTooltipLeft?: number;
   addCommentTooltipOpen: boolean;
@@ -197,7 +208,7 @@ interface GraphContentProps {
   applyZoom?: (props: AdjustTimePeriodProps) => void;
   base: number;
   canAdjustTimePeriod: boolean;
-  children?: (args: any) => ReactNode;
+  children?: (args: childrenProps) => ReactNode;
   containsMetrics: boolean;
   displayEventAnnotations: boolean;
   displayTimeValues: boolean;

@@ -505,7 +505,7 @@ const PerformanceGraph = ({
                   )}
                   {displayAddCommentTooltip && (
                     <MemoizedBar
-                      className={style.overlay}
+                      className={style?.overlay}
                       fill="transparent"
                       height={BarHeight}
                       open={!modalEditAnomalyDetectionOpened}
