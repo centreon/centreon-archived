@@ -215,10 +215,10 @@ interface GraphContentProps {
   format: (parameters) => string;
   height: number;
   hideAddCommentTooltip: () => void;
-  isEditAnomalyDetectionDataDialogOpen?: boolean;
   isInViewport?: boolean;
   lines: Array<LineModel>;
   loading: boolean;
+  modalEditAnomalyDetectionOpened?: boolean;
   onAddComment?: (commentParameters: CommentParameters) => void;
   resizeEnvelopeData?: CustomFactorsData;
   resource: Resource | ResourceDetails;
@@ -272,7 +272,7 @@ const GraphContent = ({
   displayEventAnnotations,
   containsMetrics,
   isInViewport,
-  isEditAnomalyDetectionDataDialogOpen,
+  modalEditAnomalyDetectionOpened,
   displayTimeValues,
   resizeEnvelopeData,
 }: GraphContentProps): JSX.Element => {
@@ -652,7 +652,7 @@ const GraphContent = ({
               className={classes.overlay}
               fill="transparent"
               height={graphHeight}
-              open={!isEditAnomalyDetectionDataDialogOpen}
+              open={!modalEditAnomalyDetectionOpened}
               width={graphWidth}
               x={0}
               y={0}

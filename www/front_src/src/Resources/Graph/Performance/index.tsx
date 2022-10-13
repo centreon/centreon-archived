@@ -78,10 +78,10 @@ interface Props {
   ) => void;
   graphActions?: ReactNode;
   graphHeight: number;
-  isEditAnomalyDetectionDataDialogOpen?: boolean;
   isInViewport?: boolean;
   limitLegendRows?: boolean;
   modal?: ReactNode;
+  modalEditAnomalyDetectionOpened?: boolean;
   onAddComment?: (commentParameters: CommentParameters) => void;
   resizeEnvelopeData?: CustomFactorsData;
   resource: Resource | ResourceDetails;
@@ -160,7 +160,7 @@ const PerformanceGraph = ({
   limitLegendRows,
   isInViewport = true,
   displayCompleteGraph,
-  isEditAnomalyDetectionDataDialogOpen,
+  modalEditAnomalyDetectionOpened,
   modal,
   graphActions,
   getPerformanceGraphRef,
@@ -442,13 +442,11 @@ const PerformanceGraph = ({
               displayEventAnnotations={displayEventAnnotations}
               displayTimeValues={displayTimeValues}
               height={height}
-              isEditAnomalyDetectionDataDialogOpen={
-                isEditAnomalyDetectionDataDialogOpen
-              }
               lines={displayedLines}
               loading={
                 not(resourceDetailsUpdated) && sendingGetGraphDataRequest
               }
+              modalEditAnomalyDetectionOpened={modalEditAnomalyDetectionOpened}
               resizeEnvelopeData={resizeEnvelopeData}
               resource={resource}
               shiftTime={shiftTime}

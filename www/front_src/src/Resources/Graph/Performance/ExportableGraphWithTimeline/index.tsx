@@ -48,8 +48,8 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 interface Props {
   graphHeight: number;
-  isEditAnomalyDetectionDataDialogOpen: boolean;
   limitLegendRows?: boolean;
+  modalEditAnomalyDetectionOpened: boolean;
   onReload?: (value: boolean) => void;
   resizeEnvelopeData?: CustomFactorsData;
   resource?: Resource | ResourceDetails;
@@ -59,7 +59,7 @@ const ExportablePerformanceGraphWithTimeline = ({
   resource,
   graphHeight,
   limitLegendRows,
-  isEditAnomalyDetectionDataDialogOpen,
+  modalEditAnomalyDetectionOpened,
   resizeEnvelopeData,
   onReload,
 }: Props): JSX.Element => {
@@ -211,7 +211,7 @@ const ExportablePerformanceGraphWithTimeline = ({
             <MemoizedGraphActions
               customTimePeriod={customTimePeriod}
               getIsModalOpened={getIsModalOpened}
-              open={!isEditAnomalyDetectionDataDialogOpen}
+              open={!modalEditAnomalyDetectionOpened}
               performanceGraphRef={
                 performanceGraphRef as unknown as MutableRefObject<HTMLDivElement | null>
               }
@@ -222,9 +222,6 @@ const ExportablePerformanceGraphWithTimeline = ({
             />
           }
           graphHeight={graphHeight}
-          isEditAnomalyDetectionDataDialogOpen={
-            isEditAnomalyDetectionDataDialogOpen
-          }
           isInViewport={isInViewport}
           limitLegendRows={limitLegendRows}
           modal={
@@ -243,7 +240,7 @@ const ExportablePerformanceGraphWithTimeline = ({
                 <>
                   {factorsData && (
                     <ExportablePerformanceGraphWithTimeline
-                      isEditAnomalyDetectionDataDialogOpen
+                      modalEditAnomalyDetectionOpened
                       graphHeight={180}
                       resizeEnvelopeData={factorsData}
                       resource={resource}
@@ -265,6 +262,7 @@ const ExportablePerformanceGraphWithTimeline = ({
               )}
             </EditAnomalyDetectionDataDialog>
           }
+          modalEditAnomalyDetectionOpened={modalEditAnomalyDetectionOpened}
           resizeEnvelopeData={resizeEnvelopeData}
           resource={resource as Resource}
           resourceDetailsUpdated={resourceDetailsUpdated}
