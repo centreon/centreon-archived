@@ -15356,7 +15356,7 @@ msgstr "Editar datos de detección de anomalías"
 #  msgid "Host Groups (simplified)"
 #  msgstr ""
 
-msgid "You have unsaved changed, do you want to proceed?"
+msgid "You have unsaved changes, do you want to proceed?"
 msgstr "No ha guardado los cambios, ¿quiere continuar?"
 
 #  msgid "Confirm"
