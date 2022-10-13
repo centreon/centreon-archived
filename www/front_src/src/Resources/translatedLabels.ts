@@ -271,7 +271,7 @@ export const labelMenageEnvelope = 'Manage envelope size';
 export const labelMenageEnvelopeSubTitle =
   'Changes to the envelope size will be applied immediately';
 export const labelSetToDefaultValue = 'Set to default value';
-export const labelPointsOutsideOfEnvelopeCount = 'points out of envelope';
+export const labelPointsOutsideOfEnvelopeCount = 'points outside of the envelope';
 export const labelClose = 'Close';
 export const labelEditAnomalyDetectionClosing =
   'You have unsaved changes, do you want to proceed?';
