@@ -187,12 +187,12 @@ class CentreonStatistics
         // Get contact groups relations defined
         $query = "SELECT COUNT(*) AS cg_relation FROM security_provider_contact_group_relation";
         $result = $this->dbConfig->query($query);
-        $cg_relation = $result->fetchRow()['cg_relation'];
+        $cgRelations = $result->fetchColumn();
 
          // Get ACL groups relations defined
         $query = " SELECT COUNT(*) AS acl_relation FROM security_provider_access_group_relation";
         $result = $this->dbConfig->query($query);
-        $acl_relation = $result->fetchRow()['acl_relation'];
+        $aclRelations = $result->fetchColumn();
 
         // Get authentication configuration
         $query = "SELECT * FROM provider_configuration WHERE is_active = '1'";
@@ -225,12 +225,12 @@ class CentreonStatistics
                     ],
                     'groups_mapping' => [
                         'is_enabled' => $groups_mapping['is_enabled'] ? true : false,
-                        'relation' => $cg_relation
+                        'relations' => $cgRelations
                     ],
                     'roles_mapping' => [
                         'is_enabled' => $roles_mapping['is_enabled'] ? true : false,
                         'apply_only_first_role' => $roles_mapping['apply_only_first_role'] ? true : false,
-                        'relation' => $acl_relation
+                        'relations' => $aclRelations
                     ],
                     'introspection_token_endpoint' => ($custom_configuration['introspection_token_endpoint']
                         ? true : false),
