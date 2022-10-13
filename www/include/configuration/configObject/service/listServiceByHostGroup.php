@@ -89,13 +89,8 @@ include "./include/common/autoNumLimit.php";
 $rows = 0;
 $tmp = null;
 $tmp2 = null;
-$searchHG = \HtmlAnalyzer::sanitizeAndRemoveTags(
-    $searchHG
-);
-$searchS = \HtmlAnalyzer::sanitizeAndRemoveTags(
-    $searchS
-);
-
+$searchHG = $searchHG ?? "";
+$searchS = $searchS ?? "";
 $aclFrom = "";
 $aclCond = "";
 $distinct = "";
