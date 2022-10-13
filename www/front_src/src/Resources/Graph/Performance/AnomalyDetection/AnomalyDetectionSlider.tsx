@@ -19,7 +19,7 @@ import {
   labelMenageEnvelopeSubTitle,
   labelPointsOutsideOfEnvelopeCount,
   labelSave,
-  labelSetToDefaultValue,
+  labelResetToDefaultValue,
 } from '../../../translatedLabels';
 
 import { countedRedCirclesAtom } from './anomalyDetectionAtom';
@@ -301,7 +301,7 @@ const AnomalyDetectionSlider = ({
           startIcon={<ResetIcon />}
           onClick={setToDefaultValue}
         >
-          {t(labelSetToDefaultValue)}
+          {t(labelResetToDefaultValue)}
         </Button>
       </div>
 
