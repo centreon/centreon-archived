@@ -288,7 +288,7 @@ export const duplicateWidgetDerivedAtom = atom(
 
 export const changeLayoutDerivedAtom = atom(
   null,
-  (_, setAtom, { columns, breakpoint }) => {
+  (_, setAtom, { breakpoint }) => {
     setAtom(breakpointAtom, breakpoint);
   },
 );

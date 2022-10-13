@@ -50,15 +50,11 @@ const Layout: FC = () => {
   const resize = (): void => {
     const newBreakpoint = getBreakpoint(window.innerWidth);
 
-    const newColumns = cond([
-      [equals('sm'), always(1)],
-      [equals('md'), always(2)],
-      [T, always(3)],
-    ])(newBreakpoint);
-
-    if (!equals(breakpoint, newBreakpoint)) {
-      changeWidgetsLayout({ breakpoint: newBreakpoint, columns: newColumns });
+    if (equals(breakpoint, newBreakpoint)) {
+      return;
     }
+
+    changeWidgetsLayout({ breakpoint: newBreakpoint });
   };
 
   useEffect(() => {
