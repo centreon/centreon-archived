@@ -15767,7 +15767,7 @@ msgid "Manage envelope size"
 msgstr "Gerenciar o tamanho do envelope"
 
 msgid "Set to default value"
-msgstr "Definir para o valor padrão
+msgstr "Definir para o valor padrão"
 
 msgid "points out of envelope"
 msgstr "pontos fora do envelope"
