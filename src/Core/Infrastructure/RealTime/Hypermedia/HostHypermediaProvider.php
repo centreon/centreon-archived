@@ -25,6 +25,7 @@ namespace Core\Infrastructure\RealTime\Hypermedia;
 
 use Centreon\Domain\Contact\Contact;
 use Core\Domain\RealTime\Model\ResourceTypes\HostResourceType;
+use Core\Infrastructure\Common\Api\HttpUrlTrait;
 
 class HostHypermediaProvider extends AbstractHypermediaProvider implements HypermediaProviderInterface
 {
@@ -34,7 +35,7 @@ class HostHypermediaProvider extends AbstractHypermediaProvider implements Hyper
                  URI_HOSTGROUP_CONFIGURATION = '/main.php?p=60102&o=c&hg_id={hostgroupId}',
                  URI_HOST_CATEGORY_CONFIGURATION = '/main.php?p=60104&o=c&hc_id={hostCategoryId}',
                  ENDPOINT_HOST_ACKNOWLEDGEMENT = 'centreon_application_acknowledgement_addhostacknowledgement',
-                 ENDPOINT_HOST_DETAILS = 'centreon_application_monitoring_resource_details_host',
+                 ENDPOINT_DETAILS = 'centreon_application_monitoring_resource_details_host',
                  ENDPOINT_SERVICE_DOWNTIME = 'monitoring.downtime.addHostDowntime',
                  ENDPOINT_HOST_NOTIFICATION_POLICY = 'configuration.host.notification-policy',
                  ENDPOINT_HOST_TIMELINE = 'centreon_application_monitoring_gettimelinebyhost',
@@ -76,7 +77,7 @@ class HostHypermediaProvider extends AbstractHypermediaProvider implements Hyper
                 self::ENDPOINT_HOST_NOTIFICATION_POLICY,
                 $urlParams
             ),
-            'details' => $this->generateEndpoint(self::ENDPOINT_HOST_DETAILS, $urlParams),
+            'details' => $this->generateEndpoint(self::ENDPOINT_DETAILS, $urlParams),
             'downtime' => $this->generateDowntimeEndpoint($urlParams),
             'acknowledgement' => $this->generateAcknowledgementEndpoint($urlParams)
         ];
