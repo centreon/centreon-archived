@@ -17146,7 +17146,7 @@ msgstr "Gérer la taille de l'enveloppe"
 msgid "Reset to default value"
 msgstr "Rétablir la valeur par défaut"
 
-msgid "points out of envelope"
+msgid "points outside of the envelope"
 msgstr "points hors enveloppe"
 
 msgid "Edit anomaly detection data"
