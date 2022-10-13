@@ -198,7 +198,7 @@ class CentreonStatistics
         $query = "SELECT * FROM provider_configuration WHERE is_active = '1'";
         $result = $this->dbConfig->query($query);
         while ($row = $result->fetch()) {
-            $customConfiguration = json_decode($row['customConfiguration'], true);
+            $customConfiguration = json_decode($row['custom_configuration'], true);
             if ($row['type'] === 'local') {
                 $data['local'] = $customConfiguration['password_security_policy'];
             } elseif ($row['type'] === 'web-sso') {
