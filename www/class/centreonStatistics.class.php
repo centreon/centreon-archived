@@ -255,4 +255,3 @@ class CentreonStatistics
         return $data;
     }
 }
-?>
