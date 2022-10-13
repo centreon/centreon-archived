@@ -73,6 +73,8 @@ const Layout: FC = () => {
     };
   }, [breakpoint]);
 
+  console.log(breakpoint, columns);
+
   return (
     <ResponsiveHeight>
       <Responsive.ParentSize>
@@ -81,7 +83,6 @@ const Layout: FC = () => {
             {isEditing && <EditionGrid height={height} width={width} />}
             <ReactGridLayout
               cols={columns}
-              compactType="horizontal"
               containerPadding={[0, 0]}
               layout={layout}
               resizeHandles={['s', 'e', 'se']}

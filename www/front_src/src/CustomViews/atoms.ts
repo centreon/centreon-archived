@@ -34,20 +34,6 @@ import {
   WidgetLayout,
 } from './models';
 
-export const columnsAtom = atom(3);
-
-export const breakpointAtom = atomWithDefault<Breakpoint>(() =>
-  getBreakpoint(window.innerWidth),
-);
-
-export const responsiveLayoutAtom = atom<ResponsiveWidgetLayout>({
-  [Breakpoint.sm]: [],
-  [Breakpoint.md]: [],
-  [Breakpoint.lg]: [],
-});
-
-export const isEditingAtom = atom(false);
-
 export const getBreakpoint = cond<[width: number], Breakpoint>([
   [gt(1000), always(Breakpoint.sm)],
   [gt(1500), always(Breakpoint.md)],
@@ -59,6 +45,22 @@ export const getDefaultColumnsByBreakpoint = cond([
   [equals('md'), always(2)],
   [T, always(3)],
 ]);
+
+export const breakpointAtom = atomWithDefault<Breakpoint>(() =>
+  getBreakpoint(window.innerWidth),
+);
+
+export const columnsAtom = atom((get) => {
+  return getDefaultColumnsByBreakpoint(get(breakpointAtom));
+});
+
+export const responsiveLayoutAtom = atom<ResponsiveWidgetLayout>({
+  [Breakpoint.sm]: [],
+  [Breakpoint.md]: [],
+  [Breakpoint.lg]: [],
+});
+
+export const isEditingAtom = atom(false);
 
 export const layoutByBreakpointDerivedAtom = atom(
   (get) => {
@@ -113,8 +115,8 @@ export const addWidgetDerivedAtom = atom(
     const title = `Widget ${length(currentLayout)}`;
 
     const widgetWidth = gt(widgetConfiguration?.widgetMinWidth || 1, columns)
-      ? widgetConfiguration?.widgetMinWidth || 1
-      : 1;
+      ? 1
+      : widgetConfiguration?.widgetMinWidth || 1;
 
     const baseWidgetLayout = {
       h: widgetConfiguration?.widgetMinHeight || 4,
@@ -286,8 +288,7 @@ export const duplicateWidgetDerivedAtom = atom(
 
 export const changeLayoutDerivedAtom = atom(
   null,
-  (get, setAtom, { columns, breakpoint }) => {
-    setAtom(columnsAtom, columns);
+  (_, setAtom, { columns, breakpoint }) => {
     setAtom(breakpointAtom, breakpoint);
   },
 );
