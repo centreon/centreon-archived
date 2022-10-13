@@ -274,5 +274,5 @@ export const labelUseDefaultValue = 'Set to default value';
 export const labelPointsOutsideOfEnvelopeCount = 'points out of envelope';
 export const labelClose = 'Close';
 export const labelEditAnomalyDetectionClosing =
-  'you have unsaved changed, do you want to proceed?';
+  'You have unsaved changes, do you want to proceed?';
 export const labelConfirm = 'Confirm';
