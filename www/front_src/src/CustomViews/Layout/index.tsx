@@ -73,8 +73,6 @@ const Layout: FC = () => {
     };
   }, [breakpoint]);
 
-  console.log(breakpoint, columns);
-
   return (
     <ResponsiveHeight>
       <Responsive.ParentSize>
