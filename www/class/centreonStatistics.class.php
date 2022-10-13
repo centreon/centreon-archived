@@ -186,30 +186,30 @@ class CentreonStatistics
         $query = "SELECT * FROM provider_configuration WHERE is_active = '1'";
         $result = $this->dbConfig->query($query);
         while ($row = $result->fetch()) {
-            $custom_configuration = json_decode($row['custom_configuration'], true);
+            $customConfiguration = json_decode($row['custom_configuration'], true);
             if ($row['type'] === 'local') {
-                $data['local'] = $custom_configuration['password_security_policy'];
+                $data['local'] = $customConfiguration['password_security_policy'];
             } elseif ($row['type'] === 'web-sso') {
                 $data['web-sso'] = [
                     'is_forced' => $row['is_forced'] ? true : false,
-                    'trusted_client_addresses' => count($custom_configuration['trusted_client_addresses']) ?? 0,
-                    'blacklist_client_addresses' => count($custom_configuration['blacklist_client_addresses']) ?? 0,
-                    'pattern_matching_login' => ($custom_configuration['pattern_matching_login'] ? true : false),
-                    'pattern_replace_login' => ($custom_configuration['pattern_replace_login'] ? true : false),
+                    'trusted_client_addresses' => count($customConfiguration['trusted_client_addresses']) ?? 0,
+                    'blacklist_client_addresses' => count($customConfiguration['blacklist_client_addresses']) ?? 0,
+                    'pattern_matching_login' => ($customConfiguration['pattern_matching_login'] ? true : false),
+                    'pattern_replace_login' => ($customConfiguration['pattern_replace_login'] ? true : false),
                 ];
             } elseif ($row['type'] === 'openid') {
                 $data['openid'] = [
                     'is_forced' => $row['is_forced'] ? true : false,
-                    'trusted_client_addresses' => count($custom_configuration['trusted_client_addresses']) ?? 0,
-                    'blacklist_client_addresses' => count($custom_configuration['blacklist_client_addresses']) ?? 0,
-                    'introspection_token_endpoint' => ($custom_configuration['introspection_token_endpoint']
+                    'trusted_client_addresses' => count($customConfiguration['trusted_client_addresses']) ?? 0,
+                    'blacklist_client_addresses' => count($customConfiguration['blacklist_client_addresses']) ?? 0,
+                    'introspection_token_endpoint' => ($customConfiguration['introspection_token_endpoint']
                         ? true : false),
-                    'userinfo_endpoint' => ($custom_configuration['userinfo_endpoint'] ? true : false),
-                    'endsession_endpoint' => ($custom_configuration['endsession_endpoint'] ? true : false),
-                    'connection_scopes' => count($custom_configuration['connection_scopes']) ?? 0,
-                    'authentication_type' => $custom_configuration['authentication_type'],
-                    'verify_peer' => ($custom_configuration['verify_peer'] ? true : false),
-                    'auto_import' => ($custom_configuration['auto_import'] ? true : false)
+                    'userinfo_endpoint' => ($customConfiguration['userinfo_endpoint'] ? true : false),
+                    'endsession_endpoint' => ($customConfiguration['endsession_endpoint'] ? true : false),
+                    'connection_scopes' => count($customConfiguration['connection_scopes']) ?? 0,
+                    'authentication_type' => $customConfiguration['authentication_type'],
+                    'verify_peer' => ($customConfiguration['verify_peer'] ? true : false),
+                    'auto_import' => ($customConfiguration['auto_import'] ? true : false)
                 ];
             }
         }
