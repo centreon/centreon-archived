@@ -97,18 +97,34 @@ $calcType = array("AVE" => _("Average"), "SOM" => _("Sum"), "MIN" => _("Min"), "
 /*
  * Meta Service list
  */
+$conditionStr = "";
+$metaStrParams = [];
+//binding query params for non admin  acl rules
+if (!$acl->admin && $metaStr) {
+    $metaStrList = explode(',', $metaStr);
+    foreach ($metaStrList as $index => $meta_id) {
+        $metaStrParams[':meta_' . $index] = $meta_id;
+    }
+    $queryParams = implode(',', array_keys($metaStrParams));
+
+    if ($search) {
+        $conditionStr = "AND meta_id IN (" . $queryParams . ")";
+    } else {
+        $conditionStr = "WHERE meta_id IN (" . $queryParams . ")";
+    }
+}
 if ($search) {
     $statement = $pearDB->prepare("SELECT * FROM meta_service " .
-        "WHERE meta_name LIKE :search " .
-        $acl->queryBuilder("AND", "meta_id", $metaStr) .
+        "WHERE meta_name LIKE :search " . $conditionStr .
         " ORDER BY meta_name LIMIT :offset, :limit");
     $statement->bindValue(':search', '%' . $search . '%', \PDO::PARAM_STR);
 } else {
-    $statement = $pearDB->prepare("SELECT * FROM meta_service " .
-        $acl->queryBuilder("WHERE", "meta_id", $metaStr) .
+    $statement = $pearDB->prepare("SELECT * FROM meta_service " . $conditionStr .
         " ORDER BY meta_name LIMIT :offset, :limit");
 }
-
+foreach ($metaStrParams as $key => $meta_id) {
+    $statement->bindValue($key, str_replace("'", "", $meta_id), \PDO::PARAM_INT);
+}
 $statement->bindValue(':offset', $num * $limit, \PDO::PARAM_INT);
 $statement->bindValue(':limit', $limit, \PDO::PARAM_INT);
 $statement->execute();
