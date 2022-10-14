@@ -192,21 +192,25 @@ class CentreonStatistics
             } elseif ($row['type'] === 'web-sso') {
                 $data['web-sso'] = [
                     'is_forced' => $row['is_forced'] ? true : false,
-                    'trusted_client_addresses' => count($customConfiguration['trusted_client_addresses']) ?? 0,
-                    'blacklist_client_addresses' => count($customConfiguration['blacklist_client_addresses']) ?? 0,
+                    'trusted_client_addresses'
+                        => isset($customConfiguration['trusted_client_addresses']) ? count() : 0,
+                    'blacklist_client_addresses'
+                        => isset($customConfiguration['blacklist_client_addresses']) ? count() : 0,
                     'pattern_matching_login' => ($customConfiguration['pattern_matching_login'] ? true : false),
                     'pattern_replace_login' => ($customConfiguration['pattern_replace_login'] ? true : false),
                 ];
             } elseif ($row['type'] === 'openid') {
                 $data['openid'] = [
                     'is_forced' => $row['is_forced'] ? true : false,
-                    'trusted_client_addresses' => count($customConfiguration['trusted_client_addresses']) ?? 0,
-                    'blacklist_client_addresses' => count($customConfiguration['blacklist_client_addresses']) ?? 0,
+                    'trusted_client_addresses'
+                        => isset($customConfiguration['trusted_client_addresses']) ? count() : 0,
+                    'blacklist_client_addresses'
+                        => isset($customConfiguration['blacklist_client_addresses']) ? count() : 0,
                     'introspection_token_endpoint' => ($customConfiguration['introspection_token_endpoint']
                         ? true : false),
                     'userinfo_endpoint' => ($customConfiguration['userinfo_endpoint'] ? true : false),
                     'endsession_endpoint' => ($customConfiguration['endsession_endpoint'] ? true : false),
-                    'connection_scopes' => count($customConfiguration['connection_scopes']) ?? 0,
+                    'connection_scopes' => isset($customConfiguration['connection_scopes']) ? count() : 0,
                     'authentication_type' => $customConfiguration['authentication_type'],
                     'verify_peer' => ($customConfiguration['verify_peer'] ? true : false),
                     'auto_import' => ($customConfiguration['auto_import'] ? true : false)
