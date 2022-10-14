@@ -3,7 +3,6 @@ import { MouseEvent, useEffect, useState } from 'react';
 import {
   or,
   and,
-  equals,
   not,
   isEmpty,
   omit,
@@ -21,7 +20,6 @@ import makeStyles from '@mui/styles/makeStyles';
 import SettingsIcon from '@mui/icons-material/Settings';
 
 import { IconButton, useRequest, useSnackbar } from '@centreon/ui';
-import { ThemeMode } from '@centreon/ui-context';
 
 import {
   labelSaveFilter,
@@ -48,23 +46,6 @@ import CreateFilterDialog from './CreateFilterDialog';
 const areValuesEqual = pipe(symmetricDifference, isEmpty) as (a, b) => boolean;
 
 const useStyles = makeStyles((theme: Theme) => ({
-  menuPaper: {
-    '& .MuiMenuItem-root': {
-      '&:hover, &.Mui-selected, &.Mui-selected:hover': {
-        background: equals(theme.palette.mode, ThemeMode.dark)
-          ? theme.palette.primary.dark
-          : theme.palette.primary.light,
-        color: equals(theme.palette.mode, ThemeMode.dark)
-          ? theme.palette.common.white
-          : theme.palette.primary.main,
-      },
-      fontSize: theme.typography.body2.fontSize,
-    },
-    backgroundColor: theme.palette.background.default,
-    border: 'none',
-    borderRadius: 0,
-    boxShadow: theme.shadows[3],
-  },
   save: {
     alignItems: 'center',
     display: 'grid',
@@ -189,7 +170,6 @@ const SaveFilterMenu = (): JSX.Element => {
       <Menu
         keepMounted
         anchorEl={menuAnchor}
-        classes={{ paper: classes.menuPaper }}
         open={Boolean(menuAnchor)}
         onClose={closeSaveFilterMenu}
       >
