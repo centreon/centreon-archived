@@ -2,6 +2,16 @@
 
 if [ "$1" = "configure" ] ; then
     update-alternatives --set php /usr/bin/php8.1
+
+    # Set locales on system to use in translation
+    sed -i \
+        -e '/^#.* en_US.UTF-8 /s/^#//' \
+        -e '/^#.* fr_FR.UTF-8 /s/^#//' \
+        -e '/^#.* pt_PT.UTF-8 /s/^#//' \
+        -e '/^#.* pt_BR.UTF-8 /s/^#//' \
+        -e '/^#.* es_ES.UTF-8 /s/^#//' \
+        /etc/locale.gen && \
+    locale-gen
 fi
 
 exit 0
