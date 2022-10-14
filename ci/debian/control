@@ -33,7 +33,7 @@ Description: Centreon is a network, system, applicative supervision and monitori
 
 Package: centreon-central
 Architecture: all
-Depends: 
+Depends:
     centreon-poller-centreon-engine (>= ${centreon:version}~),
     centreon-license-manager (>= ${centreon:version}~),
     centreon-pp-manager (>= ${centreon:version}~),
@@ -99,7 +99,9 @@ Depends:
     centreon-common (>= ${centreon:version}~),
     centreon-perl-libs (>= ${centreon:version}~),
     php8.1,
-    php8.1-cli
+    php8.1-cli,
+    locales,
+    gettext
 Description: Centreon installation entry point.
 
 Package: centreon-web
@@ -182,7 +184,7 @@ Description: This package contains Centreon Trap engine
 
 Package: centreon-poller-centreon-engine
 Architecture: any
-Depends: 
+Depends:
     centreon-broker (>= ${centreon:version}~),
     centreon-engine (>= ${centreon:version}~),
     centreon-gorgone (>= ${centreon:version}~),
@@ -208,7 +210,7 @@ Description: This package add rights and default directories for a poller
 
 Package: centreon-plugins-sudoers
 Architecture: all
-Depends: 
+Depends:
     centreon-common (>= ${centreon:version}~),
     centreon-engine (>= ${centreon:version}~),
     centreon-gorgone (>= ${centreon:version}~),
