@@ -4,7 +4,7 @@ Priority: optional
 Maintainer: Luiz Costa <me@luizgustavo.pro.br>
 Standards-Version: 4.5.0
 Homepage: https://www.centreon.com
-Build-Depends: 
+Build-Depends:
     debhelper-compat (=12),
     php8.0-curl,
     php8.0-intl,
@@ -15,7 +15,7 @@ Build-Depends:
 
 Package: centreon
 Architecture: all
-Depends: 
+Depends:
     centreon-central (>= ${centreon:version}~),
     centreon-database (>= ${centreon:version}~)
 Description: Centreon is a network, system, applicative supervision and monitoring tool,
@@ -32,7 +32,7 @@ Description: Centreon is a network, system, applicative supervision and monitori
 
 Package: centreon-central
 Architecture: all
-Depends: 
+Depends:
     centreon-poller-centreon-engine (>= ${centreon:version}~),
     centreon-license-manager (>= ${centreon:version}~),
     centreon-pp-manager (>= ${centreon:version}~),
@@ -62,7 +62,7 @@ Description: The package contains base configuration for Centreon Engine and Cen
 
 Package: centreon-poller
 Architecture: all
-Depends: 
+Depends:
     centreon-common (>= ${centreon:version}~),
     centreon-poller-centreon-engine (>= ${centreon:version}~),
     centreon-trap (>= ${centreon:version}~),
@@ -95,16 +95,18 @@ Description: This package add rights and default directories for a poller
 
 Package: centreon-web-common
 Architecture: all
-Depends: 
+Depends:
     centreon-common (>= ${centreon:version}~),
     centreon-perl-libs (>= ${centreon:version}~),
     php8.0,
-    php8.0-cli
+    php8.0-cli,
+    locales,
+    gettext
 Description: Centreon installation entry point.
 
 Package: centreon-web
 Architecture: all
-Depends: 
+Depends:
     ${misc:Depends},
     lsb-release,
     centreon-web-common (>= ${centreon:version}~),
@@ -129,7 +131,7 @@ Suggests: nagios-images
 Description: This package contains WebUI files.
 
 Package: centreon-perl-libs
-Depends:    
+Depends:
     ${misc:Depends},
     centreon-common (>= ${centreon:version}~),
     libconfig-inifiles-perl,
@@ -150,7 +152,7 @@ Description: Base package for all Centreon installations.
 
 Package: centreon-database
 Architecture: all
-Depends: 
+Depends:
     centreon-common (>= ${centreon:version}~),
     mariadb-server,
     ${misc:Depends}
@@ -158,7 +160,7 @@ Description: Install a database server optimized for use with Centreon.
 
 Package: centreon-web-apache
 Architecture: all
-Depends: 
+Depends:
     apache2,
     php8.0-fpm,
     centreon-web (>= ${centreon:version}~),
@@ -169,7 +171,7 @@ Description: Centreon is a network, system, applicative supervision and monitori
 
 Package: centreon-trap
 Architecture: all
-Depends: 
+Depends:
     centreon-common (>= ${centreon:version}~),
     snmptrapd,
     snmpd,
@@ -178,7 +180,7 @@ Description: This package contains Centreon Trap engine
 
 Package: centreon-poller-centreon-engine
 Architecture: any
-Depends: 
+Depends:
     centreon-broker (>= ${centreon:version}~),
     centreon-engine (>= ${centreon:version}~),
     centreon-gorgone (>= ${centreon:version}~),
@@ -205,7 +207,7 @@ Description: This package add rights and default directories for a poller
 
 Package: centreon-plugins-sudoers
 Architecture: all
-Depends: 
+Depends:
     centreon-common (>= ${centreon:version}~),
     centreon-engine (>= ${centreon:version}~),
     centreon-gorgone (>= ${centreon:version}~),
