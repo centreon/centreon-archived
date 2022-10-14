@@ -68,11 +68,11 @@ if (!$centreon->user->admin && $hcString != "''") {
         $hcQueryBinds[":hc_" . $key] = $hcId;
     }
     $hcQueryBindsString = implode(",", array_keys($hcQueryBinds));
-    $hcFilter = (is_null($SearchTool) ? 'WHERE' : 'AND') . " hc_id IN ($hcQueryBindsString)";
+    $hcFilter = (is_null($SearchTool) ? ' WHERE' : ' AND') . " hc_id IN ($hcQueryBindsString)";
 }
 
 // Hostgroup list
-$query = "SELECT SQL_CALC_FOUND_ROWS hc_id, hc_name, hc_alias, level, hc_activate FROM hostcategories " .
+$query = "SELECT SQL_CALC_FOUND_ROWS hc_id, hc_name, hc_alias, level, hc_activate FROM hostcategories" .
     $SearchTool . $hcFilter . " ORDER BY hc_name LIMIT :offset_, :limit";
 $statement = $pearDB->prepare($query);
 $statement->bindValue(':offset_', (int) $num * (int) $limit, \PDO::PARAM_INT);
