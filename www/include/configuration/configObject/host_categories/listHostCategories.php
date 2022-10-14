@@ -57,19 +57,36 @@ if (isset($_POST['searchH']) || isset($_GET['searchH'])) {
 }
 
 if ($search) {
-    $SearchTool = " WHERE (hc_name LIKE '%" . $pearDB->escape($search) . "%' OR hc_alias LIKE '%" .
-        $pearDB->escape($search) . "%')";
+    $SearchTool = " WHERE (hc_name LIKE :hc_name OR hc_alias LIKE :hc_alias)";
 }
 
 $hcFilter = "";
 if (!$centreon->user->admin && $hcString != "''") {
-    $hcFilter = $acl->queryBuilder(is_null($SearchTool) ? 'WHERE' : 'AND', 'hc_id', $hcString);
+    $hcStringExploded = explode(",", $hcString);
+    $hcQueryBinds = [];
+    foreach ($hcStringExploded as $key => $hcId) {
+        $hcQueryBinds[":hc_" . $key] = $hcId;
+    }
+    $hcQueryBindsString = implode(",", array_keys($hcQueryBinds));
+    $hcFilter = (is_null($SearchTool) ? 'WHERE' : 'AND') . " hc_id IN ($hcQueryBindsString)";
 }
 
 // Hostgroup list
 $query = "SELECT SQL_CALC_FOUND_ROWS hc_id, hc_name, hc_alias, level, hc_activate FROM hostcategories " .
-    $SearchTool . $hcFilter . " ORDER BY hc_name LIMIT " . $num * $limit . ", " . $limit;
-$DBRESULT = $pearDB->query($query);
+    $SearchTool . $hcFilter . " ORDER BY hc_name LIMIT :offset_, :limit";
+$statement = $pearDB->prepare($query);
+$statement->bindValue(':offset_', (int) $num * (int) $limit, \PDO::PARAM_INT);
+$statement->bindValue(':limit', (int) $limit, \PDO::PARAM_INT);
+if ($search) {
+    $statement->bindValue(':hc_name', "%" . $search . "%", \PDO::PARAM_STR);
+    $statement->bindValue(':hc_alias', "%" . $search . "%", \PDO::PARAM_STR);
+}
+if (!$centreon->user->admin && $hcString != "''") {
+    foreach ($hcQueryBinds as $key => $hcId) {
+        $statement->bindValue($key, (int) $hcId, \PDO::PARAM_INT);
+    }
+}
+$statement->execute();
 
 $search = tidySearchKey($search, $advanced_search);
 $rows = $pearDB->query("SELECT FOUND_ROWS()")->fetchColumn();
@@ -110,7 +127,7 @@ $form->addElement('submit', 'Search', _("Search"), $attrBtnSuccess);
 $elemArr = array();
 $centreonToken = createCSRFToken();
 
-for ($i = 0; $hc = $DBRESULT->fetch(); $i++) {
+for ($i = 0; $hc = $statement->fetch(\PDO::FETCH_ASSOC); $i++) {
     $selectedElements = $form->addElement('checkbox', "select[" . $hc['hc_id'] . "]");
     $moptions = "";
     if ($hc["hc_activate"]) {
