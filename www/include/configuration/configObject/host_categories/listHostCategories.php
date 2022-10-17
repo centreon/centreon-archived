@@ -56,14 +56,14 @@ if (isset($_POST['searchH']) || isset($_GET['searchH'])) {
     $search = $centreon->historySearch[$url]['search'] ?? null;
 }
 
-if ($search) {
+if ($search !== '') {
     $SearchTool = " WHERE (hc_name LIKE :hc_name OR hc_alias LIKE :hc_alias)";
 }
 
 $hcFilter = "";
+$hcQueryBinds = [];
 if (!$centreon->user->admin && $hcString != "''") {
     $hcStringExploded = explode(",", $hcString);
-    $hcQueryBinds = [];
     foreach ($hcStringExploded as $key => $hcId) {
         $hcQueryBinds[":hc_" . $key] = $hcId;
     }
@@ -77,14 +77,12 @@ $query = "SELECT SQL_CALC_FOUND_ROWS hc_id, hc_name, hc_alias, level, hc_activat
 $statement = $pearDB->prepare($query);
 $statement->bindValue(':offset', (int) $num * (int) $limit, \PDO::PARAM_INT);
 $statement->bindValue(':limit', (int) $limit, \PDO::PARAM_INT);
-if ($search) {
+if ($search !== '') {
     $statement->bindValue(':hc_name', "%" . $search . "%", \PDO::PARAM_STR);
     $statement->bindValue(':hc_alias', "%" . $search . "%", \PDO::PARAM_STR);
 }
-if (!$centreon->user->admin && $hcString != "''") {
-    foreach ($hcQueryBinds as $key => $hcId) {
-        $statement->bindValue($key, (int) $hcId, \PDO::PARAM_INT);
-    }
+foreach ($hcQueryBinds as $key => $hcId) {
+    $statement->bindValue($key, (int) $hcId, \PDO::PARAM_INT);
 }
 $statement->execute();
 
