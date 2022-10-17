@@ -56,13 +56,16 @@ if (isset($_POST['searchTM']) || isset($_GET['searchTM'])) {
 
 $searchTool = null;
 if ($search) {
-    $searchTool = " WHERE (traps_group_name LIKE '%" . $search . "%')";
+    $searchTool = " WHERE (traps_group_name LIKE :search )";
 }
-
-$dbResult = $pearDB->query(
-    "SELECT SQL_CALC_FOUND_ROWS * FROM traps_group " . $searchTool .
-    " ORDER BY traps_group_name LIMIT " . $num * $limit . ", " . $limit
-);
+$statement = $pearDB->prepare("SELECT SQL_CALC_FOUND_ROWS * FROM traps_group " . $searchTool .
+    " ORDER BY traps_group_name LIMIT  :offset, :limit");
+if ($search) {
+    $statement->bindValue(':search', '%' . $search . '%', \PDO::PARAM_STR);
+}
+$statement->bindValue(':offset', (int) $num * (int) $limit, \PDO::PARAM_INT);
+$statement->bindValue(':limit', $limit, \PDO::PARAM_INT);
+$statement->execute();
 
 $rows = $pearDB->query("SELECT FOUND_ROWS()")->fetchColumn();
 
@@ -94,7 +97,7 @@ $form->addElement('submit', 'Search', _("Search"), $attrBtnSuccess);
 
 // Fill a tab with a multidimensional Array we put in $tpl
 $elemArr = array();
-for ($i = 0; $group = $dbResult->fetch(); $i++) {
+for ($i = 0; $group = $statement->fetch(\PDO::FETCH_ASSOC); $i++) {
     $moptions = "";
     $selectedElements = $form->addElement('checkbox', "select[" . $group['traps_group_id'] . "]");
     $moptions = "&nbsp;<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) " .
