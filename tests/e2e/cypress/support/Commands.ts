@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-namespace */
+
 import 'cypress-wait-until';
 import { refreshButton } from '../integration/Resources-status/common';
 import { apiActionV1, executeActionViaClapi, ActionClapi } from '../commons';
