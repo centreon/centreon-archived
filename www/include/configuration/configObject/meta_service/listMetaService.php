@@ -102,8 +102,8 @@ $metaStrParams = [];
 //binding query params for non admin  acl rules
 if (!$acl->admin && $metaStr) {
     $metaStrList = explode(',', $metaStr);
-    foreach ($metaStrList as $index => $meta_id) {
-        $metaStrParams[':meta_' . $index] = $meta_id;
+    foreach ($metaStrList as $index => $metaId) {
+        $metaStrParams[':meta_' . $index] = (int) str_replace("'", "", $metaId);
     }
     $queryParams = implode(',', array_keys($metaStrParams));
 
@@ -113,7 +113,7 @@ if (!$acl->admin && $metaStr) {
         $conditionStr = "WHERE meta_id IN (" . $queryParams . ")";
     }
 }
-if ($search) {
+if ($search != "") {
     $statement = $pearDB->prepare("SELECT * FROM meta_service " .
         "WHERE meta_name LIKE :search " . $conditionStr .
         " ORDER BY meta_name LIMIT :offset, :limit");
@@ -122,8 +122,8 @@ if ($search) {
     $statement = $pearDB->prepare("SELECT * FROM meta_service " . $conditionStr .
         " ORDER BY meta_name LIMIT :offset, :limit");
 }
-foreach ($metaStrParams as $key => $meta_id) {
-    $statement->bindValue($key, str_replace("'", "", $meta_id), \PDO::PARAM_INT);
+foreach ($metaStrParams as $key => $metaId) {
+    $statement->bindValue($key, $metaId, \PDO::PARAM_INT);
 }
 $statement->bindValue(':offset', $num * $limit, \PDO::PARAM_INT);
 $statement->bindValue(':limit', $limit, \PDO::PARAM_INT);
