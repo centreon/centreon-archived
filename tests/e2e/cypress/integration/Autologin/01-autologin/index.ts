@@ -17,17 +17,12 @@ beforeEach(() => {
     method: 'GET',
     url: '/centreon/include/common/userTimezone.php',
   }).as('getTimeZone');
-  cy.intercept({
-    method: 'GET',
-    url: 'http://0.0.0.0:4000/centreon/api/latest/users/filters/events-view?page=1&limit=100',
-  }).as('getfilterData');
 });
 
 Given('an Administrator is logged in the platform', () => {
   return cy
     .loginByTypeOfUser({ jsonName: 'admin', preserveToken: true })
     .wait('@getNavigationList')
-    .wait('@getfilterData')
     .navigateTo({
       page: 'Centreon UI',
       rootItemNumber: 4,
