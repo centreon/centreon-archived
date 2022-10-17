@@ -59,8 +59,8 @@ $conditionStr = "";
 $sgStrParams = [];
 if (!$acl->admin && $sgString) {
     $sgStrList = explode(',', $sgString);
-    foreach ($sgStrList as $index => $sg_id) {
-        $sgStrParams[':sg_' . $index] = $sg_id;
+    foreach ($sgStrList as $index => $sgId) {
+        $sgStrParams[':sg_' . $index] = (int) str_replace("'", "", $sgId);
     }
     $queryParams = implode(',', array_keys($sgStrParams));
 
@@ -71,22 +71,20 @@ if (!$acl->admin && $sgString) {
     }
 }
 
-if ($search) {
-    $statement = $pearDB->prepare("SELECT SQL_CALC_FOUND_ROWS sg_id, sg_name, sg_alias, sg_activate FROM servicegroup " .
-        "WHERE (sg_name LIKE :search " .
-        "OR sg_alias LIKE :search) " . $conditionStr .
+if ($search != "") {
+    $statement = $pearDB->prepare("SELECT SQL_CALC_FOUND_ROWS sg_id, sg_name, sg_alias, sg_activate" .
+        " FROM servicegroup WHERE (sg_name LIKE :search  OR sg_alias LIKE :search) " . $conditionStr .
         " ORDER BY sg_name LIMIT :offset, :limit");
 
     $statement->bindValue(':search', '%' . $search . '%', \PDO::PARAM_STR);
 } else {
-    $statement = $pearDB->prepare("SELECT SQL_CALC_FOUND_ROWS sg_id, sg_name, sg_alias, sg_activate FROM servicegroup "
-        . $conditionStr .
-        " ORDER BY sg_name LIMIT :offset, :limit");
+    $statement = $pearDB->prepare("SELECT SQL_CALC_FOUND_ROWS sg_id, sg_name, sg_alias, sg_activate" .
+        " FROM servicegroup " . $conditionStr . " ORDER BY sg_name LIMIT :offset, :limit");
 }
-foreach ($sgStrParams as $key => $sg_id) {
-    $statement->bindValue($key, str_replace("'", "", $sg_id), \PDO::PARAM_INT);
+foreach ($sgStrParams as $key => $sgId) {
+    $statement->bindValue($key, $sgId, \PDO::PARAM_INT);
 }
-$statement->bindValue(':offset', $num * $limit, \PDO::PARAM_INT);
+$statement->bindValue(':offset', (int) $num * (int) $limit, \PDO::PARAM_INT);
 $statement->bindValue(':limit', $limit, \PDO::PARAM_INT);
 $statement->execute();
 $rows = $pearDB->query("SELECT FOUND_ROWS()")->fetchColumn();
