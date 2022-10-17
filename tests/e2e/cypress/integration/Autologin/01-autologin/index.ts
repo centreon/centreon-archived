@@ -7,6 +7,7 @@ let link = '';
 before(() => {
   initializeConfigACLAndGetLoginPage();
 });
+
 beforeEach(() => {
   cy.intercept({
     method: 'GET',
@@ -68,6 +69,7 @@ Then(
       });
   },
 );
+
 Given(
   'an authenticated user and autologin configuration menus can be accessed',
   () => {
