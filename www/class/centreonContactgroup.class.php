@@ -434,7 +434,7 @@ class CentreonContactgroup
                     // Test is the group has not been moved or deleted in ldap
                     if (
                         (empty($row['cg_ldap_dn']) || false === $ldapConn->getEntry($row['cg_ldap_dn']))
-                        && $ldapConn->getDs() instanceof \LDAP\Connection
+                        && is_resource($ldapConn->getDs())
                         && ldap_errno($ldapConn->getDs()) != 3
                     ) {
                         $dn = $ldapConn->findGroupDn($row['cg_name']);
