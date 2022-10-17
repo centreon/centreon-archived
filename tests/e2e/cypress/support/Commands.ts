@@ -119,6 +119,18 @@ Cypress.Commands.add(
 );
 
 Cypress.Commands.add(
+  'getContainsFromProfileIcon',
+  (targetedMenu: string): Cypress.Chainable => {
+    return cy
+      .get('header')
+      .get('svg[aria-label="Profile"]')
+      .click()
+      .get('div[role="tooltip"]')
+      .contains(targetedMenu);
+  },
+);
+
+Cypress.Commands.add(
   'navigateTo',
   ({ rootItemNumber, subMenu, page }): void => {
     if (subMenu) {
@@ -177,6 +189,7 @@ declare global {
     interface Chainable {
       executeCommandsViaClapi: (fixtureFile: string) => Cypress.Chainable;
       getByLabel: ({ tag, label }: GetByLabelProps) => Cypress.Chainable;
+      getContainsFromProfileIcon: (targetedMenu: string) => Cypress.Chainable;
       getFormFieldByIndex: (rootItemNumber: number) => Cypress.Chainable;
       getIframeBody: () => Cypress.Chainable;
       hoverRootMenuItem: (rootItemNumber: number) => Cypress.Chainable;

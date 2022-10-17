@@ -48,16 +48,12 @@ Then(
   'any user of the plateform should be able to generate an autologin link',
   () => {
     return cy
-      .get('header')
-      .get('svg[aria-label="Profile"]')
+      .getContainsFromProfileIcon('Edit profile')
       .click()
-      .get('div[role="tooltip"]')
-      .contains('Edit profile')
       .visit('/centreon/main.php?p=50104&o=c')
       .wait('@getTimeZone')
       .getIframeBody()
-      .find('form')
-      .find('#tab1')
+      .find('form #tab1')
       .within(() => {
         cy.get('input[name="contact_gen_akey"]').should('be.visible');
         cy.get('#aKey').invoke('val').should('not.be.undefined');
@@ -73,16 +69,11 @@ Given(
       .reload()
       .loginByTypeOfUser({ jsonName: 'user', preserveToken: true })
       .wait('@getNavigationList')
-      .get('header')
-      .get('svg[aria-label="Profile"]')
-      .click()
-      .get('div[role="tooltip"]')
-      .contains('Edit profile')
+      .getContainsFromProfileIcon('Edit profile')
       .visit('/centreon/main.php?p=50104&o=c')
       .wait('@getTimeZone')
       .getIframeBody()
-      .find('form')
-      .find('#tab1')
+      .find('form #tab1')
       .within(() => {
         cy.get('input[name="contact_gen_akey"]').should('be.visible');
         cy.get('#aKey').should('be.visible');
@@ -93,8 +84,8 @@ Given(
 When('a user generate his autologin key', () => {
   return cy
     .getIframeBody()
-    .find('form')
-    .find('#tab1 table tbody tr')
+    .find('form #tab1 table tbody tr')
+
     .within(() => {
       cy.get('input[name="contact_gen_akey"]').click();
       cy.get('#aKey').invoke('val').should('not.be.undefined');
@@ -104,28 +95,21 @@ When('a user generate his autologin key', () => {
 Then('the key is properly generated and displayed', () => {
   return cy
     .getIframeBody()
-    .find('form')
-    .find('#tab1 table tbody tr')
+    .find('form #tab1 table tbody tr')
     .within(() => {
       cy.get('input[name="contact_autologin_key"]')
         .invoke('val')
         .should('not.be.undefined');
     })
     .getIframeBody()
-    .find('form')
-    .find('input[name="submitC"]')
+    .find('form input[name="submitC"]')
     .eq(0)
     .click()
     .reload();
 });
 
 Given('a User with autologin key generated', () => {
-  cy.get('header')
-    .get('svg[aria-label="Profile"]')
-    .click()
-    .get('div[role="tooltip"]')
-    .get('textarea#autologin-input')
-    .should('be.exist');
+  cy.getContainsFromProfileIcon('Copy autologin link').should('be.exist');
 });
 
 When('a User generates an autologin link', () => {
@@ -139,20 +123,14 @@ When('a User generates an autologin link', () => {
     .getIframeBody()
     .find('form')
     .should('be.exist')
-    .get('header')
-    .get('svg[aria-label="Profile"]')
-    .click()
-    .get('div[role="tooltip"]')
+    .getContainsFromProfileIcon('Copy autologin link')
     .get('textarea#autologin-input')
     .invoke('text')
     .should('not.be.undefined');
 });
 
 Then('the autologin link is copied in the clipboard', () => {
-  cy.get('header')
-    .get('svg[aria-label="Profile"]')
-    .click()
-    .get('div[role="tooltip"]')
+  cy.getContainsFromProfileIcon('Copy autologin link')
     .get('textarea#autologin-input')
     .invoke('text')
     .then((text) => {
@@ -164,10 +142,7 @@ Then('the autologin link is copied in the clipboard', () => {
 Given(
   'a plateform with autologin enabled and a user with autologin key generated and a user with autologin link generated',
   () => {
-    cy.get('header')
-      .get('svg[aria-label="Profile"]')
-      .click()
-      .get('div[role="tooltip"]')
+    cy.getContainsFromProfileIcon('Copy autologin link')
       .get('textarea#autologin-input')
       .should('not.be.undefined')
       .logout()
