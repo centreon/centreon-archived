@@ -73,9 +73,9 @@ if (!$centreon->user->admin && $hcString != "''") {
 
 // Hostgroup list
 $query = "SELECT SQL_CALC_FOUND_ROWS hc_id, hc_name, hc_alias, level, hc_activate FROM hostcategories" .
-    $SearchTool . $hcFilter . " ORDER BY hc_name LIMIT :offset_, :limit";
+    $SearchTool . $hcFilter . " ORDER BY hc_name LIMIT :offset, :limit";
 $statement = $pearDB->prepare($query);
-$statement->bindValue(':offset_', (int) $num * (int) $limit, \PDO::PARAM_INT);
+$statement->bindValue(':offset', (int) $num * (int) $limit, \PDO::PARAM_INT);
 $statement->bindValue(':limit', (int) $limit, \PDO::PARAM_INT);
 if ($search) {
     $statement->bindValue(':hc_name', "%" . $search . "%", \PDO::PARAM_STR);
