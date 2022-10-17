@@ -129,13 +129,16 @@ const StatusColumn = ({
 
     const statusName = row.status.name;
 
+    const lowerLetter = (name: string): string =>
+      name.charAt(0) + name.slice(1).toLocaleLowerCase();
+
     return (
       <div className={classes.statusColumn}>
         {isHovered ? (
           <StatusColumnOnHover actions={actions} row={row} />
         ) : (
           <StatusChip
-            label={t(statusName)}
+            label={lowerLetter(t(statusName))}
             severityCode={row.status.severity_code}
             style={{ height: 20, width: '100%' }}
           />
