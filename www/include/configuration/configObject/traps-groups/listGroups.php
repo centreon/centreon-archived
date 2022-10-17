@@ -63,7 +63,7 @@ $statement = $pearDB->prepare("SELECT SQL_CALC_FOUND_ROWS * FROM traps_group " .
 if ($search) {
     $statement->bindValue(':search', '%' . $search . '%', \PDO::PARAM_STR);
 }
-$statement->bindValue(':offset', $num * $limit, \PDO::PARAM_INT);
+$statement->bindValue(':offset', (int) $num * (int) $limit, \PDO::PARAM_INT);
 $statement->bindValue(':limit', $limit, \PDO::PARAM_INT);
 $statement->execute();
 
