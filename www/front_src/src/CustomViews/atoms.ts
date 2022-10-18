@@ -41,9 +41,9 @@ export const getBreakpoint = cond<[width: number], Breakpoint>([
 ]);
 
 export const getDefaultColumnsByBreakpoint = cond([
-  [equals('sm'), always(1)],
-  [equals('md'), always(2)],
-  [T, always(3)],
+  [equals('sm'), always(3)],
+  [equals('md'), always(6)],
+  [T, always(12)],
 ]);
 
 export const breakpointAtom = atomWithDefault<Breakpoint>(() =>
@@ -114,14 +114,15 @@ export const addWidgetDerivedAtom = atom(
 
     const title = `Widget ${length(currentLayout)}`;
 
-    const widgetWidth = gt(widgetConfiguration?.widgetMinWidth || 1, columns)
-      ? 1
-      : widgetConfiguration?.widgetMinWidth || 1;
+    const widgetMinWith = widgetConfiguration?.widgetMinWidth || columns;
+
+    const widgetWidth = gt(widgetMinWith, columns) ? columns : widgetMinWith;
 
     const baseWidgetLayout = {
       h: widgetConfiguration?.widgetMinHeight || 4,
       i: title,
       minH: widgetConfiguration?.widgetMinHeight || 4,
+      minW: widgetConfiguration?.widgetMinWidth || 3,
       static: false,
       w: widgetWidth,
       widgetConfiguration,
@@ -231,7 +232,7 @@ interface SetWidgetOptionsProps {
 
 export const setWidgetOptionsDerivedAtom = atom(
   null,
-  (get, setAtom, { title, options }: SetWidgetOptionsProps) => {
+  (_, setAtom, { title, options }: SetWidgetOptionsProps) => {
     const updateWidget = (widgets): WidgetLayout | undefined => {
       const widget = find<WidgetLayout>(
         propEq('i', title),

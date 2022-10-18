@@ -3,7 +3,7 @@ import { FC, useEffect } from 'react';
 import { Responsive } from '@visx/visx';
 import GridLayout, { WidthProvider } from 'react-grid-layout';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
-import { always, cond, equals, find, gt, map, propEq, T } from 'ramda';
+import { equals, find, map, propEq } from 'ramda';
 
 import { Responsive as ResponsiveHeight } from '@centreon/ui';
 
@@ -14,7 +14,6 @@ import {
   getBreakpoint,
   isEditingAtom,
   layoutByBreakpointDerivedAtom,
-  responsiveLayoutAtom,
 } from '../atoms';
 
 import 'react-grid-layout/css/styles.css';
@@ -27,10 +26,9 @@ const ReactGridLayout = WidthProvider(GridLayout);
 
 const Layout: FC = () => {
   const [layout, setLayout] = useAtom(layoutByBreakpointDerivedAtom);
-  const [columns, setColumn] = useAtom(columnsAtom);
-  const [breakpoint, setBreakpoint] = useAtom(breakpointAtom);
+  const columns = useAtomValue(columnsAtom);
+  const breakpoint = useAtomValue(breakpointAtom);
   const isEditing = useAtomValue(isEditingAtom);
-  const responsiveLayout = useAtomValue(responsiveLayoutAtom);
   const changeWidgetsLayout = useSetAtom(changeLayoutDerivedAtom);
 
   const changeLayout = (newLayout): void => {
@@ -77,7 +75,7 @@ const Layout: FC = () => {
             {isEditing && <EditionGrid height={height} width={width} />}
             <ReactGridLayout
               cols={columns}
-              containerPadding={[0, 0]}
+              containerPadding={[4, 0]}
               layout={layout}
               resizeHandles={['s', 'e', 'se']}
               rowHeight={30}

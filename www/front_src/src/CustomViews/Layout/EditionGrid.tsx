@@ -21,22 +21,13 @@ const EditionGrid: FC<Props> = ({ width, height }) => {
   const xScale = useMemo(
     () =>
       scaleLinear({
-        domain: [0, 100],
+        domain: [0, 12],
         range: [0, width],
       }),
-    [],
+    [width],
   );
 
-  const yScale = useMemo(
-    () =>
-      scaleLinear({
-        domain: [0, 100],
-        range: [0, height],
-      }),
-    [],
-  );
-
-  const tick = 100 / columns;
+  const tick = 12 / columns;
 
   const xTickValues = Array(columns)
     .fill(0)
@@ -49,13 +40,6 @@ const EditionGrid: FC<Props> = ({ width, height }) => {
         scale={xScale}
         stroke={theme.palette.divider}
         tickValues={xTickValues}
-        width={width}
-      />
-      <Grid.GridRows
-        height={height}
-        numTicks={5}
-        scale={yScale}
-        stroke={theme.palette.divider}
         width={width}
       />
     </svg>
