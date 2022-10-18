@@ -118,6 +118,7 @@ class CentreonCentbrokerCfg extends CentreonObject
             } elseif (!preg_match('/^config_/', $params[1])) {
                 $parametersWithoutPrefix = [
                     "event_queue_max_size",
+                    "event_queues_total_size",
                     "cache_directory",
                     "stats_activate",
                     "daemon",
