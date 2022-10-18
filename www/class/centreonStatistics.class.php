@@ -205,9 +205,11 @@ class CentreonStatistics
                 $data['web-sso'] = [
                     'is_forced' => $row['is_forced'] ? true : false,
                     'trusted_client_addresses'
-                        => isset($customConfiguration['trusted_client_addresses']) ? count() : 0,
+                        => isset($customConfiguration['trusted_client_addresses'])
+                        ? count($customConfiguration['trusted_client_addresses']) : 0,
                     'blacklist_client_addresses'
-                        => isset($customConfiguration['blacklist_client_addresses']) ? count() : 0,
+                        => isset($customConfiguration['blacklist_client_addresses'])
+                        ? count($customConfiguration['blacklist_client_addresses']) : 0,
                     'pattern_matching_login' => ($customConfiguration['pattern_matching_login'] ? true : false),
                     'pattern_replace_login' => ($customConfiguration['pattern_replace_login'] ? true : false),
                 ];
@@ -220,10 +222,13 @@ class CentreonStatistics
                     'authenticationConditions' => [
                         'is_enabled' => $authenticationConditions['is_enabled'] ? true : false,
                         'trusted_client_addresses'
-                            => isset($customConfiguration['trusted_client_addresses']) ? count() : 0,
+                            => isset($customConfiguration['trusted_client_addresses'])
+                            ? count($customConfiguration['trusted_client_addresses']) : 0,
                         'blacklist_client_addresses'
-                            => isset($customConfiguration['blacklist_client_addresses']) ? count() : 0,
-                        'authorized_values' => isset($customConfiguration['authorized_values']) ? count() : 0
+                            => isset($customConfiguration['blacklist_client_addresses'])
+                            ? count($customConfiguration['blacklist_client_addresses']) : 0,
+                        'authorized_values' => isset($customConfiguration['authorized_values'])
+                            ? count($customConfiguration['authorized_values']) : 0
                     ],
                     'groups_mapping' => [
                         'is_enabled' => $groupsMapping['is_enabled'] ? true : false,
@@ -238,7 +243,8 @@ class CentreonStatistics
                         ? true : false),
                     'userinfo_endpoint' => ($customConfiguration['userinfo_endpoint'] ? true : false),
                     'endsession_endpoint' => ($customConfiguration['endsession_endpoint'] ? true : false),
-                    'connection_scopes' => isset($customConfiguration['connection_scopes']) ? count() : 0,
+                    'connection_scopes' => isset($customConfiguration['connection_scopes'])
+                        ? count($customConfiguration['connection_scopes']) : 0,
                     'authentication_type' => $customConfiguration['authentication_type'],
                     'verify_peer' => ($customConfiguration['verify_peer'] ? true : false),
                     'auto_import' => ($customConfiguration['auto_import'] ? true : false)
