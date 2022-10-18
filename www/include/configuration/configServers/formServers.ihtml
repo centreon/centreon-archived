@@ -29,14 +29,14 @@
         <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="ns_ip_address"> {$form.ns_ip_address.label}</td><td class="FormRowValue">{$form.ns_ip_address.html}</td></tr>
         <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="localhost"> {$form.localhost.label}</td><td class="FormRowValue">{$form.localhost.html}</td></tr>
         <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="is_default"> {$form.is_default.label}</td><td class="FormRowValue">{$form.is_default.html}</td></tr>
-        {if $form.remote_id.label}
+        {if isset($form.remote_id)}
         <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="remote_id"> {$form.remote_id.label}</td><td class="FormRowValue">{$form.remote_id.html}</td></tr>
         <tr class="list_two">
             <td class="FormRowField"><img class="helpTooltip" name="remote_additional_id"> {$form.remote_additional_id.label}</td>
             <td class="FormRowValue">{$form.remote_additional_id.html}</td>
         </tr>
         {/if}
-        {if $form.ssh_port.label}
+        {if isset($form.ssh_port)}
         <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="ssh_port"> {$form.ssh_port.label}</td><td class="FormRowValue">{$form.ssh_port.html}</td></tr>
         {/if}
         {if isset($form.header.Remote_Configuration)}
@@ -64,7 +64,7 @@
                 <td class="FormRowValue">{$form.gorgone_port.html}</td>
             </tr>
 
-            {if $form.remote_server_use_as_proxy.label}
+            {if isset($form.remote_server_use_as_proxy)}
             <tr class="list_one">
                 <td class="FormRowField"><img class="helpTooltip" name="remote_server_use_as_proxy"> {$form.remote_server_use_as_proxy.label}</td>
                 <td class="FormRowValue">{$form.remote_server_use_as_proxy.html}</td>
