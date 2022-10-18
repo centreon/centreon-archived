@@ -688,6 +688,7 @@ class CentreonConfigCentreonBroker
             'daemon',
             'cache_directory',
             'event_queue_max_size',
+            'event_queues_total_size',
             'command_file',
             'pool_size',
             'log_directory',
@@ -743,6 +744,11 @@ class CentreonConfigCentreonBroker
             $stmt->bindValue(
                 ':event_queue_max_size',
                 (int) $this->checkEventMaxQueueSizeValue($values['event_queue_max_size']),
+                \PDO::PARAM_INT
+            );
+            $stmt->bindValue(
+                ':event_queues_total_size',
+                ! empty($values['event_queues_total_size']) ? (int) $values['event_queues_total_size'] : null,
                 \PDO::PARAM_INT
             );
             $stmt->bindValue(':command_file', $values['command_file'] ?? null, \PDO::PARAM_STR);
@@ -840,9 +846,10 @@ class CentreonConfigCentreonBroker
             . "ns_nagios_server = :ns_nagios_server, config_activate = :config_activate, daemon = :daemon, "
             . "config_write_timestamp = :config_write_timestamp, config_write_thread_id = :config_write_thread_id, "
             . "stats_activate = :stats_activate, cache_directory = :cache_directory, "
-            . "event_queue_max_size = :event_queue_max_size, command_file = :command_file , "
-            . "log_directory = :log_directory, log_filename = :log_filename , log_max_size = :log_max_size , "
-            . "pool_size = :pool_size, bbdo_version = :bbdo_version WHERE config_id = " . $id;
+            . "event_queue_max_size = :event_queue_max_size, event_queues_total_size = :event_queues_total_size, "
+            . "command_file = :command_file, log_directory = :log_directory, log_filename = :log_filename, "
+            . "log_max_size = :log_max_size, pool_size = :pool_size, bbdo_version = :bbdo_version "
+            . "WHERE config_id = " . $id;
         try {
             $stmt = $this->db->prepare($query);
             $stmt->bindValue(':config_name', $values['name'], \PDO::PARAM_STR);
@@ -861,6 +868,11 @@ class CentreonConfigCentreonBroker
             $stmt->bindValue(
                 ':event_queue_max_size',
                 (int)$this->checkEventMaxQueueSizeValue($values['event_queue_max_size']),
+                \PDO::PARAM_INT
+            );
+            $stmt->bindValue(
+                ':event_queues_total_size',
+                ! empty($values['event_queues_total_size']) ? (int) $values['event_queues_total_size'] : null,
                 \PDO::PARAM_INT
             );
             $stmt->bindValue(':command_file', $values['command_file'], \PDO::PARAM_STR);
