@@ -48,9 +48,9 @@ const ServiceGraphs = ({
         return (
           <div key={id}>
             <ExportableGraphWithTimeline
+              interactWithGraph
               limitLegendRows
               graphHeight={120}
-              isEditAnomalyDetectionDataDialogOpen={false}
               resource={service}
             />
             {isLastService && <div ref={infiniteScrollTriggerRef} />}
