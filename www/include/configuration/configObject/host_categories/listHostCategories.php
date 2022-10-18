@@ -57,7 +57,7 @@ if (isset($_POST['searchH']) || isset($_GET['searchH'])) {
 }
 
 if ($search !== '') {
-    $SearchTool = " WHERE (hc_name LIKE :hc_name OR hc_alias LIKE :hc_alias)";
+    $SearchTool = " WHERE (hc_name LIKE :search OR hc_alias LIKE :search)";
 }
 
 $hcFilter = "";
@@ -65,7 +65,7 @@ $hcQueryBinds = [];
 if (!$centreon->user->admin && $hcString != "''") {
     $hcStringExploded = explode(",", $hcString);
     foreach ($hcStringExploded as $key => $hcId) {
-        $hcQueryBinds[":hc_" . $key] = $hcId;
+        $hcQueryBinds[":hc_" . $key] = str_replace("'", "", $hcId);
     }
     $hcQueryBindsString = implode(",", array_keys($hcQueryBinds));
     $hcFilter = (is_null($SearchTool) ? ' WHERE' : ' AND') . " hc_id IN ($hcQueryBindsString)";
@@ -78,8 +78,7 @@ $statement = $pearDB->prepare($query);
 $statement->bindValue(':offset', (int) $num * (int) $limit, \PDO::PARAM_INT);
 $statement->bindValue(':limit', (int) $limit, \PDO::PARAM_INT);
 if ($search !== '') {
-    $statement->bindValue(':hc_name', "%" . $search . "%", \PDO::PARAM_STR);
-    $statement->bindValue(':hc_alias', "%" . $search . "%", \PDO::PARAM_STR);
+    $statement->bindValue(':search', "%" . $search . "%", \PDO::PARAM_STR);
 }
 foreach ($hcQueryBinds as $key => $hcId) {
     $statement->bindValue($key, (int) $hcId, \PDO::PARAM_INT);
