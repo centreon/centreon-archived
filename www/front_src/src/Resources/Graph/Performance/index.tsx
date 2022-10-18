@@ -80,12 +80,12 @@ interface Props {
   ) => void;
   graphActions?: ReactNode;
   graphHeight: number;
+  interactWithGraph: boolean;
   isInViewport?: boolean;
   limitLegendRows?: boolean;
   modal?: ReactNode;
-  modalEditAnomalyDetectionOpened?: boolean;
   onAddComment?: (commentParameters: CommentParameters) => void;
-  resizeEnvelopeData?: CustomFactorsData;
+  resizeEnvelopeData?: CustomFactorsData | null;
   resource: Resource | ResourceDetails;
   resourceDetailsUpdated?: boolean;
   timeline?: Array<TimelineEvent>;
@@ -179,7 +179,7 @@ const PerformanceGraph = ({
   limitLegendRows,
   isInViewport = true,
   displayCompleteGraph,
-  modalEditAnomalyDetectionOpened,
+  interactWithGraph,
   modal,
   graphActions,
   getPerformanceGraphRef,
@@ -508,7 +508,7 @@ const PerformanceGraph = ({
                       className={style?.overlay}
                       fill="transparent"
                       height={BarHeight}
-                      open={!modalEditAnomalyDetectionOpened}
+                      open={interactWithGraph}
                       width={graphWidth}
                       x={0}
                       y={0}

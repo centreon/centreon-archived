@@ -219,7 +219,7 @@ interface GraphContentProps {
   lines: Array<LineModel>;
   loading: boolean;
   onAddComment?: (commentParameters: CommentParameters) => void;
-  resizeEnvelopeData?: CustomFactorsData;
+  resizeEnvelopeData?: CustomFactorsData | null;
   resource: Resource | ResourceDetails;
   shiftTime?: (direction: TimeShiftDirection) => void;
   showAddCommentTooltip: (args) => void;
@@ -535,7 +535,9 @@ const GraphContent = ({
   const thresholdProps = {
     getTime,
     graphHeight,
+    isDisplayedThreshold,
     leftScale,
+    lines,
     regularLines,
     rightScale,
     secondUnit,
@@ -581,28 +583,26 @@ const GraphContent = ({
             />
             <MemoizedLines
               displayTimeValues={displayTimeValues}
-              estimatedThresholdEnvelope={
-                resizeEnvelopeData?.isResizing &&
-                isDisplayedThreshold && (
-                  <AnomalyDetectionEnvelopeThreshold
-                    {...thresholdProps}
-                    data={resizeEnvelopeData}
-                  />
-                )
-              }
               graphHeight={graphHeight}
               leftScale={leftScale}
               lines={lines}
               rightScale={rightScale}
-              thresholdEnvelope={
-                isDisplayedThreshold && (
-                  <AnomalyDetectionEnvelopeThreshold {...thresholdProps} />
-                )
-              }
               timeSeries={timeSeries}
               timeTick={timeTick}
               xScale={xScale}
-            />
+            >
+              {{
+                additionalLines: (
+                  <>
+                    <AnomalyDetectionEnvelopeThreshold {...thresholdProps} />
+                    <AnomalyDetectionEnvelopeThreshold
+                      {...thresholdProps}
+                      data={resizeEnvelopeData}
+                    />
+                  </>
+                ),
+              }}
+            </MemoizedLines>
             {displayEventAnnotations && (
               <MemoizedAnnotations
                 graphHeight={graphHeight}

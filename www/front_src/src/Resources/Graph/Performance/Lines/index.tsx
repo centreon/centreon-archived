@@ -23,13 +23,12 @@ import RegularLine from './RegularLine';
 import StackedLines from './StackedLines';
 
 interface Props {
+  children?: { additionalLines: ReactNode };
   displayTimeValues: boolean;
-  estimatedThresholdEnvelope: ReactNode;
   graphHeight: number;
   leftScale: ScaleLinear<number, number>;
   lines: Array<Line>;
   rightScale: ScaleLinear<number, number>;
-  thresholdEnvelope?: ReactNode;
   timeSeries: Array<TimeValue>;
   timeTick: Date | null;
   xScale: ScaleTime<number, number>;
@@ -83,8 +82,7 @@ const Lines = ({
   graphHeight,
   timeTick,
   displayTimeValues,
-  thresholdEnvelope,
-  estimatedThresholdEnvelope,
+  children,
 }: Props): JSX.Element => {
   const [, secondUnit, thirdUnit] = getUnits(lines);
 
@@ -125,8 +123,7 @@ const Lines = ({
         yScale={stackedYScale}
       />
       <g>
-        {thresholdEnvelope}
-        {estimatedThresholdEnvelope}
+        {children?.additionalLines}
         {regularLines.map(
           ({
             metric,

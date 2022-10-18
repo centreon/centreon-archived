@@ -10,8 +10,9 @@ import AnomalyDetectionEstimatedEnvelopeThreshold from './AnomalyDetectionEstima
 import { CustomFactorsData } from './models';
 
 interface Props {
-  data?: CustomFactorsData;
+  data?: CustomFactorsData | null;
   graphHeight: number;
+  isDisplayedThreshold: boolean;
   leftScale: ScaleLinear<number, number>;
   regularLines: Array<Line>;
   rightScale: ScaleLinear<number, number>;
@@ -31,7 +32,12 @@ const AnomalyDetectionEnvelopeThreshold = ({
   timeSeries,
   graphHeight,
   data,
-}: Props): JSX.Element => {
+  isDisplayedThreshold,
+}: Props): JSX.Element | null => {
+  if (!isDisplayedThreshold) {
+    return null;
+  }
+
   const [
     {
       metric: metricY1,
@@ -89,7 +95,7 @@ const AnomalyDetectionEnvelopeThreshold = ({
     y1Scale,
   };
 
-  if (data) {
+  if (data && data?.isResizing) {
     return (
       <AnomalyDetectionEstimatedEnvelopeThreshold {...props} data={data} />
     );

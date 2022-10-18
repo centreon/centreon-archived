@@ -29,6 +29,7 @@ import {
 } from '../TimePeriods/timePeriodAtoms';
 import { detailsAtom } from '../../../Details/detailsAtoms';
 import EditAnomalyDetectionDataDialog from '../AnomalyDetection/EditAnomalyDetectionDataDialog';
+import AnomalyDetectionSlider from '../AnomalyDetection/AnomalyDetectionSlider';
 
 import { graphOptionsAtom } from './graphOptionsAtoms';
 
@@ -48,10 +49,10 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 interface Props {
   graphHeight: number;
+  interactWithGraph: boolean;
   limitLegendRows?: boolean;
-  modalEditAnomalyDetectionOpened: boolean;
   onReload?: (value: boolean) => void;
-  resizeEnvelopeData?: CustomFactorsData;
+  resizeEnvelopeData?: CustomFactorsData | null;
   resource?: Resource | ResourceDetails;
 }
 
@@ -59,7 +60,7 @@ const ExportablePerformanceGraphWithTimeline = ({
   resource,
   graphHeight,
   limitLegendRows,
-  modalEditAnomalyDetectionOpened,
+  interactWithGraph,
   resizeEnvelopeData,
   onReload,
 }: Props): JSX.Element => {
@@ -211,7 +212,7 @@ const ExportablePerformanceGraphWithTimeline = ({
             <MemoizedGraphActions
               customTimePeriod={customTimePeriod}
               getIsModalOpened={getIsModalOpened}
-              open={!modalEditAnomalyDetectionOpened}
+              open={interactWithGraph}
               performanceGraphRef={
                 performanceGraphRef as unknown as MutableRefObject<HTMLDivElement | null>
               }
@@ -222,47 +223,41 @@ const ExportablePerformanceGraphWithTimeline = ({
             />
           }
           graphHeight={graphHeight}
+          interactWithGraph={interactWithGraph}
           isInViewport={isInViewport}
           limitLegendRows={limitLegendRows}
           modal={
             <EditAnomalyDetectionDataDialog
               isOpen={isOpenModalAD}
-              setIsOpen={setIsOpenModalAD}
-            >
-              {({
-                factorsData,
+              renderGraph={({ factorsData }): JSX.Element => (
+                <ExportablePerformanceGraphWithTimeline
+                  graphHeight={180}
+                  interactWithGraph={false}
+                  resizeEnvelopeData={factorsData}
+                  resource={resource}
+                />
+              )}
+              renderSlider={({
                 getFactors,
                 openModalConfirmation,
                 isEnvelopeResizingCanceled,
                 isResizeEnvelope,
                 setIsResizeEnvelope,
               }): JSX.Element => (
-                <>
-                  {factorsData && (
-                    <ExportablePerformanceGraphWithTimeline
-                      modalEditAnomalyDetectionOpened
-                      graphHeight={180}
-                      resizeEnvelopeData={factorsData}
-                      resource={resource}
-                    />
-                  )}
-                  {getFactors && details && details?.sensitivity && (
-                    <EditAnomalyDetectionDataDialog.Slider
-                      details={details}
-                      isEnvelopeResizingCanceled={isEnvelopeResizingCanceled}
-                      isResizeEnvelope={isResizeEnvelope}
-                      openModalConfirmation={openModalConfirmation}
-                      sendFactors={getFactors}
-                      sendReloadGraphPerformance={sendReloadGraphPerformance}
-                      sensitivity={details.sensitivity}
-                      setIsResizeEnvelope={setIsResizeEnvelope}
-                    />
-                  )}
-                </>
+                <AnomalyDetectionSlider
+                  details={details}
+                  isEnvelopeResizingCanceled={isEnvelopeResizingCanceled}
+                  isResizeEnvelope={isResizeEnvelope}
+                  openModalConfirmation={openModalConfirmation}
+                  sendFactors={getFactors}
+                  sendReloadGraphPerformance={sendReloadGraphPerformance}
+                  sensitivity={details?.sensitivity}
+                  setIsResizeEnvelope={setIsResizeEnvelope}
+                />
               )}
-            </EditAnomalyDetectionDataDialog>
+              setIsOpen={setIsOpenModalAD}
+            />
           }
-          modalEditAnomalyDetectionOpened={modalEditAnomalyDetectionOpened}
           resizeEnvelopeData={resizeEnvelopeData}
           resource={resource as Resource}
           resourceDetailsUpdated={resourceDetailsUpdated}
