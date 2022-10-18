@@ -89,14 +89,21 @@ $centreon->historySearch[$url] = [
 $lockedFilter = $displayLocked ? "" : "AND command_locked = 0 ";
 
 // Type filter
-$typeFilter = $type ? "AND `command_type` = " . $type . " " : "";
+$typeFilter = $type ? "AND `command_type` = :command_type " : "";
 $search = tidySearchKey($search, $advanced_search);
 
 $rq = "SELECT SQL_CALC_FOUND_ROWS `command_id`, `command_name`, `command_line`, `command_type`, " .
-    "`command_activate` FROM `command` WHERE `command_name` LIKE '%" . $search . "%' " .
-    $typeFilter . $lockedFilter . " ORDER BY `command_name` LIMIT " . $num * $limit . ", " . $limit;
+    "`command_activate` FROM `command` WHERE `command_name` LIKE :search " .
+    $typeFilter . $lockedFilter . " ORDER BY `command_name` LIMIT :offset, :limit";
 
-$dbResult = $pearDB->query($rq);
+$statement = $pearDB->prepare($rq);
+$statement->bindValue(':search', '%' . $search . '%', \PDO::PARAM_STR);
+$statement->bindValue(':offset', (int) $num * (int) $limit, \PDO::PARAM_INT);
+$statement->bindValue(':limit', (int) $limit, \PDO::PARAM_INT);
+if ($type) {
+    $statement->bindValue(':command_type', (int) $type, \PDO::PARAM_INT);
+}
+$statement->execute();
 $rows = $pearDB->query("SELECT FOUND_ROWS()")->fetchColumn();
 
 include_once "./include/common/checkPagination.php";
@@ -143,7 +150,7 @@ $commandType = array(
 $elemArr = array();
 $centreonToken = createCSRFToken();
 
-for ($i = 0; $cmd = $dbResult->fetch(); $i++) {
+for ($i = 0; $cmd = $statement->fetch(\PDO::FETCH_ASSOC); $i++) {
     $selectedElements = $form->addElement('checkbox', "select[" . $cmd['command_id'] . "]");
 
     if ($cmd["command_activate"]) {
