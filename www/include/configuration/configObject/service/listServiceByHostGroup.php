@@ -94,11 +94,11 @@ $searchS = $searchS ?? "";
 $aclFrom = "";
 $aclCond = "";
 $distinct = "";
+$aclAccessGroupsParams = [];
 if (!$centreon->user->admin) {
     $aclAccessGroupList = explode(',', $acl->getAccessGroupsString());
-    $aclAccessGroupsParams = [];
     foreach ($aclAccessGroupList as $index => $accessGroupId) {
-        $aclAccessGroupsParams[':access_' . $index] = $accessGroupId;
+        $aclAccessGroupsParams[':access_' . $index] = str_replace("'", "", $accessGroupId);
     }
     $queryParams = implode(',', array_keys($aclAccessGroupsParams));
     $aclFrom = ", $aclDbName.centreon_acl acl ";
@@ -132,10 +132,8 @@ if ($searchS != "" || $searchHG != "") {
             \PDO::PARAM_INT
         );
     }
-    if (!$centreon->user->admin) {
-        foreach ($aclAccessGroupsParams as $key => $accessGroupId) {
-            $statement->bindValue($key, (int) $accessGroupId, \PDO::PARAM_INT);
-        }
+    foreach ($aclAccessGroupsParams as $key => $accessGroupId) {
+        $statement->bindValue($key, (int) $accessGroupId, \PDO::PARAM_INT);
     }
     if ($searchS && !$searchHG) {
         $statement->bindValue(':service_description', '%' . $searchS . '%', \PDO::PARAM_STR);
@@ -172,10 +170,8 @@ if ($searchS != "" || $searchHG != "") {
         "WHERE service_register = '1' " . $sqlFilterCase . $templateStr .
         " AND hsr.service_service_id = sv.service_id AND hsr.host_host_id IS NULL " . $aclCond
     );
-    if (!$centreon->user->admin) {
-        foreach ($aclAccessGroupsParams as $key => $accessGroupId) {
-            $statement->bindValue($key, (int) $accessGroupId, \PDO::PARAM_INT);
-        }
+    foreach ($aclAccessGroupsParams as $key => $accessGroupId) {
+        $statement->bindValue($key, (int) $accessGroupId, \PDO::PARAM_INT);
     }
     if (isset($template) && $template) {
         $statement->bindValue(
@@ -266,10 +262,8 @@ $statement->bindValue(':limit', (int) $limit, \PDO::PARAM_INT);
 if ((isset($template) && $template)) {
     $statement->bindValue(':template', (int) $template, \PDO::PARAM_INT);
 }
-if (!$centreon->user->admin) {
-    foreach ($aclAccessGroupsParams as $key => $accessGroupId) {
-        $statement->bindValue($key, (int) $accessGroupId, \PDO::PARAM_INT);
-    }
+foreach ($aclAccessGroupsParams as $key => $accessGroupId) {
+    $statement->bindValue($key, (int) $accessGroupId, \PDO::PARAM_INT);
 }
 $statement->execute();
 $form = new HTML_QuickFormCustom('select_form', 'POST', "?p=" . $p);
