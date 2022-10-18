@@ -1,4 +1,11 @@
-import { MutableRefObject, useEffect, useMemo, useRef, useState } from 'react';
+import {
+  MutableRefObject,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  ReactNode,
+} from 'react';
 
 import { path, isNil, or, not } from 'ramda';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
@@ -243,18 +250,20 @@ const ExportablePerformanceGraphWithTimeline = ({
                 isEnvelopeResizingCanceled,
                 isResizeEnvelope,
                 setIsResizeEnvelope,
-              }): JSX.Element => (
-                <AnomalyDetectionSlider
-                  details={details}
-                  isEnvelopeResizingCanceled={isEnvelopeResizingCanceled}
-                  isResizeEnvelope={isResizeEnvelope}
-                  openModalConfirmation={openModalConfirmation}
-                  sendFactors={getFactors}
-                  sendReloadGraphPerformance={sendReloadGraphPerformance}
-                  sensitivity={details?.sensitivity}
-                  setIsResizeEnvelope={setIsResizeEnvelope}
-                />
-              )}
+              }): ReactNode =>
+                details?.sensitivity && (
+                  <AnomalyDetectionSlider
+                    details={details}
+                    isEnvelopeResizingCanceled={isEnvelopeResizingCanceled}
+                    isResizeEnvelope={isResizeEnvelope}
+                    openModalConfirmation={openModalConfirmation}
+                    sendFactors={getFactors}
+                    sendReloadGraphPerformance={sendReloadGraphPerformance}
+                    sensitivity={details?.sensitivity}
+                    setIsResizeEnvelope={setIsResizeEnvelope}
+                  />
+                )
+              }
               setIsOpen={setIsOpenModalAD}
             />
           }

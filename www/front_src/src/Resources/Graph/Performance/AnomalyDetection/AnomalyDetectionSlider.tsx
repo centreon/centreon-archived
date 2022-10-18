@@ -88,13 +88,13 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 interface Props {
-  details?: ResourceDetails;
+  details: ResourceDetails;
   isEnvelopeResizingCanceled?: boolean;
   isResizeEnvelope?: boolean;
   openModalConfirmation?: (value: boolean) => void;
   sendFactors: (data: CustomFactorsData) => void;
   sendReloadGraphPerformance: (value: boolean) => void;
-  sensitivity?: Sensitivity;
+  sensitivity: Sensitivity;
   setIsResizeEnvelope?: Dispatch<SetStateAction<boolean>>;
 }
 
@@ -111,7 +111,7 @@ const AnomalyDetectionSlider = ({
   const classes = useStyles();
   const { t } = useTranslation();
 
-  const [currentValue, setCurrentValue] = useState(sensitivity?.current_value);
+  const [currentValue, setCurrentValue] = useState(sensitivity.current_value);
   const [isDefaultValue, setIsDefaultValue] = useState(false);
   const [isResizingConfirmed, setIsResizingConfirmed] = useState(false);
   const [openTooltip, setOpenTooltip] = useState(false);
@@ -135,7 +135,7 @@ const AnomalyDetectionSlider = ({
   const marks = [
     {
       label: 'Default',
-      value: sensitivity?.default_value,
+      value: sensitivity.default_value,
     },
   ];
 
@@ -192,7 +192,7 @@ const AnomalyDetectionSlider = ({
   };
 
   const cancelResizingEnvelope = (): void => {
-    setCurrentValue(sensitivity?.current_value);
+    setCurrentValue(sensitivity.current_value);
     setIsResizingConfirmed(false);
     setIsDefaultValue(false);
     setCountedRedCircles(null);
@@ -208,13 +208,13 @@ const AnomalyDetectionSlider = ({
 
   useEffect(() => {
     if (isDefaultValue) {
-      setCurrentValue(sensitivity?.default_value);
+      setCurrentValue(sensitivity.default_value);
     }
   }, [isDefaultValue]);
 
   useEffect(() => {
     if (
-      equals(currentValue, sensitivity?.default_value) &&
+      equals(currentValue, sensitivity.default_value) &&
       isResizingConfirmed
     ) {
       setIsDefaultValue(true);
@@ -225,7 +225,7 @@ const AnomalyDetectionSlider = ({
     }
 
     sendFactors({
-      currentFactor: sensitivity?.current_value,
+      currentFactor: sensitivity.current_value,
       isResizing: isResizingConfirmed,
       simulatedFactor: currentValue,
     });
@@ -264,7 +264,7 @@ const AnomalyDetectionSlider = ({
             <div className={classes.icon}>
               <RemoveIcon fontSize="small" />
               <Typography variant="subtitle2">
-                {sensitivity?.minimum_value}
+                {sensitivity.minimum_value}
               </Typography>
             </div>
           </IconButton>
@@ -274,8 +274,8 @@ const AnomalyDetectionSlider = ({
             className={classes.slider}
             data-testid="slider"
             marks={marks}
-            max={sensitivity?.maximum_value}
-            min={sensitivity?.minimum_value}
+            max={sensitivity.maximum_value}
+            min={sensitivity.minimum_value}
             size="small"
             step={step}
             value={currentValue}
@@ -286,7 +286,7 @@ const AnomalyDetectionSlider = ({
             <div className={classes.icon}>
               <AddIcon fontSize="small" />
               <Typography variant="subtitle2">
-                {sensitivity?.maximum_value}
+                {sensitivity.maximum_value}
               </Typography>
             </div>
           </IconButton>
