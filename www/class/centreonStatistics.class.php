@@ -214,7 +214,7 @@ class CentreonStatistics
                     'pattern_replace_login' => ($customConfiguration['pattern_replace_login'] ? true : false),
                 ];
             } elseif ($row['type'] === 'openid') {
-                $authenticationConditions = $customConfiguration['authenticationConditions'];
+                $authenticationConditions = $customConfiguration['authentication_conditions'];
                 $groupsMapping = $customConfiguration['groups_mapping'];
                 $rolesMapping = $customConfiguration['roles_mapping'];
                 $data['openid'] = [
@@ -222,13 +222,13 @@ class CentreonStatistics
                     'authenticationConditions' => [
                         'is_enabled' => $authenticationConditions['is_enabled'] ? true : false,
                         'trusted_client_addresses'
-                            => isset($customConfiguration['trusted_client_addresses'])
-                            ? count($customConfiguration['trusted_client_addresses']) : 0,
+                            => isset($authenticationConditions['trusted_client_addresses'])
+                            ? count($authenticationConditions['trusted_client_addresses']) : 0,
                         'blacklist_client_addresses'
-                            => isset($customConfiguration['blacklist_client_addresses'])
-                            ? count($customConfiguration['blacklist_client_addresses']) : 0,
-                        'authorized_values' => isset($customConfiguration['authorized_values'])
-                            ? count($customConfiguration['authorized_values']) : 0
+                            => isset($authenticationConditions['blacklist_client_addresses'])
+                            ? count($authenticationConditions['blacklist_client_addresses']) : 0,
+                        'authorized_values' => isset($authenticationConditions['authorized_values'])
+                            ? count($authenticationConditions['authorized_values']) : 0
                     ],
                     'groups_mapping' => [
                         'is_enabled' => $groupsMapping['is_enabled'] ? true : false,
