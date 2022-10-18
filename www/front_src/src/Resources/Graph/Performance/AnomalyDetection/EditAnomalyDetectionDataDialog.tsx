@@ -11,7 +11,6 @@ import TimePeriodButtonGroup from '../TimePeriods';
 
 import AnomalyDetectionExclusionPeriod from './AnomalyDetectionExclusionPeriod';
 import AnomalyDetectionModalConfirmation from './AnomalyDetectionModalConfirmation';
-import AnomalyDetectionSlider from './AnomalyDetectionSlider';
 import { CustomFactorsData } from './models';
 import { countedRedCirclesAtom } from './anomalyDetectionAtom';
 
@@ -47,25 +46,29 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-interface PropsChildren {
+interface PropsGraph {
   factorsData?: CustomFactorsData | null;
-  getFactors?: (data: CustomFactorsData) => void;
-  isEnvelopeResizingCanceled?: boolean;
-  isResizeEnvelope?: boolean;
-  openModalConfirmation?: (value: boolean) => void;
-  setIsResizeEnvelope?: Dispatch<SetStateAction<boolean>>;
+}
+interface PropsSlider {
+  getFactors: (data: CustomFactorsData) => void;
+  isEnvelopeResizingCanceled: boolean;
+  isResizeEnvelope: boolean;
+  openModalConfirmation: (value: boolean) => void;
+  setIsResizeEnvelope: Dispatch<SetStateAction<boolean>>;
 }
 
 interface Props {
-  children: (args: PropsChildren) => ReactNode;
   isOpen: boolean;
+  renderGraph: (args: PropsGraph) => ReactNode;
+  renderSlider: (args: PropsSlider) => ReactNode;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
 }
 
 const EditAnomalyDetectionDataDialog = ({
   isOpen,
   setIsOpen,
-  children,
+  renderGraph,
+  renderSlider,
 }: Props): JSX.Element => {
   const classes = useStyles();
   const { t } = useTranslation();
@@ -114,10 +117,10 @@ const EditAnomalyDetectionDataDialog = ({
         <div className={classes.spacing}>
           <TimePeriodButtonGroup />
         </div>
-        <div className={classes.spacing}>{children?.({ factorsData })}</div>
+        <div className={classes.spacing}>{renderGraph?.({ factorsData })}</div>
         <div className={classes.editEnvelopeSize}>
           <Paper className={classes.envelopeSize}>
-            {children?.({
+            {renderSlider?.({
               getFactors,
               isEnvelopeResizingCanceled,
               isResizeEnvelope,
@@ -143,7 +146,6 @@ const EditAnomalyDetectionDataDialog = ({
   );
 };
 
-EditAnomalyDetectionDataDialog.Slider = AnomalyDetectionSlider;
 EditAnomalyDetectionDataDialog.ExclusionPeriod =
   AnomalyDetectionExclusionPeriod;
 EditAnomalyDetectionDataDialog.ModalConfirmation =
