@@ -2,8 +2,6 @@ import { When, Then, Given } from 'cypress-cucumber-preprocessor/steps';
 
 import { removeContact, initializeConfigACLAndGetLoginPage } from '../common';
 
-let link = '';
-
 before(() => {
   initializeConfigACLAndGetLoginPage();
 });
@@ -20,8 +18,7 @@ beforeEach(() => {
 });
 
 Given('an Administrator is logged in the platform', () => {
-  return cy
-    .loginByTypeOfUser({ jsonName: 'admin', preserveToken: true })
+  cy.loginByTypeOfUser({ jsonName: 'admin', preserveToken: true })
     .wait('@getNavigationList')
     .navigateTo({
       page: 'Centreon UI',
@@ -33,8 +30,7 @@ Given('an Administrator is logged in the platform', () => {
 });
 
 When('the administrator activates autologin on the platform', () => {
-  return cy
-    .getFormFieldByIndex(30)
+  cy.getFormFieldByIndex(30)
     .find('[type="checkbox"]')
     .check({ force: true })
     .should('be.checked')
@@ -47,8 +43,7 @@ When('the administrator activates autologin on the platform', () => {
 Then(
   'any user of the plateform should be able to generate an autologin link',
   () => {
-    return cy
-      .getContainsFromProfileIcon('Edit profile')
+    cy.getContainsFromProfileIcon('Edit profile')
       .click()
       .visit('/centreon/main.php?p=50104&o=c')
       .wait('@getTimeZone')
@@ -57,6 +52,25 @@ Then(
       .within(() => {
         cy.get('input[name="contact_gen_akey"]').should('be.visible');
         cy.get('#aKey').invoke('val').should('not.be.undefined');
+      })
+      .navigateTo({
+        page: 'Contacts / Users',
+        rootItemNumber: 3,
+        subMenu: 'Users',
+      })
+      .reload()
+      .wait('@getTimeZone')
+      .getIframeBody()
+      .find('form')
+      .contains('td', 'admin')
+      .visit('centreon/main.php?p=60301&o=c&contact_id=1')
+      .wait('@getTimeZone')
+      .getIframeBody()
+      .find('form')
+      .within(() => {
+        cy.contains('Centreon Authentication').click();
+        cy.get('#tab2 input[name="contact_gen_akey"]').should('be.exist');
+        cy.get('#aKey').should('be.exist');
       });
   },
 );
@@ -64,8 +78,7 @@ Then(
 Given(
   'an authenticated user and autologin configuration menus can be accessed',
   () => {
-    return cy
-      .logout()
+    cy.logout()
       .reload()
       .loginByTypeOfUser({ jsonName: 'user', preserveToken: true })
       .wait('@getNavigationList')
@@ -82,10 +95,8 @@ Given(
 );
 
 When('a user generate his autologin key', () => {
-  return cy
-    .getIframeBody()
+  cy.getIframeBody()
     .find('form #tab1 table tbody tr')
-
     .within(() => {
       cy.get('input[name="contact_gen_akey"]').click();
       cy.get('#aKey').invoke('val').should('not.be.undefined');
@@ -93,8 +104,7 @@ When('a user generate his autologin key', () => {
 });
 
 Then('the key is properly generated and displayed', () => {
-  return cy
-    .getIframeBody()
+  cy.getIframeBody()
     .find('form #tab1 table tbody tr')
     .within(() => {
       cy.get('input[name="contact_autologin_key"]')
@@ -113,17 +123,18 @@ Given('a User with autologin key generated', () => {
 });
 
 When('a User generates an autologin link', () => {
-  return cy
-    .navigateTo({
-      page: 'Templates',
-      rootItemNumber: 2,
-      subMenu: 'Hosts',
-    })
+  cy.navigateTo({
+    page: 'Templates',
+    rootItemNumber: 2,
+    subMenu: 'Hosts',
+  })
     .wait('@getTimeZone')
     .getIframeBody()
     .find('form')
-    .should('be.exist')
-   cy.getIframeBody().find('form').getContainsFromProfileIcon('Copy autologin link')
+    .should('be.exist');
+  cy.getIframeBody()
+    .find('form')
+    .getContainsFromProfileIcon('Copy autologin link')
     .get('textarea#autologin-input')
     .invoke('text')
     .should('not.be.undefined');
@@ -132,11 +143,7 @@ When('a User generates an autologin link', () => {
 Then('the autologin link is copied in the clipboard', () => {
   cy.getContainsFromProfileIcon('Copy autologin link')
     .get('textarea#autologin-input')
-    .invoke('text')
-    .then((text) => {
-      expect(text.trim());
-      link = text;
-    });
+    .should('not.be.undefined');
 });
 
 Given(
@@ -144,6 +151,8 @@ Given(
   () => {
     cy.getContainsFromProfileIcon('Copy autologin link')
       .get('textarea#autologin-input')
+      .invoke('text')
+      .as('link')
       .should('not.be.undefined')
       .logout()
       .reload()
@@ -153,7 +162,10 @@ Given(
 );
 
 When('the user opens the autologin link in a browser', () => {
-  cy.visit(link);
+  cy.get<string>('@link').then((text) => {
+    const urlAsLink = text;
+    cy.visit(urlAsLink);
+  });
 });
 
 Then('the page is accessed without manual login', () => {
