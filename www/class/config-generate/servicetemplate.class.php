@@ -251,6 +251,7 @@ class ServiceTemplate extends AbstractService
         $this->current_service_description = null;
         $this->current_service_id = null;
         $this->loop_stpl = array();
+        $this->service_cache = [];
         parent::reset();
     }
 }
