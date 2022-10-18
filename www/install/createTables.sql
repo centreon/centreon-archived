@@ -447,6 +447,7 @@ CREATE TABLE `cfg_centreonbroker` (
   `config_activate` enum('0','1') DEFAULT '0',
   `ns_nagios_server` int(11) NOT NULL,
   `event_queue_max_size` int(11) DEFAULT '100000',
+  `event_queues_total_size` int(11) DEFAULT NULL,
   `command_file` varchar(255),
   `cache_directory` varchar(255),
   `stats_activate` enum('0','1') DEFAULT '1',

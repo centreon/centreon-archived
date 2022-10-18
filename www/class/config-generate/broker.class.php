@@ -51,6 +51,7 @@ class Broker extends AbstractObjectJSON
         config_write_thread_id,
         ns_nagios_server,
         event_queue_max_size,
+        event_queues_total_size,
         command_file,
         cache_directory,
         stats_activate,
@@ -179,6 +180,9 @@ class Broker extends AbstractObjectJSON
             $object['log_timestamp'] = filter_var($row['config_write_timestamp'], FILTER_VALIDATE_BOOLEAN);
             $object['log_thread_id'] = filter_var($row['config_write_thread_id'], FILTER_VALIDATE_BOOLEAN);
             $object['event_queue_max_size'] = (int)$row['event_queue_max_size'];
+            if (! empty($row['event_queues_total_size'])) {
+                $object['event_queues_total_size'] = (int)$row['event_queues_total_size'];
+            }
             $object['command_file'] = (string) $row['command_file'];
             $object['cache_directory'] = (string) $cache_directory;
             $object['bbdo_version'] = (string) $row['bbdo_version'];
