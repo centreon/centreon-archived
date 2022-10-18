@@ -196,7 +196,7 @@ declare global {
       loginByTypeOfUser: ({
         jsonName = 'admin',
         preserveToken = false,
-      }: loginByTypeOfUserProps) => Cypress.Chainable;
+      }: LoginByTypeOfUserProps) => Cypress.Chainable;
       logout: () => Cypress.Chainable;
       navigateTo: ({
         page,
