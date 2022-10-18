@@ -123,7 +123,7 @@ When('a User generates an autologin link', () => {
     .getIframeBody()
     .find('form')
     .should('be.exist')
-    .getContainsFromProfileIcon('Copy autologin link')
+   cy.getIframeBody().find('form').getContainsFromProfileIcon('Copy autologin link')
     .get('textarea#autologin-input')
     .invoke('text')
     .should('not.be.undefined');
