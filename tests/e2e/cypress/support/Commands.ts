@@ -179,7 +179,7 @@ interface NavigateToProps {
   subMenu?: string;
 }
 
-interface loginByTypeOfUserProps {
+interface LoginByTypeOfUserProps {
   jsonName?: string;
   preserveToken?: boolean;
 }
