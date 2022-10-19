@@ -163,7 +163,12 @@ $form->addElement('select', 'problem_sort_type', _("Sort problems by"), $sortTyp
 $sort_order = array("ASC" => _("Ascending"), "DESC" => _("Descending"));
 $form->addElement('select', 'problem_sort_order', _("Order sort problems"), $sort_order);
 
-$options1[] = $form->createElement('checkbox', 'yes', '&nbsp;', '', ["id" => "enableAutoLogin", "data-testid" => _("Enable Autologin")]);
+$options1[] = $form->createElement(
+    'checkbox',
+    'yes',
+    '&nbsp;',
+    '',
+    ["id" => "enableAutoLogin", "data-testid" => _("Enable Autologin")]);
 $form->addGroup($options1, 'enable_autologin', _("Enable Autologin"), '&nbsp;&nbsp;');
 
 $options2[] = $form->createElement('checkbox', 'yes', '&nbsp;', '');
@@ -259,7 +264,11 @@ $tpl = initSmartyTpl($path . 'general/', $tpl);
 
 $form->setDefaults($gopt);
 
-$subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success", "id" => "submitGeneralOptionsForm", "data-testid" => _("Save")));
+$subC = $form->addElement(
+    'submit',
+    'submitC',
+    _("Save"),
+    array("class" => "btc bt_success", "id" => "submitGeneralOptionsForm", "data-testid" => _("Save")));
 $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
 
 $valid = false;
