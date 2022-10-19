@@ -5,9 +5,10 @@
   "scripts": {
     "start:docker": "docker run -d -p 4000:80 --name centreon-dev registry.centreon.com/mon-web-develop:centos7",
     "kill:docker": "docker stop centreon-dev && docker rm centreon-dev",
-    "cypress:local": "npm run start:docker && npx cypress run --config-file cypress.dev.json --browser=chrome && npm run kill:docker",
-    "cypress:local:debug": "npm run start:docker && DEBUG=cypress:* npx cypress run --config-file cypress.dev.json --browser=chrome 2> ./cypress/results/logs.txt && npm run kill:docker",
-    "cypress:local:ui": "npm run start:docker && npx cypress open --config-file cypress.dev.json --browser=chrome && npm run kill:docker",
+    "cypress:run:develop": "npm run start:docker && npx cypress run --config-file cypress.dev.json --browser=chrome && npm run kill:docker",
+    "cypress:open": "npx cypress open --config-file cypress.dev.json --browser=chrome",
+    "cypress:run:develop:debug": "npm run start:docker && DEBUG=cypress:* npx cypress run --config-file cypress.dev.json --browser=chrome 2> ./cypress/results/logs.txt && npm run kill:docker",
+    "cypress:open:dev": "npm run start:docker && npx cypress open --config-file cypress.dev.json --browser=chrome && npm run kill:docker",
     "eslint": "eslint ./cypress",
     "eslint:fix": "npm run eslint -- --fix"
   },

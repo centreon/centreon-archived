@@ -324,7 +324,7 @@ if ($o != MASSIVE_CHANGE) {
         'button',
         'contact_gen_akey',
         _("Generate"),
-        ['onclick' => "generatePassword('aKey', '$encodedPasswordPolicy');", "id" => "generateAutologinKeyButton", "data-testId" => _("Generate")]
+        ['onclick' => "generatePassword('aKey', '$encodedPasswordPolicy');", "id" => "generateAutologinKeyButton", "data-testid" => _("Generate")]
     );
     $form->addElement('text', 'contact_email', _("Email"), $attrsTextMail);
     $form->addElement('text', 'contact_pager', _("Pager"), $attrsText);
