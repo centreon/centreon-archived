@@ -1,9 +1,10 @@
+import { makeStyles } from 'tss-react/mui';
+
 import { Divider } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
 
 import { LoadingSkeleton } from '@centreon/ui';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
   buttonsGroup: {
     columnGap: theme.spacing(2),
     display: 'grid',
@@ -34,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const AuthenticationLoadingSkeleton = (): JSX.Element => {
-  const classes = useStyles();
+  const { classes } = useStyles();
 
   return (
     <div className={classes.formContainer}>

@@ -37,7 +37,7 @@ const PollerWizardStepTwo = ({
   goToNextStep,
   goToPreviousStep,
 }: Props): JSX.Element => {
-  const classes = useStyles();
+  const { classes } = useStyles();
   const { t } = useTranslation();
   const navigate = useNavigate();
 

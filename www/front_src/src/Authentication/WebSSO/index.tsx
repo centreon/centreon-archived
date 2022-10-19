@@ -2,9 +2,9 @@ import { useMemo, useEffect } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { isNil, not } from 'ramda';
+import { makeStyles } from 'tss-react/mui';
 
 import { LinearProgress, Typography } from '@mui/material';
-import { makeStyles } from '@mui/styles';
 
 import useTab from '../useTab';
 
@@ -13,7 +13,7 @@ import useWebSSO from './useWebSSO';
 import WebSSOForm from './Form';
 import { WebSSOConfiguration } from './models';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
   container: {
     width: 'fit-content',
   },
@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const WebSSOConfigurationForm = (): JSX.Element => {
-  const classes = useStyles();
+  const { classes } = useStyles();
   const { t } = useTranslation();
 
   const {

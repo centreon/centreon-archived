@@ -1,9 +1,9 @@
 import { prop, isNil, filter, equals } from 'ramda';
 import { TFunction, useTranslation } from 'react-i18next';
 import dayjs, { Dayjs } from 'dayjs';
+import { makeStyles } from 'tss-react/mui';
 
 import { Chip, Typography } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
 import EventIcon from '@mui/icons-material/Event';
 import CommentIcon from '@mui/icons-material/Comment';
 import NotificationIcon from '@mui/icons-material/Notifications';
@@ -69,7 +69,7 @@ const getTypeIds = (): Array<string> => {
   return types.map(prop('id'));
 };
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
   chip: {
     display: 'flex',
   },
@@ -149,7 +149,7 @@ const Author = ({ event }: Props): JSX.Element => {
 };
 
 const EventTimelineEvent = ({ event }: Props): JSX.Element => {
-  const classes = useStyles();
+  const { classes } = useStyles();
   const { t } = useTranslation();
 
   return (
@@ -178,7 +178,7 @@ const EventTimelineEvent = ({ event }: Props): JSX.Element => {
 };
 
 const CommentTimelineEvent = ({ event }: Props): JSX.Element => {
-  const classes = useStyles();
+  const { classes } = useStyles();
 
   return (
     <div className={classes.event}>
@@ -194,7 +194,7 @@ const CommentTimelineEvent = ({ event }: Props): JSX.Element => {
 };
 
 const AcknowledgeTimelineEvent = ({ event }: Props): JSX.Element => {
-  const classes = useStyles();
+  const { classes } = useStyles();
 
   return (
     <div className={classes.event}>
@@ -210,7 +210,7 @@ const AcknowledgeTimelineEvent = ({ event }: Props): JSX.Element => {
 };
 
 const DowntimeTimelineEvent = ({ event }: Props): JSX.Element => {
-  const classes = useStyles();
+  const { classes } = useStyles();
   const { t } = useTranslation();
   const { format } = useLocaleDateTimeFormat();
 
@@ -248,7 +248,7 @@ const DowntimeTimelineEvent = ({ event }: Props): JSX.Element => {
 };
 
 const NotificationTimelineEvent = ({ event }: Props): JSX.Element => {
-  const classes = useStyles();
+  const { classes } = useStyles();
 
   return (
     <div className={classes.event}>

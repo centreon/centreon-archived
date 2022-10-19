@@ -3,8 +3,8 @@ import { useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import clsx from 'clsx';
 import { useUpdateAtom } from 'jotai/utils';
+import { makeStyles } from 'tss-react/mui';
 
-import makeStyles from '@mui/styles/makeStyles';
 import SettingsIcon from '@mui/icons-material/Settings';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import IconButton from '@mui/material/IconButton';
@@ -14,7 +14,7 @@ import { CriteriaNames } from '../../../../Filter/Criterias/models';
 import { setCriteriaAndNewFilterDerivedAtom } from '../../../../Filter/filterAtoms';
 import { Group, Category } from '../../../models';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
   chip: {
     alignSelf: 'center',
     display: 'flex',
@@ -50,7 +50,7 @@ interface Props {
 }
 
 const GroupChip = ({ group, type }: Props): JSX.Element => {
-  const classes = useStyles();
+  const { classes } = useStyles();
 
   const { t } = useTranslation();
   const [isHovered, setIsHovered] = useState<boolean>(false);

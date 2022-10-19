@@ -1,9 +1,10 @@
+import { makeStyles } from 'tss-react/mui';
+
 import { styled } from '@mui/material';
-import { makeStyles } from '@mui/styles';
 
 import { LoadingSkeleton } from '@centreon/ui';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
   loadingSkeleton: {
     display: 'grid',
     gridTemplateRows: 'repeat(3, 67px)',
@@ -16,7 +17,7 @@ const ContactsSkeleton = styled(LoadingSkeleton)(() => ({
 }));
 
 const ContactsLoadingSkeleton = (): JSX.Element => {
-  const classes = useStyles();
+  const { classes } = useStyles();
 
   return (
     <div className={classes.loadingSkeleton}>

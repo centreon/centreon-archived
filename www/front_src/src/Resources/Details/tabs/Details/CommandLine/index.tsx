@@ -1,11 +1,11 @@
 import { isNil } from 'ramda';
+import { makeStyles } from 'tss-react/mui';
 
 import { Typography } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
 
 import { getCommandsWithArguments } from './utils';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
   argument: {
     marginRight: theme.spacing(0.5),
   },
@@ -30,7 +30,7 @@ interface Props {
 }
 
 const CommandWithArguments = ({ commandLine }: Props): JSX.Element => {
-  const classes = useStyles();
+  const { classes } = useStyles();
 
   const commands = getCommandsWithArguments(commandLine);
 

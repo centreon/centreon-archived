@@ -26,7 +26,7 @@ const ServerConfigurationWizard = ({
   changeServerType,
   goToNextStep,
 }: Props): JSX.Element => {
-  const classes = useStyles();
+  const { classes } = useStyles();
   const { t } = useTranslation();
 
   const [serverType, setServerType] = useState<number>(1);

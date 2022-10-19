@@ -2,9 +2,9 @@ import { useEffect, lazy, Suspense } from 'react';
 
 import { path, isNil, not } from 'ramda';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
+import { makeStyles } from 'tss-react/mui';
 
 import { Paper } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
 import IconGraph from '@mui/icons-material/BarChart';
 
 import {
@@ -28,7 +28,7 @@ import IconColumn from './IconColumn';
 
 const PerformanceGraph = lazy(() => import('../../Graph/Performance'));
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
   graph: {
     display: 'block',
     overflow: 'auto',
@@ -105,7 +105,7 @@ const GraphColumn = ({
     row,
     isHovered,
   }: ComponentColumnProps): JSX.Element | null => {
-    const classes = useStyles();
+    const { classes } = useStyles();
 
     const { type } = row;
 

@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
+import { makeStyles } from 'tss-react/mui';
 
 import { Card, Grid, IconButton, Tooltip, Typography } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
 import IconCopyFile from '@mui/icons-material/FileCopy';
 
 import { useCopyToClipboard } from '@centreon/ui';
@@ -19,14 +19,14 @@ interface Props {
   details: ResourceDetails;
 }
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
   commandLineCard: {
     padding: theme.spacing(1, 2, 2, 2),
   },
 }));
 
 const CommandLineCard = ({ details }: Props): JSX.Element => {
-  const classes = useStyles();
+  const { classes } = useStyles();
   const { t } = useTranslation();
 
   const { copy } = useCopyToClipboard({

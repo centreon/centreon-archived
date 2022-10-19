@@ -3,9 +3,9 @@ import { RefObject } from 'react';
 
 import { equals, last } from 'ramda';
 import { useUpdateAtom } from 'jotai/utils';
+import { makeStyles } from 'tss-react/mui';
 
 import { Typography } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
 import ShowChartOutlinedIcon from '@mui/icons-material/ShowChartOutlined';
 
 import Card from '../Details/Card';
@@ -16,7 +16,7 @@ import { selectResourceDerivedAtom } from '../../detailsAtoms';
 
 import { MetaServiceMetric } from './models';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
   card: {
     alignItems: 'center',
     display: 'grid',
@@ -49,7 +49,7 @@ interface Props {
 }
 
 const Metrics = ({ infiniteScrollTriggerRef, metrics }: Props): JSX.Element => {
-  const classes = useStyles();
+  const { classes } = useStyles();
 
   const selectResource = useUpdateAtom(selectResourceDerivedAtom);
 

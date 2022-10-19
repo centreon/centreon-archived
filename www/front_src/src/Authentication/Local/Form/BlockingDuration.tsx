@@ -4,9 +4,9 @@ import { FormikValues, useFormikContext } from 'formik';
 import { useTranslation } from 'react-i18next';
 import { isNil, lte, not } from 'ramda';
 import dayjs from 'dayjs';
+import { makeStyles } from 'tss-react/mui';
 
 import { FormHelperText, FormLabel, useTheme } from '@mui/material';
-import { makeStyles } from '@mui/styles';
 
 import { useMemoComponent } from '@centreon/ui';
 
@@ -32,14 +32,14 @@ import { attemptsFieldName } from './Attempts';
 
 const blockingDurationFieldName = 'blockingDuration';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()({
   passwordBlockingDuration: {
     maxWidth: 'fit-content',
   },
 });
 
 const BlockingDuration = (): JSX.Element => {
-  const classes = useStyles();
+  const { classes } = useStyles();
   const { t } = useTranslation();
   const theme = useTheme();
 

@@ -2,9 +2,9 @@ import { useMemo } from 'react';
 
 import { useAtomValue } from 'jotai/utils';
 import { isNil } from 'ramda';
+import { makeStyles } from 'tss-react/mui';
 
 import { Breadcrumbs as MuiBreadcrumbs } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 
 import navigationAtom from '../Navigation/navigationAtoms';
@@ -13,7 +13,7 @@ import { Breadcrumb as BreadcrumbModel, BreadcrumbsByPath } from './models';
 import Breadcrumb from './Breadcrumb';
 import getBreadcrumbsByPath from './getBreadcrumbsByPath';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
   item: {
     display: 'flex',
   },
@@ -45,7 +45,7 @@ const getBreadcrumbs = ({
 };
 
 const BreadcrumbTrail = ({ breadcrumbsByPath, path }: Props): JSX.Element => {
-  const classes = useStyles();
+  const { classes } = useStyles();
 
   const breadcrumbs = useMemo(
     () => getBreadcrumbs({ breadcrumbsByPath, path }),

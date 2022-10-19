@@ -1,14 +1,14 @@
 import { useTranslation } from 'react-i18next';
+import { makeStyles } from 'tss-react/mui';
 
 import { Typography } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
 
 import logoCentreon from '../assets/logo-centreon-colors.png';
 import { labelCentreonLogo } from '../Login/translatedLabels';
 
 import { labelCentreonIsLoading } from './translatedLabels';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
   loader: {
     alignItems: 'center',
     backgroundColor: theme.palette.background.paper,
@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export const MainLoader = (): JSX.Element => {
-  const classes = useStyles();
+  const { classes } = useStyles();
   const { t } = useTranslation();
 
   return (
@@ -34,7 +34,7 @@ export const MainLoader = (): JSX.Element => {
 };
 
 export const MainLoaderWithoutTranslation = (): JSX.Element => {
-  const classes = useStyles();
+  const { classes } = useStyles();
 
   return (
     <div className={classes.loader}>

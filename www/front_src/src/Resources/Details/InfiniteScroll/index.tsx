@@ -14,6 +14,7 @@ import {
 } from 'ramda';
 import { useTranslation } from 'react-i18next';
 import { useAtomValue } from 'jotai/utils';
+import { makeStyles } from 'tss-react/mui';
 
 import {
   CircularProgress,
@@ -22,7 +23,6 @@ import {
   LinearProgress,
   Tooltip,
 } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 
 import { useIntersectionObserver, ListingModel } from '@centreon/ui';
@@ -33,7 +33,7 @@ import { labelScrollToTop } from '../../translatedLabels';
 import { selectedResourcesDetailsAtom } from '../detailsAtoms';
 import { ResourceDetails } from '../models';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
   container: {
     alignContent: 'flex-start',
     alignItems: 'center',
@@ -106,7 +106,7 @@ const InfiniteScrollContent = <TEntity extends { id: number }>({
   children,
   details,
 }: Props<TEntity>): JSX.Element => {
-  const classes = useStyles();
+  const { classes } = useStyles();
   const { t } = useTranslation();
 
   const [entities, setEntities] = useState<Array<TEntity>>();

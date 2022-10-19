@@ -3,10 +3,10 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAtomValue } from 'jotai';
 import { useUpdateAtom } from 'jotai/utils';
+import { makeStyles } from 'tss-react/mui';
 
 import { Box, Container, Paper, Tab } from '@mui/material';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
-import { makeStyles } from '@mui/styles';
 
 import { userAtom } from '@centreon/ui-context';
 import { Group } from '@centreon/ui';
@@ -85,7 +85,7 @@ export const groups: Array<Group> = [
   },
 ];
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
   box: {
     overflowY: 'hidden',
   },
@@ -121,7 +121,7 @@ const useStyles = makeStyles((theme) => ({
 const scrollMargin = 8;
 
 const Authentication = (): JSX.Element => {
-  const classes = useStyles();
+  const { classes } = useStyles();
   const { t } = useTranslation();
 
   const formContainerRef = useRef<HTMLDivElement | null>(null);

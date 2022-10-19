@@ -10,7 +10,7 @@ const ResourceColumn = ({
   row,
   isHovered,
 }: ComponentColumnProps): JSX.Element => {
-  const classes = useColumnStyles({ isHovered });
+  const { classes } = useColumnStyles({ isHovered });
 
   return (
     <div className={classes.resourceDetailsCell}>

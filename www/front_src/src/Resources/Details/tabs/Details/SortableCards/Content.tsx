@@ -3,23 +3,26 @@ import { RefObject } from 'react';
 import { isNil } from 'ramda';
 import { DraggableSyntheticListeners } from '@dnd-kit/core';
 import { useTranslation } from 'react-i18next';
+import { makeStyles } from 'tss-react/mui';
 
-import { Theme, Grid, GridSize, Paper } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
+import { Grid, GridSize, Paper } from '@mui/material';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import { CreateCSSProperties } from '@mui/styles';
 
 import DetailsCard from '../DetailsCard';
 
 import { CardsLayout } from './models';
 
-const useStyles = makeStyles<Theme, { isDragging: boolean }>((theme) => ({
-  handler: ({ isDragging }): CreateCSSProperties => ({
+interface StylesProps {
+  isDragging: boolean;
+}
+
+const useStyles = makeStyles<StylesProps>()((theme, { isDragging }) => ({
+  handler: {
     alignItems: 'center',
     cursor: isDragging ? 'grabbing' : 'grab',
     display: 'flex',
     height: '100%',
-  }),
+  },
   paper: {
     height: '100%',
   },
@@ -53,7 +56,7 @@ const Content = ({
   isCustomCard,
   width,
 }: ContentProps): JSX.Element => {
-  const classes = useStyles({ isDragging });
+  const { classes } = useStyles({ isDragging });
   const { t } = useTranslation();
 
   const getVariableXs = (): GridSize => {

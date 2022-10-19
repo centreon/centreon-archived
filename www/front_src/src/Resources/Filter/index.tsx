@@ -32,6 +32,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 import { useAtom } from 'jotai';
+import { makeStyles } from 'tss-react/mui';
 
 import CloseIcon from '@mui/icons-material/Close';
 import {
@@ -41,7 +42,6 @@ import {
   Paper,
   Popper,
 } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
 
 import { userAtom } from '@centreon/ui-context';
 import {
@@ -104,7 +104,7 @@ interface DynamicCriteriaResult {
   result: Array<{ level: string; name: string }>;
 }
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
   autocompletePopper: {
     zIndex: theme.zIndex.tooltip,
   },
@@ -128,7 +128,7 @@ const debounceTimeInMs = 500;
 const isDefined = pipe(isNil, not);
 
 const Filter = (): JSX.Element => {
-  const classes = useStyles();
+  const { classes } = useStyles();
   const { t } = useTranslation();
 
   const { newSelectableCriterias } = useFilterByModule();

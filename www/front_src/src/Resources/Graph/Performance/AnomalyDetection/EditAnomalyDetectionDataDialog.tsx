@@ -2,9 +2,9 @@ import { Dispatch, ReactNode, SetStateAction, useState } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { useUpdateAtom } from 'jotai/utils';
+import { makeStyles } from 'tss-react/mui';
 
 import { Button, Dialog, Paper } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
 
 import { labelClose } from '../../../translatedLabels';
 import TimePeriodButtonGroup from '../TimePeriods';
@@ -15,7 +15,7 @@ import AnomalyDetectionSlider from './AnomalyDetectionSlider';
 import { CustomFactorsData } from './models';
 import { countedRedCirclesAtom } from './anomalyDetectionAtom';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
   close: {
     display: 'flex',
     justifyContent: 'flex-end',
@@ -67,7 +67,7 @@ const EditAnomalyDetectionDataDialog = ({
   setIsOpen,
   children,
 }: Props): JSX.Element => {
-  const classes = useStyles();
+  const { classes } = useStyles();
   const { t } = useTranslation();
 
   const [factorsData, setFactorsData] = useState<null | CustomFactorsData>(

@@ -1,9 +1,10 @@
+import { makeStyles } from 'tss-react/mui';
+
 import { Typography } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
 
 import Card from '../Card';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
   active: {
     color: theme.palette.success.main,
   },
@@ -29,7 +30,7 @@ const DetailsCard = ({
   line,
   isCustomCard = false,
 }: Props): JSX.Element => {
-  const classes = useStyles();
+  const { classes } = useStyles();
 
   if (isCustomCard) {
     return line;

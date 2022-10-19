@@ -1,9 +1,10 @@
+import { makeStyles } from 'tss-react/mui';
+
 import { useTheme, Skeleton, SkeletonProps } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
 
 import { headerHeight } from '../../../Header';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
   nextContent: {
     marginTop: theme.spacing(1.5),
   },
@@ -38,7 +39,7 @@ export const SliderSkeleton = ({
 
 export const HeaderSkeleton = ({ animate = true }: Props): JSX.Element => {
   const theme = useTheme();
-  const classes = useStyles();
+  const { classes } = useStyles();
 
   return (
     <>
@@ -61,7 +62,7 @@ export const HeaderSkeleton = ({ animate = true }: Props): JSX.Element => {
 
 export const ContentSkeleton = ({ animate = true }: Props): JSX.Element => {
   const theme = useTheme();
-  const classes = useStyles();
+  const { classes } = useStyles();
 
   return (
     <>
@@ -88,7 +89,7 @@ export const ContentSkeleton = ({ animate = true }: Props): JSX.Element => {
 
 export const ReleaseNoteSkeleton = ({ animate = true }: Props): JSX.Element => {
   const theme = useTheme();
-  const classes = useStyles();
+  const { classes } = useStyles();
 
   return (
     <>

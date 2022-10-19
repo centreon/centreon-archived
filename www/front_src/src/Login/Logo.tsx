@@ -2,8 +2,7 @@ import { useAtomValue } from 'jotai/utils';
 import { equals } from 'ramda';
 import { useTranslation } from 'react-i18next';
 import clsx from 'clsx';
-
-import { makeStyles } from '@mui/styles';
+import { makeStyles } from 'tss-react/mui';
 
 import { useMemoComponent } from '@centreon/ui';
 import { ThemeMode, userAtom } from '@centreon/ui-context';
@@ -13,7 +12,7 @@ import logoWhite from '../assets/centreon-logo-white.svg';
 
 import { labelCentreonLogo } from './translatedLabels';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()({
   centreonLogo: {
     height: '100%',
     objectFit: 'contain',
@@ -26,7 +25,7 @@ const useStyles = makeStyles({
 });
 
 const Logo = (): JSX.Element => {
-  const classes = useStyles();
+  const { classes } = useStyles();
   const { t } = useTranslation();
   const { themeMode } = useAtomValue(userAtom);
   const logo = equals(themeMode, ThemeMode.light) ? logoCentreon : logoWhite;

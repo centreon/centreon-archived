@@ -6,9 +6,9 @@ import { all, equals, any, reject, update, findIndex, omit } from 'ramda';
 import { useTranslation } from 'react-i18next';
 import { useUpdateAtom } from 'jotai/utils';
 import { useAtom } from 'jotai';
+import { makeStyles } from 'tss-react/mui';
 
 import DeleteIcon from '@mui/icons-material/Delete';
-import makeStyles from '@mui/styles/makeStyles';
 
 import {
   ContentWithCircularLoading,
@@ -37,7 +37,7 @@ import {
   customFiltersAtom,
 } from '../filterAtoms';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
   filterCard: {
     alignItems: 'center',
     display: 'grid',
@@ -57,7 +57,7 @@ const areFilterIdsEqual =
     equals(Number(filter.id), Number(filterToCompare.id));
 
 const EditFilterCard = ({ filter }: Props): JSX.Element => {
-  const classes = useStyles();
+  const { classes } = useStyles();
 
   const { t } = useTranslation();
 

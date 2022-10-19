@@ -3,6 +3,7 @@ import { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FormikValues, useFormikContext } from 'formik';
 import { equals, has, inc, map, pluck, filter } from 'ramda';
+import { makeStyles } from 'tss-react/mui';
 
 import {
   IconButton,
@@ -10,7 +11,6 @@ import {
   Tooltip,
   TypographyProps,
 } from '@mui/material';
-import { makeStyles } from '@mui/styles';
 import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount';
 
 import {
@@ -25,7 +25,7 @@ import { contactsEndpoint } from '../../../api/endpoints';
 
 const excludedUsersFieldName = 'passwordExpiration.excludedUsers';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
   excludedUsersAutocomplete: {
     height: 'auto',
     width: theme.spacing(32),
@@ -43,7 +43,7 @@ const useStyles = makeStyles((theme) => ({
 const optionTypographyProps = { component: 'span' } as TypographyProps;
 
 const ExcludedUsers = (): JSX.Element => {
-  const classes = useStyles();
+  const { classes } = useStyles();
   const { t } = useTranslation();
   const { values, setFieldValue } = useFormikContext<FormikValues>();
 

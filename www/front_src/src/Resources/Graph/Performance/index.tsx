@@ -27,9 +27,9 @@ import {
   sortBy,
 } from 'ramda';
 import { useTranslation } from 'react-i18next';
+import { makeStyles } from 'tss-react/mui';
 
-import { Skeleton, Theme, Typography } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
+import { Skeleton, Typography } from '@mui/material';
 
 import {
   getData,
@@ -91,56 +91,57 @@ interface Props {
   xAxisTickFormat?: string;
 }
 
-interface MakeStylesProps extends Pick<Props, 'graphHeight' | 'displayTitle'> {
+interface StylesProps extends Pick<Props, 'graphHeight' | 'displayTitle'> {
   canAdjustTimePeriod: boolean;
 }
 
-const useStyles = makeStyles<Theme, MakeStylesProps>((theme) => ({
-  container: {
-    display: 'grid',
-    flexDirection: 'column',
-    gridGap: theme.spacing(0.5),
-    gridTemplateRows: ({ graphHeight, displayTitle }): string =>
-      `${displayTitle ? 'min-content' : ''} ${theme.spacing(
+const useStyles = makeStyles<StylesProps>()(
+  (theme, { graphHeight, displayTitle, canAdjustTimePeriod }) => ({
+    container: {
+      display: 'grid',
+      flexDirection: 'column',
+      gridGap: theme.spacing(0.5),
+      gridTemplateRows: `${displayTitle ? 'min-content' : ''} ${theme.spacing(
         2,
       )} ${graphHeight}px min-content`,
-    height: '100%',
-    width: 'auto',
-  },
-  graphHeader: {
-    display: 'grid',
-    gridTemplateColumns: '0.4fr 1fr 0.4fr',
-    justifyItems: 'end',
-    width: '100%',
-  },
-  graphTranslation: {
-    columnGap: theme.spacing(1),
-    display: 'grid',
-    gridTemplateColumns: ({ canAdjustTimePeriod }): string =>
-      canAdjustTimePeriod ? 'min-content auto min-content' : 'auto',
-    justifyContent: ({ canAdjustTimePeriod }): string =>
-      canAdjustTimePeriod ? 'space-between' : 'center',
-    margin: theme.spacing(0, 1),
-    width: '90%',
-  },
-  loadingContainer: {
-    height: theme.spacing(2),
-    width: theme.spacing(2),
-  },
-  noDataContainer: {
-    alignItems: 'center',
-    display: 'flex',
-    height: '100%',
-    justifyContent: 'center',
-  },
-  title: {
-    maxWidth: '100%',
-    overflow: 'hidden',
-    placeSelf: 'center',
-    textOverflow: 'ellipsis',
-    whiteSpace: 'nowrap',
-  },
-}));
+      height: '100%',
+      width: 'auto',
+    },
+    graphHeader: {
+      display: 'grid',
+      gridTemplateColumns: '0.4fr 1fr 0.4fr',
+      justifyItems: 'end',
+      width: '100%',
+    },
+    graphTranslation: {
+      columnGap: theme.spacing(1),
+      display: 'grid',
+      gridTemplateColumns: canAdjustTimePeriod
+        ? 'min-content auto min-content'
+        : 'auto',
+      justifyContent: canAdjustTimePeriod ? 'space-between' : 'center',
+      margin: theme.spacing(0, 1),
+      width: '90%',
+    },
+    loadingContainer: {
+      height: theme.spacing(2),
+      width: theme.spacing(2),
+    },
+    noDataContainer: {
+      alignItems: 'center',
+      display: 'flex',
+      height: '100%',
+      justifyContent: 'center',
+    },
+    title: {
+      maxWidth: '100%',
+      overflow: 'hidden',
+      placeSelf: 'center',
+      textOverflow: 'ellipsis',
+      whiteSpace: 'nowrap',
+    },
+  }),
+);
 
 const shiftRatio = 2;
 
@@ -166,7 +167,7 @@ const PerformanceGraph = ({
   getPerformanceGraphRef,
   resizeEnvelopeData,
 }: Props): JSX.Element => {
-  const classes = useStyles({
+  const { classes } = useStyles({
     canAdjustTimePeriod: not(isNil(adjustTimePeriod)),
     displayTitle,
     graphHeight,

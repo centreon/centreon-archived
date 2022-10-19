@@ -4,9 +4,9 @@ import { equals, last, not, isEmpty } from 'ramda';
 import { useTranslation } from 'react-i18next';
 import { Dayjs } from 'dayjs';
 import { useAtomValue } from 'jotai/utils';
+import { makeStyles } from 'tss-react/mui';
 
 import { Typography, Paper, Divider } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
 import {
   Timeline,
   TimelineContent,
@@ -27,7 +27,7 @@ import {
   sortEventsByDate,
 } from '../Event';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
   contentContainer: {
     paddingBottom: 0,
     paddingTop: 0,
@@ -77,7 +77,7 @@ interface Props {
 }
 
 const Events = ({ timeline, infiniteScrollTriggerRef }: Props): JSX.Element => {
-  const classes = useStyles();
+  const { classes } = useStyles();
   const { t } = useTranslation();
   const { locale } = useAtomValue(userAtom);
   const { format } = useLocaleDateTimeFormat();

@@ -3,12 +3,12 @@ import { useState, useEffect, useCallback } from 'react';
 import { find, propEq, pathEq, filter, isEmpty } from 'ramda';
 import { useAtomValue } from 'jotai/utils';
 import { useTranslation } from 'react-i18next';
+import { makeStyles } from 'tss-react/mui';
 
 import UpdateIcon from '@mui/icons-material/SystemUpdateAlt';
 import InstallIcon from '@mui/icons-material/Add';
 import Stack from '@mui/material/Stack';
 import { Button } from '@mui/material';
-import { makeStyles } from '@mui/styles';
 
 import {
   useRequest,
@@ -39,7 +39,7 @@ import {
 } from './models';
 import { buildEndPoint, buildExtensionEndPoint } from './api/endpoint';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
   contentWrapper: {
     [theme.breakpoints.up(767)]: {
       padding: theme.spacing(1.5, 1.5, 1.5, 0),
@@ -57,7 +57,7 @@ interface Props {
 const scrollMargin = 20;
 
 const ExtensionsManager = ({ reloadNavigation }: Props): JSX.Element => {
-  const classes = useStyles();
+  const { classes } = useStyles();
   const { t } = useTranslation();
 
   const { showErrorMessage, showSuccessMessage } = useSnackbar();

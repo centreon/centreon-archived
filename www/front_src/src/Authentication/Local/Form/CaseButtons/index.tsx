@@ -3,6 +3,7 @@ import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FormikValues, useFormikContext } from 'formik';
 import clsx from 'clsx';
+import { makeStyles } from 'tss-react/mui';
 
 import {
   Button,
@@ -11,7 +12,6 @@ import {
   Typography,
   useTheme,
 } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
 
 import { useMemoComponent } from '@centreon/ui';
 
@@ -43,7 +43,7 @@ const hasUpperCaseName = 'hasUpperCase';
 const hasNumberName = 'hasNumber';
 const hasSpecialCharacterName = 'hasSpecialCharacter';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
   button: {
     minWidth: theme.spacing(4),
   },
@@ -59,7 +59,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const CaseButtons = (): JSX.Element => {
-  const classes = useStyles();
+  const { classes } = useStyles();
   const { t } = useTranslation();
   const theme = useTheme();
 

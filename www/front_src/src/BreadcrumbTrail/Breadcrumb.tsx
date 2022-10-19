@@ -1,11 +1,11 @@
 import { Link as RouterLink } from 'react-router-dom';
+import { makeStyles } from 'tss-react/mui';
 
 import { Link } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
 
 import { Breadcrumb as BreadcrumbModel } from './models';
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles()(() => ({
   link: {
     '&:hover': {
       textDecoration: 'underline',
@@ -22,7 +22,7 @@ interface Props {
 }
 
 const Breadcrumb = ({ last, breadcrumb }: Props): JSX.Element => {
-  const classes = useStyles();
+  const { classes } = useStyles();
 
   return (
     <Link

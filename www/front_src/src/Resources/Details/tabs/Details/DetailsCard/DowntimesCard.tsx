@@ -1,6 +1,5 @@
 import { useTranslation } from 'react-i18next';
-
-import makeStyles from '@mui/styles/makeStyles';
+import { makeStyles } from 'tss-react/mui';
 
 import { useLocaleDateTimeFormat } from '@centreon/ui';
 
@@ -17,7 +16,7 @@ interface Props {
   details: ResourceDetails;
 }
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
   downtimes: {
     display: 'grid',
     rowGap: theme.spacing(1),
@@ -25,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const DowntimesCard = ({ details }: Props): JSX.Element => {
-  const classes = useStyles();
+  const { classes } = useStyles();
   const { t } = useTranslation();
   const { toDateTime } = useLocaleDateTimeFormat();
 

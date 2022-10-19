@@ -33,7 +33,7 @@ const RemoteServerWizardStepTwo = ({
   goToNextStep,
   goToPreviousStep,
 }: Props): JSX.Element => {
-  const classes = useStyles();
+  const { classes } = useStyles();
   const { t } = useTranslation();
   const [pollers, setPollers] = useState<Array<Poller> | null>(null);
 

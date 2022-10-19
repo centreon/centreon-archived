@@ -4,9 +4,9 @@ import { useTranslation } from 'react-i18next';
 import { FormikValues, useFormikContext } from 'formik';
 import { equals, not } from 'ramda';
 import { useAtom } from 'jotai';
+import { makeStyles } from 'tss-react/mui';
 
 import { Button } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
 
 import {
   ConfirmDialog,
@@ -26,7 +26,7 @@ import {
 } from './Local/translatedLabels';
 import { tabAtom, appliedTabAtom } from './tabAtoms';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
   buttons: {
     alignItems: 'center',
     columnGap: theme.spacing(2),
@@ -38,7 +38,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const FormButtons = (): JSX.Element => {
-  const classes = useStyles();
+  const { classes } = useStyles();
   const { t } = useTranslation();
   const [submitted, setSubmitted] = useState(false);
   const [askingBeforeReset, setAskingBeforeReset] = useState(false);

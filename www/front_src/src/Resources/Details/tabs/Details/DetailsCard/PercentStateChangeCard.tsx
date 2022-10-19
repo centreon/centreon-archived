@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
+import { makeStyles } from 'tss-react/mui';
 
 import { Tooltip } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
 import FlappingIcon from '@mui/icons-material/SwapCalls';
 
 import {
@@ -12,7 +12,7 @@ import { ResourceDetails } from '../../../models';
 
 import DetailsLine from './DetailsLine';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
   percentStateCard: {
     alignItems: 'center',
     columnGap: theme.spacing(1),
@@ -25,7 +25,7 @@ interface Props {
   details: ResourceDetails;
 }
 const PercentStateChangeCard = ({ details }: Props): JSX.Element => {
-  const classes = useStyles();
+  const { classes } = useStyles();
   const { t } = useTranslation();
 
   return (

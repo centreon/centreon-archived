@@ -1,10 +1,10 @@
 import { RefObject } from 'react';
 
 import { DraggableSyntheticListeners } from '@dnd-kit/core';
+import { makeStyles } from 'tss-react/mui';
 
 import MoveIcon from '@mui/icons-material/UnfoldMore';
-import { Paper, Theme } from '@mui/material';
-import { CreateCSSProperties, makeStyles } from '@mui/styles';
+import { Paper } from '@mui/material';
 
 import { Filter } from '../models';
 
@@ -18,7 +18,11 @@ interface ContentProps extends Filter {
   style;
 }
 
-const useStyles = makeStyles<Theme, { isDragging: boolean }>((theme) => ({
+interface StylesProps {
+  isDragging: boolean;
+}
+
+const useStyles = makeStyles<StylesProps>()((theme, { isDragging }) => ({
   filterCard: {
     alignItems: 'center',
     display: 'grid',
@@ -26,9 +30,9 @@ const useStyles = makeStyles<Theme, { isDragging: boolean }>((theme) => ({
     gridTemplateColumns: '1fr auto',
     padding: theme.spacing(1),
   },
-  filterCardHandler: ({ isDragging }): CreateCSSProperties => ({
+  filterCardHandler: {
     cursor: isDragging ? 'grabbing' : 'grab',
-  }),
+  },
 }));
 
 const SortableContent = ({
@@ -41,7 +45,7 @@ const SortableContent = ({
   name,
   isDragging,
 }: ContentProps): JSX.Element => {
-  const classes = useStyles({ isDragging });
+  const { classes } = useStyles({ isDragging });
 
   return (
     <Paper

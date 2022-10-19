@@ -1,8 +1,8 @@
 import { lazy, useState, Suspense, useRef, useEffect } from 'react';
 
 import { equals, isNil, path } from 'ramda';
+import { makeStyles } from 'tss-react/mui';
 
-import makeStyles from '@mui/styles/makeStyles';
 import { Box } from '@mui/material';
 
 import { ServerType, WizardFormProps } from '../../PollerWizard/models';
@@ -47,14 +47,14 @@ const steps = [
   labelFinishTheSetup,
 ];
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
   wrapper: {
     margin: theme.spacing(2, 4),
   },
 }));
 
 const PollerWizard = (): JSX.Element | null => {
-  const classes = useStyles();
+  const { classes } = useStyles();
 
   const [currentStep, setCurrentStep] = useState(0);
   const [serverType, setServerType] = useState<ServerType>(ServerType.Base);

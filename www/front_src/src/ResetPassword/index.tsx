@@ -5,9 +5,9 @@ import { useAtomValue } from 'jotai/utils';
 import { isNil, not } from 'ramda';
 import { useNavigate } from 'react-router-dom';
 import { Formik } from 'formik';
+import { makeStyles } from 'tss-react/mui';
 
 import { Paper, Typography } from '@mui/material';
-import { makeStyles } from '@mui/styles';
 
 import routeMap from '../reactRoutes/routeMap';
 import Logo from '../Login/Logo';
@@ -18,7 +18,7 @@ import { ResetPasswordValues } from './models';
 import useResetPassword from './useResetPassword';
 import Form from './Form';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
   container: {
     alignItems: 'center',
     backgroundColor: theme.palette.background.paper,
@@ -41,7 +41,7 @@ const initialValues = {
 };
 
 const ResetPassword = (): JSX.Element | null => {
-  const classes = useStyles();
+  const { classes } = useStyles();
   const { t } = useTranslation();
   const navigate = useNavigate();
 

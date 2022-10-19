@@ -1,8 +1,8 @@
-import makeStyles from '@mui/styles/makeStyles';
+import { makeStyles } from 'tss-react/mui';
 
 import { StatusChip, StatusChipProps } from '@centreon/ui';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
   root: {
     fontSize: theme.typography.body2.fontSize,
     height: 18,
@@ -11,7 +11,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const CompactStatusChip = (props: StatusChipProps): JSX.Element => {
-  const classes = useStyles();
+  const { classes } = useStyles();
 
   return <StatusChip classes={{ root: classes.root }} {...props} />;
 };

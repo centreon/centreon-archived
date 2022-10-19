@@ -1,18 +1,17 @@
 import parse from 'html-react-parser';
 import DOMPurify from 'dompurify';
+import { makeStyles } from 'tss-react/mui';
 
-import { Typography, Theme } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
-import { CreateCSSProperties } from '@mui/styles';
+import { Typography } from '@mui/material';
 
 import truncate from '../../truncate';
 
 type StylesProps = Pick<Props, 'bold'>;
 
-const useStyles = makeStyles<Theme, StylesProps>(() => ({
-  information: ({ bold }): CreateCSSProperties<StylesProps> => ({
+const useStyles = makeStyles<StylesProps>()((theme, { bold }) => ({
+  information: {
     fontWeight: bold ? 600 : 'unset',
-  }),
+  },
 }));
 
 interface Props {
@@ -21,7 +20,7 @@ interface Props {
 }
 
 const OutputInformation = ({ content, bold = false }: Props): JSX.Element => {
-  const classes = useStyles({ bold });
+  const { classes } = useStyles({ bold });
 
   return (
     <Typography className={classes.information} variant="body2">

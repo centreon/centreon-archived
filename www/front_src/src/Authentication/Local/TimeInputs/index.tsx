@@ -1,6 +1,5 @@
 import { equals, find, propEq } from 'ramda';
-
-import makeStyles from '@mui/styles/makeStyles';
+import { makeStyles } from 'tss-react/mui';
 
 import { labelSeconds } from '../../../Resources/translatedLabels';
 import {
@@ -18,7 +17,7 @@ import { TimeInputConfiguration } from '../models';
 
 import TimeInput from './TimeInput';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
   timeInputs: {
     columnGap: theme.spacing(2),
     display: 'flex',
@@ -59,7 +58,7 @@ const TimeInputs = ({
   inputLabel,
   maxDuration,
 }: Props): JSX.Element => {
-  const classes = useStyles();
+  const { classes } = useStyles();
 
   return (
     <div className={classes.timeInputs}>

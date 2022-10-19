@@ -1,9 +1,10 @@
 import { ReactNode } from 'react';
 
-import { Paper } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
+import { makeStyles } from 'tss-react/mui';
 
-const useStyles = makeStyles((theme) => ({
+import { Paper } from '@mui/material';
+
+const useStyles = makeStyles()((theme) => ({
   page: {
     height: 'fit-content',
     margin: '0 auto',
@@ -17,7 +18,7 @@ interface Props {
 }
 
 const BaseWizard = ({ children }: Props): JSX.Element => {
-  const classes = useStyles();
+  const { classes } = useStyles();
 
   return <Paper className={classes.page}>{children}</Paper>;
 };

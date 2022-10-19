@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { pathEq } from 'ramda';
+import { makeStyles } from 'tss-react/mui';
 
-import makeStyles from '@mui/styles/makeStyles';
 import IconAcknowledge from '@mui/icons-material/Person';
 import IconCheck from '@mui/icons-material/Sync';
 
@@ -24,7 +24,7 @@ import {
 
 import { ColumnProps } from '.';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
   actions: {
     alignItems: 'center',
     display: 'flex',
@@ -47,7 +47,7 @@ const StatusColumnOnHover = ({
   actions,
   row,
 }: StatusColumnProps): JSX.Element => {
-  const classes = useStyles();
+  const { classes } = useStyles();
   const { t } = useTranslation();
 
   const { canAcknowledge, canDowntime, canCheck } = useAclQuery();
@@ -125,7 +125,7 @@ const StatusColumn = ({
   t,
 }: ColumnProps): ((props: ComponentColumnProps) => JSX.Element) => {
   const Status = ({ row, isHovered }: ComponentColumnProps): JSX.Element => {
-    const classes = useStyles();
+    const { classes } = useStyles();
 
     const statusName = row.status.name;
 

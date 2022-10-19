@@ -8,8 +8,8 @@ import {
 } from 'formik';
 import { equals, isEmpty, not, prop } from 'ramda';
 import { useTranslation } from 'react-i18next';
+import { makeStyles } from 'tss-react/mui';
 
-import { makeStyles } from '@mui/styles';
 import { Button, CircularProgress, Divider } from '@mui/material';
 
 import { TextField } from '@centreon/ui';
@@ -65,7 +65,7 @@ const contentLayout = [
   },
 ];
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
   form: {
     display: 'flex',
     flexDirection: 'column',
@@ -75,7 +75,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Form = (): JSX.Element => {
-  const classes = useStyles();
+  const { classes } = useStyles();
   const { t } = useTranslation();
 
   const [passwordVisibility, setPasswordVisibility] = useState({

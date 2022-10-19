@@ -3,9 +3,9 @@ import { useState, useCallback } from 'react';
 import { FormikValues, useFormikContext } from 'formik';
 import { isEmpty, not, prop } from 'ramda';
 import { useTranslation } from 'react-i18next';
+import { makeStyles } from 'tss-react/mui';
 
 import { Button, CircularProgress } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
 import PersonIcon from '@mui/icons-material/Person';
 import LockIcon from '@mui/icons-material/Lock';
 
@@ -17,7 +17,7 @@ import PasswordEndAdornment from './PasswordEndAdornment';
 const aliasFieldName = 'alias';
 const passwordFieldName = 'password';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
   form: {
     display: 'flex',
     flexDirection: 'column',
@@ -30,7 +30,7 @@ const getTouchedError = ({ fieldName, errors, touched }): string | undefined =>
   prop(fieldName, touched) && prop(fieldName, errors);
 
 const LoginForm = (): JSX.Element => {
-  const classes = useStyles();
+  const { classes } = useStyles();
   const { t } = useTranslation();
   const [isVisible, setIsVisible] = useState(false);
   const {

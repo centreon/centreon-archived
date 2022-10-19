@@ -4,10 +4,10 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { equals, flatten, isEmpty, isNil, length } from 'ramda';
 import { useAtom } from 'jotai';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
+import { makeStyles } from 'tss-react/mui';
 
 import List from '@mui/material/List';
 import { ListItem, useTheme } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
 
 import { useMemoComponent } from '@centreon/ui';
 import { userAtom } from '@centreon/ui-context';
@@ -30,7 +30,7 @@ interface Props {
   navigationData?: Array<Page>;
 }
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles()(() => ({
   icon: {
     fontSize: 26,
   },
@@ -45,7 +45,7 @@ const NavigationMenu = ({
   isDrawerOpen,
   navigationData,
 }: Props): JSX.Element => {
-  const classes = useStyles();
+  const { classes } = useStyles();
   const navigate = useNavigate();
   const { pathname, search } = useLocation();
   const theme = useTheme();

@@ -3,9 +3,9 @@ import { ChangeEvent, useCallback, useMemo } from 'react';
 import { FormikValues, useFormikContext } from 'formik';
 import { useTranslation } from 'react-i18next';
 import { isEmpty, isNil, not, path } from 'ramda';
+import { makeStyles } from 'tss-react/mui';
 
 import { useTheme } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
 
 import { TextField, useMemoComponent } from '@centreon/ui';
 
@@ -22,14 +22,14 @@ import { getField } from './utils';
 
 export const attemptsFieldName = 'attempts';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
   input: {
     maxWidth: theme.spacing(43),
   },
 }));
 
 const Attempts = (): JSX.Element => {
-  const classes = useStyles();
+  const { classes } = useStyles();
   const { values, setFieldValue, errors } = useFormikContext<FormikValues>();
   const { t } = useTranslation();
   const theme = useTheme();

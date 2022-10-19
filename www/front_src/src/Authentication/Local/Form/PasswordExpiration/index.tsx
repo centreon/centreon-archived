@@ -4,9 +4,9 @@ import { useTranslation } from 'react-i18next';
 import { FormikValues, useFormikContext } from 'formik';
 import dayjs from 'dayjs';
 import { lte } from 'ramda';
+import { makeStyles } from 'tss-react/mui';
 
 import { FormHelperText, FormLabel } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
 
 import { useMemoComponent } from '@centreon/ui';
 
@@ -18,7 +18,7 @@ import { twelveMonths } from '../../timestamps';
 
 const passwordExpirationFieldName = 'passwordExpiration.expirationDelay';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
   container: {
     alignItems: 'flex-end',
     display: 'grid',
@@ -30,7 +30,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const PasswordExpiration = (): JSX.Element => {
-  const classes = useStyles();
+  const { classes } = useStyles();
   const { t } = useTranslation();
 
   const { values, setFieldValue, errors } = useFormikContext<FormikValues>();

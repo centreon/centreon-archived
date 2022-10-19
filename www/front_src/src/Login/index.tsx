@@ -4,9 +4,9 @@ import { Formik } from 'formik';
 import { useTranslation } from 'react-i18next';
 import { useAtomValue } from 'jotai/utils';
 import { isNil } from 'ramda';
+import { makeStyles } from 'tss-react/mui';
 
 import { Paper, Typography } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
 
 import { LoadingSkeleton } from '@centreon/ui';
 
@@ -30,7 +30,7 @@ const LoginForm = lazy(() => import('./Form'));
 
 const Logo = lazy(() => import('./Logo'));
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
   copyrightAndVersion: {
     alignItems: 'center',
     display: 'flex',
@@ -69,7 +69,7 @@ const initialValues: LoginFormValues = {
 };
 
 const LoginPage = (): JSX.Element => {
-  const classes = useStyles();
+  const { classes } = useStyles();
   const { t } = useTranslation();
   const validationSchema = useValidationSchema();
 

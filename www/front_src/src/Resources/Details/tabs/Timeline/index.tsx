@@ -3,9 +3,9 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { prop, isEmpty, path, isNil } from 'ramda';
 import { useAtomValue } from 'jotai/utils';
+import { makeStyles } from 'tss-react/mui';
 
 import { Paper, Stack } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
 
 import {
   useRequest,
@@ -34,7 +34,7 @@ import ExportToCsv from './ExportToCsv';
 
 type TimelineListing = ListingModel<TimelineEvent>;
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
   filterHeader: {
     alignItems: 'center',
     display: 'grid',
@@ -43,7 +43,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const TimelineTab = ({ details }: TabProps): JSX.Element => {
-  const classes = useStyles();
+  const { classes } = useStyles();
   const { t } = useTranslation();
 
   const translatedTypes = types.map((type) => ({

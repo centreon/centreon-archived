@@ -5,6 +5,7 @@ import { useTranslation, withTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { useUpdateAtom } from 'jotai/utils';
 import { equals, gt, isNil, not, __ } from 'ramda';
+import { makeStyles } from 'tss-react/mui';
 
 import {
   Box,
@@ -22,7 +23,6 @@ import FileCopyIcon from '@mui/icons-material/FileCopy';
 import CheckIcon from '@mui/icons-material/Check';
 import LogoutIcon from '@mui/icons-material/Logout';
 import SettingsIcon from '@mui/icons-material/Settings';
-import { makeStyles } from '@mui/styles';
 
 import {
   MenuSkeleton,
@@ -72,7 +72,7 @@ interface UserData {
   username: string | null;
 }
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
   badge: {
     alignItems: 'center',
     borderRadius: theme.spacing(1.25),
@@ -175,7 +175,7 @@ interface Props {
 }
 
 const UserMenu = ({ headerRef }: Props): JSX.Element => {
-  const classes = useStyles();
+  const { classes } = useStyles();
   const { t } = useTranslation();
   const { allowedPages } = useNavigation();
 

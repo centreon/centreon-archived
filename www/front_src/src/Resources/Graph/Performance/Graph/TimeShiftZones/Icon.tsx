@@ -1,7 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { equals, not } from 'ramda';
-
-import makeStyles from '@mui/styles/makeStyles';
+import { makeStyles } from 'tss-react/mui';
 
 import { useMemoComponent } from '@centreon/ui';
 
@@ -17,7 +16,7 @@ interface Props {
   xIcon: number;
 }
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()({
   icon: {
     cursor: 'pointer',
   },
@@ -30,7 +29,7 @@ const TimeShiftIcon = ({
   directionHovered,
   ariaLabel,
 }: Props): JSX.Element => {
-  const classes = useStyles();
+  const { classes } = useStyles();
   const { t } = useTranslation();
 
   const { graphHeight, marginTop, shiftTime, loading } = useTimeShiftContext();

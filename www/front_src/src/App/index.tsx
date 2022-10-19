@@ -1,8 +1,7 @@
 import { lazy, Suspense } from 'react';
 
 import { not } from 'ramda';
-
-import makeStyles from '@mui/styles/makeStyles';
+import { makeStyles } from 'tss-react/mui';
 
 import { LoadingSkeleton } from '@centreon/ui';
 
@@ -11,7 +10,7 @@ import { headerHeight } from '../Header';
 
 import useApp from './useApp';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
   content: {
     display: 'flex',
     flexDirection: 'column',
@@ -52,7 +51,7 @@ const Header = lazy(() => import('../Header'));
 const Navigation = lazy(() => import('../Navigation'));
 
 const App = (): JSX.Element => {
-  const classes = useStyles();
+  const { classes } = useStyles();
   const { hasMinArgument } = useApp();
 
   const min = hasMinArgument();

@@ -1,11 +1,12 @@
 import { useRef, useState, useEffect } from 'react';
 
+import { makeStyles } from 'tss-react/mui';
+
 import { Typography } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
 
 import { centreonUi } from '../helpers/index';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
   dateTime: {
     color: theme.palette.common.white,
     display: 'flex',
@@ -19,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Clock = (): JSX.Element => {
-  const classes = useStyles();
+  const { classes } = useStyles();
 
   const refreshIntervalRef = useRef<number>();
   const [dateTime, setDateTime] = useState({

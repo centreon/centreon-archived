@@ -3,8 +3,7 @@
 import parse from 'html-react-parser';
 import DOMPurify from 'dompurify';
 import { useTranslation } from 'react-i18next';
-
-import makeStyles from '@mui/styles/makeStyles';
+import { makeStyles } from 'tss-react/mui';
 
 import { ColumnType, useLocaleDateTimeFormat } from '@centreon/ui';
 
@@ -18,7 +17,7 @@ import {
 
 import DetailsTable, { getYesNoLabel } from '.';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()({
   comment: {
     display: 'block',
     overflow: 'hidden',
@@ -41,7 +40,7 @@ interface Props {
 }
 
 const DowntimeDetailsTable = ({ endpoint }: Props): JSX.Element => {
-  const classes = useStyles();
+  const { classes } = useStyles();
   const { t } = useTranslation();
 
   const { toDateTime } = useLocaleDateTimeFormat();

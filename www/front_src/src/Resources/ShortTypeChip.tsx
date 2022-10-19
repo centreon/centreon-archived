@@ -1,8 +1,8 @@
-import makeStyles from '@mui/styles/makeStyles';
+import { makeStyles } from 'tss-react/mui';
 
 import { SeverityCode, StatusChip } from '@centreon/ui';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
   extraSmallChipContainer: {
     height: 19,
   },
@@ -16,7 +16,7 @@ interface Props {
 }
 
 const ShortTypeChip = ({ label }: Props): JSX.Element => {
-  const classes = useStyles();
+  const { classes } = useStyles();
 
   return (
     <StatusChip

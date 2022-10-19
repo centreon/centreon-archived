@@ -3,8 +3,8 @@ import { useState, useEffect } from 'react';
 import { all, head, pathEq } from 'ramda';
 import { useTranslation } from 'react-i18next';
 import { useAtom } from 'jotai';
+import { makeStyles } from 'tss-react/mui';
 
-import makeStyles from '@mui/styles/makeStyles';
 import IconAcknowledge from '@mui/icons-material/Person';
 import IconCheck from '@mui/icons-material/Sync';
 import IconMore from '@mui/icons-material/MoreHoriz';
@@ -47,7 +47,7 @@ import SubmitStatusForm from './SubmitStatus';
 import ResourceActionButton from './ResourceActionButton';
 import ActionMenuItem from './ActionMenuItem';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
   action: {
     marginRight: theme.spacing(1),
   },
@@ -58,7 +58,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const ResourceActions = (): JSX.Element => {
-  const classes = useStyles();
+  const { classes } = useStyles();
   const { t } = useTranslation();
   const { cancel, token } = useCancelTokenSource();
   const { showErrorMessage, showSuccessMessage } = useSnackbar();

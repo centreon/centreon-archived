@@ -2,9 +2,9 @@ import { useMemo } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { isNil, not } from 'ramda';
+import { makeStyles } from 'tss-react/mui';
 
 import { Theme, Typography, LinearProgress } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
 
 import useTab from '../useTab';
 
@@ -13,14 +13,14 @@ import useAuthentication from './useAuthentication';
 import Form from './Form';
 import { PasswordSecurityPolicy } from './models';
 
-const useStyles = makeStyles((theme: Theme) => ({
+const useStyles = makeStyles()((theme: Theme) => ({
   loading: {
     height: theme.spacing(0.5),
   },
 }));
 
 const LocalAuthentication = (): JSX.Element => {
-  const classes = useStyles();
+  const { classes } = useStyles();
   const { t } = useTranslation();
 
   const {

@@ -3,9 +3,9 @@ import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { equals, not } from 'ramda';
 import { useAtomValue } from 'jotai/utils';
+import { makeStyles } from 'tss-react/mui';
 
 import { Button, Typography } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
 
 import { getData, useRequest, useSnackbar, Dialog } from '@centreon/ui';
 import { userAtom, ThemeMode } from '@centreon/ui-context';
@@ -28,7 +28,7 @@ interface Props {
   toggleDetailedView: () => void;
 }
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
   exportButton: {
     '&:hover': {
       background: theme.palette.grey[500],
@@ -55,7 +55,7 @@ const ExportConfiguration = ({
   setIsExportingConfiguration,
   toggleDetailedView,
 }: Props): JSX.Element | null => {
-  const classes = useStyles();
+  const { classes } = useStyles();
   const { t } = useTranslation();
   const [askingBeforeExportConfiguration, setAskingBeforeExportConfiguration] =
     useState(false);

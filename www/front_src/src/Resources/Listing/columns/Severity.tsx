@@ -1,15 +1,15 @@
 import { ReactNode } from 'react';
 
 import { isNil } from 'ramda';
+import { makeStyles } from 'tss-react/mui';
 
 import Tooltip, { TooltipProps } from '@mui/material/Tooltip';
-import { makeStyles } from '@mui/styles';
 
 import { ComponentColumnProps } from '@centreon/ui';
 
 import { Severity } from '../../models';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
   container: {
     display: 'flex',
   },
@@ -46,7 +46,7 @@ const WrapperTooltip = ({ title, children, className }: Props): JSX.Element => {
 };
 
 const Title = ({ severity }: { severity: Severity }): JSX.Element => {
-  const classes = useStyles();
+  const { classes } = useStyles();
 
   return (
     <div className={classes.root}>
@@ -64,7 +64,7 @@ const Title = ({ severity }: { severity: Severity }): JSX.Element => {
 };
 
 const SeverityColumn = ({ row }: ComponentColumnProps): JSX.Element | null => {
-  const classes = useStyles();
+  const { classes } = useStyles();
   const isSeverityIcon = !isNil(row?.severity?.icon?.url);
 
   if (!row?.severity) {

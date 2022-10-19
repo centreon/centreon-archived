@@ -1,14 +1,14 @@
 import { ReactNode } from 'react';
 
 import { useTranslation } from 'react-i18next';
+import { makeStyles } from 'tss-react/mui';
 
-import { makeStyles } from '@mui/styles';
 import { Typography } from '@mui/material';
 
 import { ResourceDetails } from '../../../models';
 import { labelSeverity } from '../../../../translatedLabels';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
   container: {
     display: 'flex',
     flexDirection: 'column',
@@ -41,7 +41,7 @@ const Line = ({ data, className }: Line): JSX.Element => (
 );
 
 const SeverityCard = ({ details }: Props): JSX.Element => {
-  const classes = useStyles();
+  const { classes } = useStyles();
   const { t } = useTranslation();
 
   return (

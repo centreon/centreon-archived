@@ -1,8 +1,7 @@
 import { lazy, Suspense } from 'react';
 
 import { isNil, find, propEq, invertObj, path, equals } from 'ramda';
-
-import makeStyles from '@mui/styles/makeStyles';
+import { makeStyles } from 'tss-react/mui';
 
 import {
   labelDetails,
@@ -94,7 +93,7 @@ const tabs: Array<Tab> = [
   },
 ];
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
   container: {
     padding: theme.spacing(2),
   },
@@ -106,7 +105,7 @@ interface TabByIdProps {
 }
 
 const TabById = ({ id, details }: TabByIdProps): JSX.Element | null => {
-  const classes = useStyles();
+  const { classes } = useStyles();
 
   const { Component } = find(propEq('id', id), tabs) as Tab;
 

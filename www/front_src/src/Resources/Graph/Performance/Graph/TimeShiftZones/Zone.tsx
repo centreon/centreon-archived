@@ -1,8 +1,8 @@
 import { Shape } from '@visx/visx';
 import { equals, negate } from 'ramda';
+import { makeStyles } from 'tss-react/mui';
 
 import { alpha, useTheme } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
 
 import { useMemoComponent } from '@centreon/ui';
 
@@ -10,7 +10,7 @@ import { useTimeShiftContext, TimeShiftDirection } from '.';
 
 export const timeShiftZoneWidth = 50;
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()({
   translationZone: {
     cursor: 'pointer',
   },
@@ -28,7 +28,7 @@ const TimeShiftZone = ({
   directionHovered,
 }: Props): JSX.Element => {
   const theme = useTheme();
-  const classes = useStyles();
+  const { classes } = useStyles();
 
   const { graphHeight, graphWidth, marginLeft, marginTop, shiftTime } =
     useTimeShiftContext();

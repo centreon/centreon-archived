@@ -1,11 +1,11 @@
-import makeStyles from '@mui/styles/makeStyles';
+import { makeStyles } from 'tss-react/mui';
 
 import logoLight from './Centreon_Logo_Blanc.svg';
 
 interface Props {
   onClick?: () => void;
 }
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
   logo: {
     height: theme.spacing(5),
     width: theme.spacing(16.9),
@@ -13,7 +13,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Logo = ({ onClick }: Props): JSX.Element => {
-  const classes = useStyles();
+  const { classes } = useStyles();
 
   return (
     <div aria-hidden onClick={onClick}>

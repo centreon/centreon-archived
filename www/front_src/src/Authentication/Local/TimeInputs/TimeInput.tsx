@@ -3,9 +3,9 @@ import { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import dayjs from 'dayjs';
 import { and, equals, gt, path, subtract } from 'ramda';
+import { makeStyles } from 'tss-react/mui';
 
 import { SelectChangeEvent, Typography } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
 
 import { SelectField, useMemoComponent } from '@centreon/ui';
 
@@ -52,7 +52,7 @@ export interface TimeInputProps {
   unit: Unit;
 }
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
   small: {
     fontSize: 'small',
     padding: theme.spacing(0.75),
@@ -78,7 +78,7 @@ const TimeInput = ({
   minOption,
   maxDuration,
 }: TimeInputProps): JSX.Element => {
-  const classes = useStyles();
+  const { classes } = useStyles();
   const { t } = useTranslation();
 
   const functionGetDurationValue = getAbsoluteValue ? 'as' : 'get';

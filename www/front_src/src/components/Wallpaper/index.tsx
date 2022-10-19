@@ -1,14 +1,14 @@
 import { useAtomValue } from 'jotai';
+import { makeStyles } from 'tss-react/mui';
 
 import { Fade } from '@mui/material';
-import { makeStyles } from '@mui/styles';
 
 import memoizeComponent from '../../Resources/memoizedComponent';
 
 import BackgroundImage, { defaultBackground } from './BackgroundImage';
 import { imageAtom } from './loadImageAtom';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()({
   placeholder: {
     background: defaultBackground,
     bottom: 0,
@@ -20,7 +20,7 @@ const useStyles = makeStyles({
 });
 
 const Wallpaper = (): JSX.Element => {
-  const classes = useStyles();
+  const { classes } = useStyles();
 
   const image = useAtomValue(imageAtom);
 

@@ -1,10 +1,9 @@
 import { useTranslation } from 'react-i18next';
-
-import makeStyles from '@mui/styles/makeStyles';
+import { makeStyles } from 'tss-react/mui';
 
 import { IconButton } from '@centreon/ui';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
   list: {
     display: 'grid',
     gridGap: theme.spacing(1),
@@ -23,7 +22,7 @@ const Listing = ({
   switchButtonIcon,
   onSwitchButtonClick,
 }: Props): JSX.Element => {
-  const classes = useStyles();
+  const { classes } = useStyles();
   const { t } = useTranslation();
 
   return (

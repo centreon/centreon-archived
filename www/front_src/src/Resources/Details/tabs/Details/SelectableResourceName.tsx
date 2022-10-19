@@ -1,7 +1,8 @@
-import { Typography, TypographyVariant } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
+import { makeStyles } from 'tss-react/mui';
 
-const useStyles = makeStyles(() => ({
+import { Typography, TypographyVariant } from '@mui/material';
+
+const useStyles = makeStyles()(() => ({
   name: {
     cursor: 'pointer',
     overflow: 'hidden',
@@ -21,7 +22,7 @@ const SelectableResourceName = ({
   onSelect,
   variant = 'body1',
 }: Props): JSX.Element => {
-  const classes = useStyles();
+  const { classes } = useStyles();
 
   return (
     <Typography className={classes.name} variant={variant} onClick={onSelect}>

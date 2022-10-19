@@ -6,9 +6,9 @@ import { useUpdateAtom } from 'jotai/utils';
 import { useAtom } from 'jotai';
 import { rectIntersection } from '@dnd-kit/core';
 import { rectSortingStrategy } from '@dnd-kit/sortable';
+import { makeStyles } from 'tss-react/mui';
 
 import { Typography, LinearProgress, Stack } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
 
 import {
   MemoizedSectionPanel as SectionPanel,
@@ -25,7 +25,7 @@ import { Criteria } from '../Criterias/models';
 
 import SortableContent from './SortableContent';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
   container: {
     width: '100%',
   },
@@ -50,7 +50,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const EditFiltersPanel = (): JSX.Element => {
-  const classes = useStyles();
+  const { classes } = useStyles();
   const { t } = useTranslation();
 
   const { sendRequest, sending } = useRequest({

@@ -18,7 +18,7 @@ const WizardButtons = ({
   disabled,
   type,
 }: Props): JSX.Element => {
-  const classes = useStyles();
+  const { classes } = useStyles();
   const { t } = useTranslation();
 
   const label = equals(type, WizardButtonsTypes.Next)

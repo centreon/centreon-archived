@@ -14,9 +14,9 @@ import {
 import { useTranslation } from 'react-i18next';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 import { useAtom } from 'jotai';
+import { makeStyles } from 'tss-react/mui';
 
 import { Menu, MenuItem, CircularProgress } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
 import SettingsIcon from '@mui/icons-material/Settings';
 
 import { IconButton, useRequest, useSnackbar } from '@centreon/ui';
@@ -45,7 +45,7 @@ import CreateFilterDialog from './CreateFilterDialog';
 
 const areValuesEqual = pipe(symmetricDifference, isEmpty) as (a, b) => boolean;
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
   save: {
     alignItems: 'center',
     display: 'grid',
@@ -55,7 +55,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const SaveFilterMenu = (): JSX.Element => {
-  const classes = useStyles();
+  const { classes } = useStyles();
 
   const { t } = useTranslation();
 

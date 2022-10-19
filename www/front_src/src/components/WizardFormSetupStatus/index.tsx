@@ -27,7 +27,7 @@ export default ({
   statusGenerating,
   error,
 }: Props): JSX.Element => {
-  const classes = useStylesWithProps({ statusCreating, statusGenerating });
+  const { classes } = useStylesWithProps({ statusCreating, statusGenerating });
 
   const { t } = useTranslation();
 

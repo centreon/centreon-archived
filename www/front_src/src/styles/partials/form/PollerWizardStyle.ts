@@ -1,6 +1,5 @@
-import makeStyles from '@mui/styles/makeStyles';
-import { CreateCSSProperties } from '@mui/styles';
-import { Theme } from '@mui/material';
+import { makeStyles } from 'tss-react/mui';
+
 import { grey } from '@mui/material/colors';
 
 interface StylesProps {
@@ -8,7 +7,7 @@ interface StylesProps {
   statusGenerating: boolean | null;
 }
 
-const useStyles = makeStyles<Theme>((theme) => ({
+const useStyles = makeStyles()((theme) => ({
   form: {
     display: 'flex',
     flexDirection: 'column',
@@ -42,31 +41,27 @@ const useStyles = makeStyles<Theme>((theme) => ({
   },
 }));
 
-const useStylesWithProps = makeStyles<Theme, StylesProps>((theme) => ({
-  formButton: {
-    columnGap: theme.spacing(1),
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    marginTop: theme.spacing(1.875),
-  },
-  formHeading: {
-    marginBottom: theme.spacing(0.625),
-  },
-  formText: {
-    color: grey[500],
-    fontFamily: 'Roboto Regular',
-    fontSize: theme.spacing(1.5),
-    margin: '20px 0',
-  },
-  statusCreating: ({ statusCreating }): CreateCSSProperties<StylesProps> => ({
-    color: statusCreating ? '#acd174' : '#d0021b',
+const useStylesWithProps = makeStyles<StylesProps>()(
+  (theme, { statusCreating, statusGenerating }) => ({
+    formButton: {
+      columnGap: theme.spacing(1),
+      display: 'flex',
+      flexDirection: 'row',
+      justifyContent: 'flex-end',
+      marginTop: theme.spacing(1.875),
+    },
+    formHeading: {
+      marginBottom: theme.spacing(0.625),
+    },
+    formText: {
+      color: grey[500],
+      fontFamily: 'Roboto Regular',
+      fontSize: theme.spacing(1.5),
+      margin: '20px 0',
+    },
+    statusCreating: { color: statusCreating ? '#acd174' : '#d0021b' },
+    statusGenerating: { color: statusGenerating ? '#acd174' : '#d0021b' },
   }),
-  statusGenerating: ({
-    statusGenerating,
-  }): CreateCSSProperties<StylesProps> => ({
-    color: statusGenerating ? '#acd174' : '#d0021b',
-  }),
-}));
+);
 
 export { useStyles, useStylesWithProps };

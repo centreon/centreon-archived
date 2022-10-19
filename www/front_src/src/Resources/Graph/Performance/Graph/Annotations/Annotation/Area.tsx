@@ -3,8 +3,7 @@ import { ScaleTime } from 'd3-scale';
 import { max, pick, prop } from 'ramda';
 import { useAtom } from 'jotai';
 import { useAtomValue } from 'jotai/utils';
-
-import makeStyles from '@mui/styles/makeStyles';
+import { makeStyles } from 'tss-react/mui';
 
 import { useLocaleDateTimeFormat, useMemoComponent } from '@centreon/ui';
 
@@ -27,7 +26,7 @@ type Props = {
   xScale: ScaleTime<number, number>;
 } & Omit<AnnotationProps, 'marker' | 'xIcon' | 'header' | 'icon'>;
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
   icon: {
     transition: theme.transitions.create('color', {
       duration: theme.transitions.duration.shortest,
@@ -47,7 +46,7 @@ const AreaAnnotation = ({
 }: Props): JSX.Element => {
   const { toDateTime } = useLocaleDateTimeFormat();
 
-  const classes = useStyles();
+  const { classes } = useStyles();
 
   const [annotationHovered, setAnnotationHovered] = useAtom(
     annotationHoveredAtom,

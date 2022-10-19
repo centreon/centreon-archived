@@ -21,8 +21,8 @@ import {
 import { useTranslation } from 'react-i18next';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 import { useAtom } from 'jotai';
+import { makeStyles } from 'tss-react/mui';
 
-import makeStyles from '@mui/styles/makeStyles';
 import CloseIcon from '@mui/icons-material/Close';
 import { ClickAwayListener, MenuItem, Paper, Popper } from '@mui/material';
 
@@ -43,7 +43,7 @@ import {
   searchAtom,
 } from './filterAtoms';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
   autocompletePopper: {
     zIndex: theme.zIndex.tooltip,
   },
@@ -76,7 +76,7 @@ const renderClearFilter = (onClear) => (): JSX.Element => {
 };
 
 const Filter = (): JSX.Element => {
-  const classes = useStyles();
+  const { classes } = useStyles();
   const { t } = useTranslation();
 
   const [isSearchFieldFocus, setIsSearchFieldFocused] = useState(false);

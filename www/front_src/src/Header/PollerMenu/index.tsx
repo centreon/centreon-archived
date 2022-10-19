@@ -5,10 +5,10 @@ import { equals, isEmpty, isNil } from 'ramda';
 import clsx from 'clsx';
 import { useAtomValue } from 'jotai/utils';
 import { useNavigate } from 'react-router-dom';
+import { makeStyles } from 'tss-react/mui';
 
 import PollerIcon from '@mui/icons-material/DeviceHub';
 import { Button, ClickAwayListener, Typography } from '@mui/material';
-import { makeStyles } from '@mui/styles';
 
 import {
   MenuSkeleton,
@@ -46,7 +46,7 @@ interface PollerData {
   total: number;
 }
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
   confButton: {
     '&:hover': {
       background: theme.palette.grey[500],
@@ -119,7 +119,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const PollerMenu = (): JSX.Element | null => {
-  const classes = useStyles();
+  const { classes } = useStyles();
 
   const { t } = useTranslation();
   const { allowedPages } = useNavigation();

@@ -1,9 +1,9 @@
 import { pluck, values } from 'ramda';
 import { useTranslation } from 'react-i18next';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
+import { makeStyles } from 'tss-react/mui';
 
 import { FormControlLabel, FormGroup, Switch } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
 
 import { useMemoComponent } from '@centreon/ui';
 
@@ -18,7 +18,7 @@ import {
   graphOptionsAtom,
 } from './graphOptionsAtoms';
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles()(() => ({
   optionLabel: {
     justifyContent: 'space-between',
     margin: 0,
@@ -26,7 +26,7 @@ const useStyles = makeStyles(() => ({
 }));
 
 const Options = (): JSX.Element => {
-  const classes = useStyles();
+  const { classes } = useStyles();
   const { t } = useTranslation();
 
   const graphOptions = useAtomValue(graphOptionsAtom);
