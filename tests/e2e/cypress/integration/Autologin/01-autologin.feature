@@ -20,6 +20,6 @@ Scenario: Generate autologin link
   Then the autologin link is copied in the clipboard
 
 Scenario: Connection using autologin
-  Given a plateform with autologin enabled and a user with autologin key generated and a user with autologin link generated
+  Given a platform with autologin enabled and a user with both autologin key and link generated
   When the user opens the autologin link in a browser
   Then the page is accessed without manual login
