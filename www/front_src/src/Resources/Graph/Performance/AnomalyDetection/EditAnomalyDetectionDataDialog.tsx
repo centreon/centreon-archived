@@ -54,7 +54,7 @@ interface PropsSlider {
   isEnvelopeResizingCanceled: boolean;
   isResizeEnvelope: boolean;
   openModalConfirmation: (value: boolean) => void;
-  setIsResizeEnvelope: Dispatch<SetStateAction<boolean>>;
+  setIsResizingEnvelope: Dispatch<SetStateAction<boolean>>;
 }
 
 interface Props {
