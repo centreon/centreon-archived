@@ -200,7 +200,7 @@ class CentreonPurgeEngine
         foreach ($this->tablesToPurge[$table]['partitions'] as $partName => $partTimestamp) {
             if ($partTimestamp < $this->tablesToPurge[$table]['retention']) {
                 $dropPartitions[] = '`' . $partName . '`';
-                echo "[" . date(DATE_RFC822) . "] Partition will be delete " . $partName . "\n";
+                echo "[" . date(DATE_RFC822) . "] Partition will be deleted " . $partName . "\n";
             }
         }
 
