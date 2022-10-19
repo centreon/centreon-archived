@@ -122,7 +122,7 @@ export const addWidgetDerivedAtom = atom(
       h: widgetConfiguration?.widgetMinHeight || 4,
       i: title,
       minH: widgetConfiguration?.widgetMinHeight || 4,
-      minW: widgetConfiguration?.widgetMinWidth || 3,
+      minW: widgetConfiguration?.widgetMinWidth || 1,
       static: false,
       w: widgetWidth,
       widgetConfiguration,

@@ -73,7 +73,7 @@ const AddWidgetDialog: FC = () => {
 
   const widgetsAvailable = map(
     ({ moduleName, federatedComponentsConfiguration }) => ({
-      id: federatedComponentsConfiguration.path,
+      id: federatedComponentsConfiguration?.path,
       name: moduleName,
     }),
     federatedWidgets || [],
@@ -98,7 +98,7 @@ const AddWidgetDialog: FC = () => {
           className={classes.selectField}
           options={widgetsAvailable}
           selectedOptionId={
-            selectedWidget?.federatedComponentsConfiguration.path || ''
+            selectedWidget?.federatedComponentsConfiguration?.path || ''
           }
           onChange={selectWidget}
         />
