@@ -49,7 +49,8 @@ const useStyles = makeStyles((theme) => ({
 interface GraphProps {
   factorsData?: CustomFactorsData | null;
 }
-interface PropsSlider {
+
+interface SliderProps {
   getFactors: (data: CustomFactorsData) => void;
   isEnvelopeResizingCanceled: boolean;
   isResizingEnvelope: boolean;
