@@ -17,7 +17,7 @@ beforeEach(() => {
   }).as('getTimeZone');
 });
 
-Given('an Administrator is logged in the platform', () => {
+Given('an administrator is logged in the platform', () => {
   cy.loginByTypeOfUser({ jsonName: 'admin', preserveToken: true })
     .wait('@getNavigationList')
     .navigateTo({
