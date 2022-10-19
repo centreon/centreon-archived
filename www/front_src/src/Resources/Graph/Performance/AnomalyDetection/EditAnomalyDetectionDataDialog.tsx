@@ -52,7 +52,7 @@ interface PropsGraph {
 interface PropsSlider {
   getFactors: (data: CustomFactorsData) => void;
   isEnvelopeResizingCanceled: boolean;
-  isResizeEnvelope: boolean;
+  isResizingEnvelope: boolean;
   openModalConfirmation: (value: boolean) => void;
   setIsResizingEnvelope: Dispatch<SetStateAction<boolean>>;
 }
