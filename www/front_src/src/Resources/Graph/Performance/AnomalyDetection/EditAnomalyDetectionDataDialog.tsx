@@ -52,7 +52,7 @@ interface PropsGraph {
 interface PropsSlider {
   getFactors: (data: CustomFactorsData) => void;
   isEnvelopeResizingCanceled: boolean;
-  isResizeEnvelope: boolean;
+  isResizingEnvelope: boolean;
   openModalConfirmation: (value: boolean) => void;
   setIsResizingEnvelope: Dispatch<SetStateAction<boolean>>;
 }
@@ -82,7 +82,7 @@ const EditAnomalyDetectionDataDialog = ({
   const [isEnvelopeResizingCanceled, setIsEnvelopeResizingCanceled] =
     useState(false);
 
-  const [isResizeEnvelope, setIsResizeEnvelope] = useState(false);
+  const [isResizingEnvelope, setIsResizingEnvelope] = useState(false);
   const setCountedRedCircles = useUpdateAtom(countedRedCirclesAtom);
 
   const handleClose = (): void => {
@@ -103,7 +103,7 @@ const EditAnomalyDetectionDataDialog = ({
   };
 
   const resizeEnvelope = (value: boolean): void => {
-    setIsResizeEnvelope(value);
+    setIsResizingEnvelope(value);
     setIsModalConfirmationOpened(false);
   };
 
@@ -123,9 +123,9 @@ const EditAnomalyDetectionDataDialog = ({
             {renderSlider?.({
               getFactors,
               isEnvelopeResizingCanceled,
-              isResizeEnvelope,
+              isResizingEnvelope,
               openModalConfirmation,
-              setIsResizeEnvelope,
+              setIsResizingEnvelope,
             })}
           </Paper>
         </div>

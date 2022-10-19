@@ -249,19 +249,19 @@ const ExportablePerformanceGraphWithTimeline = ({
                 getFactors,
                 openModalConfirmation,
                 isEnvelopeResizingCanceled,
-                isResizeEnvelope,
-                setIsResizeEnvelope,
+                isResizingEnvelope,
+                setIsResizingEnvelope,
               }): ReactNode =>
                 details?.sensitivity && (
                   <AnomalyDetectionSlider
                     details={details}
                     isEnvelopeResizingCanceled={isEnvelopeResizingCanceled}
-                    isResizeEnvelope={isResizeEnvelope}
+                    isResizingEnvelope={isResizingEnvelope}
                     openModalConfirmation={openModalConfirmation}
                     sendFactors={getFactors}
                     sendReloadGraphPerformance={sendReloadGraphPerformance}
                     sensitivity={details?.sensitivity}
-                    setIsResizeEnvelope={setIsResizeEnvelope}
+                    setIsResizingEnvelope={setIsResizingEnvelope}
                   />
                 )
               }

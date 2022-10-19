@@ -90,12 +90,12 @@ const useStyles = makeStyles((theme) => ({
 interface Props {
   details: ResourceDetails;
   isEnvelopeResizingCanceled?: boolean;
-  isResizeEnvelope?: boolean;
+  isResizingEnvelope?: boolean;
   openModalConfirmation?: (value: boolean) => void;
   sendFactors: (data: CustomFactorsData) => void;
   sendReloadGraphPerformance: (value: boolean) => void;
   sensitivity: Sensitivity;
-  setIsResizeEnvelope?: Dispatch<SetStateAction<boolean>>;
+  setIsResizingEnvelope?: Dispatch<SetStateAction<boolean>>;
 }
 
 const AnomalyDetectionSlider = ({
@@ -104,9 +104,9 @@ const AnomalyDetectionSlider = ({
   details,
   openModalConfirmation,
   isEnvelopeResizingCanceled,
-  isResizeEnvelope,
+  isResizingEnvelope,
   sendReloadGraphPerformance,
-  setIsResizeEnvelope,
+  setIsResizingEnvelope,
 }: Props): JSX.Element => {
   const classes = useStyles();
   const { t } = useTranslation();
@@ -219,8 +219,8 @@ const AnomalyDetectionSlider = ({
     ) {
       setIsDefaultValue(true);
     }
-    if (isResizeEnvelope && setIsResizeEnvelope) {
-      setIsResizeEnvelope(false);
+    if (isResizeEnvelope) {
+      setIsResizingEnvelope?.(false);
       sendReloadGraphPerformance(false);
     }
 
@@ -238,10 +238,10 @@ const AnomalyDetectionSlider = ({
   }, [isEnvelopeResizingCanceled]);
 
   useEffect(() => {
-    if (isResizeEnvelope) {
+    if (isResizingEnvelope) {
       resizeEnvelope();
     }
-  }, [isResizeEnvelope]);
+  }, [isResizingEnvelope]);
 
   return (
     <div className={classes.container}>
