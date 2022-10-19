@@ -136,8 +136,8 @@ describe('Anomaly detection -Graph-', () => {
         <Provider initialValues={[[detailsAtom, data]]}>
           <Router>
             <ExportablePerformanceGraphWithTimeline
+              interactWithGraph
               graphHeight={280}
-              isEditAnomalyDetectionDataDialogOpen={false}
               resource={data}
               onReload={(): boolean => false}
             />
