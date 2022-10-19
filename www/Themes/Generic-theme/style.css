@@ -1256,6 +1256,7 @@ table-form-header-h3 {
     align-items: center;
     height: 2em;
     padding: 0 .4em;
+    border-bottom: 0;
     white-space: nowrap;
 }
 
