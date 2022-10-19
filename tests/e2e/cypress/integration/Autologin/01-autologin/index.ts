@@ -122,7 +122,7 @@ Given('a user with autologin key generated', () => {
   cy.getContainsFromProfileIcon('Copy autologin link').should('be.exist');
 });
 
-When('a User generates an autologin link', () => {
+When('a user generates an autologin link', () => {
   cy.navigateTo({
     page: 'Templates',
     rootItemNumber: 2,
