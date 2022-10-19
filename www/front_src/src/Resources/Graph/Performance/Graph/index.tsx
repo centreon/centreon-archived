@@ -206,6 +206,7 @@ interface GraphContentProps {
   addCommentTooltipLeft?: number;
   addCommentTooltipOpen: boolean;
   addCommentTooltipTop?: number;
+  additionalData?: CustomFactorsData | null;
   applyZoom?: (props: AdjustTimePeriodProps) => void;
   base: number;
   canAdjustTimePeriod: boolean;
@@ -220,7 +221,6 @@ interface GraphContentProps {
   lines: Array<LineModel>;
   loading: boolean;
   onAddComment?: (commentParameters: CommentParameters) => void;
-  resizeEnvelopeData?: CustomFactorsData | null;
   resource: Resource | ResourceDetails;
   shiftTime?: (direction: TimeShiftDirection) => void;
   showAddCommentTooltip: (args) => void;
@@ -274,7 +274,7 @@ const GraphContent = ({
   isInViewport,
   interactWithGraph,
   displayTimeValues,
-  resizeEnvelopeData,
+  additionalData,
 }: GraphContentProps): JSX.Element => {
   const classes = useStyles({ onAddComment });
   const { t } = useTranslation();
@@ -593,7 +593,7 @@ const GraphContent = ({
                   <AnomalyDetectionEnvelopeThreshold {...thresholdProps} />
                   <AnomalyDetectionEnvelopeThreshold
                     {...thresholdProps}
-                    data={resizeEnvelopeData}
+                    data={additionalData}
                   />
                 </>
               }
@@ -746,7 +746,7 @@ const memoProps = [
   'displayEventAnnotations',
   'containsMetrics',
   'isInViewport',
-  'resizeEnvelopeData',
+  'additionalData',
 ];
 
 const MemoizedGraphContent = memoizeComponent<GraphContentProps>({

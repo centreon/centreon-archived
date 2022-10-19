@@ -55,11 +55,11 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 interface Props {
+  additionalData?: CustomFactorsData | null;
   graphHeight: number;
   interactWithGraph: boolean;
   limitLegendRows?: boolean;
   onReload?: (value: boolean) => void;
-  resizeEnvelopeData?: CustomFactorsData | null;
   resource?: Resource | ResourceDetails;
 }
 
@@ -68,7 +68,7 @@ const ExportablePerformanceGraphWithTimeline = ({
   graphHeight,
   limitLegendRows,
   interactWithGraph,
-  resizeEnvelopeData,
+  additionalData,
   onReload,
 }: Props): JSX.Element => {
   const classes = useStyles();
@@ -210,6 +210,7 @@ const ExportablePerformanceGraphWithTimeline = ({
       >
         <PerformanceGraph
           toggableLegend
+          additionalData={additionalData}
           adjustTimePeriod={adjustTimePeriod}
           customTimePeriod={customTimePeriod}
           displayEventAnnotations={displayEventAnnotations}
@@ -238,9 +239,9 @@ const ExportablePerformanceGraphWithTimeline = ({
               isOpen={isOpenModalAD}
               renderGraph={({ factorsData }): JSX.Element => (
                 <ExportablePerformanceGraphWithTimeline
+                  additionalData={factorsData}
                   graphHeight={180}
                   interactWithGraph={false}
-                  resizeEnvelopeData={factorsData}
                   resource={resource}
                 />
               )}
@@ -267,7 +268,6 @@ const ExportablePerformanceGraphWithTimeline = ({
               setIsOpen={setIsOpenModalAD}
             />
           }
-          resizeEnvelopeData={resizeEnvelopeData}
           resource={resource as Resource}
           resourceDetailsUpdated={resourceDetailsUpdated}
           timeline={timeline}

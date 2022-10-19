@@ -67,6 +67,7 @@ import {
 import { getLineData, getMetrics, getTimeSeries } from './timeSeries';
 
 interface Props {
+  additionalData?: CustomFactorsData | null;
   adjustTimePeriod?: (props: AdjustTimePeriodProps) => void;
   customTimePeriod?: CustomTimePeriod;
   displayCompleteGraph?: () => void;
@@ -83,7 +84,6 @@ interface Props {
   limitLegendRows?: boolean;
   modal?: ReactNode;
   onAddComment?: (commentParameters: CommentParameters) => void;
-  resizeEnvelopeData?: CustomFactorsData | null;
   resource: Resource | ResourceDetails;
   resourceDetailsUpdated?: boolean;
   timeline?: Array<TimelineEvent>;
@@ -145,6 +145,7 @@ const useStyles = makeStyles<Theme, MakeStylesProps>((theme) => ({
 const shiftRatio = 2;
 
 const PerformanceGraph = ({
+  additionalData,
   endpoint,
   graphHeight,
   xAxisTickFormat = timeFormat,
@@ -164,7 +165,6 @@ const PerformanceGraph = ({
   modal,
   graphActions,
   getPerformanceGraphRef,
-  resizeEnvelopeData,
 }: Props): JSX.Element => {
   const classes = useStyles({
     canAdjustTimePeriod: not(isNil(adjustTimePeriod)),
@@ -435,6 +435,7 @@ const PerformanceGraph = ({
         <Responsive.ParentSize>
           {({ width, height }): JSX.Element => (
             <Graph
+              additionalData={additionalData}
               applyZoom={adjustTimePeriod}
               base={base as number}
               canAdjustTimePeriod={not(isNil(adjustTimePeriod))}
@@ -447,7 +448,6 @@ const PerformanceGraph = ({
               loading={
                 not(resourceDetailsUpdated) && sendingGetGraphDataRequest
               }
-              resizeEnvelopeData={resizeEnvelopeData}
               resource={resource}
               shiftTime={shiftTime}
               timeSeries={timeSeries}
