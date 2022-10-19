@@ -118,7 +118,7 @@ Then('the key is properly generated and displayed', () => {
     .reload();
 });
 
-Given('a User with autologin key generated', () => {
+Given('a user with autologin key generated', () => {
   cy.getContainsFromProfileIcon('Copy autologin link').should('be.exist');
 });
 
