@@ -1228,14 +1228,6 @@ table-form-header-h3 {
     background: var(--global-view-ui-widget-content-background-color);
 }
 
-#globalView .ui-state-default,#globalView .ui-widget-content .ui-state-default,#globalView .ui-widget-header .ui-state-default {
-    border-top: 1px solid var(--global-view-ui-border-color);
-    border-left: 1px solid var(--global-view-ui-border-color);
-    border-right: 1px solid var(--global-view-ui-border-color);
-    margin: 1px .2em 0 0;
-    white-space: normal;
-}
-
 .ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active {
     background-color: var(--ui-background-color) !important;
     border: 1px solid var(--ui-state-active-border-color) !important;
@@ -1250,23 +1242,47 @@ table-form-header-h3 {
     color: var(--ui-anchor-state-active-visited-font-color) !important;
 }
 
-#globalView .ui-tabs .ui-tabs-nav {
-    margin: 0;
-    padding: 0.8em .2em 0;
+#globalView .ui-tabs-nav {
+    display: flex;
+    align-items: flex-start;
+    margin: .8em 0 .2em;
+    padding: 0;
+    line-height: 1;
+    overflow-x: auto;
 }
 
-#globalView .ui-tabs .ui-tabs-nav li.ui-tabs-active {
-    margin-bottom: -1px;
+#globalView .ui-tabs-nav .ui-tabs-tab {
+    display: flex;
+    align-items: center;
+    height: 2em;
+    padding: 0 .4em;
+    white-space: nowrap;
+}
+
+#globalView .ui-tabs-nav .ui-tabs-tab.ui-state-hover {
+    border-color: var(--ui-button-state-disabled-hovered-active-border-color);
+}
+
+#globalView .ui-tabs-nav .ui-tabs-tab.ui-tabs-active {
+    position: relative;
+    margin-bottom: 0;
     padding-bottom: 0;
-    border: 1px solid var(--global-view-ui-active-tabs-border-color);
-    border-bottom: 2px solid var(--global-view-ui-active-tabs-border-bottom-color) !important;
-    border-top-left-radius: 0px;
-    border-top-right-radius: 0px;
+    border-bottom: 0;
 }
 
-#globalView .ui-tabs .ui-tabs-nav li a {
-    float: left;
-    padding: .4em .4em 0.4em 0.4em;
+#globalView .ui-tabs-nav .ui-tabs-tab.ui-tabs-active::after {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    display: block;
+    height: 2px;
+    width: 100%;
+    background-color: var(--global-view-ui-active-tabs-border-bottom-color);
+    content: "";
+}
+
+#globalView .ui-tabs .ui-tabs-nav .ui-tabs-tab a {
+    padding: 0;
     text-decoration: none;
 }
 
