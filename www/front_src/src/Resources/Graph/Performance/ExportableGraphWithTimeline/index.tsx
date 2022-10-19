@@ -54,6 +54,49 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
+interface AdditionalGraphActionsProps {
+  details: ResourceDetails | undefined;
+  resource: ResourceDetails | Resource | undefined;
+  sendReloadGraphPerformance: (value: boolean) => void;
+}
+
+const AdditionalGraphActions = ({
+  resource,
+  details,
+  sendReloadGraphPerformance,
+}: AdditionalGraphActionsProps): JSX.Element => (
+  <EditAnomalyDetectionDataDialog
+    renderGraph={({ factorsData }): JSX.Element => (
+      <ExportablePerformanceGraphWithTimeline
+        additionalData={factorsData}
+        graphHeight={180}
+        interactWithGraph={false}
+        resource={resource}
+      />
+    )}
+    renderSlider={({
+      getFactors,
+      openModalConfirmation,
+      isEnvelopeResizingCanceled,
+      isResizingEnvelope,
+      setIsResizingEnvelope,
+    }): ReactNode =>
+      details?.sensitivity && (
+        <AnomalyDetectionSlider
+          details={details}
+          isEnvelopeResizingCanceled={isEnvelopeResizingCanceled}
+          isResizingEnvelope={isResizingEnvelope}
+          openModalConfirmation={openModalConfirmation}
+          sendFactors={getFactors}
+          sendReloadGraphPerformance={sendReloadGraphPerformance}
+          sensitivity={details?.sensitivity}
+          setIsResizingEnvelope={setIsResizingEnvelope}
+        />
+      )
+    }
+  />
+);
+
 interface Props {
   additionalData?: CustomFactorsData | null;
   graphHeight: number;
@@ -75,7 +118,6 @@ const ExportablePerformanceGraphWithTimeline = ({
   const [timeline, setTimeline] = useState<Array<TimelineEvent>>();
   const [performanceGraphRef, setPerformanceGraphRef] =
     useState<HTMLDivElement | null>(null);
-  const [isOpenModalAD, setIsOpenModalAD] = useState(false);
 
   const { sendRequest: sendGetTimelineRequest } = useRequest<
     ListingModel<TimelineEvent>
@@ -186,10 +228,6 @@ const ExportablePerformanceGraphWithTimeline = ({
     ]);
   };
 
-  const getIsModalOpened = (value: boolean): void => {
-    setIsOpenModalAD(value);
-  };
-
   const getPerformanceGraphRef = (ref): void => {
     setPerformanceGraphRef(ref);
   };
@@ -219,10 +257,16 @@ const ExportablePerformanceGraphWithTimeline = ({
           graphActions={
             <MemoizedGraphActions
               customTimePeriod={customTimePeriod}
-              getIsModalOpened={getIsModalOpened}
               open={interactWithGraph}
               performanceGraphRef={
                 performanceGraphRef as unknown as MutableRefObject<HTMLDivElement | null>
+              }
+              renderAdditionalGraphActions={
+                <AdditionalGraphActions
+                  details={details}
+                  resource={resource}
+                  sendReloadGraphPerformance={sendReloadGraphPerformance}
+                />
               }
               resourceName={resource?.name as string}
               resourceParentName={resource?.parent?.name}
@@ -234,40 +278,6 @@ const ExportablePerformanceGraphWithTimeline = ({
           interactWithGraph={interactWithGraph}
           isInViewport={isInViewport}
           limitLegendRows={limitLegendRows}
-          modal={
-            <EditAnomalyDetectionDataDialog
-              isOpen={isOpenModalAD}
-              renderGraph={({ factorsData }): JSX.Element => (
-                <ExportablePerformanceGraphWithTimeline
-                  additionalData={factorsData}
-                  graphHeight={180}
-                  interactWithGraph={false}
-                  resource={resource}
-                />
-              )}
-              renderSlider={({
-                getFactors,
-                openModalConfirmation,
-                isEnvelopeResizingCanceled,
-                isResizingEnvelope,
-                setIsResizingEnvelope,
-              }): ReactNode =>
-                details?.sensitivity && (
-                  <AnomalyDetectionSlider
-                    details={details}
-                    isEnvelopeResizingCanceled={isEnvelopeResizingCanceled}
-                    isResizingEnvelope={isResizingEnvelope}
-                    openModalConfirmation={openModalConfirmation}
-                    sendFactors={getFactors}
-                    sendReloadGraphPerformance={sendReloadGraphPerformance}
-                    sensitivity={details?.sensitivity}
-                    setIsResizingEnvelope={setIsResizingEnvelope}
-                  />
-                )
-              }
-              setIsOpen={setIsOpenModalAD}
-            />
-          }
           resource={resource as Resource}
           resourceDetailsUpdated={resourceDetailsUpdated}
           timeline={timeline}

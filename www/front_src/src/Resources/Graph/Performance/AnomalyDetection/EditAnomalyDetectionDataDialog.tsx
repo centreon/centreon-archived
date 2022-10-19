@@ -2,6 +2,7 @@ import { Dispatch, ReactNode, SetStateAction, useState } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { useUpdateAtom } from 'jotai/utils';
+import { useAtom } from 'jotai';
 
 import { Button, Dialog, Paper } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
@@ -12,7 +13,10 @@ import TimePeriodButtonGroup from '../TimePeriods';
 import AnomalyDetectionExclusionPeriod from './AnomalyDetectionExclusionPeriod';
 import AnomalyDetectionModalConfirmation from './AnomalyDetectionModalConfirmation';
 import { CustomFactorsData } from './models';
-import { countedRedCirclesAtom } from './anomalyDetectionAtom';
+import {
+  countedRedCirclesAtom,
+  showModalAnomalyDetectionAtom,
+} from './anomalyDetectionAtom';
 
 const useStyles = makeStyles((theme) => ({
   close: {
@@ -59,15 +63,11 @@ interface PropsSlider {
 }
 
 interface Props {
-  isOpen: boolean;
   renderGraph: (args: PropsGraph) => ReactNode;
   renderSlider: (args: PropsSlider) => ReactNode;
-  setIsOpen: Dispatch<SetStateAction<boolean>>;
 }
 
 const EditAnomalyDetectionDataDialog = ({
-  isOpen,
-  setIsOpen,
   renderGraph,
   renderSlider,
 }: Props): JSX.Element => {
@@ -84,10 +84,13 @@ const EditAnomalyDetectionDataDialog = ({
     useState(false);
 
   const [isResizingEnvelope, setIsResizingEnvelope] = useState(false);
+  const [showModalAnomalyDetection, setShowModalAnomalyDetection] = useAtom(
+    showModalAnomalyDetectionAtom,
+  );
   const setCountedRedCircles = useUpdateAtom(countedRedCirclesAtom);
 
   const handleClose = (): void => {
-    setIsOpen(false);
+    setShowModalAnomalyDetection(false);
     setCountedRedCircles(null);
   };
 
@@ -112,7 +115,7 @@ const EditAnomalyDetectionDataDialog = ({
     <Dialog
       className={classes.container}
       data-testid="modalEditAnomalyDetection"
-      open={isOpen}
+      open={showModalAnomalyDetection}
     >
       <div>
         <div className={classes.spacing}>

@@ -82,7 +82,6 @@ interface Props {
   interactWithGraph: boolean;
   isInViewport?: boolean;
   limitLegendRows?: boolean;
-  modal?: ReactNode;
   onAddComment?: (commentParameters: CommentParameters) => void;
   resource: Resource | ResourceDetails;
   resourceDetailsUpdated?: boolean;
@@ -162,7 +161,6 @@ const PerformanceGraph = ({
   isInViewport = true,
   displayCompleteGraph,
   interactWithGraph,
-  modal,
   graphActions,
   getPerformanceGraphRef,
 }: Props): JSX.Element => {
@@ -420,7 +418,6 @@ const PerformanceGraph = ({
             {title}
           </Typography>
           {graphActions}
-          {modal}
         </div>
       )}
 
