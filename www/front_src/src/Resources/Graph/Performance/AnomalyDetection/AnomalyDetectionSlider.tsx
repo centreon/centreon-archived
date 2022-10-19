@@ -219,7 +219,7 @@ const AnomalyDetectionSlider = ({
     ) {
       setIsDefaultValue(true);
     }
-    if (isResizeEnvelope) {
+    if (isResizingEnvelope) {
       setIsResizingEnvelope?.(false);
       sendReloadGraphPerformance(false);
     }
