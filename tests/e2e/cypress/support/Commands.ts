@@ -119,7 +119,7 @@ Cypress.Commands.add(
 );
 
 Cypress.Commands.add(
-  'getContainsFromProfileIcon',
+  'isInProfileMenu',
   (targetedMenu: string): Cypress.Chainable => {
     return cy
       .get('header')
