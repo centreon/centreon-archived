@@ -1,13 +1,6 @@
-import {
-  memo,
-  MouseEvent,
-  ReactNode,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import { memo, MouseEvent, useEffect, useMemo, useRef, useState } from 'react';
 
+import { AddSVGProps } from '@visx/shape/lib/types';
 import {
   Event,
   Grid,
@@ -43,6 +36,7 @@ import {
   Theme,
   Tooltip,
   Typography,
+  useTheme,
 } from '@mui/material';
 import { grey } from '@mui/material/colors';
 import makeStyles from '@mui/styles/makeStyles';
@@ -98,10 +92,28 @@ import TimeShiftZones, {
   TimeShiftDirection,
 } from './TimeShiftZones';
 
+interface BarProps {
+  className?: string;
+  innerRef?: React.Ref<SVGRectElement>;
+  open: boolean;
+}
+
+const Bar = ({
+  open,
+  ...restProps
+}: AddSVGProps<BarProps, SVGRectElement>): JSX.Element | null => {
+  if (!open) {
+    return null;
+  }
+
+  return <Shape.Bar {...restProps} />;
+};
+
 const propsAreEqual = (prevProps, nextProps): boolean =>
   equals(prevProps, nextProps);
 
 const MemoizedAxes = memo(Axes, propsAreEqual);
+const MemoizedBar = memo(Bar, propsAreEqual);
 const MemoizedGridColumns = memo(Grid.GridColumns, propsAreEqual);
 const MemoizedGridRows = memo(Grid.GridRows, propsAreEqual);
 const MemoizedLines = memo(Lines, propsAreEqual);
@@ -190,17 +202,6 @@ interface ZoomBoundaries {
   start: number;
 }
 
-interface childrenProps {
-  BarHeight?: number;
-  closeTooltip?: () => void;
-  displayAddCommentTooltip?: (event) => void;
-  displayTooltip?: (event: MouseEvent<SVGRectElement>) => void;
-  displayZoomPreview?: (event) => void;
-  graphWidth?: number;
-  style?: Record<string, string>;
-  zoomBarWidth?: number;
-  zoomBoundaries?: ZoomBoundaries | null;
-}
 interface GraphContentProps {
   addCommentTooltipLeft?: number;
   addCommentTooltipOpen: boolean;
@@ -208,13 +209,13 @@ interface GraphContentProps {
   applyZoom?: (props: AdjustTimePeriodProps) => void;
   base: number;
   canAdjustTimePeriod: boolean;
-  children?: (args: childrenProps) => ReactNode;
   containsMetrics: boolean;
   displayEventAnnotations: boolean;
   displayTimeValues: boolean;
   format: (parameters) => string;
   height: number;
   hideAddCommentTooltip: () => void;
+  interactWithGraph: boolean;
   isInViewport?: boolean;
   lines: Array<LineModel>;
   loading: boolean;
@@ -271,12 +272,13 @@ const GraphContent = ({
   displayEventAnnotations,
   containsMetrics,
   isInViewport,
-  children,
+  interactWithGraph,
   displayTimeValues,
   resizeEnvelopeData,
 }: GraphContentProps): JSX.Element => {
   const classes = useStyles({ onAddComment });
   const { t } = useTranslation();
+  const theme = useTheme();
 
   const [addingComment, setAddingComment] = useState(false);
   const [commentDate, setCommentDate] = useState<Date>();
@@ -586,23 +588,21 @@ const GraphContent = ({
               graphHeight={graphHeight}
               leftScale={leftScale}
               lines={lines}
+              renderAdditionalLines={
+                <>
+                  <AnomalyDetectionEnvelopeThreshold {...thresholdProps} />
+                  <AnomalyDetectionEnvelopeThreshold
+                    {...thresholdProps}
+                    data={resizeEnvelopeData}
+                  />
+                </>
+              }
               rightScale={rightScale}
               timeSeries={timeSeries}
               timeTick={timeTick}
               xScale={xScale}
-            >
-              {{
-                additionalLines: (
-                  <>
-                    <AnomalyDetectionEnvelopeThreshold {...thresholdProps} />
-                    <AnomalyDetectionEnvelopeThreshold
-                      {...thresholdProps}
-                      data={resizeEnvelopeData}
-                    />
-                  </>
-                ),
-              }}
-            </MemoizedLines>
+            />
+
             {displayEventAnnotations && (
               <MemoizedAnnotations
                 graphHeight={graphHeight}
@@ -611,11 +611,16 @@ const GraphContent = ({
                 xScale={xScale}
               />
             )}
-            {children?.({
-              zoomBarWidth,
-              zoomBoundaries,
-            })}
 
+            <MemoizedBar
+              fill={alpha(theme.palette.primary.main, 0.2)}
+              height={graphHeight}
+              open={interactWithGraph}
+              stroke={alpha(theme.palette.primary.main, 0.5)}
+              width={zoomBarWidth}
+              x={zoomBoundaries?.start || 0}
+              y={0}
+            />
             {useMemoComponent({
               Component:
                 displayTimeValues && containsMetrics && position ? (
@@ -640,15 +645,19 @@ const GraphContent = ({
                 ),
               memoProps: [mousePosition],
             })}
-            {children?.({
-              BarHeight: graphHeight,
-              closeTooltip,
-              displayAddCommentTooltip,
-              displayTooltip,
-              displayZoomPreview,
-              graphWidth,
-              style: { overlay: classes.overlay },
-            })}
+            <MemoizedBar
+              className={classes.overlay}
+              fill="transparent"
+              height={graphHeight}
+              open={interactWithGraph}
+              width={graphWidth}
+              x={0}
+              y={0}
+              onMouseDown={displayZoomPreview}
+              onMouseLeave={closeTooltip}
+              onMouseMove={displayTooltip}
+              onMouseUp={displayAddCommentTooltip}
+            />
           </Group.Group>
           <TimeShiftContext.Provider
             value={useMemo(

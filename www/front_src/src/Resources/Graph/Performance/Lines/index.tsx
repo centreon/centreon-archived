@@ -23,11 +23,11 @@ import RegularLine from './RegularLine';
 import StackedLines from './StackedLines';
 
 interface Props {
-  children?: { additionalLines: ReactNode };
   displayTimeValues: boolean;
   graphHeight: number;
   leftScale: ScaleLinear<number, number>;
   lines: Array<Line>;
+  renderAdditionalLines?: ReactNode;
   rightScale: ScaleLinear<number, number>;
   timeSeries: Array<TimeValue>;
   timeTick: Date | null;
@@ -82,7 +82,7 @@ const Lines = ({
   graphHeight,
   timeTick,
   displayTimeValues,
-  children,
+  renderAdditionalLines,
 }: Props): JSX.Element => {
   const [, secondUnit, thirdUnit] = getUnits(lines);
 
@@ -123,7 +123,7 @@ const Lines = ({
         yScale={stackedYScale}
       />
       <g>
-        {children?.additionalLines}
+        {renderAdditionalLines}
         {regularLines.map(
           ({
             metric,
