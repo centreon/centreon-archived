@@ -30,12 +30,12 @@ Given('an administrator is logged in the platform', () => {
 });
 
 When('the administrator activates autologin on the platform', () => {
-  cy.getFormFieldByIndex(30)
-    .find('[type="checkbox"]')
+  cy.getIframeBody()
+    .find('#Form #enableAutoLogin')
     .check({ force: true })
     .should('be.checked')
     .getIframeBody()
-    .find('input[name="submitC"]')
+    .find('#submitGeneralOptionsForm')
     .click({ force: true })
     .reload();
 });
@@ -50,7 +50,7 @@ Then(
       .getIframeBody()
       .find('form #tab1')
       .within(() => {
-        cy.get('input[name="contact_gen_akey"]').should('be.visible');
+        cy.get('#generateAutologinKeyButton').should('be.visible');
         cy.get('#aKey').invoke('val').should('not.be.undefined');
       })
       .navigateTo({
@@ -69,7 +69,7 @@ Then(
       .find('form')
       .within(() => {
         cy.contains('Centreon Authentication').click();
-        cy.get('#tab2 input[name="contact_gen_akey"]').should('be.exist');
+        cy.get('#tab2 #generateAutologinKeyButton').should('be.exist');
         cy.get('#aKey').should('be.exist');
       });
   },
@@ -88,7 +88,7 @@ Given(
       .getIframeBody()
       .find('form #tab1')
       .within(() => {
-        cy.get('input[name="contact_gen_akey"]').should('be.visible');
+        cy.get('#generateAutologinKeyButton').should('be.visible');
         cy.get('#aKey').should('be.visible');
       });
   },
@@ -98,7 +98,7 @@ When('a user generates his autologin key', () => {
   cy.getIframeBody()
     .find('form #tab1 table tbody tr')
     .within(() => {
-      cy.get('input[name="contact_gen_akey"]').click();
+      cy.get('#generateAutologinKeyButton').click();
       cy.get('#aKey').invoke('val').should('not.be.undefined');
     });
 });
@@ -107,7 +107,7 @@ Then('the key is properly generated and displayed', () => {
   cy.getIframeBody()
     .find('form #tab1 table tbody tr')
     .within(() => {
-      cy.get('input[name="contact_autologin_key"]')
+      cy.get('#generateAutologinKeyButton')
         .invoke('val')
         .should('not.be.undefined');
     })
@@ -135,14 +135,14 @@ When('a user generates an autologin link', () => {
   cy.getIframeBody()
     .find('form')
     .isInProfileMenu('Copy autologin link')
-    .get('textarea#autologin-input')
+    .get('#autologin-input')
     .invoke('text')
     .should('not.be.undefined');
 });
 
 Then('the autologin link is copied in the clipboard', () => {
   cy.isInProfileMenu('Copy autologin link')
-    .get('textarea#autologin-input')
+    .get('#autologin-input')
     .should('not.be.undefined');
 });
 
@@ -150,7 +150,7 @@ Given(
   'a platform with autologin enabled and a user with both autologin key and link generated',
   () => {
     cy.isInProfileMenu('Copy autologin link')
-      .get('textarea#autologin-input')
+      .get('#autologin-input')
       .invoke('text')
       .as('link')
       .should('not.be.undefined')

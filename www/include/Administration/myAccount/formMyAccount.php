@@ -169,7 +169,7 @@ $form->addElement(
     'button',
     'contact_gen_akey',
     _("Generate"),
-    ['onclick' => "generatePassword('aKey', '$encodedPasswordPolicy');", 'class' => 'btc bt_info']
+    ['onclick' => "generatePassword('aKey', '$encodedPasswordPolicy');", 'class' => 'btc bt_info', 'id' => 'generateAutologinKeyButton']
 );
 $form->addElement('select', 'contact_lang', _("Language"), $langs);
 $form->addElement('checkbox', 'show_deprecated_pages', _("Use deprecated pages"), null, $attrsText);
