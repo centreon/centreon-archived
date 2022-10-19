@@ -94,7 +94,7 @@ Given(
   },
 );
 
-When('a user generate his autologin key', () => {
+When('a user generates his autologin key', () => {
   cy.getIframeBody()
     .find('form #tab1 table tbody tr')
     .within(() => {
