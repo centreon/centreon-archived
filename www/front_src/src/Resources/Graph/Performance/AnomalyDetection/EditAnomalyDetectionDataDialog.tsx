@@ -46,11 +46,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-interface GraphProps {
+interface PropsGraph {
   factorsData?: CustomFactorsData | null;
 }
 
-interface SliderProps {
+interface PropsSlider {
   getFactors: (data: CustomFactorsData) => void;
   isEnvelopeResizingCanceled: boolean;
   isResizingEnvelope: boolean;
@@ -118,10 +118,10 @@ const EditAnomalyDetectionDataDialog = ({
         <div className={classes.spacing}>
           <TimePeriodButtonGroup />
         </div>
-        <div className={classes.spacing}>{renderGraph?.({ factorsData })}</div>
+        <div className={classes.spacing}>{renderGraph({ factorsData })}</div>
         <div className={classes.editEnvelopeSize}>
           <Paper className={classes.envelopeSize}>
-            {renderSlider?.({
+            {renderSlider({
               getFactors,
               isEnvelopeResizingCanceled,
               isResizingEnvelope,
