@@ -147,7 +147,7 @@ Then('the autologin link is copied in the clipboard', () => {
 });
 
 Given(
-  'a plateform with autologin enabled and a user with autologin key generated and a user with autologin link generated',
+  'a platform with autologin enabled and a user with both autologin key and link generated',
   () => {
     cy.getContainsFromProfileIcon('Copy autologin link')
       .get('textarea#autologin-input')
