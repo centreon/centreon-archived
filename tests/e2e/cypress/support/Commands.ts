@@ -189,10 +189,10 @@ declare global {
     interface Chainable {
       executeCommandsViaClapi: (fixtureFile: string) => Cypress.Chainable;
       getByLabel: ({ tag, label }: GetByLabelProps) => Cypress.Chainable;
-      getContainsFromProfileIcon: (targetedMenu: string) => Cypress.Chainable;
       getFormFieldByIndex: (rootItemNumber: number) => Cypress.Chainable;
       getIframeBody: () => Cypress.Chainable;
       hoverRootMenuItem: (rootItemNumber: number) => Cypress.Chainable;
+      isInProfileMenu: (targetedMenu: string) => Cypress.Chainable;
       loginByTypeOfUser: ({
         jsonName = 'admin',
         preserveToken = false,

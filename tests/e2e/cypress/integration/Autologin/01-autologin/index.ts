@@ -43,7 +43,7 @@ When('the administrator activates autologin on the platform', () => {
 Then(
   'any user of the plateform should be able to generate an autologin link',
   () => {
-    cy.getContainsFromProfileIcon('Edit profile')
+    cy.isInProfileMenu('Edit profile')
       .click()
       .visit('/centreon/main.php?p=50104&o=c')
       .wait('@getTimeZone')
@@ -82,7 +82,7 @@ Given(
       .reload()
       .loginByTypeOfUser({ jsonName: 'user', preserveToken: true })
       .wait('@getNavigationList')
-      .getContainsFromProfileIcon('Edit profile')
+      .isInProfileMenu('Edit profile')
       .visit('/centreon/main.php?p=50104&o=c')
       .wait('@getTimeZone')
       .getIframeBody()
@@ -119,7 +119,7 @@ Then('the key is properly generated and displayed', () => {
 });
 
 Given('a user with autologin key generated', () => {
-  cy.getContainsFromProfileIcon('Copy autologin link').should('be.exist');
+  cy.isInProfileMenu('Copy autologin link').should('be.exist');
 });
 
 When('a user generates an autologin link', () => {
@@ -134,14 +134,14 @@ When('a user generates an autologin link', () => {
     .should('be.exist');
   cy.getIframeBody()
     .find('form')
-    .getContainsFromProfileIcon('Copy autologin link')
+    .isInProfileMenu('Copy autologin link')
     .get('textarea#autologin-input')
     .invoke('text')
     .should('not.be.undefined');
 });
 
 Then('the autologin link is copied in the clipboard', () => {
-  cy.getContainsFromProfileIcon('Copy autologin link')
+  cy.isInProfileMenu('Copy autologin link')
     .get('textarea#autologin-input')
     .should('not.be.undefined');
 });
@@ -149,7 +149,7 @@ Then('the autologin link is copied in the clipboard', () => {
 Given(
   'a platform with autologin enabled and a user with both autologin key and link generated',
   () => {
-    cy.getContainsFromProfileIcon('Copy autologin link')
+    cy.isInProfileMenu('Copy autologin link')
       .get('textarea#autologin-input')
       .invoke('text')
       .as('link')

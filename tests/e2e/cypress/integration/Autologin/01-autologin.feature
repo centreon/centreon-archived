@@ -5,7 +5,7 @@ Feature: Autologin
   So the selected pages can be displayed permanently on a screen
 
 Scenario: Enable autologin on the platform
-  Given an Administrator is logged in the platform 
+  Given an administrator is logged in the platform 
   When the administrator activates autologin on the platform
   Then any user of the plateform should be able to generate an autologin link 
 
