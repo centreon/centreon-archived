@@ -371,7 +371,8 @@ if ($o === MODIFY_COMPONENT_TEMPLATE || $o === ADD_COMPONENT_TEMPLATE) {
         {
             var width = 400;
             var height = 300;
-            window.open('./include/common/javascript/color_picker.php?n=' + t + '&name=' + name,
+            var title = name.includes("area") ? "Area color" : "Line color";
+            window.open('./include/common/javascript/color_picker.php?n=' + t + '&name=' + name + "&title=" + title,
                 'cp',
                 'resizable=no, location=no, width=' + width + ', height=' + height +
                 ', menubar=no, status=yes, scrollbars=no, menubar=no'

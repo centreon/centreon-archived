@@ -35,6 +35,7 @@
  * SVN : $Id$
  * 
  */
+require_once __DIR__ . '/../../../class/HtmlAnalyzer.php';
 
 $n = "";
 $name = "";
@@ -64,6 +65,10 @@ if (function_exists("filter_var")) {
         $hcolor = filter_get($_GET["hcolor"]);
     }
 }
+$n = htmlspecialchars($n, ENT_QUOTES, 'UTF-8');
+$name = htmlspecialchars($name, ENT_QUOTES, 'UTF-8');
+$title = htmlspecialchars($title, ENT_QUOTES, 'UTF-8');
+$hcolor = htmlspecialchars($hcolor, ENT_QUOTES, 'UTF-8');
     $name1 = $n."";
     $name2 = $n."_color";
 
@@ -204,8 +209,8 @@ td  { font-size: 12px; font-family: Verdana, Sans-Serif; text-align:center; back
 </head>
 <body>
    <form name="colpick_form" action="#" method="post">
-    <h2><?php echo $title; ?></h2>
-    <h3><?php echo $name; ?></h3>
+       <h2><?php echo $title; ?></h2>
+       <h3><?php echo $name; ?></h3>
     <table border="0" cellspacing="0" cellpadding="0" align="center">
         <tr>
             <td>
