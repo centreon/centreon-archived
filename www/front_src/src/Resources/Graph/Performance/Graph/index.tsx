@@ -10,7 +10,7 @@ import {
   Tooltip as VisxTooltip,
 } from '@visx/visx';
 import { bisector } from 'd3-array';
-import { ScaleLinear } from 'd3-scale';
+import { ScaleLinear, ScaleTime } from 'd3-scale';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 import {
   difference,
@@ -248,6 +248,35 @@ const getScale = ({
 };
 
 export const bisectDate = bisector(identity).center;
+
+interface LinesProps {
+  getTime: (timeValue: TimeValue) => number;
+  graphHeight: number;
+  isDisplayedAdditionalLines: boolean;
+  leftScale: ScaleLinear<number, number, never>;
+  lines: Array<LineModel>;
+  regularLines: Array<LineModel>;
+  rightScale: ScaleLinear<number, number, never>;
+  secondUnit: string;
+  thirdUnit: string;
+  timeSeries: Array<TimeValue>;
+  xScale: ScaleTime<number, number, never>;
+}
+
+interface AdditionalLinesProps {
+  additionalLinesProps: LinesProps;
+  data: CustomFactorsData | null | undefined;
+}
+
+const AdditionalLines = ({
+  additionalLinesProps,
+  data,
+}: AdditionalLinesProps): JSX.Element => (
+  <>
+    <AnomalyDetectionEnvelopeThreshold {...additionalLinesProps} />
+    <AnomalyDetectionEnvelopeThreshold {...additionalLinesProps} data={data} />
+  </>
+);
 
 const GraphContent = ({
   width,
@@ -531,13 +560,17 @@ const GraphContent = ({
 
   const isLegendClicked = lte(length(lines), 1);
 
-  const isDisplayedThreshold =
-    equals(resource?.type, ResourceType.anomalydetection) && !isLegendClicked;
+  const getDisplayAdditionalLines = (
+    data: Resource | ResourceDetails,
+  ): boolean => equals(data.type, ResourceType.anomalydetection);
 
-  const thresholdProps = {
+  const isDisplayedAdditionalLines =
+    getDisplayAdditionalLines(resource) && !isLegendClicked;
+
+  const additionalLinesProps = {
     getTime,
     graphHeight,
-    isDisplayedThreshold,
+    isDisplayedAdditionalLines,
     leftScale,
     lines,
     regularLines,
@@ -589,13 +622,10 @@ const GraphContent = ({
               leftScale={leftScale}
               lines={lines}
               renderAdditionalLines={
-                <>
-                  <AnomalyDetectionEnvelopeThreshold {...thresholdProps} />
-                  <AnomalyDetectionEnvelopeThreshold
-                    {...thresholdProps}
-                    data={additionalData}
-                  />
-                </>
+                <AdditionalLines
+                  additionalLinesProps={additionalLinesProps}
+                  data={additionalData}
+                />
               }
               rightScale={rightScale}
               timeSeries={timeSeries}
