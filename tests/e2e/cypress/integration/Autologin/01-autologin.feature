@@ -11,7 +11,7 @@ Scenario: Enable autologin on the platform
 
 Scenario: Generate autologin key
   Given an authenticated user and autologin configuration menus can be accessed
-  When a user generate his autologin key
+  When a user generates his autologin key
   Then the key is properly generated and displayed 
 
 Scenario: Generate autologin link
