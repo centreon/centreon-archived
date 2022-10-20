@@ -27,16 +27,12 @@ $versionOfTheUpgrade = 'UPGRADE - 23.04.0-beta.1: ';
 $errorMessage = '';
 
 try {
-    $pearDB->beginTransaction();
-
     $errorMessage = "Impossible to update cfg_centreonbroker table";
     $pearDB->query(
         "ALTER TABLE `cfg_centreonbroker`
         ADD COLUMN `event_queues_total_size` INT(11) DEFAULT NULL
         AFTER `event_queue_max_size`"
     );
-
-    $pearDB->commit();
 } catch (\Exception $e) {
     if ($pearDB->inTransaction()) {
         $pearDB->rollBack();
