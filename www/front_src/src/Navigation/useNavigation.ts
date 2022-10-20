@@ -182,7 +182,7 @@ const useNavigation = (): UseNavigationState => {
     (): Array<string> | undefined =>
       isNil(navigation)
         ? undefined
-        : navigation.result.reduce(reduceAllowedPages, [] as Array<string>),
+        : navigation.result?.reduce(reduceAllowedPages, [] as Array<string>),
     [navigation],
   );
 
@@ -191,7 +191,7 @@ const useNavigation = (): UseNavigationState => {
       isNil(navigation)
         ? undefined
         : navigation.result
-            .reduce(filterShowableElements, [])
+            ?.reduce(filterShowableElements, [])
             .reduce(removeEmptyGroups, []),
     [navigation],
   );
@@ -200,7 +200,7 @@ const useNavigation = (): UseNavigationState => {
     (): Record<string, string> | undefined =>
       isNil(navigation)
         ? undefined
-        : navigation.result.reduce(findReactRoutes, {}),
+        : navigation.result?.reduce(findReactRoutes, {}),
     [navigation],
   );
 

@@ -18,11 +18,11 @@ import { makeStyles } from 'tss-react/mui';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
+import { Theme } from '@mui/material';
 
 import { useMemoComponent } from '@centreon/ui';
-import { userAtom } from '@centreon/ui-context';
+import { ThemeMode, userAtom } from '@centreon/ui-context';
 
-import { isDarkMode } from '../../../Header';
 import { searchUrlFromEntry } from '../helpers/getUrlFromEntry';
 import { Page } from '../../models';
 import {
@@ -33,6 +33,9 @@ import {
 import ArrowIcon from './ArrowIcon';
 
 const rootHeightItem = 37;
+
+export const isDarkMode = (theme: Theme): boolean =>
+  equals(theme.palette.mode, ThemeMode.dark);
 
 interface Props {
   data: Page;
