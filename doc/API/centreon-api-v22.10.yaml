@@ -6162,6 +6162,10 @@ components:
     Monitoring.ResourceMain:
       type: object
       properties:
+        uuid:
+          type: string
+          description: "Uniq ID of the resource"
+          example: "h13-s21"
         type:
           type: string
           description: "Type of the resource"
@@ -6174,6 +6178,16 @@ components:
           type: integer
           format: int32
           description: "ID of the resource"
+          example: 12
+        host_id:
+          type: integer
+          format: int32
+          description: "ID of the host behind the resource"
+          example: 12
+        service_id:
+          type: integer
+          format: int32
+          description: "ID of the service behind the resource"
           example: 12
         name:
           type: string
@@ -6245,53 +6259,7 @@ components:
             links:
               $ref: '#/components/schemas/Monitoring.ResourceLinks'
             status:
-              type: object
-              properties:
-                code:
-                  type: integer
-                  description: |
-                    resource status code
-                    * `0` - UP or OK
-                    * `1` - DOWN or WARNING
-                    * `2` - UNREACHABLE or CRITICAL
-                    * `3` - UNKNOWN
-                    * `4` - PENDING
-                  example: 0
-                name:
-                  type: string
-                  description: |
-                    resource status name
-                    * UP
-                    * DOWN
-                    * UNREACHABLE
-                    * PENDING
-                    * OK
-                    * WARNING
-                    * CRITICAL
-                    * UNKNOWN
-                  example: "UP"
-                severity_code:
-                  type: integer
-                  description: |
-                    resource status name
-                    * `1` - DOWN or CRITICAL
-                    * `2` - WARNING
-                    * `3` - UNKNOWN or UNREACHABLE
-                    * `4` - PENDING
-                    * `5` - UP or OK
-                  example: 1
-            icon:
-              type: object
-              nullable: true
-              properties:
-                name:
-                  type: string
-                  description: "Name of the icon"
-                  example: "linux"
-                url:
-                  type: string
-                  description: "Url of the icon"
-                  example: "/img/media/topology/firewall.png"
+              $ref: '#/components/schemas/Monitoring.ResourceStatus'
         status:
           $ref: '#/components/schemas/Monitoring.ResourceStatus'
         in_downtime:
@@ -6341,6 +6309,46 @@ components:
           nullable: true
           description: "Indicates whether passive checks are enabled"
           example: true
+        performance_data:
+          type: string
+          nullable: true
+          description: "Performance data result of the check sent"
+          example: "rta=0.025ms;200.000;400.000;0; rtmax=0.061ms;;;; rtmin=0.015ms;;;; pl=0%;20;50;0;100 "
+        notification_enabled:
+          type: boolean
+          description: "Indicates if notifications are enabled for the resource"
+          example: false
+        severity:
+          type: object
+          nullable: true
+          properties:
+            type:
+              type: string
+              description: "Type of severity (host or service)"
+              example: "service"
+            id:
+              type: integer
+              description: "ID of the severity"
+              example: 1
+            name:
+              type: string
+              description: "Name of the severity"
+              example: "Priority 1" 
+            icon:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  description: "ID of the icon"
+                  example: 1
+                name:
+                  type: string
+                  description: "Name of the icon"
+                  example: "applications-monitoring-centreon-central-centreon-128-2.png"
+                url:
+                  type: string
+                  description: "URL for the icon"
+                  example: "/centreon/img/media/ppm/applications-monitoring-centreon-central-centreon-128-2.png"
     Monitoring.ResourceLinks:
       type: object
       properties:
@@ -7224,3 +7232,4 @@ components:
           type: string
           description: "Fix version"
           example: "0"
+

@@ -76,10 +76,6 @@ Centreon\Domain\Monitoring\Resource:
             groups:
                 - 'resource_main'
                 - 'resource_parent'
-        flapping:
-            type: bool
-            groups:
-                - 'resource_main'
         inDowntime:
             type: bool
             groups:
