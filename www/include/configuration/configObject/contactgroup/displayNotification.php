@@ -189,11 +189,8 @@ $labels = array(
 $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 $form->accept($renderer);
 $tpl->assign('form', $renderer->toArray());
-$tpl->assign('msg', _("The selected user didn't see any resources"));
 $tpl->assign('msgSelect', _("Please select a user in order to view his notifications"));
-$tpl->assign('msgdisable', _("The selected user is not enable."));
 $tpl->assign('p', $p);
-$tpl->assign('i', $i);
 $tpl->assign('contact', $contactgroup_id);
 $tpl->assign('labels', $labels);
 $tpl->display("displayNotification.ihtml");

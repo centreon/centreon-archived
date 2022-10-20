@@ -14,12 +14,8 @@
 	<a href='#simple_host'>[{$labels.host_notifications}]</a>&nbsp;
 	<a href='#simple_service'>[{$labels.service_notifications}]</a>
 	<br/><br/>
-	{if $i == 0}
-		{if $contact != 0}
-			<div class="updateSecu" style='text-align:center;'>{$msg}</div>
-		{else}
-			<div class="uptodate" style='text-align:center;'>{$msgSelect}</div>
-		{/if}
+	{if $contact == 0}
+		<div class="uptodate" style='text-align:center;'>{$msgSelect}</div>
 	{else}
 	<a name='host_escalation'>
 	<table class="ListTable">
