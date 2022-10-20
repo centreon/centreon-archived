@@ -1,31 +1,25 @@
-import {
-  MutableRefObject,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-  ReactNode,
-} from 'react';
+import { MutableRefObject, useEffect, useMemo, useRef, useState } from 'react';
 
-import { path, isNil, or, not } from 'ramda';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
+import { isNil, not, or, path } from 'ramda';
 
 import { Paper, Theme } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 
-import { useRequest, ListingModel } from '@centreon/ui';
+import { ListingModel, useRequest } from '@centreon/ui';
 import { userAtom } from '@centreon/ui-context';
 
-import { CustomFactorsData } from '../AnomalyDetection/models';
-import { TimelineEvent } from '../../../Details/tabs/Timeline/models';
+import PerformanceGraph from '..';
+import { detailsAtom } from '../../../Details/detailsAtoms';
+import { ResourceDetails } from '../../../Details/models';
 import { listTimelineEvents } from '../../../Details/tabs/Timeline/api';
 import { listTimelineEventsDecoder } from '../../../Details/tabs/Timeline/api/decoders';
-import PerformanceGraph from '..';
+import { TimelineEvent } from '../../../Details/tabs/Timeline/models';
 import { Resource } from '../../../models';
-import { ResourceDetails } from '../../../Details/models';
-import { GraphOptionId } from '../models';
-import { useIntersection } from '../useGraphIntersection';
+import AnomalyDetectionGraphActions from '../AnomalyDetection/AnomalyDetectionGraphActions';
+import { CustomFactorsData } from '../AnomalyDetection/models';
 import MemoizedGraphActions from '../GraphActions';
+import { GraphOptionId } from '../models';
 import {
   adjustTimePeriodDerivedAtom,
   customTimePeriodAtom,
@@ -34,9 +28,7 @@ import {
   resourceDetailsUpdatedAtom,
   selectedTimePeriodAtom,
 } from '../TimePeriods/timePeriodAtoms';
-import { detailsAtom } from '../../../Details/detailsAtoms';
-import EditAnomalyDetectionDataDialog from '../AnomalyDetection/EditAnomalyDetectionDataDialog';
-import AnomalyDetectionSlider from '../AnomalyDetection/AnomalyDetectionSlider';
+import { useIntersection } from '../useGraphIntersection';
 
 import { graphOptionsAtom } from './graphOptionsAtoms';
 
@@ -53,49 +45,6 @@ const useStyles = makeStyles((theme: Theme) => ({
     padding: theme.spacing(2, 1, 1),
   },
 }));
-
-interface AdditionalGraphActionsProps {
-  details: ResourceDetails | undefined;
-  resource: ResourceDetails | Resource | undefined;
-  sendReloadGraphPerformance: (value: boolean) => void;
-}
-
-const AdditionalGraphActions = ({
-  resource,
-  details,
-  sendReloadGraphPerformance,
-}: AdditionalGraphActionsProps): JSX.Element => (
-  <EditAnomalyDetectionDataDialog
-    renderGraph={({ factorsData }): JSX.Element => (
-      <ExportablePerformanceGraphWithTimeline
-        additionalData={factorsData}
-        graphHeight={180}
-        interactWithGraph={false}
-        resource={resource}
-      />
-    )}
-    renderSlider={({
-      getFactors,
-      openModalConfirmation,
-      isEnvelopeResizingCanceled,
-      isResizingEnvelope,
-      setIsResizingEnvelope,
-    }): ReactNode =>
-      details?.sensitivity && (
-        <AnomalyDetectionSlider
-          details={details}
-          isEnvelopeResizingCanceled={isEnvelopeResizingCanceled}
-          isResizingEnvelope={isResizingEnvelope}
-          openModalConfirmation={openModalConfirmation}
-          sendFactors={getFactors}
-          sendReloadGraphPerformance={sendReloadGraphPerformance}
-          sensitivity={details?.sensitivity}
-          setIsResizingEnvelope={setIsResizingEnvelope}
-        />
-      )
-    }
-  />
-);
 
 interface Props {
   additionalData?: CustomFactorsData | null;
@@ -262,7 +211,7 @@ const ExportablePerformanceGraphWithTimeline = ({
                 performanceGraphRef as unknown as MutableRefObject<HTMLDivElement | null>
               }
               renderAdditionalGraphActions={
-                <AdditionalGraphActions
+                <AnomalyDetectionGraphActions
                   details={details}
                   resource={resource}
                   sendReloadGraphPerformance={sendReloadGraphPerformance}

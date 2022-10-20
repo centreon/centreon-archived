@@ -10,7 +10,7 @@ import {
   Tooltip as VisxTooltip,
 } from '@visx/visx';
 import { bisector } from 'd3-array';
-import { ScaleLinear, ScaleTime } from 'd3-scale';
+import { ScaleLinear } from 'd3-scale';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 import {
   difference,
@@ -57,8 +57,8 @@ import {
   labelActionNotPermitted,
   labelAddComment,
 } from '../../../translatedLabels';
-import AnomalyDetectionEnvelopeThreshold from '../AnomalyDetection/AnomalyDetectionEnvelopeThreshold';
 import { CustomFactorsData } from '../AnomalyDetection/models';
+import AdditionalLines from '../AnomalyDetection/AnomalyDetectionAdditionalLines';
 import Lines from '../Lines';
 import { AdjustTimePeriodProps, Line as LineModel, TimeValue } from '../models';
 import {
@@ -248,35 +248,6 @@ const getScale = ({
 };
 
 export const bisectDate = bisector(identity).center;
-
-interface LinesProps {
-  getTime: (timeValue: TimeValue) => number;
-  graphHeight: number;
-  isDisplayedAdditionalLines: boolean;
-  leftScale: ScaleLinear<number, number, never>;
-  lines: Array<LineModel>;
-  regularLines: Array<LineModel>;
-  rightScale: ScaleLinear<number, number, never>;
-  secondUnit: string;
-  thirdUnit: string;
-  timeSeries: Array<TimeValue>;
-  xScale: ScaleTime<number, number, never>;
-}
-
-interface AdditionalLinesProps {
-  additionalLinesProps: LinesProps;
-  data: CustomFactorsData | null | undefined;
-}
-
-const AdditionalLines = ({
-  additionalLinesProps,
-  data,
-}: AdditionalLinesProps): JSX.Element => (
-  <>
-    <AnomalyDetectionEnvelopeThreshold {...additionalLinesProps} />
-    <AnomalyDetectionEnvelopeThreshold {...additionalLinesProps} data={data} />
-  </>
-);
 
 const GraphContent = ({
   width,
