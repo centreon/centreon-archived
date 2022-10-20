@@ -133,7 +133,7 @@ const Date = ({ event }: Props): JSX.Element => {
 };
 
 const Author = ({ event }: Props): JSX.Element => {
-  const classes = useCompactStatusChipStyles();
+  const { classes } = useCompactStatusChipStyles();
 
   const contactName = event.contact?.name || '';
 
