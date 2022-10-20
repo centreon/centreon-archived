@@ -6309,12 +6309,9 @@ components:
           nullable: true
           description: "Indicates whether passive checks are enabled"
           example: true
-        flapping:
-          type: boolean
-          description: "Indicates if the resource is flapping"
-          example: false
         performance_data:
           type: string
+          nullable: true
           description: "Performance data result of the check sent"
           example: "rta=0.025ms;200.000;400.000;0; rtmax=0.061ms;;;; rtmin=0.015ms;;;; pl=0%;20;50;0;100 "
         notification_enabled:
