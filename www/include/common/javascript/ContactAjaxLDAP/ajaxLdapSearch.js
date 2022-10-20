@@ -96,7 +96,7 @@ function LdapSearch() {
         // defining what we should do when we got a reply
         xhrM.onreadystatechange = function () {
             // doing nothing until we got everything and a status 200
-            document.getElementById('ldap_search_result_output').innerHTML = xhrM.responseText;
+            document.getElementById('ldap_search_result_output').innerHTML = DOMPurify.sanitize(xhrM.responseText);
             if (xhrM && xhrM.readyState == 4 && xhrM.status == 200 && xhrM.responseXML) {
                 document.getElementById('ldap_search_result_output').innerHTML = '';
 
