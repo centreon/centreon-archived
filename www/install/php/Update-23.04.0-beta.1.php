@@ -37,9 +37,7 @@ try {
     );
 
     $pearDB->commit();
-
 } catch (\Exception $e) {
-
     if ($pearDB->inTransaction()) {
         $pearDB->rollBack();
     }
