@@ -96,7 +96,7 @@ default:
       paths: [ "%paths.base%/features/MonitoringServerConfiguration.feature" ]
       contexts:
         - Centreon\Test\Api\Context\MonitoringServerConfigurationContext
-    contact_tempaltes_configuration:
+    contact_templates_configuration:
       paths: [ "%paths.base%/features/ConfigurationContactTemplates.feature" ]
       contexts:
         - Centreon\Test\Behat\Api\Context\ApiContext
