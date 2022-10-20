@@ -168,8 +168,8 @@ $options1[] = $form->createElement(
     'yes',
     '&nbsp;',
     '',
-    ["id" => "enableAutoLogin", 
-    "data-testid" => _("Enable Autologin")]);
+    ["id" => "enableAutoLogin", "data-testid" => _("Enable Autologin")]
+);
 $form->addGroup($options1, 'enable_autologin', _("Enable Autologin"), '&nbsp;&nbsp;');
 
 $options2[] = $form->createElement('checkbox', 'yes', '&nbsp;', '');
@@ -269,11 +269,8 @@ $subC = $form->addElement(
     'submit',
     'submitC',
     _("Save"),
-    array(
-        "class" => "btc bt_success",
-        "id" => "submitGeneralOptionsForm",
-        "data-testid" => _("Save")
-    ));
+    ["class" => "btc bt_success", "id" => "submitGeneralOptionsForm", "data-testid" => _("Save")]
+);
 $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
 
 $valid = false;
