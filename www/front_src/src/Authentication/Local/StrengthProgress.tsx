@@ -20,7 +20,12 @@ interface Props {
   thresholds: Array<Threshold>;
   value: number;
 }
-const useStyles = makeStyles<Threshold>()((theme, { color, label, value }) => ({
+
+interface StyleProps {
+  color: string;
+}
+
+const useStyles = makeStyles<StyleProps>()((theme, { color }) => ({
   linear: {
     backgroundColor: color,
   },
@@ -48,10 +53,10 @@ const StrengthProgress = ({
       thresholds[0],
     [thresholds, value],
   );
-  const { classes } = useStyles(currentThreshold);
-  const { t } = useTranslation();
 
-  const { label } = currentThreshold;
+  const { color, label } = currentThreshold;
+  const { classes } = useStyles({ color });
+  const { t } = useTranslation();
 
   const computeProgress = (): number =>
     gt(value, max) ? 100 : (value / max) * 100;

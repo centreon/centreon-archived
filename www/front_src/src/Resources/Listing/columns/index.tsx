@@ -1,9 +1,6 @@
 import { pipe, split, head, propOr, T } from 'ramda';
 import { makeStyles } from 'tss-react/mui';
 
-import { CreateCSSProperties } from '@mui/styles';
-import { Theme } from '@mui/material';
-
 import { ColumnType, Column } from '@centreon/ui';
 
 import {

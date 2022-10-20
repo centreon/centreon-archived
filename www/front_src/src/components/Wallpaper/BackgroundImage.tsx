@@ -1,7 +1,7 @@
 import { isNil, not } from 'ramda';
 import { makeStyles } from 'tss-react/mui';
 
-import { Fade, Theme } from '@mui/material';
+import { Fade } from '@mui/material';
 
 export const defaultBackground = `
 linear-gradient(270deg, rgb(4, 76, 135), rgb(12, 114, 196), rgba(102, 183, 227, 0.2)),
