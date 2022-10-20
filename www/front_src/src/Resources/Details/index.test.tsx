@@ -764,7 +764,9 @@ describe(Details, () => {
         expect(getByText(period) as HTMLElement).toBeEnabled();
       });
 
-      userEvent.click(getByText(period) as HTMLElement);
+      userEvent.click(getByText(period) as HTMLElement, undefined, {
+        skipPointerEventsCheck: true,
+      });
 
       await waitFor(() => {
         expect(mockedAxios.get).toHaveBeenCalledWith(
