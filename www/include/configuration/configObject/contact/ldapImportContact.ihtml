@@ -1,4 +1,5 @@
 <script type="text/javascript" src="./include/common/javascript/tool.js"></script>
+<script type="text/javascript" src="./include/common/javascript/purify.min.js"></script>
 {$javascript}
 {$form.javascript}
  	<table class="formTable table">
