@@ -151,7 +151,7 @@ describe('Anomaly detection - Graph', () => {
     cy.get(`[data-testid="${labelPerformanceGraphAD}"]`).should('be.visible');
   });
 
-  it('displays the modal of edit anomaly-detection when wrench icon is clicked', () => {
+  it('displays the Anomaly detection configuration modal when the corresponding button is clicked', () => {
     cy.get(`[data-testid="${labelPerformanceGraphAD}"]`).click();
 
     cy.get('[data-testid="modalEditAnomalyDetection"]').should('be.visible');
