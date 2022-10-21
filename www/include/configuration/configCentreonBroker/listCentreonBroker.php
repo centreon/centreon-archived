@@ -87,7 +87,7 @@ if (isset($_POST['searchCB']) || isset($_GET['searchCB'])) {
 
 $aclCond = "";
 if (!$centreon->user->admin && count($allowedBrokerConf)) {
-    if ($search) {
+    if ($search != "") {
         $aclCond = " AND ";
     } else {
         $aclCond = " WHERE ";
@@ -95,19 +95,27 @@ if (!$centreon->user->admin && count($allowedBrokerConf)) {
     $aclCond .= "config_id IN (" . implode(',', array_keys($allowedBrokerConf)) . ") ";
 }
 
-if ($search) {
-    $rq = "SELECT SQL_CALC_FOUND_ROWS config_id, config_name, ns_nagios_server, config_activate " .
+if ($search != "") {
+    $cfgBrokerStmt = $pearDB->prepare(
+        "SELECT SQL_CALC_FOUND_ROWS config_id, config_name, ns_nagios_server, config_activate " .
         "FROM cfg_centreonbroker " .
-        "WHERE config_name LIKE '%" . $search . "%'" . $aclCond .
+        "WHERE config_name LIKE :search" . $aclCond .
         " ORDER BY config_name " .
-        "LIMIT " . $num * $limit . ", " . $limit;
+        "LIMIT :scoop, :limit"
+    );
+    $cfgBrokerStmt->bindValue(':search', '%' . $search . '%', \PDO::PARAM_STR);
 } else {
-    $rq = "SELECT SQL_CALC_FOUND_ROWS config_id, config_name, ns_nagios_server, config_activate " .
+    $cfgBrokerStmt = $pearDB->prepare(
+        "SELECT SQL_CALC_FOUND_ROWS config_id, config_name, ns_nagios_server, config_activate " .
         "FROM cfg_centreonbroker " . $aclCond .
         " ORDER BY config_name " .
-        "LIMIT " . $num * $limit . ", " . $limit;
+        "LIMIT :scoop, :limit"
+    );
 }
-$dbResult = $pearDB->query($rq);
+
+$cfgBrokerStmt->bindValue(':scoop', (int) $num * (int) $limit, \PDO::PARAM_INT);
+$cfgBrokerStmt->bindValue(':limit', (int) $limit, \PDO::PARAM_INT);
+$cfgBrokerStmt->execute();
 
 // Get results numbers
 $rows = $pearDB->query("SELECT FOUND_ROWS()")->fetchColumn();
@@ -130,7 +138,7 @@ $statementBrokerInfo = $pearDB->prepare(
     "AND config_id = :config_id"
 );
 
-for ($i = 0; $config = $dbResult->fetch(); $i++) {
+for ($i = 0; $config = $cfgBrokerStmt->fetch(); $i++) {
     $moptions = "";
     $selectedElements = $form->addElement('checkbox', "select[" . $config['config_id'] . "]");
 
