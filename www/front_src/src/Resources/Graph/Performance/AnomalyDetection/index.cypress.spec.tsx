@@ -311,7 +311,7 @@ describe('Anomaly detection -Global-', () => {
     cy.get(`[aria-label="Close"]`).click();
   });
 
-  it('display the filters of anomaly-detection in filter Menu when the module centreon-anomaly-detection is installed', () => {
+  it('displays the Anomaly detection criteria value when the type criteria chip is clicked and centreon-anomaly-detection is installed', () => {
     cy.displayFilterMenu();
     cy.matchImageSnapshot();
   });
