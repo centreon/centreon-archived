@@ -199,56 +199,53 @@ class CentreonStatistics
         $result = $this->dbConfig->query($query);
         while ($row = $result->fetch()) {
             $customConfiguration = json_decode($row['custom_configuration'], true);
-            if ($row['type'] === 'local') {
-                $data['local'] = $customConfiguration['password_security_policy'];
-            } elseif ($row['type'] === 'web-sso') {
-                $data['web-sso'] = [
-                    'is_forced' => $row['is_forced'] ? true : false,
-                    'trusted_client_addresses'
-                        => isset($customConfiguration['trusted_client_addresses'])
-                        ? count($customConfiguration['trusted_client_addresses']) : 0,
-                    'blacklist_client_addresses'
-                        => isset($customConfiguration['blacklist_client_addresses'])
-                        ? count($customConfiguration['blacklist_client_addresses']) : 0,
-                    'pattern_matching_login' => ($customConfiguration['pattern_matching_login'] ? true : false),
-                    'pattern_replace_login' => ($customConfiguration['pattern_replace_login'] ? true : false),
-                ];
-            } elseif ($row['type'] === 'openid') {
-                $authenticationConditions = $customConfiguration['authentication_conditions'];
-                $groupsMapping = $customConfiguration['groups_mapping'];
-                $rolesMapping = $customConfiguration['roles_mapping'];
-                $data['openid'] = [
-                    'is_forced' => $row['is_forced'] ? true : false,
-                    'authenticationConditions' => [
-                        'is_enabled' => $authenticationConditions['is_enabled'] ? true : false,
-                        'trusted_client_addresses'
-                            => isset($authenticationConditions['trusted_client_addresses'])
-                            ? count($authenticationConditions['trusted_client_addresses']) : 0,
+            switch ($row['type']) {
+                case 'local':
+                    $data['local'] = $customConfiguration['password_security_policy'];
+                    break;
+                case 'web-sso':
+                    $data['web-sso'] = [
+                        'is_forced' => $row['is_forced'] ? true : false,
+                        'trusted_client_addresses' => count($customConfiguration['trusted_client_addresses'] ?? []),
                         'blacklist_client_addresses'
-                            => isset($authenticationConditions['blacklist_client_addresses'])
-                            ? count($authenticationConditions['blacklist_client_addresses']) : 0,
-                        'authorized_values' => isset($authenticationConditions['authorized_values'])
-                            ? count($authenticationConditions['authorized_values']) : 0
-                    ],
-                    'groups_mapping' => [
-                        'is_enabled' => $groupsMapping['is_enabled'] ? true : false,
-                        'relations' => $cgRelations
-                    ],
-                    'roles_mapping' => [
-                        'is_enabled' => $rolesMapping['is_enabled'] ? true : false,
-                        'apply_only_first_role' => $rolesMapping['apply_only_first_role'] ? true : false,
-                        'relations' => $aclRelations
-                    ],
-                    'introspection_token_endpoint' => ($customConfiguration['introspection_token_endpoint']
-                        ? true : false),
-                    'userinfo_endpoint' => ($customConfiguration['userinfo_endpoint'] ? true : false),
-                    'endsession_endpoint' => ($customConfiguration['endsession_endpoint'] ? true : false),
-                    'connection_scopes' => isset($customConfiguration['connection_scopes'])
-                        ? count($customConfiguration['connection_scopes']) : 0,
-                    'authentication_type' => $customConfiguration['authentication_type'],
-                    'verify_peer' => ($customConfiguration['verify_peer'] ? true : false),
-                    'auto_import' => ($customConfiguration['auto_import'] ? true : false)
-                ];
+                            => count($customConfiguration['blacklist_client_addresses'] ?? []),
+                        'pattern_matching_login' => ($customConfiguration['pattern_matching_login'] ? true : false),
+                        'pattern_replace_login' => ($customConfiguration['pattern_replace_login'] ? true : false),
+                    ];
+                    break;
+                case 'openid':
+                    $authenticationConditions = $customConfiguration['authentication_conditions'];
+                    $groupsMapping = $customConfiguration['groups_mapping'];
+                    $rolesMapping = $customConfiguration['roles_mapping'];
+                    $data['openid'] = [
+                        'is_forced' => (bool)$row['is_forced'],
+                        'authenticationConditions' => [
+                            'is_enabled' => (bool)$authenticationConditions['is_enabled'],
+                            'trusted_client_addresses'
+                                => count($authenticationConditions['trusted_client_addresses'] ?? []),
+                            'blacklist_client_addresses'
+                                => count($authenticationConditions['blacklist_client_addresses'] ?? []),
+                            'authorized_values' => count($authenticationConditions['authorized_values'] ?? [])
+                        ],
+                        'groups_mapping' => [
+                            'is_enabled' => (bool)$groupsMapping['is_enabled'],
+                            'relations' => $cgRelations
+                        ],
+                        'roles_mapping' => [
+                            'is_enabled' => (bool)$rolesMapping['is_enabled'],
+                            'apply_only_first_role' => (bool)$rolesMapping['apply_only_first_role'],
+                            'relations' => $aclRelations
+                        ],
+                        'introspection_token_endpoint'
+                            => ($customConfiguration['introspection_token_endpoint'] ? true : false),
+                        'userinfo_endpoint' => ($customConfiguration['userinfo_endpoint'] ? true : false),
+                        'endsession_endpoint' => ($customConfiguration['endsession_endpoint'] ? true : false),
+                        'connection_scopes' => count($customConfiguration['connection_scopes'] ?? []),
+                        'authentication_type' => $customConfiguration['authentication_type'],
+                        'verify_peer' => (bool)$customConfiguration['verify_peer'],
+                        'auto_import' => (bool)$customConfiguration['auto_import']
+                    ];
+                    break;
             }
         }
 
@@ -262,10 +259,8 @@ class CentreonStatistics
      */
     public function getAuthenticationOptions()
     {
-        $data = array_merge(
-            ['LDAP' => $this->getLDAPAuthenticationOptions()],
-            [$this->getNewAuthenticationOptions()][0]
-        );
+        $data = $this->getNewAuthenticationOptions();
+        $data['LDAP'] = $this->getLDAPAuthenticationOptions();
 
         return $data;
     }
