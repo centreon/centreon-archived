@@ -335,10 +335,15 @@ describe('Anomaly detection - Global', () => {
     cy.get(`[aria-label="Close"]`).click();
   });
 
-  it.only('displays the new value of slider when user confirm the changes on Anomaly detection configuration modal ', () => {
+  it('displays the new value of slider when user confirm the changes on Anomaly detection configuration modal ', () => {
     cy.contains('ad').click();
     cy.get('[data-testid="3"]').click();
     cy.wait('@getGraphDataAnomalyDetection');
+    cy.route(
+      'GET',
+      '**/resources/anomaly-detection/1',
+      '@newDetailsAnomalyDetection',
+    ).as('getNewDetailsAnomalyDetection');
     cy.get(`[data-testid="${labelPerformanceGraphAD}"]`).click();
     cy.get('[data-testid="add"]').click();
     cy.get('[data-testid="add"]').click();
@@ -347,13 +352,9 @@ describe('Anomaly detection - Global', () => {
     cy.get('[data-testid=modalConfirmation]').should('be.visible');
     cy.contains(labelEditAnomalyDetectionConfirmation).should('be.visible');
     cy.get(`[aria-label="Save"]`).click();
-    cy.route(
-      'GET',
-      '**/resources/anomaly-detection/1',
-      '@newDetailsAnomalyDetection',
-    ).as('getNewDetailsAnomalyDetection');
+
     cy.get('@putSensitivity').should('have.property', 'status', 200);
-    cy.get('@getNewDetailsAnomalyDetection').should(
+    cy.wait('@getNewDetailsAnomalyDetection').should(
       'have.property',
       'status',
       200,
@@ -361,6 +362,8 @@ describe('Anomaly detection - Global', () => {
     cy.get('[data-testid="closeEditModal"]').click();
     cy.get(`[data-testid="${labelPerformanceGraphAD}"]`).click();
     cy.get('.MuiSlider-valueLabelLabel').contains(3.3).should('be.visible');
+    cy.get('[data-testid="closeEditModal"]').click();
+    cy.get(`[aria-label="Close"]`).click();
   });
 
   it('displays the Anomaly detection criteria value when the type criteria chip is clicked and centreon-anomaly-detection is installed', () => {
