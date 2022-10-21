@@ -34,7 +34,6 @@ try {
         AFTER `event_queue_max_size`"
     );
 } catch (\Exception $e) {
-
     $centreonLog->insertLog(
         4,
         $versionOfTheUpgrade . $errorMessage .
