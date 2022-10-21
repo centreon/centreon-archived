@@ -110,7 +110,7 @@ describe('Anomaly detection - Filter', () => {
       .should('have.value', `type:${searchWords.type} `);
   });
 
-  it('displays the filters of anomaly detection on search proposition when user types type: in searchBar', () => {
+  it('displays the of Anomaly detection criteria value on search proposition when user types type: in the search bar', () => {
     cy.get('input[placeholder=Search]').type('type:');
     filtersToBeDisplayedInSearchBar.map((item) =>
       cy.contains(item).should('be.visible'),
