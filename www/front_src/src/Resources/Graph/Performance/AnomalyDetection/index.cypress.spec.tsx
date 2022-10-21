@@ -226,7 +226,7 @@ describe('Anomaly detection - Graph', () => {
     });
   });
 
-  it('displays the default value on slider mark when use default value is checked', () => {
+  it('displays the default value on slider mark when "Use default value" is checked', () => {
     cy.get(`[data-testid="${labelPerformanceGraphAD}"]`).click();
     cy.get('[data-testid="add"]').click();
     cy.get('[data-testid="add"]').click();
