@@ -147,7 +147,7 @@ describe('Anomaly detection - Graph', () => {
     });
   });
 
-  it('displays the wrench icon on graph actions when resource of type anomaly-detection', () => {
+  it('displays the wrench icon on graph actions when resource of type anomaly-detection is selected', () => {
     cy.get(`[data-testid="${labelPerformanceGraphAD}"]`).should('be.visible');
   });
 
