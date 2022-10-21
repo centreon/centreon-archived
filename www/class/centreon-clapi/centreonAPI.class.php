@@ -36,9 +36,6 @@
 
 namespace CentreonClapi;
 
-use Security\Domain\Authentication\Exceptions\ProviderException;
-use Security\Domain\Authentication\Model\LocalProvider;
-
 require_once _CENTREON_PATH_ . "www/class/centreon-clapi/centreonExported.class.php";
 require_once realpath(dirname(__FILE__) . "/../centreonDB.class.php");
 require_once realpath(dirname(__FILE__) . "/../centreonXML.class.php");
@@ -716,7 +713,7 @@ class CentreonAPI
      */
     public function launchAction($exit = true)
     {
-        $action = strtoupper($this->action);
+        $action = htmlspecialchars(strtoupper($this->action),  ENT_QUOTES, 'UTF-8');
 
         /**
          * Debug
@@ -803,9 +800,13 @@ class CentreonAPI
                 $i++;
                 $tab = preg_split('/;/', $string);
                 if (strlen(trim($string)) != 0 && !preg_match('/^\{OBJECT_TYPE\}/', $string)) {
-                    $this->object = trim($tab[0]);
-                    $this->action = trim($tab[1]);
-                    $this->variables = trim(substr($string, strlen($tab[0] . ";" . $tab[1] . ";")));
+                    $this->object = htmlspecialchars(trim($tab[0]), ENT_QUOTES, 'UTF-8');
+                    $this->action = htmlspecialchars(trim($tab[1]), ENT_QUOTES, 'UTF-8');
+                    $this->variables = htmlspecialchars(
+                        trim(substr($string, strlen($tab[0] . ";" . $tab[1] . ";"))),
+                        ENT_QUOTES,
+                        'UTF-8'
+                    );
                     if ($this->debug == 1) {
                         print "Object : " . $this->object . "\n";
                         print "Action : " . $this->action . "\n";
@@ -830,7 +831,7 @@ class CentreonAPI
 
     public function launchActionForImport()
     {
-        $action = strtoupper($this->action);
+        $action = htmlspecialchars(strtoupper($this->action),  ENT_QUOTES, 'UTF-8');
         /**
          * Debug
          */
