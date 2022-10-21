@@ -96,3 +96,7 @@ default:
       paths: [ "%paths.base%/features/MonitoringServerConfiguration.feature" ]
       contexts:
         - Centreon\Test\Api\Context\MonitoringServerConfigurationContext
+    contact_groups_configuration:
+      paths: [ "%paths.base%/features/ConfigurationContactsGroups.feature" ]
+      contexts:
+        - Centreon\Test\Behat\Api\Context\ApiContext
