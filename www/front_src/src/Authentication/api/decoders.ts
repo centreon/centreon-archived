@@ -79,11 +79,13 @@ const rolesRelation = JsonDecoder.object<RolesRelation>(
   {
     accessGroup: getNamedEntityDecoder('Access group'),
     claimValue: JsonDecoder.string,
+    priority: JsonDecoder.number,
   },
   'Role Relation',
   {
     accessGroup: 'access_group',
     claimValue: 'claim_value',
+    priority: 'priority',
   },
 );
 

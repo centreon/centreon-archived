@@ -109,9 +109,10 @@ const adaptRolesRelationsToAPI = (
   relations: Array<RolesRelation>,
 ): Array<RolesRelationToAPI> =>
   map(
-    ({ claimValue, accessGroup }) => ({
+    ({ claimValue, accessGroup, priority }) => ({
       access_group_id: accessGroup.id,
       claim_value: claimValue,
+      priority,
     }),
     relations,
   );
