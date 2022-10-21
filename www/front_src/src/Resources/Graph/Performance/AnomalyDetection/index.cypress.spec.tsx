@@ -95,7 +95,7 @@ describe('Anomaly detection - Filter', () => {
     cy.clickOutside();
   });
 
-  it('displays the the Anomaly detection criteria value in the search bar when the corresponding type criteria is selected', () => {
+  it('displays the Anomaly detection criteria value in the search bar when the corresponding type criteria is selected', () => {
     cy.displayFilterMenu();
 
     filtersToBeDisplayedInTypeMenu.map((item) => {
