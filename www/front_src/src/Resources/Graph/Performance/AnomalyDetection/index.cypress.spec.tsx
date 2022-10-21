@@ -300,7 +300,7 @@ describe('Anomaly detection - Global', () => {
     cy.get(`[aria-label="Close"]`).click();
   });
 
-  it('displays the modal of edit anomaly-detection when wrench icon is clicked', () => {
+  it('displays the Anomaly detection configuration modal when the corresponding button is clicked', () => {
     cy.contains('ad').click();
     cy.get('[data-testid="3"]').click();
     cy.wait('@getGraphDataAnomalyDetection');
