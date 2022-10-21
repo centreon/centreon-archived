@@ -145,3 +145,10 @@ Feature: List Contact Groups API
 
       When I send a GET request to '/api/latest/configuration/contacts/groups'
       Then the response code should be "403"
+      And the JSON should be equal to:
+      """
+        {
+          "code": 403,
+          "message": "You are not allowed to access contact groups"
+        }
+      """
