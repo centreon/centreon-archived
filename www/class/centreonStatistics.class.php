@@ -205,7 +205,7 @@ class CentreonStatistics
                     break;
                 case 'web-sso':
                     $data['web-sso'] = [
-                        'is_forced' => $row['is_forced'] ? true : false,
+                        'is_forced' => (bool)$row['is_forced'],
                         'trusted_client_addresses' => count($customConfiguration['trusted_client_addresses'] ?? []),
                         'blacklist_client_addresses'
                             => count($customConfiguration['blacklist_client_addresses'] ?? []),
