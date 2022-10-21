@@ -716,7 +716,7 @@ class CentreonAPI
      */
     public function launchAction($exit = true)
     {
-        $action = htmlspecialchars(strtoupper($this->action),  ENT_QUOTES, 'UTF-8');
+        $action = htmlspecialchars(strtoupper($this->action), ENT_QUOTES, 'UTF-8');
 
         /**
          * Debug
@@ -834,7 +834,7 @@ class CentreonAPI
 
     public function launchActionForImport()
     {
-        $action = htmlspecialchars(strtoupper($this->action),  ENT_QUOTES, 'UTF-8');
+        $action = htmlspecialchars(strtoupper($this->action), ENT_QUOTES, 'UTF-8');
         /**
          * Debug
          */
