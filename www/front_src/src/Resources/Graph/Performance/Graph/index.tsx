@@ -1,4 +1,12 @@
-import { memo, MouseEvent, useEffect, useMemo, useRef, useState } from 'react';
+import {
+  memo,
+  MouseEvent,
+  ReactNode,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 
 import { AddSVGProps } from '@visx/shape/lib/types';
 import {
@@ -58,7 +66,6 @@ import {
   labelAddComment,
 } from '../../../translatedLabels';
 import { CustomFactorsData } from '../AnomalyDetection/models';
-import AdditionalLines from '../AnomalyDetection/AnomalyDetectionAdditionalLines';
 import Lines from '../Lines';
 import { AdjustTimePeriodProps, Line as LineModel, TimeValue } from '../models';
 import {
@@ -221,6 +228,7 @@ interface GraphContentProps {
   lines: Array<LineModel>;
   loading: boolean;
   onAddComment?: (commentParameters: CommentParameters) => void;
+  renderAdditionalLines?: (args) => ReactNode;
   resource: Resource | ResourceDetails;
   shiftTime?: (direction: TimeShiftDirection) => void;
   showAddCommentTooltip: (args) => void;
@@ -275,6 +283,7 @@ const GraphContent = ({
   interactWithGraph,
   displayTimeValues,
   additionalData,
+  renderAdditionalLines,
 }: GraphContentProps): JSX.Element => {
   const classes = useStyles({ onAddComment });
   const { t } = useTranslation();
@@ -592,12 +601,10 @@ const GraphContent = ({
               graphHeight={graphHeight}
               leftScale={leftScale}
               lines={lines}
-              renderAdditionalLines={
-                <AdditionalLines
-                  additionalLinesProps={additionalLinesProps}
-                  data={additionalData}
-                />
-              }
+              renderAdditionalLines={renderAdditionalLines?.({
+                additionalData,
+                additionalLinesProps,
+              })}
               rightScale={rightScale}
               timeSeries={timeSeries}
               timeTick={timeTick}

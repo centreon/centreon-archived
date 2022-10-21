@@ -83,6 +83,7 @@ interface Props {
   isInViewport?: boolean;
   limitLegendRows?: boolean;
   onAddComment?: (commentParameters: CommentParameters) => void;
+  renderAdditionalLines?: (args) => ReactNode;
   resource: Resource | ResourceDetails;
   resourceDetailsUpdated?: boolean;
   timeline?: Array<TimelineEvent>;
@@ -163,6 +164,7 @@ const PerformanceGraph = ({
   interactWithGraph,
   graphActions,
   getPerformanceGraphRef,
+  renderAdditionalLines,
 }: Props): JSX.Element => {
   const classes = useStyles({
     canAdjustTimePeriod: not(isNil(adjustTimePeriod)),
@@ -445,6 +447,7 @@ const PerformanceGraph = ({
               loading={
                 not(resourceDetailsUpdated) && sendingGetGraphDataRequest
               }
+              renderAdditionalLines={renderAdditionalLines}
               resource={resource}
               shiftTime={shiftTime}
               timeSeries={timeSeries}

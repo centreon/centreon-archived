@@ -1,12 +1,12 @@
 import { RefObject } from 'react';
 
-import { path, isNil, equals, last, pipe, not } from 'ramda';
+import { equals, isNil, last, not, path, pipe } from 'ramda';
 
 import makeStyles from '@mui/styles/makeStyles';
 
-import { Resource } from '../../../models';
 import ExportableGraphWithTimeline from '../../../Graph/Performance/ExportableGraphWithTimeline';
 import { MousePosition } from '../../../Graph/Performance/Graph/mouseTimeValueAtoms';
+import { Resource } from '../../../models';
 
 interface Props {
   infiniteScrollTriggerRef: RefObject<HTMLDivElement>;

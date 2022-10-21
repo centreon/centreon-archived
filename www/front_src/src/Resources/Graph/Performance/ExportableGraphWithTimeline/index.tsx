@@ -1,4 +1,11 @@
-import { MutableRefObject, useEffect, useMemo, useRef, useState } from 'react';
+import {
+  MutableRefObject,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  ReactNode,
+} from 'react';
 
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 import { isNil, not, or, path } from 'ramda';
@@ -16,7 +23,6 @@ import { listTimelineEvents } from '../../../Details/tabs/Timeline/api';
 import { listTimelineEventsDecoder } from '../../../Details/tabs/Timeline/api/decoders';
 import { TimelineEvent } from '../../../Details/tabs/Timeline/models';
 import { Resource } from '../../../models';
-import AnomalyDetectionGraphActions from '../AnomalyDetection/AnomalyDetectionGraphActions';
 import { CustomFactorsData } from '../AnomalyDetection/models';
 import MemoizedGraphActions from '../GraphActions';
 import { GraphOptionId } from '../models';
@@ -52,7 +58,8 @@ interface Props {
   interactWithGraph: boolean;
   isRenderAdditionalGraphActions: boolean;
   limitLegendRows?: boolean;
-  onReload?: (value: boolean) => void;
+  renderAdditionalGraphAction?: ReactNode;
+  renderAdditionalLines?: (args) => ReactNode;
   resource?: Resource | ResourceDetails;
 }
 
@@ -62,8 +69,9 @@ const ExportablePerformanceGraphWithTimeline = ({
   limitLegendRows,
   interactWithGraph,
   additionalData,
-  onReload,
+  renderAdditionalGraphAction,
   isRenderAdditionalGraphActions,
+  renderAdditionalLines,
 }: Props): JSX.Element => {
   const classes = useStyles();
   const [timeline, setTimeline] = useState<Array<TimelineEvent>>();
@@ -183,14 +191,6 @@ const ExportablePerformanceGraphWithTimeline = ({
     setPerformanceGraphRef(ref);
   };
 
-  const sendReloadGraphPerformance = (value: boolean): void => {
-    if (!onReload) {
-      return;
-    }
-
-    onReload(value);
-  };
-
   return (
     <Paper className={classes.graphContainer}>
       <div
@@ -213,13 +213,7 @@ const ExportablePerformanceGraphWithTimeline = ({
               performanceGraphRef={
                 performanceGraphRef as unknown as MutableRefObject<HTMLDivElement | null>
               }
-              renderAdditionalGraphActions={
-                <AnomalyDetectionGraphActions
-                  details={details}
-                  resource={resource}
-                  sendReloadGraphPerformance={sendReloadGraphPerformance}
-                />
-              }
+              renderAdditionalGraphActions={renderAdditionalGraphAction}
               resourceName={resource?.name as string}
               resourceParentName={resource?.parent?.name}
               timeline={timeline}
@@ -229,6 +223,7 @@ const ExportablePerformanceGraphWithTimeline = ({
           interactWithGraph={interactWithGraph}
           isInViewport={isInViewport}
           limitLegendRows={limitLegendRows}
+          renderAdditionalLines={renderAdditionalLines}
           resource={resource as Resource}
           resourceDetailsUpdated={resourceDetailsUpdated}
           timeline={timeline}

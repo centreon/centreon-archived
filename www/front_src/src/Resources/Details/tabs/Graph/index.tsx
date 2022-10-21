@@ -9,6 +9,8 @@ import TimePeriodButtonGroup from '../../../Graph/Performance/TimePeriods';
 import ExportablePerformanceGraphWithTimeline from '../../../Graph/Performance/ExportableGraphWithTimeline';
 import memoizeComponent from '../../../memoizedComponent';
 import useLoadDetails from '../../../Listing/useLoadResources/useLoadDetails';
+import AnomalyDetectionGraphActions from '../../../Graph/Performance/AnomalyDetection/AnomalyDetectionGraphActions';
+import AdditionalLines from '../../../Graph/Performance/AnomalyDetection/AnomalyDetectionAdditionalLines';
 
 import HostGraph from './HostGraph';
 
@@ -66,8 +68,22 @@ const GraphTabContent = ({ details }: TabProps): JSX.Element => {
             interactWithGraph
             graphHeight={280}
             isRenderAdditionalGraphActions={equalsAnomalyDetection(type)}
+            renderAdditionalGraphAction={
+              <AnomalyDetectionGraphActions
+                details={details}
+                sendReloadGraphPerformance={reload}
+              />
+            }
+            renderAdditionalLines={({
+              additionalData,
+              additionalLinesProps,
+            }): JSX.Element => (
+              <AdditionalLines
+                additionalLinesProps={additionalLinesProps}
+                data={additionalData}
+              />
+            )}
             resource={details}
-            onReload={reload}
           />
         </>
       ) : (

@@ -1,20 +1,18 @@
 import { ReactNode } from 'react';
 
 import { ResourceDetails } from '../../../Details/models';
-import { Resource } from '../../../models';
 import ExportablePerformanceGraphWithTimeline from '../ExportableGraphWithTimeline/index';
 
+import AdditionalLines from './AnomalyDetectionAdditionalLines';
 import AnomalyDetectionSlider from './AnomalyDetectionSlider';
 import EditAnomalyDetectionDataDialog from './EditAnomalyDetectionDataDialog';
 
 interface AdditionalGraphActionsProps {
   details: ResourceDetails | undefined;
-  resource: ResourceDetails | Resource | undefined;
   sendReloadGraphPerformance: (value: boolean) => void;
 }
 
 const AnomalyDetectionGraphActions = ({
-  resource,
   details,
   sendReloadGraphPerformance,
 }: AdditionalGraphActionsProps): JSX.Element => (
@@ -25,7 +23,13 @@ const AnomalyDetectionGraphActions = ({
         graphHeight={180}
         interactWithGraph={false}
         isRenderAdditionalGraphActions={false}
-        resource={resource}
+        renderAdditionalLines={({ additionalLinesProps }): JSX.Element => (
+          <AdditionalLines
+            additionalLinesProps={additionalLinesProps}
+            data={factorsData}
+          />
+        )}
+        resource={details}
       />
     )}
     renderSlider={({
