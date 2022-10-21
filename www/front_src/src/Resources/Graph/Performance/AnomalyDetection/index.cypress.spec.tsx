@@ -137,6 +137,7 @@ describe('Anomaly detection - Graph', () => {
           <Router>
             <ExportablePerformanceGraphWithTimeline
               interactWithGraph
+              isRenderAdditionalGraphActions
               graphHeight={280}
               resource={data}
               onReload={(): boolean => false}
@@ -316,7 +317,7 @@ describe('Anomaly detection - Global', () => {
     cy.matchImageSnapshot();
   });
 
-  it('displays the  filters of anomaly detection on search proposition when user types type: in searchBar', () => {
+  it('displays the Anomaly detection criteria value on search proposition when user types type: in the search bar', () => {
     cy.get('input[placeholder=Search]').type('type:');
     cy.matchImageSnapshot();
     cy.get('[data-testid="Clear filter"]').click();
