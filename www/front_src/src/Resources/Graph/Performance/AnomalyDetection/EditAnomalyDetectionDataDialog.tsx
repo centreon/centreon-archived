@@ -54,7 +54,7 @@ interface GraphProps {
   factorsData?: CustomFactorsData | null;
 }
 
-interface PropsSlider {
+interface SliderProps {
   getFactors: (data: CustomFactorsData) => void;
   isEnvelopeResizingCanceled: boolean;
   isResizingEnvelope: boolean;
@@ -63,8 +63,8 @@ interface PropsSlider {
 }
 
 interface Props {
-  renderGraph: (args: PropsGraph) => ReactNode;
-  renderSlider: (args: PropsSlider) => ReactNode;
+  renderGraph: (args: GraphProps) => ReactNode;
+  renderSlider: (args: SliderProps) => ReactNode;
 }
 
 const EditAnomalyDetectionDataDialog = ({
