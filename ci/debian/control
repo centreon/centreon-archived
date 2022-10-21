@@ -54,7 +54,8 @@ Depends:
     centreon-widget-live-top10-memory-usage,
     centreon-widget-service-monitoring,
     centreon-widget-servicegroup-monitoring,
-    centreon-widget-tactical-overview
+    centreon-widget-tactical-overview,
+    centreon-widget-single-metric
 Description: The package contains base configuration for Centreon Engine and Centreon Broker.
  It provides one default monitoring engine running with Centreon Engine and
  two Centreon Broker instances to store real-time information in database and
@@ -62,7 +63,7 @@ Description: The package contains base configuration for Centreon Engine and Cen
 
 Package: centreon-poller
 Architecture: all
-Depends: 
+Depends:
     centreon-common (>= ${centreon:version}~),
     centreon-poller-centreon-engine (>= ${centreon:version}~),
     centreon-trap (>= ${centreon:version}~),
@@ -92,7 +93,7 @@ Depends:
     monitoring-plugins-basic
 Description: This package add rights and default directories for a poller
  managed by Centreon. This includes the default central poller.
- 
+
 Package: centreon-web-common
 Architecture: all
 Depends:
