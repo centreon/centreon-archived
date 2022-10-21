@@ -249,7 +249,7 @@ describe('Anomaly detection - Graph', () => {
   });
 });
 
-describe('Anomaly detection -Global-', () => {
+describe('Anomaly detection - Global', () => {
   beforeEach(() => {
     cy.viewport(1200, 750);
     cy.fixture('resources/resourceListing.json').as('listResource');
