@@ -2,7 +2,7 @@ const { merge } = require('webpack-merge');
 
 const getBaseConfiguration = require('./webpack.config');
 
-module.exports = merge(getBaseConfiguration(), {
+module.exports = merge(getBaseConfiguration({}), {
   optimization: {
     runtimeChunk: true,
   },

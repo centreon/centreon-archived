@@ -1,6 +1,5 @@
 import React from 'react';
 
-import { BrowserRouter as Router } from 'react-router-dom';
 import { renderHook, act } from '@testing-library/react-hooks/dom';
 import { useAtom } from 'jotai';
 
@@ -11,11 +10,9 @@ import SideBar from './index';
 describe('Navigation menu', () => {
   beforeEach(() => {
     cy.fixture('menuData').then((data) => {
-      cy.mount(
-        <Router>
-          <SideBar navigationData={data.result} />
-        </Router>,
-      );
+      cy.mount({
+        component: <SideBar navigationData={data.result} />,
+      });
     });
 
     const { result } = renderHook(() => useAtom(selectedNavigationItemsAtom));
@@ -26,7 +23,7 @@ describe('Navigation menu', () => {
   });
 
   it('matches the current snapshot "initial menu"', () => {
-    cy.get("[alt='mini logo']").should('be.visible');
+    cy.getElementByAlt('mini logo').should('be.visible');
     cy.get('li').each(($li) => {
       cy.wrap($li).get('svg').should('be.visible');
     });

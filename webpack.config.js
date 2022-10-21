@@ -6,9 +6,18 @@ const webpack = require('webpack');
 const { merge } = require('webpack-merge');
 const getBaseConfiguration = require('centreon-frontend/packages/frontend-config/webpack/base');
 
-module.exports = (jscTransformConfiguration) =>
+const excludeNodeModulesExceptCentreonUiAndCypressConfig =
+  /node_modules(\\|\/)(?!(centreon-frontend(\\|\/)packages(\\|\/)(ui-context|centreon-ui|frontend-config\/cypress\/component)))/;
+
+module.exports = ({ jscTransformConfiguration, isE2E = false }) =>
   merge(
-    getBaseConfiguration({ jscTransformConfiguration, moduleName: 'centreon' }),
+    getBaseConfiguration({
+      excludeJSPattern: isE2E
+        ? excludeNodeModulesExceptCentreonUiAndCypressConfig
+        : false,
+      jscTransformConfiguration,
+      moduleName: 'centreon',
+    }),
     {
       entry: ['./www/front_src/src/index.tsx'],
       output: {

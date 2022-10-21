@@ -1,14 +1,1 @@
-import React from 'react';
-
-import './commands';
-import { mount } from 'cypress/react18';
-
-import { ThemeProvider } from '@centreon/ui';
-
-window.React = React;
-
-Cypress.Commands.add('mount', (component, options = {}) => {
-  const wrapped = <ThemeProvider>{component}</ThemeProvider>;
-
-  return mount(wrapped, options);
-});
+import 'centreon-frontend/packages/frontend-config/cypress/component/support/component';
