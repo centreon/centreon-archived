@@ -5,11 +5,14 @@ import { Provider, useAtom } from 'jotai';
 import { BrowserRouter as Router } from 'react-router-dom';
 
 import { platformVersionsAtom } from '../../../../Main/atoms/platformVersionsAtom';
+import { detailsAtom } from '../../../Details/detailsAtoms';
+import Filter from '../../../Filter';
 import { authorizedFilterByModules } from '../../../Filter/Criterias/models';
 import { storedFilterAtom } from '../../../Filter/filterAtoms';
 import { allFilter } from '../../../Filter/models';
 import Resources from '../../../index';
 import { enabledAutorefreshAtom } from '../../../Listing/listingAtoms';
+import useLoadDetails from '../../../Listing/useLoadResources/useLoadDetails';
 import {
   labelCancel,
   labelClose,
@@ -25,8 +28,8 @@ import {
   labelUseDefaultValue,
 } from '../../../translatedLabels';
 import ExportablePerformanceGraphWithTimeline from '../ExportableGraphWithTimeline';
-import Filter from '../../../Filter';
-import { detailsAtom } from '../../../Details/detailsAtoms';
+
+import AnomalyDetectionGraphActions from './AnomalyDetectionGraphActions';
 
 const installedModules = {
   modules: {
@@ -131,6 +134,15 @@ describe('Anomaly detection - Graph', () => {
       'getGraphDataAnomalyDetection',
     );
 
+    const { result } = renderHook(() => useLoadDetails());
+
+    const reload = (value: boolean): void => {
+      if (!value) {
+        return;
+      }
+      result.current.loadDetails();
+    };
+
     cy.fixture('resources/detailsAnomalyDetection.json').then((data) => {
       cy.mount(
         <Provider initialValues={[[detailsAtom, data]]}>
@@ -139,8 +151,13 @@ describe('Anomaly detection - Graph', () => {
               interactWithGraph
               isRenderAdditionalGraphActions
               graphHeight={280}
+              renderAdditionalGraphAction={
+                <AnomalyDetectionGraphActions
+                  details={data}
+                  sendReloadGraphPerformance={reload}
+                />
+              }
               resource={data}
-              onReload={(): boolean => false}
             />
           </Router>
         </Provider>,
@@ -258,6 +275,9 @@ describe('Anomaly detection - Global', () => {
     cy.fixture('resources/detailsAnomalyDetection.json').as(
       'detailsAnomalyDetection',
     );
+    cy.fixture('resources/newDetailsAnomalyDetection.json').as(
+      'newDetailsAnomalyDetection',
+    );
     cy.fixture('resources/performanceGraphAnomalyDetection.json').as(
       'graphAnomalyDetection',
     );
@@ -272,6 +292,9 @@ describe('Anomaly detection - Global', () => {
     cy.route('GET', '**/performance?*', '@graphAnomalyDetection').as(
       'getGraphDataAnomalyDetection',
     );
+    cy.route('PUT', '**/sensitivity', {
+      sensitivity: 3.3,
+    }).as('putSensitivity');
 
     const storedFilter = renderHook(() => useAtom(storedFilterAtom));
 
@@ -310,6 +333,34 @@ describe('Anomaly detection - Global', () => {
     cy.matchImageSnapshot();
     cy.get('[data-testid="closeEditModal"]').click();
     cy.get(`[aria-label="Close"]`).click();
+  });
+
+  it.only('displays the new value of slider when user confirm the changes on Anomaly detection configuration modal ', () => {
+    cy.contains('ad').click();
+    cy.get('[data-testid="3"]').click();
+    cy.wait('@getGraphDataAnomalyDetection');
+    cy.get(`[data-testid="${labelPerformanceGraphAD}"]`).click();
+    cy.get('[data-testid="add"]').click();
+    cy.get('[data-testid="add"]').click();
+    cy.get('[data-testid="add"]').click();
+    cy.get('[data-testid="save"]').click();
+    cy.get('[data-testid=modalConfirmation]').should('be.visible');
+    cy.contains(labelEditAnomalyDetectionConfirmation).should('be.visible');
+    cy.get(`[aria-label="Save"]`).click();
+    cy.route(
+      'GET',
+      '**/resources/anomaly-detection/1',
+      '@newDetailsAnomalyDetection',
+    ).as('getNewDetailsAnomalyDetection');
+    cy.get('@putSensitivity').should('have.property', 'status', 200);
+    cy.get('@getNewDetailsAnomalyDetection').should(
+      'have.property',
+      'status',
+      200,
+    );
+    cy.get('[data-testid="closeEditModal"]').click();
+    cy.get(`[data-testid="${labelPerformanceGraphAD}"]`).click();
+    cy.get('.MuiSlider-valueLabelLabel').contains(3.3).should('be.visible');
   });
 
   it('displays the Anomaly detection criteria value when the type criteria chip is clicked and centreon-anomaly-detection is installed', () => {
