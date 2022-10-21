@@ -191,7 +191,7 @@ describe('Anomaly detection - Graph', () => {
     });
   });
 
-  it('displays the threshold  when add or minus buttons are clicked on slider of modal edit anomaly detection', () => {
+  it('displays the threshold when add or minus buttons are clicked on Anomaly detection configuration modal slider', () => {
     cy.get(`[data-testid="${labelPerformanceGraphAD}"]`).click();
     cy.wait('@getGraphDataAnomalyDetection');
 
