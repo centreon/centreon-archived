@@ -209,8 +209,8 @@ class CentreonStatistics
                         'trusted_client_addresses' => count($customConfiguration['trusted_client_addresses'] ?? []),
                         'blacklist_client_addresses'
                             => count($customConfiguration['blacklist_client_addresses'] ?? []),
-                        'pattern_matching_login' => ($customConfiguration['pattern_matching_login'] ? true : false),
-                        'pattern_replace_login' => ($customConfiguration['pattern_replace_login'] ? true : false),
+                        'pattern_matching_login' => (bool)$customConfiguration['pattern_matching_login'],
+                        'pattern_replace_login' => (bool)$customConfiguration['pattern_replace_login'],
                     ];
                     break;
                 case 'openid':
@@ -236,10 +236,9 @@ class CentreonStatistics
                             'apply_only_first_role' => (bool)$rolesMapping['apply_only_first_role'],
                             'relations' => $aclRelations
                         ],
-                        'introspection_token_endpoint'
-                            => ($customConfiguration['introspection_token_endpoint'] ? true : false),
-                        'userinfo_endpoint' => ($customConfiguration['userinfo_endpoint'] ? true : false),
-                        'endsession_endpoint' => ($customConfiguration['endsession_endpoint'] ? true : false),
+                        'introspection_token_endpoint' => (bool)$customConfiguration['introspection_token_endpoint'],
+                        'userinfo_endpoint' => (bool)$customConfiguration['userinfo_endpoint'],
+                        'endsession_endpoint' => (bool)$customConfiguration['endsession_endpoint'],
                         'connection_scopes' => count($customConfiguration['connection_scopes'] ?? []),
                         'authentication_type' => $customConfiguration['authentication_type'],
                         'verify_peer' => (bool)$customConfiguration['verify_peer'],
