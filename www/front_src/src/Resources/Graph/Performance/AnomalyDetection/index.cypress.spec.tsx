@@ -118,7 +118,7 @@ describe('Anomaly detection - Filter', () => {
   });
 });
 
-describe('Anomaly detection -Graph-', () => {
+describe('Anomaly detection - Graph', () => {
   beforeEach(() => {
     cy.viewport(1200, 750);
 
