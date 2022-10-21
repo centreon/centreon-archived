@@ -69,7 +69,7 @@ const searchWords = filtersToBeDisplayedInSearchBar.reduce(
 
 document.getElementById('cy-root').style = 'min-height:750px;display:flex';
 
-describe('Anomaly detection -Filter- ', () => {
+describe('Anomaly detection - Filter', () => {
   beforeEach(() => {
     cy.viewport(1200, 750);
 
