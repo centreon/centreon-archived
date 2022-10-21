@@ -50,6 +50,7 @@ interface Props {
   additionalData?: CustomFactorsData | null;
   graphHeight: number;
   interactWithGraph: boolean;
+  isRenderAdditionalGraphActions: boolean;
   limitLegendRows?: boolean;
   onReload?: (value: boolean) => void;
   resource?: Resource | ResourceDetails;
@@ -62,6 +63,7 @@ const ExportablePerformanceGraphWithTimeline = ({
   interactWithGraph,
   additionalData,
   onReload,
+  isRenderAdditionalGraphActions,
 }: Props): JSX.Element => {
   const classes = useStyles();
   const [timeline, setTimeline] = useState<Array<TimelineEvent>>();
@@ -206,6 +208,7 @@ const ExportablePerformanceGraphWithTimeline = ({
           graphActions={
             <MemoizedGraphActions
               customTimePeriod={customTimePeriod}
+              isRenderAdditionalGraphActions={isRenderAdditionalGraphActions}
               open={interactWithGraph}
               performanceGraphRef={
                 performanceGraphRef as unknown as MutableRefObject<HTMLDivElement | null>
@@ -219,7 +222,6 @@ const ExportablePerformanceGraphWithTimeline = ({
               }
               resourceName={resource?.name as string}
               resourceParentName={resource?.parent?.name}
-              resourceType={resource?.type}
               timeline={timeline}
             />
           }

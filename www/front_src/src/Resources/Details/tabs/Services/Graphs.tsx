@@ -51,6 +51,7 @@ const ServiceGraphs = ({
               interactWithGraph
               limitLegendRows
               graphHeight={120}
+              isRenderAdditionalGraphActions={false}
               resource={service}
             />
             {isLastService && <div ref={infiniteScrollTriggerRef} />}

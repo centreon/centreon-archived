@@ -65,6 +65,7 @@ const GraphTabContent = ({ details }: TabProps): JSX.Element => {
           <ExportablePerformanceGraphWithTimeline
             interactWithGraph
             graphHeight={280}
+            isRenderAdditionalGraphActions={equalsAnomalyDetection(type)}
             resource={details}
             onReload={reload}
           />

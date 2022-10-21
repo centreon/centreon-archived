@@ -1,8 +1,8 @@
-import { MouseEvent, MutableRefObject, useState, ReactNode } from 'react';
+import { MouseEvent, MutableRefObject, ReactNode, useState } from 'react';
 
 import { useAtomValue } from 'jotai';
 import { useUpdateAtom } from 'jotai/utils';
-import { equals, isNil } from 'ramda';
+import { isNil } from 'ramda';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
@@ -22,7 +22,6 @@ import { detailsAtom } from '../../Details/detailsAtoms';
 import { CustomTimePeriod } from '../../Details/tabs/Graph/models';
 import { TimelineEvent } from '../../Details/tabs/Timeline/models';
 import memoizeComponent from '../../memoizedComponent';
-import { ResourceType } from '../../models';
 import {
   labelAsDisplayed,
   labelCSV,
@@ -42,12 +41,12 @@ import {
 
 interface Props {
   customTimePeriod?: CustomTimePeriod;
+  isRenderAdditionalGraphActions: boolean;
   open: boolean;
   performanceGraphRef: MutableRefObject<HTMLDivElement | null>;
   renderAdditionalGraphActions?: ReactNode;
   resourceName: string;
   resourceParentName?: string;
-  resourceType?: string;
   timeline?: Array<TimelineEvent>;
 }
 
@@ -64,11 +63,11 @@ const GraphActions = ({
   customTimePeriod,
   resourceParentName,
   resourceName,
-  resourceType,
   timeline,
   performanceGraphRef,
   open,
   renderAdditionalGraphActions,
+  isRenderAdditionalGraphActions,
 }: Props): JSX.Element | null => {
   const classes = useStyles();
   const theme = useTheme();
@@ -78,10 +77,7 @@ const GraphActions = ({
 
   const { format } = useLocaleDateTimeFormat();
   const navigate = useNavigate();
-  const isResourceAnomalyDetection = equals(
-    resourceType,
-    ResourceType.anomalydetection,
-  );
+
   const openSizeExportMenu = (event: MouseEvent<HTMLButtonElement>): void => {
     setMenuAnchor(event.currentTarget);
   };
@@ -172,19 +168,21 @@ const GraphActions = ({
           >
             <SaveAsImageIcon fontSize="inherit" />
           </IconButton>
-          {isResourceAnomalyDetection && (
-            <IconButton
-              disableTouchRipple
-              ariaLabel={t(labelPerformanceGraphAD)}
-              data-testid={labelPerformanceGraphAD}
-              size="small"
-              title={t(labelPerformanceGraphAD)}
-              onClick={(): void => setShowModalAnomalyDetection(true)}
-            >
-              <WrenchIcon fontSize="inherit" />
-            </IconButton>
+          {isRenderAdditionalGraphActions && (
+            <>
+              <IconButton
+                disableTouchRipple
+                ariaLabel={t(labelPerformanceGraphAD)}
+                data-testid={labelPerformanceGraphAD}
+                size="small"
+                title={t(labelPerformanceGraphAD)}
+                onClick={(): void => setShowModalAnomalyDetection(true)}
+              >
+                <WrenchIcon fontSize="inherit" />
+              </IconButton>
+              {renderAdditionalGraphActions}
+            </>
           )}
-          {renderAdditionalGraphActions}
           <Menu
             keepMounted
             anchorEl={menuAnchor}
