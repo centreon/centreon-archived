@@ -36,6 +36,9 @@
 
 namespace CentreonClapi;
 
+use Security\Domain\Authentication\Exceptions\ProviderException;
+use Security\Domain\Authentication\Model\LocalProvider;
+
 require_once _CENTREON_PATH_ . "www/class/centreon-clapi/centreonExported.class.php";
 require_once realpath(dirname(__FILE__) . "/../centreonDB.class.php");
 require_once realpath(dirname(__FILE__) . "/../centreonXML.class.php");
