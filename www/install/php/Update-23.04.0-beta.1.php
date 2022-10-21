@@ -34,9 +34,6 @@ try {
         AFTER `event_queue_max_size`"
     );
 } catch (\Exception $e) {
-    if ($pearDB->inTransaction()) {
-        $pearDB->rollBack();
-    }
 
     $centreonLog->insertLog(
         4,
