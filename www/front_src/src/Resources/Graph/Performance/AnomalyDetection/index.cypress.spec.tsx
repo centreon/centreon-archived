@@ -292,7 +292,7 @@ describe('Anomaly detection - Global', () => {
     );
   });
 
-  it('displays the wrench icon on graph actions when one row of resource anomaly-detection is clicked', () => {
+  it('displays the wrench icon on graph actions when one row of a resource of anomaly-detection is clicked', () => {
     cy.contains('ad').click();
     cy.get('[data-testid="3"]').contains(labelGraph).click();
     cy.wait('@getGraphDataAnomalyDetection');
