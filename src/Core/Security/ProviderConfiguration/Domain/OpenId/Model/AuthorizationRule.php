@@ -30,8 +30,9 @@ class AuthorizationRule
     /**
      * @param string $claimValue
      * @param AccessGroup $accessGroup
+     * @param int $priority
      */
-    public function __construct(private string $claimValue, private AccessGroup $accessGroup)
+    public function __construct(private string $claimValue, private AccessGroup $accessGroup, private int $priority)
     {
     }
 
@@ -52,13 +53,10 @@ class AuthorizationRule
     }
 
     /**
-     * @return array<string,string|int>
+     * @return int
      */
-    public function toArray(): array
+    public function getPriority(): int
     {
-        return [
-            'claim_value' => $this->claimValue,
-            'access_group_id' => $this->accessGroup->getId()
-        ];
+        return $this->priority;
     }
 }
