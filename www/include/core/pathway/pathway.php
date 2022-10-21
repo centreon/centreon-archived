@@ -98,9 +98,6 @@ $pdoStatement->bindValue(':topology_page', (int) $p, \PDO::PARAM_INT);
 $breadcrumbData = [];
 $basePath = '/' . trim(explode('main.get.php', $_SERVER['REQUEST_URI'])[0], "/");
 $basePath = htmlspecialchars($basePath, ENT_QUOTES, 'UTF-8');
-/*
- * <a href="<?= $details['is_react'] ? "{$basePath}{$details['url']}" : "main.php?p={$page}{$details["opt"]}" ?>" class="pathWay"><?= _($details["name"]); ?></a>
- */
 
 if ($pdoStatement->execute()) {
     while ($result = $pdoStatement->fetch(\PDO::FETCH_ASSOC)) {
