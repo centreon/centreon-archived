@@ -535,13 +535,13 @@ const GraphContent = ({
     data: Resource | ResourceDetails,
   ): boolean => equals(data.type, ResourceType.anomalydetection);
 
-  const isDisplayedAdditionalLines =
+  const displayAdditionalLines =
     getDisplayAdditionalLines(resource) && !isLegendClicked;
 
   const additionalLinesProps = {
+    displayAdditionalLines,
     getTime,
     graphHeight,
-    isDisplayedAdditionalLines,
     leftScale,
     lines,
     regularLines,

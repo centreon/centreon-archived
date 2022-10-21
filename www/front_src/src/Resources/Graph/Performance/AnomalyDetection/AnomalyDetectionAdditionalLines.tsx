@@ -6,9 +6,9 @@ import AnomalyDetectionEnvelopeThreshold from './AnomalyDetectionEnvelopeThresho
 import { CustomFactorsData } from './models';
 
 interface LinesProps {
+  displayAdditionalLines: boolean;
   getTime: (timeValue: TimeValue) => number;
   graphHeight: number;
-  isDisplayedAdditionalLines: boolean;
   leftScale: ScaleLinear<number, number, never>;
   lines: Array<Line>;
   regularLines: Array<Line>;

@@ -11,8 +11,8 @@ import { CustomFactorsData } from './models';
 
 interface Props {
   data?: CustomFactorsData | null;
+  displayAdditionalLines: boolean;
   graphHeight: number;
-  isDisplayedAdditionalLines: boolean;
   leftScale: ScaleLinear<number, number>;
   regularLines: Array<Line>;
   rightScale: ScaleLinear<number, number>;
@@ -32,9 +32,9 @@ const AnomalyDetectionEnvelopeThreshold = ({
   timeSeries,
   graphHeight,
   data,
-  isDisplayedAdditionalLines,
+  displayAdditionalLines,
 }: Props): JSX.Element | null => {
-  if (!isDisplayedAdditionalLines) {
+  if (!displayAdditionalLines) {
     return null;
   }
 
