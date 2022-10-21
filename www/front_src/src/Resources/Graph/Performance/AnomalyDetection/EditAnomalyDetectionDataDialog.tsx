@@ -50,7 +50,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-interface PropsGraph {
+interface GraphProps {
   factorsData?: CustomFactorsData | null;
 }
 
