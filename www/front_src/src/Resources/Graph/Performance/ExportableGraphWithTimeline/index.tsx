@@ -23,9 +23,8 @@ import { listTimelineEvents } from '../../../Details/tabs/Timeline/api';
 import { listTimelineEventsDecoder } from '../../../Details/tabs/Timeline/api/decoders';
 import { TimelineEvent } from '../../../Details/tabs/Timeline/models';
 import { Resource } from '../../../models';
-import { CustomFactorsData } from '../AnomalyDetection/models';
 import MemoizedGraphActions from '../GraphActions';
-import { GraphOptionId } from '../models';
+import { AdditionalDataProps, GraphOptionId } from '../models';
 import {
   adjustTimePeriodDerivedAtom,
   customTimePeriodAtom,
@@ -53,7 +52,6 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 interface Props {
-  additionalData?: CustomFactorsData | null;
   graphHeight: number;
   interactWithGraph: boolean;
   isRenderAdditionalGraphActions: boolean;
@@ -63,7 +61,7 @@ interface Props {
   resource?: Resource | ResourceDetails;
 }
 
-const ExportablePerformanceGraphWithTimeline = ({
+const ExportablePerformanceGraphWithTimeline = <T,>({
   resource,
   graphHeight,
   limitLegendRows,
@@ -72,7 +70,7 @@ const ExportablePerformanceGraphWithTimeline = ({
   renderAdditionalGraphAction,
   isRenderAdditionalGraphActions,
   renderAdditionalLines,
-}: Props): JSX.Element => {
+}: Props & AdditionalDataProps<T>): JSX.Element => {
   const classes = useStyles();
   const [timeline, setTimeline] = useState<Array<TimelineEvent>>();
   const [performanceGraphRef, setPerformanceGraphRef] =
@@ -197,7 +195,7 @@ const ExportablePerformanceGraphWithTimeline = ({
         className={classes.graph}
         ref={graphContainerRef as MutableRefObject<HTMLDivElement>}
       >
-        <PerformanceGraph
+        <PerformanceGraph<T>
           toggableLegend
           additionalData={additionalData}
           adjustTimePeriod={adjustTimePeriod}

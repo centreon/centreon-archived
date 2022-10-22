@@ -59,3 +59,7 @@ export enum GraphOptionId {
   displayEvents = 'displayEvents',
   displayTooltips = 'displayTooltips',
 }
+
+export interface AdditionalDataProps<T> {
+  additionalData?: T | null;
+}

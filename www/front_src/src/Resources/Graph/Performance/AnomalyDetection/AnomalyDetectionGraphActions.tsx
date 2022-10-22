@@ -6,6 +6,7 @@ import ExportablePerformanceGraphWithTimeline from '../ExportableGraphWithTimeli
 import AdditionalLines from './AnomalyDetectionAdditionalLines';
 import AnomalyDetectionSlider from './AnomalyDetectionSlider';
 import EditAnomalyDetectionDataDialog from './EditAnomalyDetectionDataDialog';
+import { CustomFactorsData } from './models';
 
 interface AdditionalGraphActionsProps {
   details: ResourceDetails | undefined;
@@ -18,7 +19,7 @@ const AnomalyDetectionGraphActions = ({
 }: AdditionalGraphActionsProps): JSX.Element => (
   <EditAnomalyDetectionDataDialog
     renderGraph={({ factorsData }): JSX.Element => (
-      <ExportablePerformanceGraphWithTimeline
+      <ExportablePerformanceGraphWithTimeline<CustomFactorsData>
         additionalData={factorsData}
         graphHeight={180}
         interactWithGraph={false}

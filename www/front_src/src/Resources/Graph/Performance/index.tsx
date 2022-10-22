@@ -49,7 +49,6 @@ import { TimelineEvent } from '../../Details/tabs/Timeline/models';
 import { Resource, ResourceType } from '../../models';
 import { labelNoDataForThisPeriod } from '../../translatedLabels';
 
-import { CustomFactorsData } from './AnomalyDetection/models';
 import Graph from './Graph';
 import {
   isListingGraphOpenAtom,
@@ -59,6 +58,7 @@ import { TimeShiftDirection } from './Graph/TimeShiftZones';
 import Legend from './Legend';
 import LoadingSkeleton from './LoadingSkeleton';
 import {
+  AdditionalDataProps,
   AdjustTimePeriodProps,
   GraphData,
   Line as LineModel,
@@ -67,7 +67,6 @@ import {
 import { getLineData, getMetrics, getTimeSeries } from './timeSeries';
 
 interface Props {
-  additionalData?: CustomFactorsData | null;
   adjustTimePeriod?: (props: AdjustTimePeriodProps) => void;
   customTimePeriod?: CustomTimePeriod;
   displayCompleteGraph?: () => void;
@@ -144,7 +143,7 @@ const useStyles = makeStyles<Theme, MakeStylesProps>((theme) => ({
 
 const shiftRatio = 2;
 
-const PerformanceGraph = ({
+const PerformanceGraph = <T,>({
   additionalData,
   endpoint,
   graphHeight,
@@ -165,7 +164,7 @@ const PerformanceGraph = ({
   graphActions,
   getPerformanceGraphRef,
   renderAdditionalLines,
-}: Props): JSX.Element => {
+}: Props & AdditionalDataProps<T>): JSX.Element => {
   const classes = useStyles({
     canAdjustTimePeriod: not(isNil(adjustTimePeriod)),
     displayTitle,
@@ -433,7 +432,7 @@ const PerformanceGraph = ({
       <div>
         <Responsive.ParentSize>
           {({ width, height }): JSX.Element => (
-            <Graph
+            <Graph<T>
               additionalData={additionalData}
               applyZoom={adjustTimePeriod}
               base={base as number}

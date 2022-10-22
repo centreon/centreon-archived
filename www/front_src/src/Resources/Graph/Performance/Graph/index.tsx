@@ -32,6 +32,8 @@ import {
   max,
   min,
   not,
+  pick,
+  values,
 } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
@@ -59,15 +61,18 @@ import { CommentParameters } from '../../../Actions/api';
 import useAclQuery from '../../../Actions/Resource/aclQuery';
 import { ResourceDetails } from '../../../Details/models';
 import { TimelineEvent } from '../../../Details/tabs/Timeline/models';
-import memoizeComponent from '../../../memoizedComponent';
 import { Resource, ResourceType } from '../../../models';
 import {
   labelActionNotPermitted,
   labelAddComment,
 } from '../../../translatedLabels';
-import { CustomFactorsData } from '../AnomalyDetection/models';
 import Lines from '../Lines';
-import { AdjustTimePeriodProps, Line as LineModel, TimeValue } from '../models';
+import {
+  AdditionalDataProps,
+  AdjustTimePeriodProps,
+  Line as LineModel,
+  TimeValue,
+} from '../models';
 import {
   getDates,
   getMax,
@@ -213,7 +218,6 @@ interface GraphContentProps {
   addCommentTooltipLeft?: number;
   addCommentTooltipOpen: boolean;
   addCommentTooltipTop?: number;
-  additionalData?: CustomFactorsData | null;
   applyZoom?: (props: AdjustTimePeriodProps) => void;
   base: number;
   canAdjustTimePeriod: boolean;
@@ -239,12 +243,12 @@ interface GraphContentProps {
 }
 
 const getScale = ({
-  values,
+  graphValues,
   height,
   stackedValues,
 }): ScaleLinear<number, number> => {
-  const minValue = min(getMin(values), getMin(stackedValues));
-  const maxValue = max(getMax(values), getMax(stackedValues));
+  const minValue = min(getMin(graphValues), getMin(stackedValues));
+  const maxValue = max(getMax(graphValues), getMax(stackedValues));
 
   const upperRangeValue = minValue === maxValue && maxValue === 0 ? height : 0;
 
@@ -257,7 +261,7 @@ const getScale = ({
 
 export const bisectDate = bisector(identity).center;
 
-const GraphContent = ({
+const GraphContent = <T,>({
   width,
   height,
   timeSeries,
@@ -284,7 +288,7 @@ const GraphContent = ({
   displayTimeValues,
   additionalData,
   renderAdditionalLines,
-}: GraphContentProps): JSX.Element => {
+}: GraphContentProps & AdditionalDataProps<T>): JSX.Element => {
   const classes = useStyles({ onAddComment });
   const { t } = useTranslation();
   const theme = useTheme();
@@ -351,7 +355,7 @@ const GraphContent = ({
   const [firstUnit, secondUnit, thirdUnit] = getUnits(lines);
 
   const leftScale = useMemo(() => {
-    const values = isNil(thirdUnit)
+    const graphValues = isNil(thirdUnit)
       ? getMetricValuesForUnit({ lines, timeSeries, unit: firstUnit })
       : getMetricValuesForLines({ lines, timeSeries });
 
@@ -367,11 +371,11 @@ const GraphContent = ({
         })
       : [0];
 
-    return getScale({ height: graphHeight, stackedValues, values });
+    return getScale({ graphValues, height: graphHeight, stackedValues });
   }, [timeSeries, lines, firstUnit, graphHeight]);
 
   const rightScale = useMemo(() => {
-    const values = getMetricValuesForUnit({
+    const graphValues = getMetricValuesForUnit({
       lines,
       timeSeries,
       unit: secondUnit,
@@ -388,7 +392,7 @@ const GraphContent = ({
         })
       : [0];
 
-    return getScale({ height: graphHeight, stackedValues, values });
+    return getScale({ graphValues, height: graphHeight, stackedValues });
   }, [timeSeries, lines, secondUnit, graphHeight]);
 
   const getTimeValue = (x: number): TimeValue => {
@@ -736,7 +740,7 @@ const GraphContent = ({
   );
 };
 
-const memoProps = [
+const propertiesToMemoize = [
   'addCommentTooltipLeft',
   'addCommentTooltipTop',
   'addCommentTooltipOpen',
@@ -757,12 +761,7 @@ const memoProps = [
   'additionalData',
 ];
 
-const MemoizedGraphContent = memoizeComponent<GraphContentProps>({
-  Component: GraphContent,
-  memoProps,
-});
-
-const Graph = (
+const Graph = <T,>(
   props: Omit<
     GraphContentProps,
     | 'addCommentTooltipLeft'
@@ -773,7 +772,8 @@ const Graph = (
     | 'format'
     | 'changeMetricsValue'
     | 'isInViewport'
-  >,
+  > &
+    AdditionalDataProps<T>,
 ): JSX.Element => {
   const { format } = useLocaleDateTimeFormat();
   const {
@@ -784,17 +784,22 @@ const Graph = (
     hideTooltip: hideAddCommentTooltip,
   } = VisxTooltip.useTooltip();
 
-  return (
-    <MemoizedGraphContent
-      {...props}
-      addCommentTooltipLeft={addCommentTooltipLeft}
-      addCommentTooltipOpen={addCommentTooltipOpen}
-      addCommentTooltipTop={addCommentTooltipTop}
-      format={format}
-      hideAddCommentTooltip={hideAddCommentTooltip}
-      showAddCommentTooltip={showAddCommentTooltip}
-    />
-  );
+  const memoProps = pick(propertiesToMemoize, props);
+
+  return useMemoComponent({
+    Component: (
+      <GraphContent
+        {...props}
+        addCommentTooltipLeft={addCommentTooltipLeft}
+        addCommentTooltipOpen={addCommentTooltipOpen}
+        addCommentTooltipTop={addCommentTooltipTop}
+        format={format}
+        hideAddCommentTooltip={hideAddCommentTooltip}
+        showAddCommentTooltip={showAddCommentTooltip}
+      />
+    ),
+    memoProps: [...values(memoProps)],
+  });
 };
 
 export default Graph;
