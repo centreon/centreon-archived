@@ -46,7 +46,7 @@ import {
   CustomTimePeriodProperty,
 } from '../../Details/tabs/Graph/models';
 import { TimelineEvent } from '../../Details/tabs/Timeline/models';
-import { Resource, ResourceType } from '../../models';
+import { Resource } from '../../models';
 import { labelNoDataForThisPeriod } from '../../translatedLabels';
 
 import Graph from './Graph';
@@ -60,6 +60,7 @@ import LoadingSkeleton from './LoadingSkeleton';
 import {
   AdditionalDataProps,
   AdjustTimePeriodProps,
+  GetDisplayAdditionalLinesConditionProps,
   GraphData,
   Line as LineModel,
   TimeValue,
@@ -73,6 +74,7 @@ interface Props {
   displayEventAnnotations?: boolean;
   displayTitle?: boolean;
   endpoint?: string;
+  getDisplayAdditionalLinesCondition?: GetDisplayAdditionalLinesConditionProps;
   getPerformanceGraphRef?: (
     value: MutableRefObject<HTMLDivElement | null>,
   ) => void;
@@ -82,7 +84,6 @@ interface Props {
   isInViewport?: boolean;
   limitLegendRows?: boolean;
   onAddComment?: (commentParameters: CommentParameters) => void;
-  renderAdditionalLines?: (args) => ReactNode;
   resource: Resource | ResourceDetails;
   resourceDetailsUpdated?: boolean;
   timeline?: Array<TimelineEvent>;
@@ -163,7 +164,7 @@ const PerformanceGraph = <T,>({
   interactWithGraph,
   graphActions,
   getPerformanceGraphRef,
-  renderAdditionalLines,
+  getDisplayAdditionalLinesCondition,
 }: Props & AdditionalDataProps<T>): JSX.Element => {
   const classes = useStyles({
     canAdjustTimePeriod: not(isNil(adjustTimePeriod)),
@@ -293,7 +294,7 @@ const PerformanceGraph = <T,>({
     metric.includes('thresholds'),
   );
 
-  const newSortedLines = equals(resource.type, ResourceType.anomalydetection)
+  const newSortedLines = getDisplayAdditionalLinesCondition?.condition(resource)
     ? [...linesThreshold, ...lineOriginMetric]
     : sortedLines;
 
@@ -440,13 +441,15 @@ const PerformanceGraph = <T,>({
               containsMetrics={containsMetrics}
               displayEventAnnotations={displayEventAnnotations}
               displayTimeValues={displayTimeValues}
+              getDisplayAdditionalLinesCondition={
+                getDisplayAdditionalLinesCondition
+              }
               height={height}
               interactWithGraph={interactWithGraph}
               lines={displayedLines}
               loading={
                 not(resourceDetailsUpdated) && sendingGetGraphDataRequest
               }
-              renderAdditionalLines={renderAdditionalLines}
               resource={resource}
               shiftTime={shiftTime}
               timeSeries={timeSeries}

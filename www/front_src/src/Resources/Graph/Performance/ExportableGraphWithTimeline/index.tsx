@@ -24,7 +24,11 @@ import { listTimelineEventsDecoder } from '../../../Details/tabs/Timeline/api/de
 import { TimelineEvent } from '../../../Details/tabs/Timeline/models';
 import { Resource } from '../../../models';
 import MemoizedGraphActions from '../GraphActions';
-import { AdditionalDataProps, GraphOptionId } from '../models';
+import {
+  AdditionalDataProps,
+  GetDisplayAdditionalLinesConditionProps,
+  GraphOptionId,
+} from '../models';
 import {
   adjustTimePeriodDerivedAtom,
   customTimePeriodAtom,
@@ -52,12 +56,12 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 interface Props {
+  getDisplayAdditionalLinesCondition?: GetDisplayAdditionalLinesConditionProps;
   graphHeight: number;
   interactWithGraph: boolean;
   isRenderAdditionalGraphActions: boolean;
   limitLegendRows?: boolean;
   renderAdditionalGraphAction?: ReactNode;
-  renderAdditionalLines?: (args) => ReactNode;
   resource?: Resource | ResourceDetails;
 }
 
@@ -69,7 +73,7 @@ const ExportablePerformanceGraphWithTimeline = <T,>({
   additionalData,
   renderAdditionalGraphAction,
   isRenderAdditionalGraphActions,
-  renderAdditionalLines,
+  getDisplayAdditionalLinesCondition,
 }: Props & AdditionalDataProps<T>): JSX.Element => {
   const classes = useStyles();
   const [timeline, setTimeline] = useState<Array<TimelineEvent>>();
@@ -202,6 +206,9 @@ const ExportablePerformanceGraphWithTimeline = <T,>({
           customTimePeriod={customTimePeriod}
           displayEventAnnotations={displayEventAnnotations}
           endpoint={graphEndpoint}
+          getDisplayAdditionalLinesCondition={
+            getDisplayAdditionalLinesCondition
+          }
           getPerformanceGraphRef={getPerformanceGraphRef}
           graphActions={
             <MemoizedGraphActions
@@ -221,7 +228,6 @@ const ExportablePerformanceGraphWithTimeline = <T,>({
           interactWithGraph={interactWithGraph}
           isInViewport={isInViewport}
           limitLegendRows={limitLegendRows}
-          renderAdditionalLines={renderAdditionalLines}
           resource={resource as Resource}
           resourceDetailsUpdated={resourceDetailsUpdated}
           timeline={timeline}

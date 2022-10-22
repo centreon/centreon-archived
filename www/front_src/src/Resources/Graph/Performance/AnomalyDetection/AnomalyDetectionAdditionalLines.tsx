@@ -1,6 +1,13 @@
 import { ScaleLinear, ScaleTime } from 'd3-scale';
+import { equals } from 'ramda';
 
-import { Line, TimeValue } from '../models';
+import { ResourceDetails } from '../../../Details/models';
+import { Resource, ResourceType } from '../../../models';
+import {
+  GetDisplayAdditionalLinesConditionProps,
+  Line,
+  TimeValue,
+} from '../models';
 
 import AnomalyDetectionEnvelopeThreshold from './AnomalyDetectionEnvelopeThreshold';
 import { CustomFactorsData } from './models';
@@ -33,4 +40,29 @@ const AdditionalLines = ({
   </>
 );
 
-export default AdditionalLines;
+export const getDisplayAdditionalLinesCondition = {
+  condition: (resource: Resource | ResourceDetails): boolean =>
+    equals(resource.type, ResourceType.anomalyDetection),
+  displayAdditionalLines: ({
+    additionalData,
+    additionalLinesProps,
+  }): JSX.Element => (
+    <AdditionalLines
+      additionalLinesProps={additionalLinesProps}
+      data={additionalData}
+    />
+  ),
+};
+
+export const getDisplayAdditionalLinesConditionForGraphActions = (
+  factorsData?: CustomFactorsData | null,
+): GetDisplayAdditionalLinesConditionProps => ({
+  condition: (resource: Resource | ResourceDetails): boolean =>
+    equals(resource.type, ResourceType.anomalyDetection),
+  displayAdditionalLines: ({ additionalLinesProps }): JSX.Element => (
+    <AdditionalLines
+      additionalLinesProps={additionalLinesProps}
+      data={factorsData}
+    />
+  ),
+});

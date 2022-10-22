@@ -10,7 +10,7 @@ import ExportablePerformanceGraphWithTimeline from '../../../Graph/Performance/E
 import memoizeComponent from '../../../memoizedComponent';
 import useLoadDetails from '../../../Listing/useLoadResources/useLoadDetails';
 import AnomalyDetectionGraphActions from '../../../Graph/Performance/AnomalyDetection/AnomalyDetectionGraphActions';
-import AdditionalLines from '../../../Graph/Performance/AnomalyDetection/AnomalyDetectionAdditionalLines';
+import { getDisplayAdditionalLinesCondition } from '../../../Graph/Performance/AnomalyDetection/AnomalyDetectionAdditionalLines';
 
 import HostGraph from './HostGraph';
 
@@ -43,7 +43,7 @@ const GraphTabContent = ({ details }: TabProps): JSX.Element => {
   const type = details?.type as ResourceType;
   const equalsService = equals(ResourceType.service);
   const equalsMetaService = equals(ResourceType.metaservice);
-  const equalsAnomalyDetection = equals(ResourceType.anomalydetection);
+  const equalsAnomalyDetection = equals(ResourceType.anomalyDetection);
 
   const { loadDetails } = useLoadDetails();
 
@@ -66,6 +66,9 @@ const GraphTabContent = ({ details }: TabProps): JSX.Element => {
           <TimePeriodButtonGroup />
           <ExportablePerformanceGraphWithTimeline
             interactWithGraph
+            getDisplayAdditionalLinesCondition={
+              getDisplayAdditionalLinesCondition
+            }
             graphHeight={280}
             isRenderAdditionalGraphActions={equalsAnomalyDetection(type)}
             renderAdditionalGraphAction={
@@ -74,15 +77,6 @@ const GraphTabContent = ({ details }: TabProps): JSX.Element => {
                 sendReloadGraphPerformance={reload}
               />
             }
-            renderAdditionalLines={({
-              additionalData,
-              additionalLinesProps,
-            }): JSX.Element => (
-              <AdditionalLines
-                additionalLinesProps={additionalLinesProps}
-                data={additionalData}
-              />
-            )}
             resource={details}
           />
         </>

@@ -1,7 +1,7 @@
 import { ListingModel } from '@centreon/ui';
 
 export enum ResourceType {
-  anomalydetection = 'anomaly-detection',
+  anomalyDetection = 'anomaly-detection',
   host = 'host',
   metaservice = 'metaservice',
   service = 'service',

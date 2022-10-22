@@ -26,7 +26,7 @@ const submitResourceStatus =
       {
         resources: [
           {
-            id: equals(resource.type, ResourceType.anomalydetection)
+            id: equals(resource.type, ResourceType.anomalyDetection)
               ? resource.service_id
               : resource.id,
             output,

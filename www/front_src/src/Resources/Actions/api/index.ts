@@ -25,7 +25,7 @@ const acknowledgeResources =
     params,
   }: ResourcesWithAcknowledgeParams): Promise<Array<AxiosResponse>> => {
     const payload = resources.map(({ type, id, parent, service_id }) => ({
-      id: equals(type, ResourceType.anomalydetection) ? service_id : id,
+      id: equals(type, ResourceType.anomalyDetection) ? service_id : id,
       parent: parent ? { id: parent?.id } : null,
       type: ResourceCategory[type],
     }));
@@ -58,7 +58,7 @@ const setDowntimeOnResources =
     params,
   }: ResourcesWithDowntimeParams): Promise<AxiosResponse> => {
     const payload = resources.map(({ type, id, parent, service_id }) => ({
-      id: equals(type, ResourceType.anomalydetection) ? service_id : id,
+      id: equals(type, ResourceType.anomalyDetection) ? service_id : id,
       parent: parent ? { id: parent?.id } : null,
       type: ResourceCategory[type],
     }));
@@ -90,7 +90,7 @@ const checkResources = ({
   cancelToken,
 }: ResourcesWithRequestParams): Promise<AxiosResponse> => {
   const payload = resources.map(({ type, id, parent, service_id }) => ({
-    id: equals(type, ResourceType.anomalydetection) ? service_id : id,
+    id: equals(type, ResourceType.anomalyDetection) ? service_id : id,
     parent: parent ? { id: parent?.id } : null,
     type: ResourceCategory[type],
   }));
@@ -126,7 +126,7 @@ const commentResources =
         resources: resources.map((resource) => ({
           comment: parameters.comment,
           date: parameters.date,
-          id: equals(resource.type, ResourceType.anomalydetection)
+          id: equals(resource.type, ResourceType.anomalyDetection)
             ? resource?.service_id
             : resource.id,
           parent: resource?.parent ? { id: resource?.parent?.id } : null,

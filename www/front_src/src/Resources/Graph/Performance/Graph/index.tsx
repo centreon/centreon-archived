@@ -1,12 +1,4 @@
-import {
-  memo,
-  MouseEvent,
-  ReactNode,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import { memo, MouseEvent, useEffect, useMemo, useRef, useState } from 'react';
 
 import { AddSVGProps } from '@visx/shape/lib/types';
 import {
@@ -61,7 +53,7 @@ import { CommentParameters } from '../../../Actions/api';
 import useAclQuery from '../../../Actions/Resource/aclQuery';
 import { ResourceDetails } from '../../../Details/models';
 import { TimelineEvent } from '../../../Details/tabs/Timeline/models';
-import { Resource, ResourceType } from '../../../models';
+import { Resource } from '../../../models';
 import {
   labelActionNotPermitted,
   labelAddComment,
@@ -70,6 +62,7 @@ import Lines from '../Lines';
 import {
   AdditionalDataProps,
   AdjustTimePeriodProps,
+  GetDisplayAdditionalLinesConditionProps,
   Line as LineModel,
   TimeValue,
 } from '../models';
@@ -225,6 +218,7 @@ interface GraphContentProps {
   displayEventAnnotations: boolean;
   displayTimeValues: boolean;
   format: (parameters) => string;
+  getDisplayAdditionalLinesCondition?: GetDisplayAdditionalLinesConditionProps;
   height: number;
   hideAddCommentTooltip: () => void;
   interactWithGraph: boolean;
@@ -232,7 +226,6 @@ interface GraphContentProps {
   lines: Array<LineModel>;
   loading: boolean;
   onAddComment?: (commentParameters: CommentParameters) => void;
-  renderAdditionalLines?: (args) => ReactNode;
   resource: Resource | ResourceDetails;
   shiftTime?: (direction: TimeShiftDirection) => void;
   showAddCommentTooltip: (args) => void;
@@ -287,7 +280,7 @@ const GraphContent = <T,>({
   interactWithGraph,
   displayTimeValues,
   additionalData,
-  renderAdditionalLines,
+  getDisplayAdditionalLinesCondition,
 }: GraphContentProps & AdditionalDataProps<T>): JSX.Element => {
   const classes = useStyles({ onAddComment });
   const { t } = useTranslation();
@@ -544,12 +537,11 @@ const GraphContent = <T,>({
 
   const isLegendClicked = lte(length(lines), 1);
 
-  const getDisplayAdditionalLines = (
-    data: Resource | ResourceDetails,
-  ): boolean => equals(data.type, ResourceType.anomalydetection);
+  const displayAdditionalLinesCondition =
+    getDisplayAdditionalLinesCondition?.condition(resource) || false;
 
   const displayAdditionalLines =
-    getDisplayAdditionalLines(resource) && !isLegendClicked;
+    displayAdditionalLinesCondition || !isLegendClicked;
 
   const additionalLinesProps = {
     displayAdditionalLines,
@@ -605,10 +597,12 @@ const GraphContent = <T,>({
               graphHeight={graphHeight}
               leftScale={leftScale}
               lines={lines}
-              renderAdditionalLines={renderAdditionalLines?.({
-                additionalData,
-                additionalLinesProps,
-              })}
+              renderAdditionalLines={getDisplayAdditionalLinesCondition?.displayAdditionalLines(
+                {
+                  additionalData,
+                  additionalLinesProps,
+                },
+              )}
               rightScale={rightScale}
               timeSeries={timeSeries}
               timeTick={timeTick}

@@ -3,7 +3,7 @@ import { ReactNode } from 'react';
 import { ResourceDetails } from '../../../Details/models';
 import ExportablePerformanceGraphWithTimeline from '../ExportableGraphWithTimeline/index';
 
-import AdditionalLines from './AnomalyDetectionAdditionalLines';
+import { getDisplayAdditionalLinesConditionForGraphActions } from './AnomalyDetectionAdditionalLines';
 import AnomalyDetectionSlider from './AnomalyDetectionSlider';
 import EditAnomalyDetectionDataDialog from './EditAnomalyDetectionDataDialog';
 import { CustomFactorsData } from './models';
@@ -21,15 +21,12 @@ const AnomalyDetectionGraphActions = ({
     renderGraph={({ factorsData }): JSX.Element => (
       <ExportablePerformanceGraphWithTimeline<CustomFactorsData>
         additionalData={factorsData}
+        getDisplayAdditionalLinesCondition={getDisplayAdditionalLinesConditionForGraphActions(
+          factorsData,
+        )}
         graphHeight={180}
         interactWithGraph={false}
         isRenderAdditionalGraphActions={false}
-        renderAdditionalLines={({ additionalLinesProps }): JSX.Element => (
-          <AdditionalLines
-            additionalLinesProps={additionalLinesProps}
-            data={factorsData}
-          />
-        )}
         resource={details}
       />
     )}
