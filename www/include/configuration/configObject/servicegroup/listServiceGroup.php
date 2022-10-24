@@ -55,19 +55,38 @@ if (isset($_POST['searchSG']) || isset($_GET['searchSG'])) {
     $search = $centreon->historySearch[$url]["search"] ?? null;
 }
 
-if ($search) {
-    $rq = "SELECT SQL_CALC_FOUND_ROWS sg_id, sg_name, sg_alias, sg_activate FROM servicegroup " .
-        "WHERE (sg_name LIKE '%" . $search . "%' " .
-        "OR sg_alias LIKE '%" . $search . "%') " .
-        $acl->queryBuilder('AND', 'sg_id', $sgString) .
-        " ORDER BY sg_name LIMIT " . $num * $limit . ", " . $limit;
-} else {
-    $rq = "SELECT SQL_CALC_FOUND_ROWS sg_id, sg_name, sg_alias, sg_activate FROM servicegroup " .
-        $acl->queryBuilder('WHERE', 'sg_id', $sgString) .
-        " ORDER BY sg_name LIMIT " . $num * $limit . ", " . $limit;
+$conditionStr = "";
+$sgStrParams = [];
+if (!$acl->admin && $sgString) {
+    $sgStrList = explode(',', $sgString);
+    foreach ($sgStrList as $index => $sgId) {
+        $sgStrParams[':sg_' . $index] = (int) str_replace("'", "", $sgId);
+    }
+    $queryParams = implode(',', array_keys($sgStrParams));
+
+    if ($search !== '') {
+        $conditionStr = "AND sg_id IN (" . $queryParams . ")";
+    } else {
+        $conditionStr = "WHERE sg_id IN (" . $queryParams . ")";
+    }
 }
 
-$dbResult = $pearDB->query($rq);
+if ($search !== '') {
+    $statement = $pearDB->prepare("SELECT SQL_CALC_FOUND_ROWS sg_id, sg_name, sg_alias, sg_activate" .
+        " FROM servicegroup WHERE (sg_name LIKE :search  OR sg_alias LIKE :search) " . $conditionStr .
+        " ORDER BY sg_name LIMIT :offset, :limit");
+
+    $statement->bindValue(':search', '%' . $search . '%', \PDO::PARAM_STR);
+} else {
+    $statement = $pearDB->prepare("SELECT SQL_CALC_FOUND_ROWS sg_id, sg_name, sg_alias, sg_activate" .
+        " FROM servicegroup " . $conditionStr . " ORDER BY sg_name LIMIT :offset, :limit");
+}
+foreach ($sgStrParams as $key => $sgId) {
+    $statement->bindValue($key, $sgId, \PDO::PARAM_INT);
+}
+$statement->bindValue(':offset', (int) $num * (int) $limit, \PDO::PARAM_INT);
+$statement->bindValue(':limit', $limit, \PDO::PARAM_INT);
+$statement->execute();
 $rows = $pearDB->query("SELECT FOUND_ROWS()")->fetchColumn();
 
 include "./include/common/checkPagination.php";
@@ -101,7 +120,7 @@ $form->addElement('submit', 'Search', _("Search"), $attrBtnSuccess);
 $elemArr = array();
 $centreonToken = createCSRFToken();
 
-for ($i = 0; $sg = $dbResult->fetch(); $i++) {
+for ($i = 0; $sg = $statement->fetch(\PDO::FETCH_ASSOC); $i++) {
     $selectedElements = $form->addElement('checkbox', "select[" . $sg['sg_id'] . "]");
     $moptions = "";
     if ($sg["sg_activate"]) {
