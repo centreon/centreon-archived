@@ -64,14 +64,14 @@ if (!$acl->admin && $sgString) {
     }
     $queryParams = implode(',', array_keys($sgStrParams));
 
-    if ($search) {
+    if ($search !== '') {
         $conditionStr = "AND sg_id IN (" . $queryParams . ")";
     } else {
         $conditionStr = "WHERE sg_id IN (" . $queryParams . ")";
     }
 }
 
-if ($search != "") {
+if ($search !== '') {
     $statement = $pearDB->prepare("SELECT SQL_CALC_FOUND_ROWS sg_id, sg_name, sg_alias, sg_activate" .
         " FROM servicegroup WHERE (sg_name LIKE :search  OR sg_alias LIKE :search) " . $conditionStr .
         " ORDER BY sg_name LIMIT :offset, :limit");
