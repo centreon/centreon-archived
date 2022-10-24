@@ -49,7 +49,7 @@
         <tr class="ToolbarTR">
             <td>
                 {if !$isRemote}
-                    {if $mode_access == 'w' && $can_create_edit == 1}
+                    {if $can_create_edit == 1}
                         <a href="{$wizardAddBtn.link}" class="{$wizardAddBtn.class}" isreact="true" target="_top">
                             {$wizardAddBtn.icon} {$wizardAddBtn.text}
                         </a>
@@ -63,17 +63,15 @@
                              {$exportBtn.icon} {$exportBtn.text}
                          </button>
                     {/if}
-                    {if $mode_access == 'w'}
-                        {if $can_create_edit == 1}
-                            <button type="submit" class="{$duplicateBtn.class}" name="{$duplicateBtn.name}" onClick="{$duplicateBtn.onClickAction}">
-                                {$duplicateBtn.icon} {$duplicateBtn.text}
-                            </button>
-                        {/if}
-                        {if $can_delete == 1}
-                            <button type="submit" class="{$deleteBtn.class}" name="{$deleteBtn.name}" onClick="{$deleteBtn.onClickAction}">
-                                {$deleteBtn.icon} {$deleteBtn.text}
-                            </button>
-                        {/if}
+                    {if $can_create_edit == 1}
+                        <button type="submit" class="{$duplicateBtn.class}" name="{$duplicateBtn.name}" onClick="{$duplicateBtn.onClickAction}">
+                            {$duplicateBtn.icon} {$duplicateBtn.text}
+                        </button>
+                    {/if}
+                    {if $can_delete == 1}
+                        <button type="submit" class="{$deleteBtn.class}" name="{$deleteBtn.name}" onClick="{$deleteBtn.onClickAction}">
+                            {$deleteBtn.icon} {$deleteBtn.text}
+                        </button>
                     {/if}
                 {/if}
             </td>
@@ -110,8 +108,10 @@
         {section name=elem loop=$elemArr}
         <tr class={$elemArr[elem].MenuClass}>
             <td class="ListColPicker">{if !$isRemote}{$elemArr[elem].RowMenu_select} {/if}</td>
-            <td class="ListColLeft">{if $mode_access == 'w'}<a href="{$elemArr[elem].RowMenu_link}">{/if}{$elemArr[elem].RowMenu_name}{if $mode_access == 'w'}</a>{/if}</td>
-            <td class="ListColCenter">{if $mode_access == 'w'}<a href="{$elemArr[elem].RowMenu_link}">{/if}{$elemArr[elem].RowMenu_ip_address}{if $mode_access == 'w'}</a>{/if}</td>
+            <td class="ListColLeft">
+                {if $can_create_edit == 1}<a href="{$elemArr[elem].RowMenu_link}">{/if}
+                    {$elemArr[elem].RowMenu_name}{if $can_create_edit == 1}</a>{/if}</td>
+            <td class="ListColCenter">{if $can_create_edit == 1}<a href="{$elemArr[elem].RowMenu_link}">{/if}{$elemArr[elem].RowMenu_ip_address}{if $can_create_edit == 1}</a>{/if}</td>
             <td class="ListColCenter">{$elemArr[elem].RowMenu_type}</td>
             <td class="ListColCenter">
               <span class="badge {if $elemArr[elem].RowMenu_is_runningFlag}service_ok{else}service_critical{/if}">
@@ -131,7 +131,7 @@
             <td class="ListColCenter">{$elemArr[elem].RowMenu_is_default}</td>
             <td class="ListColCenter"><span class="badge {$elemArr[elem].RowMenu_badge}">{$elemArr[elem].RowMenu_status}</span></td>
             <td class="ListColCenter">
-                {if $mode_access == 'w' && $elemArr[elem].RowMenu_cfg_id != "" && !$isRemote}
+                {if $can_create_edit == 1 && $elemArr[elem].RowMenu_cfg_id != "" && !$isRemote}
                 <!-- Link for edit poller monitoring engine configuration -->
                 <a href="./main.php?p=60903&o=c&nagios_id={$elemArr[elem].RowMenu_cfg_id}">
                     <img src="./img/icons/edit_conf.png" class="ico-16" title="Edit monitoring engine configuration">
@@ -146,7 +146,7 @@
                 </span>
                 {/if}
             </td>
-            <td class="ListColRight">{if $mode_access == 'w' && !$isRemote }{$elemArr[elem].RowMenu_options}{else}&nbsp;{/if}</td>
+            <td class="ListColRight">{if $can_create_edit == 1 && !$isRemote }{$elemArr[elem].RowMenu_options}{else}&nbsp;{/if}</td>
         </tr>
         {/section}
     </table>

@@ -38,6 +38,11 @@ if (!isset($centreon)) {
     exit();
 }
 
+if (! $centreon->user->access->checkAction('create_edit_poller_cfg')) {
+    echo "<div class='msg' align='center'>" . _("You are not allowed to reach this page") . "</div>";
+    exit();
+}
+
 require_once _CENTREON_PATH_ . "/www/class/centreon-config/centreonMainCfg.class.php";
 
 $objMain = new CentreonMainCfg();
