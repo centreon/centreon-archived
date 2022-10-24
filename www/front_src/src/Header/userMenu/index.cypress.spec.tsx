@@ -1,5 +1,7 @@
 import * as React from 'react';
 
+import { userAtom } from '@centreon/ui-context';
+
 import { centreonUi } from '../helpers';
 
 import UserMenu from '.';
@@ -29,11 +31,15 @@ describe('User Menu', () => {
           <UserMenu />
         </div>
       ),
+      jotaiInitialValues: [
+        [userAtom, { locale: 'fr_FR.UTF-8', themeMode: 'light' }],
+      ],
     });
   });
 
   it('matches the current snapshot "user menu"', () => {
     cy.viewport(1200, 1000);
+    cy.wait('@getUser');
     cy.get('[data-cy=userIcon]').as('userIcon').should('be.visible');
     cy.get('[data-cy=clock]').as('clock').should('be.visible');
     cy.get('@clock').contains('April 28,2022');
