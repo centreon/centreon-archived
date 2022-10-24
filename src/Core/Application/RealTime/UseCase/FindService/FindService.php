@@ -287,9 +287,8 @@ class FindService
          * If so, then hide potential passwords.
          */
         if (
-            $this->contact->isAdmin()
-            || $this->contact->hasRole(Contact::ROLE_DISPLAY_COMMAND)
-            || $service->getCommandLine() !== null
+            ($this->contact->isAdmin() || $this->contact->hasRole(Contact::ROLE_DISPLAY_COMMAND))
+            && $service->getCommandLine() !== null
         ) {
             try {
                 $legacyService = (new LegacyService())
