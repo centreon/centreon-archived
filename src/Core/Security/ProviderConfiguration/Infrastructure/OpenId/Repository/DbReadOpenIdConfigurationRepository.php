@@ -125,7 +125,7 @@ class DbReadOpenIdConfigurationRepository extends AbstractRepositoryDRB implemen
         $authorizationRules = [];
         while ($statement !== false && is_array($result = $statement->fetch(\PDO::FETCH_ASSOC))) {
             $accessGroup = DbAccessGroupFactory::createFromRecord($result);
-            $authorizationRules[] = new AuthorizationRule($result['claim_value'], $accessGroup);
+            $authorizationRules[] = new AuthorizationRule($result['claim_value'], $accessGroup, $result['priority']);
         }
         return $authorizationRules;
     }

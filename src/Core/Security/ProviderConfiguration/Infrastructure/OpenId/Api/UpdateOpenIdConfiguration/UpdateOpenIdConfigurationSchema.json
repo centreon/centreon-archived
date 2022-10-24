@@ -23,7 +23,8 @@
     "email_bind_attribute",
     "fullname_bind_attribute",
     "authentication_conditions",
-    "groups_mapping"
+    "groups_mapping",
+    "roles_mapping"
   ],
   "properties": {
     "is_active": {
@@ -250,6 +251,9 @@
                 "type": "string"
               },
               "access_group_id": {
+                "type": "integer"
+              },
+              "priority": {
                 "type": "integer"
               }
             }

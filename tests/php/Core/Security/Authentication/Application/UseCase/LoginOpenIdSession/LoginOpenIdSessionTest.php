@@ -302,8 +302,8 @@ it('should update access groups for the authenticated user', function () {
     $accessGroup1 = new AccessGroup(1, "access_group_1", "access_group_1");
     $accessGroup2 = new AccessGroup(2, "access_group_2", "access_group_2");
     $authorizationRules = [
-        new AuthorizationRule("group1", $accessGroup1),
-        new AuthorizationRule("group2", $accessGroup2)
+        new AuthorizationRule("group1", $accessGroup1, 1),
+        new AuthorizationRule("group2", $accessGroup2, 2)
     ];
     $this->validOpenIdConfiguration->getCustomConfiguration()->setAuthorizationRules($authorizationRules);
 

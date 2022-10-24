@@ -4875,6 +4875,10 @@ components:
                     type: string
                     description: "Authorization claim value"
                     example: "scope"
+                  priority:
+                    type: number
+                    description: "priority of the role"
+                    example: 1
     ReadAuthenticationOpenIdProvider:
       allOf:
         - $ref: '#/components/schemas/AuthenticationOpenIdProvider'

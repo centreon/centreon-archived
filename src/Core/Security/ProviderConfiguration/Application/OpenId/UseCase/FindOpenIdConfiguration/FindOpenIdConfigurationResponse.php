@@ -194,7 +194,8 @@ class FindOpenIdConfigurationResponse
                 'access_group' => [
                     "id" => $authorizationRule->getAccessGroup()->getId(),
                     "name" => $authorizationRule->getAccessGroup()->getName()
-                ]
+                ],
+                'priority' => $authorizationRule->getPriority()
             ];
         }, $authorizationRules);
     }
