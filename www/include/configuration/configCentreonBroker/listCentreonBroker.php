@@ -87,7 +87,7 @@ if (isset($_POST['searchCB']) || isset($_GET['searchCB'])) {
 
 $aclCond = "";
 if (!$centreon->user->admin && count($allowedBrokerConf)) {
-    if ($search != "") {
+    if ($search !== '') {
         $aclCond = " AND ";
     } else {
         $aclCond = " WHERE ";
