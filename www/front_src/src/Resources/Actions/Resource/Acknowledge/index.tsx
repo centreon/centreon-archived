@@ -11,7 +11,7 @@ import { acknowledgementAtom, userAtom } from '@centreon/ui-context';
 import {
   labelRequired,
   labelAcknowledgeCommandSent,
-  labelAcknowledgedBy,
+  labelAcknowledgedBy
 } from '../../../translatedLabels';
 import { Resource } from '../../../models';
 import { acknowledgeResources } from '../../api';
@@ -23,7 +23,7 @@ const validationSchema = Yup.object().shape({
   force_active_checks: Yup.boolean(),
   is_sticky: Yup.boolean(),
   notify: Yup.boolean(),
-  persistent: Yup.boolean(),
+  persistent: Yup.boolean()
 });
 
 interface Props {
@@ -44,16 +44,16 @@ export interface AcknowledgeFormValues {
 const AcknowledgeForm = ({
   resources,
   onClose,
-  onSuccess,
+  onSuccess
 }: Props): JSX.Element | null => {
   const { t } = useTranslation();
   const { showSuccessMessage } = useSnackbar();
 
   const {
     sendRequest: sendAcknowledgeResources,
-    sending: sendingAcknowledgeResources,
+    sending: sendingAcknowledgeResources
   } = useRequest({
-    request: acknowledgeResources,
+    request: acknowledgeResources
   });
 
   const { alias } = useAtomValue(userAtom);
@@ -66,18 +66,18 @@ const AcknowledgeForm = ({
       forceActiveChecks: acknowledgement.force_active_checks,
       isSticky: acknowledgement.sticky,
       notify: acknowledgement.notify,
-      persistent: acknowledgement.persistent,
+      persistent: acknowledgement.persistent
     },
     onSubmit: (values): void => {
       sendAcknowledgeResources({
         params: values,
-        resources,
+        resources
       }).then(() => {
         showSuccessMessage(t(labelAcknowledgeCommandSent));
         onSuccess();
       });
     },
-    validationSchema,
+    validationSchema
   });
 
   useEffect(() => {

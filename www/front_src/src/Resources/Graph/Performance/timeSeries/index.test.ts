@@ -17,13 +17,13 @@ describe('timeSeries', () => {
           ds_legend: 'Round-Trip-Time Average',
           ds_order: null,
           ds_stack: null,
-          ds_transparency: 80,
+          ds_transparency: 80
         },
         legend: 'Round-Trip-Time Average (ms)',
         maximum_value: 1.5,
         metric: 'rta',
         minimum_value: 0.5,
-        unit: 'ms',
+        unit: 'ms'
       },
       {
         average_value: 1,
@@ -36,13 +36,13 @@ describe('timeSeries', () => {
           ds_legend: 'Time',
           ds_order: null,
           ds_stack: null,
-          ds_transparency: 80,
+          ds_transparency: 80
         },
         legend: 'Time (ms)',
         maximum_value: 1.5,
         metric: 'time',
         minimum_value: 0.5,
-        unit: 'ms',
+        unit: 'ms'
       },
       {
         average_value: 1,
@@ -55,13 +55,13 @@ describe('timeSeries', () => {
           ds_legend: 'Average duration',
           ds_order: '2',
           ds_stack: '1',
-          ds_transparency: 80,
+          ds_transparency: 80
         },
         legend: 'Average duration (ms)',
         maximum_value: 1.5,
         metric: 'avgDuration',
         minimum_value: 0.5,
-        unit: 'ms',
+        unit: 'ms'
       },
       {
         average_value: 1,
@@ -74,13 +74,13 @@ describe('timeSeries', () => {
           ds_legend: 'Duration',
           ds_order: '1',
           ds_stack: '1',
-          ds_transparency: 80,
+          ds_transparency: 80
         },
         legend: 'Duration (ms)',
         maximum_value: 1.5,
         metric: 'duration',
         minimum_value: 0.5,
-        unit: 'ms',
+        unit: 'ms'
       },
       {
         average_value: 1,
@@ -93,16 +93,16 @@ describe('timeSeries', () => {
           ds_legend: 'Packet Loss',
           ds_order: null,
           ds_stack: null,
-          ds_transparency: 80,
+          ds_transparency: 80
         },
         legend: 'Packet Loss (%)',
         maximum_value: 1.5,
         metric: 'packet_loss',
         minimum_value: 0.5,
-        unit: '%',
-      },
+        unit: '%'
+      }
     ],
-    times: ['2020-11-05T10:35:00Z', '2020-11-05T10:40:00Z'],
+    times: ['2020-11-05T10:35:00Z', '2020-11-05T10:40:00Z']
   };
 
   describe('getTimeSeries', () => {
@@ -114,7 +114,7 @@ describe('timeSeries', () => {
           packet_loss: 0,
           rta: 0,
           time: 0.5,
-          timeTick: '2020-11-05T10:35:00Z',
+          timeTick: '2020-11-05T10:35:00Z'
         },
         {
           avgDuration: 4,
@@ -122,8 +122,8 @@ describe('timeSeries', () => {
           packet_loss: 1,
           rta: 1,
           time: 3,
-          timeTick: '2020-11-05T10:40:00Z',
-        },
+          timeTick: '2020-11-05T10:40:00Z'
+        }
       ]);
     });
 
@@ -131,8 +131,8 @@ describe('timeSeries', () => {
       const graphDataWithLowerLimit = {
         ...graphData,
         global: {
-          'lower-limit': 0.4,
-        },
+          'lower-limit': 0.4
+        }
       };
 
       expect(timeSeries.getTimeSeries(graphDataWithLowerLimit)).toEqual([
@@ -140,7 +140,7 @@ describe('timeSeries', () => {
           avgDuration: 6,
           duration: 12,
           time: 0.5,
-          timeTick: '2020-11-05T10:35:00Z',
+          timeTick: '2020-11-05T10:35:00Z'
         },
         {
           avgDuration: 4,
@@ -148,8 +148,8 @@ describe('timeSeries', () => {
           packet_loss: 1,
           rta: 1,
           time: 3,
-          timeTick: '2020-11-05T10:40:00Z',
-        },
+          timeTick: '2020-11-05T10:40:00Z'
+        }
       ]);
     });
   });
@@ -173,7 +173,7 @@ describe('timeSeries', () => {
           name: 'Round-Trip-Time Average (ms)',
           stackOrder: null,
           transparency: 80,
-          unit: 'ms',
+          unit: 'ms'
         },
         {
           areaColor: 'blue',
@@ -191,7 +191,7 @@ describe('timeSeries', () => {
           name: 'Time (ms)',
           stackOrder: null,
           transparency: 80,
-          unit: 'ms',
+          unit: 'ms'
         },
         {
           areaColor: 'red',
@@ -209,7 +209,7 @@ describe('timeSeries', () => {
           name: 'Average duration (ms)',
           stackOrder: 2,
           transparency: 80,
-          unit: 'ms',
+          unit: 'ms'
         },
         {
           areaColor: 'yellow',
@@ -227,7 +227,7 @@ describe('timeSeries', () => {
           name: 'Duration (ms)',
           stackOrder: 1,
           transparency: 80,
-          unit: 'ms',
+          unit: 'ms'
         },
         {
           areaColor: 'yellow',
@@ -245,8 +245,8 @@ describe('timeSeries', () => {
           name: 'Packet Loss (%)',
           stackOrder: null,
           transparency: 80,
-          unit: '%',
-        },
+          unit: '%'
+        }
       ]);
     });
   });
@@ -257,8 +257,8 @@ describe('timeSeries', () => {
         timeSeries.getMetrics({
           rta: 1,
           time: 0,
-          timeTick: '2020-11-05T10:40:00Z',
-        }),
+          timeTick: '2020-11-05T10:40:00Z'
+        })
       ).toEqual(['rta', 'time']);
     });
   });
@@ -270,7 +270,7 @@ describe('timeSeries', () => {
       const unit = 'ms';
 
       expect(
-        timeSeries.getMetricValuesForUnit({ lines, timeSeries: series, unit }),
+        timeSeries.getMetricValuesForUnit({ lines, timeSeries: series, unit })
       ).toEqual([0, 1, 0.5, 3, 6, 4, 12, 25]);
     });
   });
@@ -289,7 +289,7 @@ describe('timeSeries', () => {
 
       expect(timeSeries.getDates(series)).toEqual([
         new Date('2020-11-05T10:35:00.000Z'),
-        new Date('2020-11-05T10:40:00.000Z'),
+        new Date('2020-11-05T10:40:00.000Z')
       ]);
     });
   });
@@ -314,7 +314,7 @@ describe('timeSeries', () => {
         name: 'Round-Trip-Time Average (ms)',
         stackOrder: null,
         transparency: 80,
-        unit: 'ms',
+        unit: 'ms'
       });
     });
   });
@@ -325,7 +325,7 @@ describe('timeSeries', () => {
       const series = timeSeries.getTimeSeries(graphData);
 
       expect(
-        timeSeries.getMetricValuesForLines({ lines, timeSeries: series }),
+        timeSeries.getMetricValuesForLines({ lines, timeSeries: series })
       ).toEqual([0, 1, 0.5, 3, 6, 4, 12, 25, 0, 1]);
     });
   });
@@ -351,7 +351,7 @@ describe('timeSeries', () => {
           name: 'Duration (ms)',
           stackOrder: 1,
           transparency: 80,
-          unit: 'ms',
+          unit: 'ms'
         },
         {
           areaColor: 'red',
@@ -369,8 +369,8 @@ describe('timeSeries', () => {
           name: 'Average duration (ms)',
           stackOrder: 2,
           transparency: 80,
-          unit: 'ms',
-        },
+          unit: 'ms'
+        }
       ]);
     });
   });
@@ -383,8 +383,8 @@ describe('timeSeries', () => {
       expect(
         timeSeries.getStackedMetricValues({
           lines: timeSeries.getSortedStackedLines(lines),
-          timeSeries: series,
-        }),
+          timeSeries: series
+        })
       ).toEqual([18, 29]);
     });
   });
@@ -397,19 +397,19 @@ describe('timeSeries', () => {
       expect(
         timeSeries.getTimeSeriesForLines({
           lines: timeSeries.getSortedStackedLines(lines),
-          timeSeries: series,
-        }),
+          timeSeries: series
+        })
       ).toEqual([
         {
           avgDuration: 6,
           duration: 12,
-          timeTick: '2020-11-05T10:35:00Z',
+          timeTick: '2020-11-05T10:35:00Z'
         },
         {
           avgDuration: 4,
           duration: 25,
-          timeTick: '2020-11-05T10:40:00Z',
-        },
+          timeTick: '2020-11-05T10:40:00Z'
+        }
       ]);
     });
   });
@@ -435,8 +435,8 @@ describe('timeSeries', () => {
           name: 'Duration (ms)',
           stackOrder: 1,
           transparency: 80,
-          unit: 'ms',
-        },
+          unit: 'ms'
+        }
       ]);
     });
   });
@@ -462,8 +462,8 @@ describe('timeSeries', () => {
           name: 'Average duration (ms)',
           stackOrder: 2,
           transparency: 80,
-          unit: 'ms',
-        },
+          unit: 'ms'
+        }
       ]);
     });
   });
@@ -473,11 +473,11 @@ describe('timeSeries', () => {
       const lines = timeSeries.getLineData(graphData);
 
       expect(timeSeries.hasUnitStackedLines({ lines, unit: 'ms' })).toEqual(
-        true,
+        true
       );
 
       expect(timeSeries.hasUnitStackedLines({ lines, unit: '%' })).toEqual(
-        false,
+        false
       );
     });
   });

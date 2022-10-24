@@ -16,7 +16,7 @@ import {
   postData,
   SelectEntry,
   useSnackbar,
-  Responsive,
+  Responsive
 } from '@centreon/ui';
 
 import FederatedComponents from '../../components/FederatedComponents';
@@ -35,19 +35,19 @@ import {
   ExtensionsStatus,
   ExtensionResult,
   InstallOrUpdateExtensionResult,
-  EntityDeleting,
+  EntityDeleting
 } from './models';
 import { buildEndPoint, buildExtensionEndPoint } from './api/endpoint';
 
 const useStyles = makeStyles((theme) => ({
   contentWrapper: {
     [theme.breakpoints.up(767)]: {
-      padding: theme.spacing(1.5, 1.5, 1.5, 0),
+      padding: theme.spacing(1.5, 1.5, 1.5, 0)
     },
     boxSizing: 'border-box',
     margin: theme.spacing(0, 'auto'),
-    padding: theme.spacing(1.5, 2.5, 0, 0),
-  },
+    padding: theme.spacing(1.5, 2.5, 0, 0)
+  }
 }));
 
 interface Props {
@@ -64,11 +64,11 @@ const ExtensionsManager = ({ reloadNavigation }: Props): JSX.Element => {
 
   const [extensions, setExtension] = useState<Extensions>({
     module: {
-      entities: [],
+      entities: []
     },
     widget: {
-      entities: [],
-    },
+      entities: []
+    }
   });
 
   const [modulesActive, setModulesActive] = useState(false);
@@ -77,7 +77,7 @@ const ExtensionsManager = ({ reloadNavigation }: Props): JSX.Element => {
   const [entityDetails, setEntityDetails] = useState<EntityType | null>(null);
 
   const [entityDeleting, setEntityDeleting] = useState<EntityDeleting | null>(
-    null,
+    null
   );
 
   const [extensionsInstallingStatus, setExtensionsInstallingStatus] =
@@ -91,27 +91,27 @@ const ExtensionsManager = ({ reloadNavigation }: Props): JSX.Element => {
   >(null);
 
   const { sendRequest: sendExtensionsRequests } = useRequest<ExtensionResult>({
-    request: getData,
+    request: getData
   });
 
   const { sendRequest: sendUpdateOrInstallExtensionRequests } =
     useRequest<InstallOrUpdateExtensionResult>({
-      request: postData,
+      request: postData
     });
 
   const { sendRequest: sendDeleteExtensionRequests } = useRequest({
-    request: deleteExtension,
+    request: deleteExtension
   });
 
   const getAppliedFilterCriteriasAtom = useAtomValue(
-    appliedFilterCriteriasAtom,
+    appliedFilterCriteriasAtom
   );
 
   useEffect(() => {
     const types = find(propEq('name', 'types'), getAppliedFilterCriteriasAtom);
     const statuses = find(
       propEq('name', 'statuses'),
-      getAppliedFilterCriteriasAtom,
+      getAppliedFilterCriteriasAtom
     );
 
     if (types && types.value) {
@@ -123,8 +123,8 @@ const ExtensionsManager = ({ reloadNavigation }: Props): JSX.Element => {
     sendExtensionsRequests({
       endpoint: buildExtensionEndPoint({
         action: 'list',
-        criteriaStatus: statuses,
-      }),
+        criteriaStatus: statuses
+      })
     }).then(({ status, result }) => {
       if (status) {
         setExtension(result as Extensions);
@@ -139,7 +139,7 @@ const ExtensionsManager = ({ reloadNavigation }: Props): JSX.Element => {
   const getEntitiesByKeyAndVersionParam = (
     param,
     equals,
-    key,
+    key
   ): Array<EntityType> => {
     const resArray: Array<EntityType> = [];
     if (extensions) {
@@ -148,7 +148,7 @@ const ExtensionsManager = ({ reloadNavigation }: Props): JSX.Element => {
         if (entity.version[param] === equals) {
           resArray.push({
             id: entity.id,
-            type: key,
+            type: key
           });
         }
       }
@@ -164,7 +164,7 @@ const ExtensionsManager = ({ reloadNavigation }: Props): JSX.Element => {
     ) {
       return [
         ...getEntitiesByKeyAndVersionParam(param, equals, 'module'),
-        ...getEntitiesByKeyAndVersionParam(param, equals, 'widget'),
+        ...getEntitiesByKeyAndVersionParam(param, equals, 'widget')
       ];
     }
     if (modulesActive) {
@@ -200,8 +200,8 @@ const ExtensionsManager = ({ reloadNavigation }: Props): JSX.Element => {
       endpoint: buildEndPoint({
         action: 'update',
         id,
-        type,
-      }),
+        type
+      })
     })
       .then(({ status, result }) => {
         if (!status) {
@@ -215,9 +215,9 @@ const ExtensionsManager = ({ reloadNavigation }: Props): JSX.Element => {
             action: 'list',
             criteriaStatus: find(
               propEq('name', 'statuses'),
-              getAppliedFilterCriteriasAtom,
-            ),
-          }),
+              getAppliedFilterCriteriasAtom
+            )
+          })
         });
       })
       .then(({ status, result }) => {
@@ -235,8 +235,8 @@ const ExtensionsManager = ({ reloadNavigation }: Props): JSX.Element => {
       endpoint: buildEndPoint({
         action: 'install',
         id,
-        type,
-      }),
+        type
+      })
     })
       .then(({ status, result }) => {
         if (!status) {
@@ -250,9 +250,9 @@ const ExtensionsManager = ({ reloadNavigation }: Props): JSX.Element => {
             action: 'list',
             criteriaStatus: find(
               propEq('name', 'statuses'),
-              getAppliedFilterCriteriasAtom,
-            ),
-          }),
+              getAppliedFilterCriteriasAtom
+            )
+          })
         });
       })
       .then(({ status, result }) => {
@@ -266,24 +266,24 @@ const ExtensionsManager = ({ reloadNavigation }: Props): JSX.Element => {
 
   const setExtensionsUpdatingStatusByIds = (
     id: string,
-    updating: boolean,
+    updating: boolean
   ): void => {
     let statuses = extensionsUpdatingStatus;
     statuses = {
       ...statuses,
-      [id]: updating,
+      [id]: updating
     };
     setExtensionsUpdatingStatus(statuses);
   };
 
   const setExtensionsInstallingStatusByIds = (
     id: string,
-    installing: boolean,
+    installing: boolean
   ): void => {
     let statuses = extensionsInstallingStatus;
     statuses = {
       ...statuses,
-      [id]: installing,
+      [id]: installing
     };
     setExtensionsInstallingStatus(statuses);
   };
@@ -291,7 +291,7 @@ const ExtensionsManager = ({ reloadNavigation }: Props): JSX.Element => {
   const activateExtensionsDetails = (id: string, type: string): void => {
     setEntityDetails({
       id,
-      type,
+      type
     });
   };
 
@@ -302,12 +302,12 @@ const ExtensionsManager = ({ reloadNavigation }: Props): JSX.Element => {
   const toggleDeleteModal = (
     id: string,
     type: string,
-    description: string,
+    description: string
   ): void => {
     setEntityDeleting({
       description,
       id,
-      type,
+      type
     });
   };
 
@@ -320,7 +320,7 @@ const ExtensionsManager = ({ reloadNavigation }: Props): JSX.Element => {
     setEntityDeleting(null);
     sendDeleteExtensionRequests({
       id,
-      type,
+      type
     })
       .then(({ status, result }) => {
         setConfirmedDeletingEntityId(null);
@@ -335,9 +335,9 @@ const ExtensionsManager = ({ reloadNavigation }: Props): JSX.Element => {
             action: 'list',
             criteriaStatus: find(
               propEq('name', 'statuses'),
-              getAppliedFilterCriteriasAtom,
-            ),
-          }),
+              getAppliedFilterCriteriasAtom
+            )
+          })
         });
       })
       .then(({ status, result }) => {
@@ -349,19 +349,19 @@ const ExtensionsManager = ({ reloadNavigation }: Props): JSX.Element => {
   };
 
   const allModulesInstalled = isEmpty(
-    filter(pathEq(['version', 'installed'], false), extensions.module.entities),
+    filter(pathEq(['version', 'installed'], false), extensions.module.entities)
   );
 
   const allWidgetsInstalled = isEmpty(
-    filter(pathEq(['version', 'installed'], false), extensions.widget.entities),
+    filter(pathEq(['version', 'installed'], false), extensions.widget.entities)
   );
 
   const allWidgetsUpToDate = isEmpty(
-    filter(pathEq(['version', 'outdated'], true), extensions.module.entities),
+    filter(pathEq(['version', 'outdated'], true), extensions.module.entities)
   );
 
   const allModulesUpToDate = isEmpty(
-    filter(pathEq(['version', 'outdated'], true), extensions.widget.entities),
+    filter(pathEq(['version', 'outdated'], true), extensions.widget.entities)
   );
 
   const disableUpdate = allWidgetsUpToDate && allModulesUpToDate;

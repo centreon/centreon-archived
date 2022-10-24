@@ -5,8 +5,8 @@ import makeStyles from '@mui/styles/makeStyles';
 
 const useStyles = makeStyles((theme) => ({
   content: {
-    padding: theme.spacing(1, 2, 2, 2),
-  },
+    padding: theme.spacing(1, 2, 2, 2)
+  }
 }));
 
 interface Props {

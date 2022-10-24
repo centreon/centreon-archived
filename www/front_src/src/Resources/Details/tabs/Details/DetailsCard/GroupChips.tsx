@@ -17,8 +17,8 @@ interface Props {
 const useStyles = makeStyles((theme) => ({
   groups: {
     display: 'flex',
-    padding: theme.spacing(1),
-  },
+    padding: theme.spacing(1)
+  }
 }));
 
 const GroupChips = ({ groups = [], title, getType }: Props): JSX.Element => {

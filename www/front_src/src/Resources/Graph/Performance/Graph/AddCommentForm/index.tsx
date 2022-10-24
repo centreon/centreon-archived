@@ -10,7 +10,7 @@ import {
   TextField,
   useSnackbar,
   useRequest,
-  useLocaleDateTimeFormat,
+  useLocaleDateTimeFormat
 } from '@centreon/ui';
 
 import {
@@ -18,7 +18,7 @@ import {
   labelAddComment,
   labelComment,
   labelRequired,
-  labelCommentAdded,
+  labelCommentAdded
 } from '../../../../translatedLabels';
 import { commentResources } from '../../../../Actions/api';
 import { Resource } from '../../../../models';
@@ -35,7 +35,7 @@ const AddCommentForm = ({
   onClose,
   onSuccess,
   resource,
-  date,
+  date
 }: Props): JSX.Element => {
   const { t } = useTranslation();
   const { toIsoString, toDateTime } = useLocaleDateTimeFormat();
@@ -43,7 +43,7 @@ const AddCommentForm = ({
   const [comment, setComment] = useState<string>();
 
   const { sendRequest, sending } = useRequest({
-    request: commentResources,
+    request: commentResources
   });
 
   const changeComment = (event: ChangeEvent<HTMLInputElement>): void => {
@@ -53,12 +53,12 @@ const AddCommentForm = ({
   const confirm = (): void => {
     const parameters = {
       comment,
-      date: toIsoString(date),
+      date: toIsoString(date)
     };
 
     sendRequest({
       parameters,
-      resources: [resource],
+      resources: [resource]
     }).then(() => {
       showSuccessMessage(t(labelCommentAdded));
       onSuccess(parameters);

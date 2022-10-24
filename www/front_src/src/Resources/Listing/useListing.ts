@@ -18,7 +18,7 @@ const useListing = (): ListingState => {
   return {
     page,
     setLimit,
-    setPage,
+    setPage
   };
 };
 

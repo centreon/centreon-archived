@@ -39,7 +39,7 @@ const YAxes = ({
   base,
   leftScale,
   rightScale,
-  graphHeight,
+  graphHeight
 }: Props): JSX.Element => {
   const formatTick =
     ({ unit }) =>
@@ -70,7 +70,7 @@ const YAxes = ({
           ...commonTickLabelProps,
           dx: -2,
           dy: 4,
-          textAnchor: 'end',
+          textAnchor: 'end'
         })}
         tickLength={2}
       />
@@ -86,7 +86,7 @@ const YAxes = ({
               ...commonTickLabelProps,
               dx: 4,
               dy: 4,
-              textAnchor: 'start',
+              textAnchor: 'start'
             })}
             tickLength={2}
           />

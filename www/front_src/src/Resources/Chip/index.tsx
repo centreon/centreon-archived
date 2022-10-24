@@ -10,8 +10,8 @@ const Chip = ({ icon, color }: Props): JSX.Element => {
     <Box
       sx={{
         ...(color && {
-          color,
-        }),
+          color
+        })
       }}
     >
       {icon}

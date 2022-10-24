@@ -8,7 +8,7 @@ import useValidationSchema from '../useValidationSchema';
 import {
   labelFailedToSaveOpenidConfiguration,
   labelOpenIDConnectConfigurationSaved,
-  labelRequired,
+  labelRequired
 } from '../translatedLabels';
 import { putProviderConfiguration } from '../../api';
 import { OpenidConfiguration, OpenidConfigurationToAPI } from '../models';
@@ -30,7 +30,7 @@ const isNilOrEmpty = (value): boolean => or(isNil(value), isEmpty(value));
 const OpenidForm = ({
   initialValues,
   loadOpenidConfiguration,
-  isLoading,
+  isLoading
 }: Props): JSX.Element => {
   const { t } = useTranslation();
 
@@ -39,7 +39,7 @@ const OpenidForm = ({
     request: putProviderConfiguration<
       OpenidConfiguration,
       OpenidConfigurationToAPI
-    >({ adapter: adaptOpenidConfigurationToAPI, type: Provider.Openid }),
+    >({ adapter: adaptOpenidConfigurationToAPI, type: Provider.Openid })
   });
   const { showSuccessMessage } = useSnackbar();
 
@@ -47,7 +47,7 @@ const OpenidForm = ({
 
   const submit = (
     formikValues: OpenidConfiguration,
-    { setSubmitting },
+    { setSubmitting }
   ): Promise<void> =>
     sendRequest(formikValues)
       .then(() => {
@@ -60,7 +60,7 @@ const OpenidForm = ({
     const isUserInfoOrIntrospectionTokenEmpty = pipe(
       pick(['introspectionTokenEndpoint', 'userinfoEndpoint']),
       values,
-      all(isNilOrEmpty),
+      all(isNilOrEmpty)
     )(formikValues);
 
     if (not(isUserInfoOrIntrospectionTokenEmpty)) {
@@ -69,7 +69,7 @@ const OpenidForm = ({
 
     return {
       introspectionTokenEndpoint: t(labelRequired),
-      userinfoEndpoint: t(labelRequired),
+      userinfoEndpoint: t(labelRequired)
     };
   };
 

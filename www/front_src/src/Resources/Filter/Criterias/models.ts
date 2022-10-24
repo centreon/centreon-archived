@@ -31,7 +31,7 @@ import {
   labelHostSeverity,
   labelHostSeverityLevel,
   labelServiceSeverityLevel,
-  labelAnomalyDetection,
+  labelAnomalyDetection
 } from '../../translatedLabels';
 import {
   buildHostGroupsEndpoint,
@@ -40,7 +40,7 @@ import {
   buildMonitoringServersEndpoint,
   buildServiceGroupsEndpoint,
   buildHostServeritiesEndpoint,
-  buildServiceSeveritiesEndpoint,
+  buildServiceSeveritiesEndpoint
 } from '../api/endpoint';
 
 export type CriteriaValue = Array<SelectEntry> | string | [string, SortOrder];
@@ -68,25 +68,25 @@ const criteriaValueNameById = {
   metaservice: labelMetaService,
   service: labelService,
   soft: labelSoft,
-  unhandled_problems: labelUnhandled,
+  unhandled_problems: labelUnhandled
 };
 
 const unhandledStateId = 'unhandled_problems';
 const unhandledState = {
   id: unhandledStateId,
-  name: criteriaValueNameById[unhandledStateId],
+  name: criteriaValueNameById[unhandledStateId]
 };
 
 const acknowledgedStateId = 'acknowledged';
 const acknowledgedState = {
   id: 'acknowledged',
-  name: criteriaValueNameById[acknowledgedStateId],
+  name: criteriaValueNameById[acknowledgedStateId]
 };
 
 const inDowntimeStateId = 'in_downtime';
 const inDowntimeState = {
   id: inDowntimeStateId,
-  name: criteriaValueNameById[inDowntimeStateId],
+  name: criteriaValueNameById[inDowntimeStateId]
 };
 
 const selectableStates = [unhandledState, acknowledgedState, inDowntimeState];
@@ -94,25 +94,25 @@ const selectableStates = [unhandledState, acknowledgedState, inDowntimeState];
 const hostResourceTypeId = 'host';
 const hostResourceType = {
   id: hostResourceTypeId,
-  name: criteriaValueNameById[hostResourceTypeId],
+  name: criteriaValueNameById[hostResourceTypeId]
 };
 
 const serviceResourceTypeId = 'service';
 const serviceResourceType = {
   id: serviceResourceTypeId,
-  name: criteriaValueNameById[serviceResourceTypeId],
+  name: criteriaValueNameById[serviceResourceTypeId]
 };
 
 const metaServiceResourceTypeId = 'metaservice';
 const metaServiceResourceType = {
   id: metaServiceResourceTypeId,
-  name: criteriaValueNameById[metaServiceResourceTypeId],
+  name: criteriaValueNameById[metaServiceResourceTypeId]
 };
 
 const selectableResourceTypes = [
   hostResourceType,
   serviceResourceType,
-  metaServiceResourceType,
+  metaServiceResourceType
 ];
 
 const okStatusId = 'OK';
@@ -124,37 +124,37 @@ const upStatus = { id: upStatusId, name: criteriaValueNameById[upStatusId] };
 const warningStatusId = 'WARNING';
 const warningStatus = {
   id: warningStatusId,
-  name: criteriaValueNameById[warningStatusId],
+  name: criteriaValueNameById[warningStatusId]
 };
 
 const downStatusId = 'DOWN';
 const downStatus = {
   id: downStatusId,
-  name: criteriaValueNameById[downStatusId],
+  name: criteriaValueNameById[downStatusId]
 };
 
 const criticalStatusId = 'CRITICAL';
 const criticalStatus = {
   id: criticalStatusId,
-  name: criteriaValueNameById[criticalStatusId],
+  name: criteriaValueNameById[criticalStatusId]
 };
 
 const unreachableStatusId = 'UNREACHABLE';
 const unreachableStatus = {
   id: unreachableStatusId,
-  name: criteriaValueNameById[unreachableStatusId],
+  name: criteriaValueNameById[unreachableStatusId]
 };
 
 const unknownStatusId = 'UNKNOWN';
 const unknownStatus = {
   id: unknownStatusId,
-  name: criteriaValueNameById[unknownStatusId],
+  name: criteriaValueNameById[unknownStatusId]
 };
 
 const pendingStatusId = 'PENDING';
 const pendingStatus = {
   id: pendingStatusId,
-  name: criteriaValueNameById[pendingStatusId],
+  name: criteriaValueNameById[pendingStatusId]
 };
 
 const selectableStatuses = [
@@ -165,19 +165,19 @@ const selectableStatuses = [
   criticalStatus,
   unreachableStatus,
   unknownStatus,
-  pendingStatus,
+  pendingStatus
 ];
 
 const hardStateTypeId = 'hard';
 const hardStateType = {
   id: hardStateTypeId,
-  name: criteriaValueNameById[hardStateTypeId],
+  name: criteriaValueNameById[hardStateTypeId]
 };
 
 const softStateTypeId = 'soft';
 const softStateType = {
   id: softStateTypeId,
-  name: criteriaValueNameById[softStateTypeId],
+  name: criteriaValueNameById[softStateTypeId]
 };
 
 const selectableStateTypes = [hardStateType, softStateType];
@@ -206,69 +206,69 @@ export enum CriteriaNames {
   serviceSeverityLevels = 'service_severity_levels',
   states = 'states',
   statusTypes = 'status_types',
-  statuses = 'statuses',
+  statuses = 'statuses'
 }
 
 const selectableCriterias: CriteriaById = {
   [CriteriaNames.resourceTypes]: {
     label: labelType,
-    options: selectableResourceTypes,
+    options: selectableResourceTypes
   },
   [CriteriaNames.states]: {
     label: labelState,
-    options: selectableStates,
+    options: selectableStates
   },
   [CriteriaNames.statuses]: {
     label: labelStatus,
-    options: selectableStatuses,
+    options: selectableStatuses
   },
   [CriteriaNames.statusTypes]: {
     label: labelStatusType,
-    options: selectableStateTypes,
+    options: selectableStateTypes
   },
   [CriteriaNames.hostGroups]: {
     buildAutocompleteEndpoint: buildHostGroupsEndpoint,
-    label: labelHostGroup,
+    label: labelHostGroup
   },
   [CriteriaNames.serviceGroups]: {
     buildAutocompleteEndpoint: buildServiceGroupsEndpoint,
-    label: labelServiceGroup,
+    label: labelServiceGroup
   },
   [CriteriaNames.monitoringServers]: {
     autocompleteSearch: { conditions: [{ field: 'running', value: true }] },
     buildAutocompleteEndpoint: buildMonitoringServersEndpoint,
-    label: labelMonitoringServer,
+    label: labelMonitoringServer
   },
   [CriteriaNames.hostCategories]: {
     buildAutocompleteEndpoint: buildHostCategoriesEndpoint,
-    label: labelHostCategory,
+    label: labelHostCategory
   },
   [CriteriaNames.serviceCategories]: {
     buildAutocompleteEndpoint: buildServiceCategoriesEndpoint,
-    label: labelServiceCategory,
+    label: labelServiceCategory
   },
   [CriteriaNames.hostSeverities]: {
     buildAutocompleteEndpoint: buildHostServeritiesEndpoint,
-    label: labelHostSeverity,
+    label: labelHostSeverity
   },
   [CriteriaNames.serviceSeverities]: {
     buildAutocompleteEndpoint: buildServiceSeveritiesEndpoint,
-    label: labelServiceSeverity,
+    label: labelServiceSeverity
   },
   [CriteriaNames.hostSeverityLevels]: {
     buildAutocompleteEndpoint: buildHostServeritiesEndpoint,
-    label: labelHostSeverityLevel,
+    label: labelHostSeverityLevel
   },
   [CriteriaNames.serviceSeverityLevels]: {
     buildAutocompleteEndpoint: buildServiceSeveritiesEndpoint,
-    label: labelServiceSeverityLevel,
-  },
+    label: labelServiceSeverityLevel
+  }
 };
 
 const authorizedFilterByModules = {
   'centreon-anomaly-detection': {
-    'anomaly-detection': labelAnomalyDetection,
-  },
+    'anomaly-detection': labelAnomalyDetection
+  }
 };
 
 export {
@@ -284,5 +284,5 @@ export {
   selectableStatuses,
   selectableCriterias,
   selectableStateTypes,
-  hardStateType,
+  hardStateType
 };

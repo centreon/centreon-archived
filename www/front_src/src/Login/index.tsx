@@ -35,10 +35,10 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     display: 'flex',
     flexDirection: 'column',
-    rowGap: theme.spacing(0.5),
+    rowGap: theme.spacing(0.5)
   },
   copyrightSkeleton: {
-    width: theme.spacing(16),
+    width: theme.spacing(16)
   },
   loginBackground: {
     alignItems: 'center',
@@ -49,7 +49,7 @@ const useStyles = makeStyles((theme) => ({
     height: '100vh',
     justifyContent: 'center',
     rowGap: theme.spacing(2),
-    width: '100%',
+    width: '100%'
   },
   loginPaper: {
     alignItems: 'center',
@@ -59,13 +59,13 @@ const useStyles = makeStyles((theme) => ({
     minWidth: theme.spacing(30),
     padding: theme.spacing(4, 5),
     rowGap: theme.spacing(4),
-    width: '17%',
-  },
+    width: '17%'
+  }
 }));
 
 const initialValues: LoginFormValues = {
   alias: '',
-  password: '',
+  password: ''
 };
 
 const LoginPage = (): JSX.Element => {

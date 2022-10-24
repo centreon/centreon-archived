@@ -23,20 +23,20 @@ const useStyles = makeStyles((theme) => ({
     columnGap: '8px',
     display: 'grid',
     gridTemplateColumns: `repeat(auto-fill, minmax(${theme.spacing(
-      40,
+      40
     )}, auto))`,
-    rowGap: '8px',
-  },
+    rowGap: '8px'
+  }
 }));
 
 const ServiceGraphs = ({
   services,
-  infiniteScrollTriggerRef,
+  infiniteScrollTriggerRef
 }: Props): JSX.Element => {
   const classes = useStyles();
 
   const servicesWithGraph = services.filter(
-    pipe(path(['links', 'endpoints', 'performance_graph']), isNil, not),
+    pipe(path(['links', 'endpoints', 'performance_graph']), isNil, not)
   );
 
   return (

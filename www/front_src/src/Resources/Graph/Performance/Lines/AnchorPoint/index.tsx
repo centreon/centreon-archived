@@ -11,7 +11,7 @@ const Point = ({
   lineColor,
   transparency,
   x,
-  y,
+  y
 }: Props): JSX.Element => (
   <circle
     cx={x}

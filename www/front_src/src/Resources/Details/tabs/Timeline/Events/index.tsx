@@ -12,7 +12,7 @@ import {
   TimelineContent,
   TimelineDot,
   TimelineItem,
-  TimelineSeparator,
+  TimelineSeparator
 } from '@mui/lab';
 
 import { useLocaleDateTimeFormat } from '@centreon/ui';
@@ -24,51 +24,51 @@ import {
   eventsByDateDivisions,
   TimelineEventByType,
   TimelineIconByType,
-  sortEventsByDate,
+  sortEventsByDate
 } from '../Event';
 
 const useStyles = makeStyles((theme) => ({
   contentContainer: {
     paddingBottom: 0,
-    paddingTop: 0,
+    paddingTop: 0
   },
   divider: {
-    backgroundColor: theme.palette.action.disabled,
+    backgroundColor: theme.palette.action.disabled
   },
   dividerContainer: {
     display: 'flex',
     height: 12,
-    paddingLeft: 18,
+    paddingLeft: 18
   },
   divisionSubtitle: {
-    marginLeft: theme.spacing(4),
+    marginLeft: theme.spacing(4)
   },
   event: {
     '&:before': {
       flex: 0,
-      padding: 0,
+      padding: 0
     },
     alignItems: 'center',
-    minHeight: theme.spacing(7),
+    minHeight: theme.spacing(7)
   },
   events: {
     display: 'grid',
     gridAutoFlow: 'row',
-    width: '100%',
+    width: '100%'
   },
   header: {
-    paddingBottom: theme.spacing(1),
+    paddingBottom: theme.spacing(1)
   },
   timeline: {
-    margin: 0,
+    margin: 0
   },
   timelineDot: {
     alignItems: 'center',
     display: 'grid',
     height: theme.spacing(3),
     justifyItems: 'center',
-    width: theme.spacing(3),
-  },
+    width: theme.spacing(3)
+  }
 }));
 
 interface Props {
@@ -93,11 +93,11 @@ const Events = ({ timeline, infiniteScrollTriggerRef }: Props): JSX.Element => {
           label,
           getEventsByDate,
           startDate,
-          endDate,
+          endDate
         }): JSX.Element | null => {
           const eventsByDate = getEventsByDate({
             events: timeline,
-            locale: formattedLocale,
+            locale: formattedLocale
           });
 
           if (isEmpty(eventsByDate)) {
@@ -109,8 +109,8 @@ const Events = ({ timeline, infiniteScrollTriggerRef }: Props): JSX.Element => {
                 t(labelFrom),
                 format({
                   date: startDate(formattedLocale).toISOString(),
-                  formatString: 'LL',
-                }),
+                  formatString: 'LL'
+                })
               ]
             : [];
 
@@ -120,8 +120,8 @@ const Events = ({ timeline, infiniteScrollTriggerRef }: Props): JSX.Element => {
                 t(labelTo).toLowerCase(),
                 format({
                   date: endDate(formattedLocale).toISOString(),
-                  formatString: 'LL',
-                }),
+                  formatString: 'LL'
+                })
               ]
             : formattedStartDate;
 
@@ -132,7 +132,7 @@ const Events = ({ timeline, infiniteScrollTriggerRef }: Props): JSX.Element => {
           const eventDate = areStartAndEndDateEqual
             ? format({
                 date: (startDate?.(formattedLocale) as Dayjs)?.toISOString(),
-                formatString: 'LL',
+                formatString: 'LL'
               })
             : formattedDivisionDates.join(' ');
 
@@ -158,7 +158,7 @@ const Events = ({ timeline, infiniteScrollTriggerRef }: Props): JSX.Element => {
                     const icon = TimelineIconByType[type];
 
                     const isNotLastEvent = not(
-                      equals(event, last(eventsByDate)),
+                      equals(event, last(eventsByDate))
                     );
 
                     return (
@@ -200,7 +200,7 @@ const Events = ({ timeline, infiniteScrollTriggerRef }: Props): JSX.Element => {
               </div>
             </div>
           );
-        },
+        }
       )}
     </div>
   );

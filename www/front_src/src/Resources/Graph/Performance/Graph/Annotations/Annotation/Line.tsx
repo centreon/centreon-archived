@@ -11,7 +11,7 @@ import {
   annotationHoveredAtom,
   getIconColorDerivedAtom,
   getStrokeOpacityDerivedAtom,
-  getStrokeWidthDerivedAtom,
+  getStrokeWidthDerivedAtom
 } from '../../annotationsAtoms';
 
 import Annotation, { Props as AnnotationProps, yMargin, iconSize } from '.';
@@ -31,9 +31,9 @@ type Props = {
 const useStyles = makeStyles((theme) => ({
   icon: {
     transition: theme.transitions.create('color', {
-      duration: theme.transitions.duration.shortest,
-    }),
-  },
+      duration: theme.transitions.duration.shortest
+    })
+  }
 }));
 
 const LineAnnotation = ({
@@ -80,8 +80,8 @@ const LineAnnotation = ({
       style={{
         color: getIconColor({
           annotation,
-          color,
-        }),
+          color
+        })
       }}
       width={iconSize}
     />
@@ -97,7 +97,7 @@ const LineAnnotation = ({
         {...props}
       />
     ),
-    memoProps: [annotationHovered, xIcon],
+    memoProps: [annotationHovered, xIcon]
   });
 };
 

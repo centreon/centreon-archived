@@ -14,7 +14,7 @@ import {
   setUrlQueryParameters,
   getUrlQueryParameters,
   screen,
-  getSearchQueryParameterValue,
+  getSearchQueryParameterValue
 } from '@centreon/ui';
 import { refreshIntervalAtom, userAtom } from '@centreon/ui-context';
 
@@ -75,7 +75,7 @@ import {
   labelGraph,
   labelNotificationStatus,
   labelCategories,
-  labelExportToCSV,
+  labelExportToCSV
 } from '../translatedLabels';
 import Context, { ResourceContext } from '../testUtils/Context';
 import useListing from '../Listing/useListing';
@@ -101,8 +101,8 @@ jest.mock('../icons/Downtime');
 
 Object.defineProperty(navigator, 'clipboard', {
   value: {
-    writeText: () => Promise.resolve(),
-  },
+    writeText: () => Promise.resolve()
+  }
 });
 
 jest.spyOn(navigator.clipboard, 'writeText');
@@ -111,8 +111,8 @@ jest.mock('@visx/visx', () => {
   return {
     ...(jest.requireActual('@visx/visx') as jest.Mocked<unknown>),
     Responsive: {
-      ParentSize: ({ children }): JSX.Element => children({ width: 500 }),
-    },
+      ParentSize: ({ children }): JSX.Element => children({ width: 500 })
+    }
   };
 });
 
@@ -125,16 +125,16 @@ const groups = [
   {
     configuration_uri: '/centreon/main.php?p=60102&o=c&hg_id=53',
     id: 0,
-    name: 'Linux-servers',
-  },
+    name: 'Linux-servers'
+  }
 ];
 
 const categories = [
   {
     configuration_uri: '/centreon/main.php?p=60102&o=c&hg_id=53',
     id: 0,
-    name: 'Windows',
-  },
+    name: 'Windows'
+  }
 ];
 
 const serviceDetailsUrlParameters = {
@@ -143,7 +143,7 @@ const serviceDetailsUrlParameters = {
     'api/latest/monitoring/resources/hosts/1/services/1',
   tab: 'details',
   type: 'service',
-  uuid: 'h1-s1',
+  uuid: 'h1-s1'
 };
 
 const serviceDetailsGraphUrlParameters = {
@@ -152,7 +152,7 @@ const serviceDetailsGraphUrlParameters = {
   parentType: 'host',
   tab: 'graph',
   type: 'service',
-  uuid: 'h1-s1',
+  uuid: 'h1-s1'
 };
 
 const serviceDetailsTimelineUrlParameters = {
@@ -161,7 +161,7 @@ const serviceDetailsTimelineUrlParameters = {
   parentType: 'host',
   tab: 'timeline',
   type: 'service',
-  uuid: 'h1-s1',
+  uuid: 'h1-s1'
 };
 
 const hostDetailsServicesUrlParameters = {
@@ -170,14 +170,14 @@ const hostDetailsServicesUrlParameters = {
   parentType: 'service',
   tab: 'services',
   type: 'host',
-  uuid: 'h1',
+  uuid: 'h1'
 };
 
 const metaserviceDetailsMetricsUrlParameters = {
   id: 1,
   tab: 'metrics',
   type: 'metaservice',
-  uuid: 'ms1',
+  uuid: 'ms1'
 };
 
 const serviceDetailsNotificationUrlParameters = {
@@ -186,7 +186,7 @@ const serviceDetailsNotificationUrlParameters = {
   parentType: 'host',
   tab: 'notification',
   type: 'service',
-  uuid: 'h1-s1',
+  uuid: 'h1-s1'
 };
 
 const retrievedNotificationContacts = {
@@ -194,18 +194,18 @@ const retrievedNotificationContacts = {
     {
       alias: 'admin admin',
       configuration_uri: '/centreon/main.php?p=60301&o=c&cg_id=1',
-      name: 'admin',
-    },
+      name: 'admin'
+    }
   ],
   contacts: [
     {
       alias: 'Guest Guest',
       configuration_uri: '/centreon/main.php?p=60301&o=c&contact_id=1',
       email: 'localhost@centreon.com',
-      name: 'Guest',
-    },
+      name: 'Guest'
+    }
   ],
-  is_notification_enabled: true,
+  is_notification_enabled: true
 };
 
 const retrievedDetails = {
@@ -215,7 +215,7 @@ const retrievedDetails = {
     comment: 'Acknowledged by Admin',
     entry_time: '2020-03-18T18:57:59Z',
     is_persistent: true,
-    is_sticky: true,
+    is_sticky: true
   },
   active_checks: false,
   alias: 'Central-Centreon',
@@ -228,15 +228,15 @@ const retrievedDetails = {
       comment: 'First downtime set by Admin',
       end_time: '2020-01-18T18:57:59Z',
       entry_time: '2020-01-18T17:57:59Z',
-      start_time: '2020-01-18T17:57:59Z',
+      start_time: '2020-01-18T17:57:59Z'
     },
     {
       author_name: 'admin',
       comment: 'Second downtime set by Admin',
       end_time: '2020-02-18T18:57:59Z',
       entry_time: '2020-01-18T17:57:59Z',
-      start_time: '2020-02-18T17:57:59Z',
-    },
+      start_time: '2020-02-18T17:57:59Z'
+    }
   ],
   duration: '22m',
   execution_time: 0.070906,
@@ -258,17 +258,17 @@ const retrievedDetails = {
       notification_policy: 'notification_policy',
       performance_graph: 'performance_graph',
       timeline: 'timeline',
-      timeline_download: 'timeline/download',
+      timeline_download: 'timeline/download'
     },
     externals: {
       action_url: undefined,
-      notes: undefined,
+      notes: undefined
     },
     uris: {
       configuration: undefined,
       logs: undefined,
-      reporting: undefined,
-    },
+      reporting: undefined
+    }
   },
   monitoring_server_name: 'Poller',
   name: 'Central',
@@ -279,23 +279,23 @@ const retrievedDetails = {
     links: {
       endpoints: {
         performance_graph: 'performance_graph',
-        timeline: 'timeline',
+        timeline: 'timeline'
       },
       externals: {
         action_url: undefined,
-        notes: undefined,
+        notes: undefined
       },
       uris: {
         configuration: undefined,
         logs: undefined,
-        reporting: undefined,
-      },
+        reporting: undefined
+      }
     },
     name: 'Centreon',
     short_type: 'h',
     status: { name: 'S1', severity_code: 1 },
     type: resourceHostType,
-    uuid: 'h1',
+    uuid: 'h1'
   },
   passive_checks: false,
   percent_state_change: 3.5,
@@ -305,12 +305,12 @@ const retrievedDetails = {
   timezone: 'Europe/Paris',
   tries: '3/3 (Hard)',
   type: resourceServiceType,
-  uuid: resourceServiceUuid,
+  uuid: resourceServiceUuid
 };
 
 const retrievedPerformanceGraphData = {
   global: {
-    title: 'Ping graph',
+    title: 'Ping graph'
   },
   metrics: [
     {
@@ -321,27 +321,27 @@ const retrievedPerformanceGraphData = {
         ds_color_line: '#fff',
         ds_filled: false,
         ds_legend: 'Round-Trip-Time Average',
-        ds_transparency: 80,
+        ds_transparency: 80
       },
       legend: 'Round-Trip-Time Average (ms)',
       maximum_value: 2456,
       metric: 'rta',
       minimum_value: null,
-      unit: 'ms',
-    },
+      unit: 'ms'
+    }
   ],
   times: [
     '2020-06-19T07:30:00Z',
     '2020-06-20T06:55:00Z',
-    '2020-06-23T06:55:00Z',
-  ],
+    '2020-06-23T06:55:00Z'
+  ]
 };
 
 const retrievedTimeline = {
   meta: {
     limit: 10,
     page: 1,
-    total: 5,
+    total: 5
   },
   result: [
     {
@@ -350,10 +350,10 @@ const retrievedTimeline = {
       id: 1,
       status: {
         name: 'UP',
-        severity_code: 5,
+        severity_code: 5
       },
       tries: 1,
-      type: 'event',
+      type: 'event'
     },
     {
       content: 'INITIAL HOST STATE: Centreon-Server;DOWN;HARD;3;',
@@ -361,114 +361,114 @@ const retrievedTimeline = {
       id: 2,
       status: {
         name: 'DOWN',
-        severity_code: 1,
+        severity_code: 1
       },
       tries: 3,
-      type: 'event',
+      type: 'event'
     },
     {
       contact: {
-        name: 'admin',
+        name: 'admin'
       },
       content: 'My little notification',
       date: '2020-01-20T07:40:00Z',
       id: 3,
-      type: 'notification',
+      type: 'notification'
     },
     {
       contact: {
-        name: 'admin',
+        name: 'admin'
       },
       content: 'My little ack',
       date: '2020-01-19T07:35:00Z',
       id: 4,
-      type: 'acknowledgement',
+      type: 'acknowledgement'
     },
     {
       contact: {
-        name: 'admin',
+        name: 'admin'
       },
       content: 'My little dt',
       date: '2020-01-19T07:30:00Z',
       end_date: '2020-01-21T07:33:00Z',
       id: 5,
       start_date: '2020-01-19T07:30:00Z',
-      type: 'downtime',
+      type: 'downtime'
     },
     {
       contact: {
-        name: 'super_admin',
+        name: 'super_admin'
       },
       content: 'My little ongoing dt',
       date: '2020-01-19T06:57:00Z',
       end_date: null,
       id: 6,
       start_date: '2020-01-19T07:30:00Z',
-      type: 'downtime',
+      type: 'downtime'
     },
     {
       contact: {
-        name: 'admin',
+        name: 'admin'
       },
       content: 'My little comment',
       date: '2020-01-19T06:55:00Z',
       end_date: '2020-01-21T07:33:00Z',
       id: 7,
       start_date: '2020-01-19T07:30:00Z',
-      type: 'comment',
+      type: 'comment'
     },
     {
       contact: {
-        name: 'admin',
+        name: 'admin'
       },
       content: 'My little comment two',
       date: '2020-01-18T06:55:00Z',
       end_date: null,
       id: 8,
       start_date: null,
-      type: 'comment',
+      type: 'comment'
     },
     {
       contact: {
-        name: 'admin',
+        name: 'admin'
       },
       content: 'My little comment three',
       date: '2020-01-01T06:55:00Z',
       end_date: null,
       id: 9,
       start_date: null,
-      type: 'comment',
+      type: 'comment'
     },
     {
       contact: {
-        name: 'admin',
+        name: 'admin'
       },
       content: 'My little comment four',
       date: '2019-06-10T06:55:00Z',
       end_date: null,
       id: 10,
       start_date: null,
-      type: 'comment',
+      type: 'comment'
     },
     {
       contact: {
-        name: 'admin',
+        name: 'admin'
       },
       content: 'My little comment five',
       date: '2018-10-10T06:55:00Z',
       end_date: null,
       id: 11,
       start_date: null,
-      type: 'comment',
-    },
-  ],
+      type: 'comment'
+    }
+  ]
 };
 
 const retrievedServices = {
   meta: {
     limit: 10,
     page: 1,
-    total: 2,
+    total: 2
   },
   result: [
     {
@@ -477,23 +477,23 @@ const retrievedServices = {
       information: 'OK - 127.0.0.1 rta 0ms lost 0%',
       links: {
         endpoints: {
-          performance_graph: 'ping-performance',
+          performance_graph: 'ping-performance'
         },
         externals: {
-          action: 'action',
+          action: 'action'
         },
         uris: {
-          configuration: 'configuration',
-        },
+          configuration: 'configuration'
+        }
       },
       name: 'Ping',
       short_type: 's',
       status: {
         name: 'Ok',
-        severity_code: 5,
+        severity_code: 5
       },
       type: 'service',
-      uuid: 'h1-s3',
+      uuid: 'h1-s3'
     },
     {
       duration: '21m',
@@ -501,22 +501,22 @@ const retrievedServices = {
       information: 'No output',
       links: {
         externals: {
-          action: 'action',
+          action: 'action'
         },
         uris: {
-          configuration: 'configuration',
-        },
+          configuration: 'configuration'
+        }
       },
       name: 'Disk',
       short_type: 's',
       status: {
         name: 'Unknown',
-        severity_code: 6,
+        severity_code: 6
       },
       type: 'service',
-      uuid: 'h1-s4',
-    },
-  ],
+      uuid: 'h1-s4'
+    }
+  ]
 };
 
 const retrievedFilters = {
@@ -524,10 +524,10 @@ const retrievedFilters = {
     meta: {
       limit: 30,
       page: 1,
-      total: 0,
+      total: 0
     },
-    result: [],
-  },
+    result: []
+  }
 };
 
 const currentDateIsoString = '2020-01-21T06:00:00.000Z';
@@ -539,9 +539,9 @@ const mockedParametersDataTimeLineDownload = {
       field: 'date',
       values: {
         $gt: start,
-        $lt: currentDateIsoString,
-      },
-    },
+        $lt: currentDateIsoString
+      }
+    }
   ],
   lists: [
     {
@@ -551,10 +551,10 @@ const mockedParametersDataTimeLineDownload = {
         'notification',
         'comment',
         'acknowledgement',
-        'downtime',
-      ],
-    },
-  ],
+        'downtime'
+      ]
+    }
+  ]
 };
 
 let context: ResourceContext;
@@ -569,7 +569,7 @@ const DetailsTest = (): JSX.Element => {
   context = {
     ...listingState,
     ...detailState,
-    ...filterState,
+    ...filterState
   } as ResourceContext;
 
   return (
@@ -584,7 +584,7 @@ const DetailsTest = (): JSX.Element => {
 const mockUser = {
   isExportButtonEnabled: true,
   locale: 'en',
-  timezone: 'Europe/Paris',
+  timezone: 'Europe/Paris'
 };
 const mockRefreshInterval = 60;
 
@@ -592,7 +592,7 @@ const DetailsWithJotai = (): JSX.Element => (
   <Provider
     initialValues={[
       [userAtom, mockUser],
-      [refreshIntervalAtom, mockRefreshInterval],
+      [refreshIntervalAtom, mockRefreshInterval]
     ]}
   >
     <DetailsTest />
@@ -607,7 +607,7 @@ const mockedNavigate = jest.fn();
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
-  useNavigate: (): jest.Mock => mockedNavigate,
+  useNavigate: (): jest.Mock => mockedNavigate
 }));
 
 Storage.prototype.getItem = mockedLocalStorageGetItem;
@@ -632,8 +632,8 @@ describe(Details, () => {
     setUrlQueryParameters([
       {
         name: 'details',
-        value: serviceDetailsUrlParameters,
-      },
+        value: serviceDetailsUrlParameters
+      }
     ]);
 
     const { getByText, queryByText, getAllByText, findByText } =
@@ -642,7 +642,7 @@ describe(Details, () => {
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalledWith(
         './api/latest/monitoring/resources/hosts/1/services/1' as string,
-        expect.anything(),
+        expect.anything()
       );
     });
 
@@ -663,7 +663,7 @@ describe(Details, () => {
     expect(getByText('OK - 127.0.0.1 rta 0.99ms lost 0%')).toBeInTheDocument();
     expect(getByText('OK - 127.0.0.1 rta 0.98ms lost 0%')).toBeInTheDocument();
     expect(
-      queryByText('OK - 127.0.0.1 rta 0.97ms lost 0%'),
+      queryByText('OK - 127.0.0.1 rta 0.97ms lost 0%')
     ).not.toBeInTheDocument();
 
     fireEvent.click(getByText(labelMore));
@@ -681,7 +681,7 @@ describe(Details, () => {
 
     expect(getByText(labelAcknowledgedBy)).toBeInTheDocument();
     expect(
-      getByText(`Admin ${labelAt} 03/18/2020 7:57 PM`),
+      getByText(`Admin ${labelAt} 03/18/2020 7:57 PM`)
     ).toBeInTheDocument();
     expect(getByText('Acknowledged by Admin'));
 
@@ -728,8 +728,8 @@ describe(Details, () => {
     expect(getByText(labelPerformanceData)).toBeInTheDocument();
     expect(
       getByText(
-        'rta=0.025ms;200.000;400.000;0; rtmax=0.061ms;;;; rtmin=0.015ms;;;; pl=0%;20;50;0;100',
-      ),
+        'rta=0.025ms;200.000;400.000;0; rtmax=0.061ms;;;; rtmin=0.015ms;;;; pl=0%;20;50;0;100'
+      )
     ).toBeInTheDocument();
 
     expect(getByText(labelCommand)).toBeInTheDocument();
@@ -739,7 +739,7 @@ describe(Details, () => {
   it.each([
     [label1Day, '2020-01-20T06:00:00.000Z', 20],
     [label7Days, '2020-01-14T06:00:00.000Z', 100],
-    [label31Days, '2019-12-21T06:00:00.000Z', 500],
+    [label31Days, '2019-12-21T06:00:00.000Z', 500]
   ])(
     `queries performance graphs and timelines with %p period when the Graph tab is selected and "Display events" option is activated`,
     async (period, startIsoString, timelineEventsLimit) => {
@@ -754,8 +754,8 @@ describe(Details, () => {
       setUrlQueryParameters([
         {
           name: 'details',
-          value: serviceDetailsGraphUrlParameters,
-        },
+          value: serviceDetailsGraphUrlParameters
+        }
       ]);
 
       const { getByText, findByText } = renderDetails();
@@ -769,7 +769,7 @@ describe(Details, () => {
       await waitFor(() => {
         expect(mockedAxios.get).toHaveBeenCalledWith(
           `${retrievedDetails.links.endpoints.performance_graph}?start=${startIsoString}&end=${currentDateIsoString}`,
-          expect.anything(),
+          expect.anything()
         );
       });
 
@@ -788,17 +788,17 @@ describe(Details, () => {
                     field: 'date',
                     values: {
                       $gt: startIsoString,
-                      $lt: currentDateIsoString,
-                    },
-                  },
-                ],
-              },
-            },
+                      $lt: currentDateIsoString
+                    }
+                  }
+                ]
+              }
+            }
           }),
-          expect.anything(),
+          expect.anything()
         );
       });
-    },
+    }
   );
 
   it('displays event annotations when the corresponding switch is triggered and the Graph tab is clicked', async () => {
@@ -806,14 +806,14 @@ describe(Details, () => {
       .mockResolvedValueOnce({ data: retrievedDetails })
       .mockResolvedValueOnce({ data: retrievedPerformanceGraphData })
       .mockResolvedValueOnce({
-        data: retrievedTimeline,
+        data: retrievedTimeline
       });
 
     setUrlQueryParameters([
       {
         name: 'details',
-        value: serviceDetailsGraphUrlParameters,
-      },
+        value: serviceDetailsGraphUrlParameters
+      }
     ]);
 
     const { findAllByLabelText, queryByLabelText, getByText, findByText } =
@@ -833,7 +833,7 @@ describe(Details, () => {
 
     const commentAnnotations = await findAllByLabelText(labelComment);
     const acknowledgementAnnotations = await findAllByLabelText(
-      labelAcknowledgement,
+      labelAcknowledgement
     );
     const downtimeAnnotations = await findAllByLabelText(labelDowntime);
 
@@ -848,8 +848,8 @@ describe(Details, () => {
     setUrlQueryParameters([
       {
         name: 'details',
-        value: serviceDetailsUrlParameters,
-      },
+        value: serviceDetailsUrlParameters
+      }
     ]);
 
     const { getByLabelText } = renderDetails();
@@ -862,8 +862,8 @@ describe(Details, () => {
 
     await waitFor(() =>
       expect(navigator.clipboard.writeText).toHaveBeenCalledWith(
-        retrievedDetails.command_line,
-      ),
+        retrievedDetails.command_line
+      )
     );
   });
 
@@ -873,7 +873,7 @@ describe(Details, () => {
     mockedAxios.get.mockResolvedValueOnce({ data: retrievedTimeline });
 
     setUrlQueryParameters([
-      { name: 'details', value: serviceDetailsTimelineUrlParameters },
+      { name: 'details', value: serviceDetailsTimelineUrlParameters }
     ]);
 
     const { getByText, getAllByLabelText, baseElement } = renderDetails();
@@ -891,21 +891,21 @@ describe(Details, () => {
                   field: 'date',
                   values: {
                     $gt: '2020-01-20T06:00:00.000Z',
-                    $lt: '2020-01-21T06:00:00.000Z',
-                  },
-                },
+                    $lt: '2020-01-21T06:00:00.000Z'
+                  }
+                }
               ],
               lists: [
                 {
                   field: 'type',
-                  values: getTypeIds(),
-                },
-              ],
-            },
-          },
+                  values: getTypeIds()
+                }
+              ]
+            }
+          }
         }),
-        expect.anything(),
-      ),
+        expect.anything()
+      )
     );
 
     await waitFor(() => expect(getByText(labelToday)).toBeInTheDocument());
@@ -915,14 +915,14 @@ describe(Details, () => {
     expect(getByText('UP')).toBeInTheDocument();
     expect(getByText('Tries: 1')).toBeInTheDocument();
     expect(
-      getByText('INITIAL HOST STATE: Centreon-Server;UP;HARD;1;'),
+      getByText('INITIAL HOST STATE: Centreon-Server;UP;HARD;1;')
     ).toBeInTheDocument();
 
     expect(getByText('Tuesday, January 21, 2020 9:35 AM')).toBeInTheDocument();
     expect(getByText('DOWN')).toBeInTheDocument();
     expect(getByText('Tries: 3')).toBeInTheDocument();
     expect(
-      getByText('INITIAL HOST STATE: Centreon-Server;DOWN;HARD;3;'),
+      getByText('INITIAL HOST STATE: Centreon-Server;DOWN;HARD;3;')
     ).toBeInTheDocument();
 
     expect(getByText(labelYesterday)).toBeInTheDocument();
@@ -938,13 +938,13 @@ describe(Details, () => {
 
     expect(
       getByText(
-        'From Sunday, January 19, 2020 8:30 AM To Tuesday, January 21, 2020 8:33 AM',
-      ),
+        'From Sunday, January 19, 2020 8:30 AM To Tuesday, January 21, 2020 8:33 AM'
+      )
     ).toBeInTheDocument();
     expect(getByText('My little dt'));
 
     expect(
-      getByText('From Sunday, January 19, 2020 8:30 AM'),
+      getByText('From Sunday, January 19, 2020 8:30 AM')
     ).toBeInTheDocument();
     expect(getByText('My little ongoing dt'));
 
@@ -953,7 +953,7 @@ describe(Details, () => {
 
     expect(getByText(labelLastWeek)).toBeInTheDocument();
     expect(
-      getByText('From January 12, 2020 to January 18, 2020'),
+      getByText('From January 12, 2020 to January 18, 2020')
     ).toBeInTheDocument();
 
     expect(getByText('Saturday, January 18, 2020 7:55 AM')).toBeInTheDocument();
@@ -961,7 +961,7 @@ describe(Details, () => {
 
     expect(getByText(labelLastMonth)).toBeInTheDocument();
     expect(
-      getByText('From December 15, 2019 to January 11, 2020'),
+      getByText('From December 15, 2019 to January 11, 2020')
     ).toBeInTheDocument();
 
     expect(getByText('Wednesday, January 1, 2020 7:55 AM')).toBeInTheDocument();
@@ -969,7 +969,7 @@ describe(Details, () => {
 
     expect(getByText(labelLastYear)).toBeInTheDocument();
     expect(
-      getByText('From December 16, 2018 to December 14, 2019'),
+      getByText('From December 16, 2018 to December 14, 2019')
     ).toBeInTheDocument();
 
     expect(getByText('Monday, June 10, 2019 8:55 AM')).toBeInTheDocument();
@@ -979,12 +979,12 @@ describe(Details, () => {
     expect(getByText('From December 15, 2018')).toBeInTheDocument();
 
     expect(
-      getByText('Wednesday, October 10, 2018 8:55 AM'),
+      getByText('Wednesday, October 10, 2018 8:55 AM')
     ).toBeInTheDocument();
     expect(getByText('My little comment five'));
 
     const removeEventIcon = baseElement.querySelectorAll(
-      'svg[class*="deleteIcon"]',
+      'svg[class*="deleteIcon"]'
     )[0];
 
     fireEvent.click(removeEventIcon);
@@ -1002,21 +1002,21 @@ describe(Details, () => {
                   field: 'date',
                   values: {
                     $gt: '2020-01-20T06:00:00.000Z',
-                    $lt: '2020-01-21T06:00:00.000Z',
-                  },
-                },
+                    $lt: '2020-01-21T06:00:00.000Z'
+                  }
+                }
               ],
               lists: [
                 {
                   field: 'type',
-                  values: reject(equals('event'))(getTypeIds()),
-                },
-              ],
-            },
-          },
+                  values: reject(equals('event'))(getTypeIds())
+                }
+              ]
+            }
+          }
         }),
-        expect.anything(),
-      ),
+        expect.anything()
+      )
     );
   });
 
@@ -1028,14 +1028,14 @@ describe(Details, () => {
           ...retrievedDetails.links,
           uris: {
             logs: 'logs',
-            reporting: 'reporting',
-          },
-        },
-      },
+            reporting: 'reporting'
+          }
+        }
+      }
     });
 
     setUrlQueryParameters([
-      { name: 'details', value: serviceDetailsUrlParameters },
+      { name: 'details', value: serviceDetailsUrlParameters }
     ]);
 
     const { getByLabelText, getByTestId } = renderDetails();
@@ -1045,7 +1045,7 @@ describe(Details, () => {
     });
 
     await waitFor(() =>
-      expect(getByLabelText(labelViewLogs)).toBeInTheDocument(),
+      expect(getByLabelText(labelViewLogs)).toBeInTheDocument()
     );
 
     expect(getByLabelText(labelViewReport)).toBeInTheDocument();
@@ -1062,10 +1062,10 @@ describe(Details, () => {
   it('sets the details according to the details URL query parameter when given', async () => {
     mockedAxios.get
       .mockResolvedValueOnce({
-        data: retrievedDetails,
+        data: retrievedDetails
       })
       .mockResolvedValue({
-        data: retrievedPerformanceGraphData,
+        data: retrievedPerformanceGraphData
       });
 
     const retrievedServiceDetails = {
@@ -1075,21 +1075,21 @@ describe(Details, () => {
       tab: 'details',
       tabParameters: {
         graph: {
-          options: defaultGraphOptions,
+          options: defaultGraphOptions
         },
         services: {
-          options: defaultGraphOptions,
-        },
+          options: defaultGraphOptions
+        }
       },
       type: 'service',
-      uuid: 'h3-s2',
+      uuid: 'h3-s2'
     };
 
     setUrlQueryParameters([
       {
         name: 'details',
-        value: retrievedServiceDetails,
-      },
+        value: retrievedServiceDetails
+      }
     ]);
 
     const { getByText } = renderDetails();
@@ -1097,7 +1097,7 @@ describe(Details, () => {
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalledWith(
         './api/latest/monitoring/resources/hosts/1/services/2' as string,
-        expect.anything(),
+        expect.anything()
       );
     });
 
@@ -1107,7 +1107,7 @@ describe(Details, () => {
 
     const tabFromUrlQueryParameters = path(
       ['details', 'tab'],
-      getUrlQueryParameters(),
+      getUrlQueryParameters()
     );
 
     await waitFor(() => {
@@ -1125,7 +1125,7 @@ describe(Details, () => {
       expect(updatedDetailsFromQueryParameters).toEqual({
         customTimePeriod: {
           end: '2020-01-21T06:00:00.000Z',
-          start: '2020-01-14T06:00:00.000Z',
+          start: '2020-01-14T06:00:00.000Z'
         },
         id: 2,
         resourcesDetailsEndpoint:
@@ -1138,35 +1138,35 @@ describe(Details, () => {
               displayEvents: {
                 id: 'displayEvents',
                 label: labelDisplayEvents,
-                value: false,
-              },
-            },
+                value: false
+              }
+            }
           },
           services: {
             options: {
               displayEvents: {
                 id: 'displayEvents',
                 label: labelDisplayEvents,
-                value: false,
-              },
-            },
-          },
+                value: false
+              }
+            }
+          }
         },
-        uuid: 'h3-s2',
+        uuid: 'h3-s2'
       });
     });
   });
 
   it('copies the current URL when the copy resource link button is clicked', async () => {
     mockedAxios.get.mockResolvedValueOnce({
-      data: retrievedDetails,
+      data: retrievedDetails
     });
 
     setUrlQueryParameters([
       {
         name: 'details',
-        value: serviceDetailsUrlParameters,
-      },
+        value: serviceDetailsUrlParameters
+      }
     ]);
 
     const { getByLabelText } = renderDetails();
@@ -1176,18 +1176,18 @@ describe(Details, () => {
     });
 
     await waitFor(() =>
-      expect(getByLabelText(labelCopyLink)).toBeInTheDocument(),
+      expect(getByLabelText(labelCopyLink)).toBeInTheDocument()
     );
 
     act(() => {
       fireEvent.click(
-        getByLabelText(labelCopyLink).firstElementChild as HTMLElement,
+        getByLabelText(labelCopyLink).firstElementChild as HTMLElement
       );
     });
 
     await waitFor(() => {
       expect(navigator.clipboard.writeText).toHaveBeenCalledWith(
-        window.location.href,
+        window.location.href
       );
     });
   });
@@ -1197,21 +1197,21 @@ describe(Details, () => {
       .mockResolvedValueOnce({
         data: {
           ...retrievedDetails,
-          type: 'host',
-        },
+          type: 'host'
+        }
       })
       .mockResolvedValueOnce({
-        data: retrievedServices,
+        data: retrievedServices
       })
       .mockResolvedValueOnce({
-        data: { ...retrievedDetails, type: 'service' },
+        data: { ...retrievedDetails, type: 'service' }
       });
 
     setUrlQueryParameters([
       {
         name: 'details',
-        value: hostDetailsServicesUrlParameters,
-      },
+        value: hostDetailsServicesUrlParameters
+      }
     ]);
     const { getByText, queryByText } = renderDetails();
 
@@ -1234,10 +1234,10 @@ describe(Details, () => {
             {
               field: 'h.name',
               values: {
-                $eq: retrievedDetails.name,
-              },
-            },
-          ],
+                $eq: retrievedDetails.name
+              }
+            }
+          ]
         },
         serviceCategories: [],
         serviceGroups: [],
@@ -1245,9 +1245,9 @@ describe(Details, () => {
         serviceSeverityLevels: [],
         states: [],
         statusTypes: [],
-        statuses: [],
+        statuses: []
       }),
-      expect.anything(),
+      expect.anything()
     );
 
     await waitFor(() => expect(getByText('Ok')).toBeInTheDocument());
@@ -1267,7 +1267,7 @@ describe(Details, () => {
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalledWith(
         `./api/latest/monitoring/resources/services/${pingService.id}`,
-        expect.anything(),
+        expect.anything()
       );
     });
 
@@ -1281,24 +1281,24 @@ describe(Details, () => {
       .mockResolvedValueOnce({
         data: {
           ...retrievedDetails,
-          type: 'host',
-        },
+          type: 'host'
+        }
       })
       .mockResolvedValueOnce({
-        data: retrievedServices,
+        data: retrievedServices
       })
       .mockResolvedValueOnce({
-        data: retrievedPerformanceGraphData,
+        data: retrievedPerformanceGraphData
       })
       .mockResolvedValueOnce({
-        data: retrievedPerformanceGraphData,
+        data: retrievedPerformanceGraphData
       });
 
     setUrlQueryParameters([
       {
         name: 'details',
-        value: serviceDetailsGraphUrlParameters,
-      },
+        value: serviceDetailsGraphUrlParameters
+      }
     ]);
 
     const { findByText, getByText } = renderDetails();
@@ -1314,7 +1314,7 @@ describe(Details, () => {
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalledWith(
         'ping-performance?start=2020-01-14T06:00:00.000Z&end=2020-01-21T06:00:00.000Z',
-        cancelTokenRequestParam,
+        cancelTokenRequestParam
       );
     });
   });
@@ -1327,8 +1327,8 @@ describe(Details, () => {
     setUrlQueryParameters([
       {
         name: 'details',
-        value: serviceDetailsGraphUrlParameters,
-      },
+        value: serviceDetailsGraphUrlParameters
+      }
     ]);
     renderDetails();
 
@@ -1338,27 +1338,27 @@ describe(Details, () => {
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalledWith(
         `${retrievedDetails.links.endpoints.performance_graph}?start=2020-01-20T06:00:00.000Z&end=2020-01-21T06:00:00.000Z`,
-        cancelTokenRequestParam,
+        cancelTokenRequestParam
       );
     });
 
     act(() => {
       context.changeCustomTimePeriod?.({
         date: new Date(startISOString),
-        property: CustomTimePeriodProperty.start,
+        property: CustomTimePeriodProperty.start
       });
     });
     act(() => {
       context.changeCustomTimePeriod?.({
         date: new Date(endISOString),
-        property: CustomTimePeriodProperty.end,
+        property: CustomTimePeriodProperty.end
       });
     });
 
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalledWith(
         `${retrievedDetails.links.endpoints.performance_graph}?start=${startISOString}&end=${endISOString}`,
-        cancelTokenRequestParam,
+        cancelTokenRequestParam
       );
     });
   });
@@ -1372,8 +1372,8 @@ describe(Details, () => {
     setUrlQueryParameters([
       {
         name: 'details',
-        value: serviceDetailsGraphUrlParameters,
-      },
+        value: serviceDetailsGraphUrlParameters
+      }
     ]);
 
     const { getByText } = renderDetails();
@@ -1384,20 +1384,20 @@ describe(Details, () => {
     act(() => {
       context.changeCustomTimePeriod?.({
         date: new Date(startISOString),
-        property: CustomTimePeriodProperty.start,
+        property: CustomTimePeriodProperty.start
       });
     });
     act(() => {
       context.changeCustomTimePeriod?.({
         date: new Date(endISOString),
-        property: CustomTimePeriodProperty.end,
+        property: CustomTimePeriodProperty.end
       });
     });
 
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalledWith(
         `${retrievedDetails.links.endpoints.performance_graph}?start=2020-01-20T06:00:00.000Z&end=2020-01-21T06:00:00.000Z`,
-        cancelTokenRequestParam,
+        cancelTokenRequestParam
       );
     });
 
@@ -1412,7 +1412,7 @@ describe(Details, () => {
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalledWith(
         `${retrievedDetails.links.endpoints.performance_graph}?start=2020-01-14T06:00:00.000Z&end=2020-01-21T06:00:00.000Z`,
-        cancelTokenRequestParam,
+        cancelTokenRequestParam
       );
     });
   });
@@ -1432,10 +1432,10 @@ describe(Details, () => {
             end: '2021-11-02T21:00:00.000Z',
             start: '2021-11-02T21:00:00.000Z',
             timelineLimit: 20,
-            xAxisTickFormat: 'LT',
-          },
-        },
-      },
+            xAxisTickFormat: 'LT'
+          }
+        }
+      }
     ]);
 
     const { getByLabelText, getByText } = renderDetails();
@@ -1449,7 +1449,7 @@ describe(Details, () => {
 
   it.each([
     [labelForward, '2020-01-20T18:00:00.000Z', '2020-01-21T18:00:00.000Z'],
-    [labelBackward, '2020-01-19T18:00:00.000Z', '2020-01-20T18:00:00.000Z'],
+    [labelBackward, '2020-01-19T18:00:00.000Z', '2020-01-20T18:00:00.000Z']
   ])(
     `queries performance graphs with a custom timeperiod when the Graph tab is selected and the "%p" icon is clicked`,
     async (iconLabel, startISOString, endISOString) => {
@@ -1461,8 +1461,8 @@ describe(Details, () => {
       setUrlQueryParameters([
         {
           name: 'details',
-          value: serviceDetailsGraphUrlParameters,
-        },
+          value: serviceDetailsGraphUrlParameters
+        }
       ]);
 
       const { getByLabelText } = renderDetails();
@@ -1470,26 +1470,26 @@ describe(Details, () => {
       act(() => {
         context.changeCustomTimePeriod?.({
           date: new Date('2020-01-20T06:00:00.000Z'),
-          property: CustomTimePeriodProperty.start,
+          property: CustomTimePeriodProperty.start
         });
       });
 
       act(() => {
         context.changeCustomTimePeriod?.({
           date: new Date('2020-01-21T06:00:00.000Z'),
-          property: CustomTimePeriodProperty.end,
+          property: CustomTimePeriodProperty.end
         });
       });
 
       await waitFor(() => {
         expect(mockedAxios.get).toHaveBeenCalledWith(
           `${retrievedDetails.links.endpoints.performance_graph}?start=2020-01-20T06:00:00.000Z&end=2020-01-21T06:00:00.000Z`,
-          cancelTokenRequestParam,
+          cancelTokenRequestParam
         );
       });
 
       await waitFor(() =>
-        expect(getByLabelText(iconLabel)).toBeInTheDocument(),
+        expect(getByLabelText(iconLabel)).toBeInTheDocument()
       );
 
       userEvent.click(getByLabelText(iconLabel));
@@ -1497,10 +1497,10 @@ describe(Details, () => {
       await waitFor(() => {
         expect(mockedAxios.get).toHaveBeenCalledWith(
           `${retrievedDetails.links.endpoints.performance_graph}?start=${startISOString}&end=${endISOString}`,
-          cancelTokenRequestParam,
+          cancelTokenRequestParam
         );
       });
-    },
+    }
   );
 
   it('displays retrieved metrics when the selected Resource is a meta service and the metrics tab is selected', async () => {
@@ -1510,7 +1510,7 @@ describe(Details, () => {
       meta: {
         limit: 10,
         page: 1,
-        total: 1,
+        total: 1
       },
       result: [
         {
@@ -1518,27 +1518,27 @@ describe(Details, () => {
           name: 'pl',
           resource: service,
           unit: '%',
-          value: 3,
-        },
-      ],
+          value: 3
+        }
+      ]
     };
 
     mockedAxios.get
       .mockResolvedValueOnce({
         data: {
           ...retrievedDetails,
-          type: 'metaservice',
-        },
+          type: 'metaservice'
+        }
       })
       .mockResolvedValueOnce({
-        data: retrievedMetrics,
+        data: retrievedMetrics
       });
 
     setUrlQueryParameters([
       {
         name: 'details',
-        value: metaserviceDetailsMetricsUrlParameters,
-      },
+        value: metaserviceDetailsMetricsUrlParameters
+      }
     ]);
 
     const { getByText } = renderDetails();
@@ -1561,8 +1561,8 @@ describe(Details, () => {
     setUrlQueryParameters([
       {
         name: 'details',
-        value: serviceDetailsGraphUrlParameters,
-      },
+        value: serviceDetailsGraphUrlParameters
+      }
     ]);
 
     const { getByLabelText, getByText } = renderDetails();
@@ -1570,7 +1570,7 @@ describe(Details, () => {
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalledWith(
         `${retrievedDetails.links.endpoints.performance_graph}?start=2020-01-20T06:00:00.000Z&end=2020-01-21T06:00:00.000Z`,
-        cancelTokenRequestParam,
+        cancelTokenRequestParam
       );
     });
 
@@ -1584,14 +1584,14 @@ describe(Details, () => {
 
   it('filters on a group when the corresponding chip is clicked and the Details tab is selected', async () => {
     mockedAxios.get.mockResolvedValueOnce({
-      data: retrievedDetails,
+      data: retrievedDetails
     });
 
     setUrlQueryParameters([
       {
         name: 'details',
-        value: serviceDetailsUrlParameters,
-      },
+        value: serviceDetailsUrlParameters
+      }
     ]);
 
     const { getByLabelText } = renderDetails();
@@ -1601,7 +1601,7 @@ describe(Details, () => {
     });
 
     await waitFor(() =>
-      expect(getByLabelText('Linux-servers Chip')).toBeInTheDocument(),
+      expect(getByLabelText('Linux-servers Chip')).toBeInTheDocument()
     );
 
     userEvent.hover(getByLabelText('Linux-servers Chip'));
@@ -1609,7 +1609,7 @@ describe(Details, () => {
 
     await waitFor(() => {
       expect(context.getCriteriaValue?.(CriteriaNames.serviceGroups)).toEqual([
-        { id: 0, name: 'Linux-servers' },
+        { id: 0, name: 'Linux-servers' }
       ]);
     });
   });
@@ -1623,17 +1623,17 @@ describe(Details, () => {
           uris: {
             configuration: '/configuration',
             logs: '/logs',
-            reporting: '/reporting',
-          },
-        },
-      },
+            reporting: '/reporting'
+          }
+        }
+      }
     });
 
     setUrlQueryParameters([
       {
         name: 'details',
-        value: serviceDetailsUrlParameters,
-      },
+        value: serviceDetailsUrlParameters
+      }
     ]);
 
     const { getByText, getByLabelText } = renderDetails();
@@ -1641,52 +1641,52 @@ describe(Details, () => {
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalledWith(
         './api/latest/monitoring/resources/hosts/1/services/1',
-        expect.anything(),
+        expect.anything()
       );
     });
 
     await waitFor(() =>
-      expect(getByText(retrievedDetails.name)).toBeInTheDocument(),
+      expect(getByText(retrievedDetails.name)).toBeInTheDocument()
     );
 
     userEvent.hover(getByText(retrievedDetails.name));
 
     expect(
-      getByLabelText(`${labelConfigure}_${retrievedDetails.name}`),
+      getByLabelText(`${labelConfigure}_${retrievedDetails.name}`)
     ).toBeInTheDocument();
 
     expect(
-      getByLabelText(`${labelConfigure}_${retrievedDetails.name}`),
+      getByLabelText(`${labelConfigure}_${retrievedDetails.name}`)
     ).toHaveAttribute('href', '/configuration');
   });
 
   it('populates details tiles with values from localStorage if available', async () => {
     mockedAxios.get.mockResolvedValueOnce({
-      data: retrievedDetails,
+      data: retrievedDetails
     });
 
     setUrlQueryParameters([
       {
         name: 'details',
-        value: serviceDetailsUrlParameters,
-      },
+        value: serviceDetailsUrlParameters
+      }
     ]);
 
     const { getByText, queryByText } = renderDetails();
 
     mockedLocalStorageGetItem.mockReturnValue(
-      JSON.stringify([labelMonitoringServer, labelStatusInformation]),
+      JSON.stringify([labelMonitoringServer, labelStatusInformation])
     );
 
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalledWith(
         './api/latest/monitoring/resources/hosts/1/services/1',
-        expect.anything(),
+        expect.anything()
       );
     });
 
     await waitFor(() =>
-      expect(getByText(labelMonitoringServer)).toBeInTheDocument(),
+      expect(getByText(labelMonitoringServer)).toBeInTheDocument()
     );
     expect(getByText(labelStatusInformation)).toBeInTheDocument();
 
@@ -1706,8 +1706,8 @@ describe(Details, () => {
     setUrlQueryParameters([
       {
         name: 'details',
-        value: serviceDetailsTimelineUrlParameters,
-      },
+        value: serviceDetailsTimelineUrlParameters
+      }
     ]);
 
     const { getByText } = renderDetails();
@@ -1725,27 +1725,27 @@ describe(Details, () => {
                   field: 'date',
                   values: {
                     $gt: '2020-01-20T06:00:00.000Z',
-                    $lt: '2020-01-21T06:00:00.000Z',
-                  },
-                },
+                    $lt: '2020-01-21T06:00:00.000Z'
+                  }
+                }
               ],
               lists: [
                 {
                   field: 'type',
-                  values: getTypeIds(),
-                },
-              ],
-            },
-          },
+                  values: getTypeIds()
+                }
+              ]
+            }
+          }
         }),
-        cancelTokenRequestParam,
-      ),
+        cancelTokenRequestParam
+      )
     );
 
     await waitFor(() =>
       expect(
-        screen.getByText('INITIAL HOST STATE: Centreon-Server;UP;HARD;1;'),
-      ).toBeInTheDocument(),
+        screen.getByText('INITIAL HOST STATE: Centreon-Server;UP;HARD;1;')
+      ).toBeInTheDocument()
     );
 
     userEvent.click(getByText(label7Days) as HTMLElement);
@@ -1763,21 +1763,21 @@ describe(Details, () => {
                   field: 'date',
                   values: {
                     $gt: '2020-01-14T06:00:00.000Z',
-                    $lt: '2020-01-21T06:00:00.000Z',
-                  },
-                },
+                    $lt: '2020-01-21T06:00:00.000Z'
+                  }
+                }
               ],
               lists: [
                 {
                   field: 'type',
-                  values: getTypeIds(),
-                },
-              ],
-            },
-          },
+                  values: getTypeIds()
+                }
+              ]
+            }
+          }
         }),
-        expect.anything(),
-      ),
+        expect.anything()
+      )
     );
 
     userEvent.click(getByText(labelGraph));
@@ -1785,7 +1785,7 @@ describe(Details, () => {
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalledWith(
         `${retrievedDetails.links.endpoints.performance_graph}?start=2020-01-14T06:00:00.000Z&end=2020-01-21T06:00:00.000Z`,
-        cancelTokenRequestParam,
+        cancelTokenRequestParam
       );
     });
   });
@@ -1793,14 +1793,14 @@ describe(Details, () => {
   it('displays contacts and contact groups when the notification tab is clicked', async () => {
     mockedAxios.get.mockResolvedValueOnce({ data: retrievedDetails });
     mockedAxios.get.mockResolvedValueOnce({
-      data: retrievedNotificationContacts,
+      data: retrievedNotificationContacts
     });
 
     setUrlQueryParameters([
       {
         name: 'details',
-        value: serviceDetailsNotificationUrlParameters,
-      },
+        value: serviceDetailsNotificationUrlParameters
+      }
     ]);
 
     const { getByText, getByTestId } = renderDetails();
@@ -1808,7 +1808,7 @@ describe(Details, () => {
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalledWith(
         retrievedDetails.links.endpoints.notification_policy,
-        expect.anything(),
+        expect.anything()
       );
     });
 
@@ -1836,11 +1836,11 @@ describe(Details, () => {
 
     const timelineDownloadEndpoint = path(
       ['links', 'endpoints', 'timeline_download'],
-      retrievedDetails,
+      retrievedDetails
     );
 
     const parameters = getSearchQueryParameterValue(
-      mockedParametersDataTimeLineDownload,
+      mockedParametersDataTimeLineDownload
     );
 
     const mockedOpen = jest.fn();
@@ -1849,8 +1849,8 @@ describe(Details, () => {
     setUrlQueryParameters([
       {
         name: 'details',
-        value: serviceDetailsTimelineUrlParameters,
-      },
+        value: serviceDetailsTimelineUrlParameters
+      }
     ]);
 
     const { getByTestId } = renderDetails();
@@ -1864,7 +1864,7 @@ describe(Details, () => {
     expect(mockedOpen).toHaveBeenCalledWith(
       `${timelineDownloadEndpoint}?search=${JSON.stringify(parameters)}`,
       'noopener',
-      'noreferrer',
+      'noreferrer'
     );
   });
 });

@@ -30,24 +30,14 @@ const AnomalyDetectionEnvelopeThreshold = ({
   thirdUnit,
   timeSeries,
   graphHeight,
-  data,
+  data
 }: Props): JSX.Element => {
   const [
-    {
-      metric: metricY1,
-      unit: unitY1,
-      invert: invertY1,
-      lineColor: lineColorY1,
-    },
+    { metric: metricY1, unit: unitY1, invert: invertY1, lineColor: lineColorY1 }
   ] = regularLines.filter((item) => equals(item.name, 'Upper Threshold'));
 
   const [
-    {
-      metric: metricY0,
-      unit: unitY0,
-      invert: invertY0,
-      lineColor: lineColorY0,
-    },
+    { metric: metricY0, unit: unitY0, invert: invertY0, lineColor: lineColorY0 }
   ] = regularLines.filter((item) => equals(item.name, 'Lower Threshold'));
 
   const y1Scale = getYScale({
@@ -56,7 +46,7 @@ const AnomalyDetectionEnvelopeThreshold = ({
     leftScale,
     rightScale,
     secondUnit,
-    unit: unitY1,
+    unit: unitY1
   });
 
   const y0Scale = getYScale({
@@ -65,7 +55,7 @@ const AnomalyDetectionEnvelopeThreshold = ({
     leftScale,
     rightScale,
     secondUnit,
-    unit: unitY0,
+    unit: unitY0
   });
 
   const getXPoint = (timeValue): number => xScale(getTime(timeValue)) as number;
@@ -86,7 +76,7 @@ const AnomalyDetectionEnvelopeThreshold = ({
     thirdUnit,
     timeSeries,
     y0Scale,
-    y1Scale,
+    y1Scale
   };
 
   if (data) {
@@ -99,11 +89,11 @@ const AnomalyDetectionEnvelopeThreshold = ({
     <Threshold
       aboveAreaProps={{
         fill: lineColorY1,
-        fillOpacity: 0.1,
+        fillOpacity: 0.1
       }}
       belowAreaProps={{
         fill: lineColorY0,
-        fillOpacity: 0.1,
+        fillOpacity: 0.1
       }}
       clipAboveTo={0}
       clipBelowTo={graphHeight}

@@ -38,7 +38,7 @@ const getStackedDates = (stackValues: Array<StackValue>): Array<Date> => {
 const getYAnchorPoint = ({
   timeTick,
   stackValues,
-  yScale,
+  yScale
 }: Pick<Props, 'timeTick' | 'stackValues' | 'yScale'>): number => {
   const index = bisectDate(getStackedDates(stackValues), timeTick);
   const timeValue = stackValues[index];
@@ -54,7 +54,7 @@ const StackedAnchorPoint = ({
   areaColor,
   transparency,
   lineColor,
-  displayTimeValues,
+  displayTimeValues
 }: Props): JSX.Element | null => {
   if (isNil(timeTick) || not(displayTimeValues)) {
     return null;
@@ -64,7 +64,7 @@ const StackedAnchorPoint = ({
   const yAnchorPoint = getYAnchorPoint({
     stackValues,
     timeTick,
-    yScale,
+    yScale
   });
 
   if (isNil(yAnchorPoint)) {
@@ -86,5 +86,5 @@ export default memo(
   StackedAnchorPoint,
   (prevProps, nextProps) =>
     equals(prevProps.timeTick, nextProps.timeTick) &&
-    equals(prevProps.stackValues, nextProps.stackValues),
+    equals(prevProps.stackValues, nextProps.stackValues)
 );

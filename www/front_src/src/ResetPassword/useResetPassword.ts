@@ -16,7 +16,7 @@ import {
   labelNewPasswordsMustMatch,
   labelPasswordRenewed,
   labelRequired,
-  labelTheNewPasswordIstheSameAsTheOldPassword,
+  labelTheNewPasswordIstheSameAsTheOldPassword
 } from './translatedLabels';
 import { getResetPasswordEndpoint } from './api/endpoint';
 import { passwordResetInformationsAtom } from './passwordResetInformationsAtom';
@@ -24,7 +24,7 @@ import { passwordResetInformationsAtom } from './passwordResetInformationsAtom';
 interface UseResetPasswordState {
   submitResetPassword: (
     values: ResetPasswordValues,
-    { setSubmitting }: Pick<FormikHelpers<FormikValues>, 'setSubmitting'>,
+    { setSubmitting }: Pick<FormikHelpers<FormikValues>, 'setSubmitting'>
   ) => void;
   validationSchema: Yup.SchemaOf<ResetPasswordValues>;
 }
@@ -43,7 +43,7 @@ const useResetPassword = (): UseResetPasswordState => {
 
   const { showSuccessMessage } = useSnackbar();
   const { sendRequest } = useRequest({
-    request: putData,
+    request: putData
   });
 
   const passwordResetInformations = useAtomValue(passwordResetInformationsAtom);
@@ -53,22 +53,22 @@ const useResetPassword = (): UseResetPasswordState => {
 
   const submitResetPassword = (
     values: ResetPasswordValues,
-    { setSubmitting }: Pick<FormikHelpers<FormikValues>, 'setSubmitting'>,
+    { setSubmitting }: Pick<FormikHelpers<FormikValues>, 'setSubmitting'>
   ): void => {
     sendRequest({
       data: {
         new_password: values.newPassword,
-        old_password: values.oldPassword,
+        old_password: values.oldPassword
       },
       endpoint: getResetPasswordEndpoint(
-        passwordResetInformations?.alias as string,
-      ),
+        passwordResetInformations?.alias as string
+      )
     })
       .then(() => {
         showSuccessMessage(t(labelPasswordRenewed));
         sendLogin({
           login: passwordResetInformations?.alias as string,
-          password: values.newPassword,
+          password: values.newPassword
         }).then(({ redirectUri }) => {
           showSuccessMessage(t(labelLoginSucceeded));
           loadUser()?.then(() => navigate(redirectUri));
@@ -84,18 +84,18 @@ const useResetPassword = (): UseResetPasswordState => {
       .test(
         'match',
         t(labelTheNewPasswordIstheSameAsTheOldPassword),
-        differentPasswords,
+        differentPasswords
       )
       .required(t(labelRequired)),
     newPasswordConfirmation: Yup.string()
       .test('match', t(labelNewPasswordsMustMatch), matchNewPasswords)
       .required(t(labelRequired)),
-    oldPassword: Yup.string().required(t(labelRequired)),
+    oldPassword: Yup.string().required(t(labelRequired))
   });
 
   return {
     submitResetPassword,
-    validationSchema,
+    validationSchema
   };
 };
 

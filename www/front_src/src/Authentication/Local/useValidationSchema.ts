@@ -10,7 +10,7 @@ import {
   labelMaximum128Characters,
   labelMinimum8Characters,
   labelRequired,
-  labelBlockingDurationMustBeLessThanOrEqualTo7Days,
+  labelBlockingDurationMustBeLessThanOrEqualTo7Days
 } from './translatedLabels';
 
 const useValidationSchema = (): Yup.SchemaOf<PasswordSecurityPolicy> => {
@@ -42,12 +42,12 @@ const useValidationSchema = (): Yup.SchemaOf<PasswordSecurityPolicy> => {
         .min(sevenDays, t(labelChooseADurationBetween7DaysAnd12Months))
         .max(twelveMonths, t(labelChooseADurationBetween7DaysAnd12Months))
         .nullable()
-        .defined(),
+        .defined()
     }),
     passwordMinLength: Yup.number()
       .min(8, t(labelMinimum8Characters))
       .max(128, t(labelMaximum128Characters))
-      .defined(t(labelRequired)),
+      .defined(t(labelRequired))
   });
 };
 

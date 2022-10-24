@@ -10,7 +10,7 @@ import {
   gt,
   equals,
   not,
-  length,
+  length
 } from 'ramda';
 import { useTranslation } from 'react-i18next';
 import { useAtomValue } from 'jotai/utils';
@@ -20,7 +20,7 @@ import {
   Fab,
   Fade,
   LinearProgress,
-  Tooltip,
+  Tooltip
 } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
@@ -40,34 +40,34 @@ const useStyles = makeStyles((theme) => ({
     display: 'grid',
     height: '100%',
     justifyItems: 'center',
-    width: '100%',
+    width: '100%'
   },
   entities: {
     display: 'grid',
     gridAutoFlow: 'row',
     gridGap: theme.spacing(1),
     gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
-    width: '100%',
+    width: '100%'
   },
   entitiesContainer: {
     paddingBottom: theme.spacing(0.5),
-    width: '100%',
+    width: '100%'
   },
   fab: {
     bottom: 0,
     display: 'flex',
     justifyContent: 'flex-end',
     marginRight: theme.spacing(1.5),
-    position: 'sticky',
+    position: 'sticky'
   },
   filter: {
     marginTop: theme.spacing(),
-    width: '100%',
+    width: '100%'
   },
   progress: {
     height: theme.spacing(0.5),
     marginBottom: theme.spacing(1),
-    width: '100%',
+    width: '100%'
   },
   scrollableContainer: {
     bottom: 0,
@@ -77,8 +77,8 @@ const useStyles = makeStyles((theme) => ({
     paddingTop: theme.spacing(1),
     position: 'absolute',
     right: 0,
-    top: 0,
-  },
+    top: 0
+  }
 }));
 
 interface Props<TEntity> {
@@ -104,7 +104,7 @@ const InfiniteScrollContent = <TEntity extends { id: number }>({
   preventReloadWhen = false,
   sendListingRequest,
   children,
-  details,
+  details
 }: Props<TEntity>): JSX.Element => {
   const classes = useStyles();
   const { t } = useTranslation();
@@ -121,8 +121,8 @@ const InfiniteScrollContent = <TEntity extends { id: number }>({
 
   const listEntities = (
     { atPage } = {
-      atPage: page,
-    },
+      atPage: page
+    }
   ): Promise<ListingModel<TEntity>> | undefined => {
     return sendListingRequest?.({ atPage })
       .then((retrievedListing) => {
@@ -214,7 +214,7 @@ const InfiniteScrollContent = <TEntity extends { id: number }>({
   const scrollToTop = (): void => {
     scrollableContainerRef.current?.scrollTo({
       behavior: gt(length(entities as Array<TEntity>), 200) ? 'auto' : 'smooth',
-      top: 0,
+      top: 0
     });
     preventScrollingRef.current = true;
     setIsScrolling(false);
@@ -224,7 +224,7 @@ const InfiniteScrollContent = <TEntity extends { id: number }>({
     action: loadMoreEvents,
     loading,
     maxPage,
-    page,
+    page
   });
 
   return (
@@ -247,8 +247,8 @@ const InfiniteScrollContent = <TEntity extends { id: number }>({
               [isEmpty, always(<NoResultsMessage />)],
               [
                 T,
-                always(<>{children({ entities, infiniteScrollTriggerRef })}</>),
-              ],
+                always(<>{children({ entities, infiniteScrollTriggerRef })}</>)
+              ]
             ])(entities)}
           </div>
           <div className={classes.fab}>
@@ -280,12 +280,12 @@ const MemoizedInfiniteScrollContent = memoizeComponent({
     'loading',
     'preventReloadWhen',
     'filter',
-    'details',
-  ],
+    'details'
+  ]
 }) as typeof InfiniteScrollContent;
 
 const InfiniteScroll = <TEntity extends { id: number }>(
-  props: Props<TEntity>,
+  props: Props<TEntity>
 ): JSX.Element => {
   return <MemoizedInfiniteScrollContent {...props} />;
 };

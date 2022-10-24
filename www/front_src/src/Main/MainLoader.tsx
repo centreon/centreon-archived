@@ -17,8 +17,8 @@ const useStyles = makeStyles((theme) => ({
     height: '100vh',
     justifyContent: 'center',
     rowGap: theme.spacing(2),
-    width: '100%',
-  },
+    width: '100%'
+  }
 }));
 
 export const MainLoader = (): JSX.Element => {

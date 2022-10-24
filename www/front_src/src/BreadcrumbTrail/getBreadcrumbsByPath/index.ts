@@ -60,7 +60,7 @@ const getBreadcrumbStep = (item): Breadcrumb | null => {
   return availableUrl
     ? {
         label: item.label,
-        link: availableUrl,
+        link: availableUrl
       }
     : null;
 };
@@ -77,8 +77,8 @@ const getBreadcrumbsByPath = (navigation: Array<Page>): BreadcrumbsByPath => {
     breadcrumbs[stepLvl1.link] = [
       {
         label: stepLvl1.label,
-        link: stepLvl1.link,
-      },
+        link: stepLvl1.link
+      }
     ];
 
     // build level 2 breadcrumbs
@@ -91,12 +91,12 @@ const getBreadcrumbsByPath = (navigation: Array<Page>): BreadcrumbsByPath => {
         breadcrumbs[stepLvl2.link] = [
           {
             label: stepLvl1.label,
-            link: stepLvl1.link,
+            link: stepLvl1.link
           },
           {
             label: stepLvl2.label,
-            link: stepLvl2.link,
-          },
+            link: stepLvl2.link
+          }
         ];
 
         // build level 3 breadcrumbs
@@ -111,16 +111,16 @@ const getBreadcrumbsByPath = (navigation: Array<Page>): BreadcrumbsByPath => {
                 breadcrumbs[stepLvl3.link] = [
                   {
                     label: stepLvl1.label,
-                    link: stepLvl1.link,
+                    link: stepLvl1.link
                   },
                   {
                     label: stepLvl2.label,
-                    link: stepLvl2.link,
+                    link: stepLvl2.link
                   },
                   {
                     label: stepLvl3.label,
-                    link: stepLvl3.link,
-                  },
+                    link: stepLvl3.link
+                  }
                 ];
               });
             }

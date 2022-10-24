@@ -6,8 +6,8 @@ const useStyles = makeStyles(() => ({
     cursor: 'pointer',
     overflow: 'hidden',
     textOverflow: 'ellipsis',
-    whiteSpace: 'nowrap',
-  },
+    whiteSpace: 'nowrap'
+  }
 }));
 
 interface Props {
@@ -19,7 +19,7 @@ interface Props {
 const SelectableResourceName = ({
   name,
   onSelect,
-  variant = 'body1',
+  variant = 'body1'
 }: Props): JSX.Element => {
   const classes = useStyles();
 

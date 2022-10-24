@@ -13,7 +13,7 @@ const getStoredOrDefault = <TItem>({
   cachedItem,
   defaultValue,
   onCachedItemUpdate,
-  key,
+  key
 }: StoredItemParameters<TItem>): TItem => {
   if (!isNil(cachedItem)) {
     return cachedItem;

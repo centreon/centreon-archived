@@ -1,7 +1,7 @@
 import {
   buildListingEndpoint,
   BuildListingEndpointParameters,
-  ListingParameters,
+  ListingParameters
 } from '@centreon/ui';
 
 import { baseEndpoint } from '../../../api/endpoint';
@@ -18,56 +18,56 @@ const serviceSeveritiesEndpoint = `${monitoringEndpoint}/severities/service`;
 const buildHostGroupsEndpoint = (parameters: ListingParameters): string => {
   return buildListingEndpoint({
     baseEndpoint: hostgroupsEndpoint,
-    parameters,
+    parameters
   });
 };
 
 const buildServiceGroupsEndpoint = (
-  parameters: BuildListingEndpointParameters,
+  parameters: BuildListingEndpointParameters
 ): string => {
   return buildListingEndpoint({
     baseEndpoint: serviceGroupsEndpoint,
-    parameters,
+    parameters
   });
 };
 
 const buildMonitoringServersEndpoint = (
-  parameters: BuildListingEndpointParameters,
+  parameters: BuildListingEndpointParameters
 ): string => {
   return buildListingEndpoint({
     baseEndpoint: monitoringServersEndpoint,
-    parameters,
+    parameters
   });
 };
 
 const buildHostCategoriesEndpoint = (
-  parameters: BuildListingEndpointParameters,
+  parameters: BuildListingEndpointParameters
 ): string => {
   return buildListingEndpoint({
     baseEndpoint: hostCategoriesEndpoint,
-    parameters,
+    parameters
   });
 };
 
 const buildServiceCategoriesEndpoint = (
-  parameters: BuildListingEndpointParameters,
+  parameters: BuildListingEndpointParameters
 ): string => {
   return buildListingEndpoint({
     baseEndpoint: serviceCategoriesEndpoint,
-    parameters,
+    parameters
   });
 };
 const buildHostServeritiesEndpoint = (parameters): string => {
   return buildListingEndpoint({
     baseEndpoint: hostSeveritiesEndpoint,
-    parameters,
+    parameters
   });
 };
 
 const buildServiceSeveritiesEndpoint = (parameters): string => {
   return buildListingEndpoint({
     baseEndpoint: serviceSeveritiesEndpoint,
-    parameters,
+    parameters
   });
 };
 
@@ -78,5 +78,5 @@ export {
   buildServiceGroupsEndpoint,
   buildMonitoringServersEndpoint,
   buildHostServeritiesEndpoint,
-  buildServiceSeveritiesEndpoint,
+  buildServiceSeveritiesEndpoint
 };

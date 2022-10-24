@@ -7,22 +7,22 @@ import { getCommandsWithArguments } from './utils';
 
 const useStyles = makeStyles((theme) => ({
   argument: {
-    marginRight: theme.spacing(0.5),
+    marginRight: theme.spacing(0.5)
   },
   argumentWithValue: {
     display: 'flex',
-    marginLeft: theme.spacing(1),
+    marginLeft: theme.spacing(1)
   },
   command: {
-    fontWeight: 'bold',
+    fontWeight: 'bold'
   },
   pipe: {
-    marginRight: theme.spacing(1),
+    marginRight: theme.spacing(1)
   },
   pipedCommand: {
     display: 'flex',
-    flexDirection: 'row',
-  },
+    flexDirection: 'row'
+  }
 }));
 
 interface Props {

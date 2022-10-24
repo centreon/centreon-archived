@@ -22,7 +22,7 @@ const useStyles = makeStyles<Theme, { severityCode?: number }>((theme) => {
   const getStatusBackgroundColor = (severityCode): string =>
     getStatusColors({
       severityCode,
-      theme,
+      theme
     }).backgroundColor;
 
   return {
@@ -30,12 +30,12 @@ const useStyles = makeStyles<Theme, { severityCode?: number }>((theme) => {
       ...(severityCode && {
         borderColor: getStatusBackgroundColor(severityCode),
         borderStyle: 'solid',
-        borderWidth: 2,
-      }),
+        borderWidth: 2
+      })
     }),
     title: ({ severityCode }): CreateCSSProperties => ({
-      ...(severityCode && { color: getStatusBackgroundColor(severityCode) }),
-    }),
+      ...(severityCode && { color: getStatusBackgroundColor(severityCode) })
+    })
   };
 });
 
@@ -52,7 +52,7 @@ const ExpandableCard = ({
   content,
   severityCode,
   expandedCard,
-  changeExpandedCards,
+  changeExpandedCards
 }: Props): JSX.Element => {
   const classes = useStyles({ severityCode });
   const { t } = useTranslation();

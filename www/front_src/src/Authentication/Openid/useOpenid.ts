@@ -19,7 +19,7 @@ const useOpenid = (): UseOpenidState => {
     useState<OpenidConfiguration | null>(null);
   const { sendRequest, sending } = useRequest<OpenidConfiguration>({
     decoder: openidConfigurationDecoder,
-    request: getProviderConfiguration<OpenidConfiguration>(Provider.Openid),
+    request: getProviderConfiguration<OpenidConfiguration>(Provider.Openid)
   });
 
   const loadOpenidConfiguration = (): void => {
@@ -31,7 +31,7 @@ const useOpenid = (): UseOpenidState => {
   return {
     initialOpenidConfiguration,
     loadOpenidConfiguration,
-    sendingGetOpenidConfiguration: sending,
+    sendingGetOpenidConfiguration: sending
   };
 };
 

@@ -8,7 +8,7 @@ import {
   Theme,
   Link,
   Tooltip,
-  Skeleton,
+  Skeleton
 } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 import CopyIcon from '@mui/icons-material/FileCopy';
@@ -22,7 +22,7 @@ import {
   StatusChip,
   SeverityCode,
   IconButton,
-  useCopyToClipboard,
+  useCopyToClipboard
 } from '@centreon/ui';
 
 import {
@@ -32,7 +32,7 @@ import {
   labelLinkCopied,
   labelViewLogs,
   labelViewReport,
-  labelSomethingWentWrong,
+  labelSomethingWentWrong
 } from '../translatedLabels';
 import { ResourceUris } from '../models';
 import { replaceBasename } from '../helpers';
@@ -49,11 +49,11 @@ interface MakeStylesProps {
 const useStyles = makeStyles<Theme, MakeStylesProps>((theme) => ({
   containerIcons: {
     alignItems: 'center',
-    display: 'flex',
+    display: 'flex'
   },
   divider: {
     borderColor: theme.palette.text.secondary,
-    margin: theme.spacing(1, 0.5),
+    margin: theme.spacing(1, 0.5)
   },
   header: ({ displaySeverity }): CreateCSSProperties<MakeStylesProps> => ({
     alignItems: 'center',
@@ -63,46 +63,46 @@ const useStyles = makeStyles<Theme, MakeStylesProps>((theme) => ({
       displaySeverity ? 'auto' : ''
     } auto minmax(0, 1fr) auto`,
     height: 43,
-    padding: theme.spacing(0, 2.5, 0, 1),
+    padding: theme.spacing(0, 2.5, 0, 1)
   }),
   parent: {
     alignItems: 'center',
     display: 'grid',
     gridGap: theme.spacing(1),
-    gridTemplateColumns: 'auto minmax(0, 1fr)',
+    gridTemplateColumns: 'auto minmax(0, 1fr)'
   },
   report: {
-    marginLeft: theme.spacing(0.5),
+    marginLeft: theme.spacing(0.5)
   },
   resourceName: {
     alignItems: 'center',
     columnGap: theme.spacing(1),
     display: 'grid',
     gridTemplateColumns: 'minmax(auto, min-content) min-content',
-    height: '100%',
+    height: '100%'
   },
   resourceNameConfigurationIcon: {
     alignSelf: 'center',
     display: 'flex',
-    minWidth: theme.spacing(2.5),
+    minWidth: theme.spacing(2.5)
   },
   resourceNameConfigurationLink: {
-    height: theme.spacing(2.5),
+    height: theme.spacing(2.5)
   },
   resourceNameContainer: {
     display: 'flex',
     flexDirection: 'column',
     height: '100%',
-    width: '100%',
+    width: '100%'
   },
   resourceNameTooltip: {
-    maxWidth: 'none',
+    maxWidth: 'none'
   },
   truncated: {
     overflow: 'hidden',
     textOverflow: 'ellipsis',
-    whiteSpace: 'nowrap',
-  },
+    whiteSpace: 'nowrap'
+  }
 }));
 
 const LoadingSkeleton = (): JSX.Element => (
@@ -122,14 +122,14 @@ type Props = {
 
 const Header = ({ details, onSelectParent }: Props): JSX.Element => {
   const classes = useStyles({
-    displaySeverity: not(isNil(details?.severity)),
+    displaySeverity: not(isNil(details?.severity))
   });
   const { t } = useTranslation();
   const navigate = useNavigate();
 
   const { copy } = useCopyToClipboard({
     errorMessage: t(labelSomethingWentWrong),
-    successMessage: t(labelLinkCopied),
+    successMessage: t(labelLinkCopied)
   });
 
   const copyLink = (): Promise<void> => copy(window.location.href);
@@ -137,12 +137,12 @@ const Header = ({ details, onSelectParent }: Props): JSX.Element => {
     onSelectParent(details as ResourceDetails);
 
   const navigateToResourceUris = (
-    category: keyof ResourceUris,
+    category: keyof ResourceUris
   ): (() => void) => {
     return (): void => {
       const url = replaceBasename({
         endpoint: prop(category, resourceUris) || '',
-        newWord: '/',
+        newWord: '/'
       });
 
       navigate(`${url}`);
@@ -155,7 +155,7 @@ const Header = ({ details, onSelectParent }: Props): JSX.Element => {
 
   const resourceUris = path<ResourceUris>(
     ['links', 'uris'],
-    details,
+    details
   ) as ResourceUris;
 
   const resourceConfigurationUri = prop('configuration', resourceUris);

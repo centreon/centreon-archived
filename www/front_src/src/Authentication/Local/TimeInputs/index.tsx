@@ -12,7 +12,7 @@ import {
   labelMinutes,
   labelMonth,
   labelMonths,
-  labelSecond,
+  labelSecond
 } from '../translatedLabels';
 import { TimeInputConfiguration } from '../models';
 
@@ -24,8 +24,8 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexDirection: 'row',
     marginBottom: theme.spacing(0.5),
-    marginTop: theme.spacing(0.5),
-  },
+    marginTop: theme.spacing(0.5)
+  }
 }));
 
 interface UnitAndLabels {
@@ -39,7 +39,7 @@ const mapUnitAndLabels: Array<UnitAndLabels> = [
   { pluralLabel: labelMinutes, singularLabel: labelMinute, unit: 'minutes' },
   { pluralLabel: labelHours, singularLabel: labelHour, unit: 'hours' },
   { pluralLabel: labelDays, singularLabel: labelDay, unit: 'days' },
-  { pluralLabel: labelMonths, singularLabel: labelMonth, unit: 'months' },
+  { pluralLabel: labelMonths, singularLabel: labelMonth, unit: 'months' }
 ];
 
 interface Props {
@@ -57,7 +57,7 @@ const TimeInputs = ({
   onChange,
   timeValue,
   inputLabel,
-  maxDuration,
+  maxDuration
 }: Props): JSX.Element => {
   const classes = useStyles();
 
@@ -66,7 +66,7 @@ const TimeInputs = ({
       {timeInputConfigurations.map(({ unit, maxOption, minOption }, idx) => {
         const { pluralLabel, singularLabel } = find(
           propEq('unit', unit),
-          mapUnitAndLabels,
+          mapUnitAndLabels
         ) as UnitAndLabels;
 
         return (
@@ -76,7 +76,7 @@ const TimeInputs = ({
             key={singularLabel}
             labels={{
               plural: pluralLabel,
-              singular: singularLabel,
+              singular: singularLabel
             }}
             maxDuration={maxDuration}
             maxOption={maxOption}

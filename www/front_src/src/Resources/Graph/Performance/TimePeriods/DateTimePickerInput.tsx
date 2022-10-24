@@ -29,7 +29,7 @@ const renderDateTimePickerTextField =
         inputProps={{
           ...inputProps,
           ref: inputRef,
-          style: { padding: 8 },
+          style: { padding: 8 }
         }}
         onBlur={blur}
       />
@@ -42,7 +42,7 @@ const DateTimePickerInput = ({
   minDate,
   property,
   changeDate,
-  setDate,
+  setDate
 }: Props): JSX.Element => {
   const [isOpen, setIsOpen] = useState(false);
   const { getDestinationAndConfiguredTimezoneOffset, formatKeyboardValue } =
@@ -50,7 +50,7 @@ const DateTimePickerInput = ({
 
   const changeTime = (
     newValue: dayjs.Dayjs | null,
-    keyBoardValue: string | undefined,
+    keyBoardValue: string | undefined
   ): void => {
     if (isOpen) {
       changeDate({ date: dayjs(newValue).toDate(), property });
@@ -59,7 +59,7 @@ const DateTimePickerInput = ({
     }
     const value = dayjs(formatKeyboardValue(keyBoardValue))
       .add(
-        dayjs.duration({ hours: getDestinationAndConfiguredTimezoneOffset() }),
+        dayjs.duration({ hours: getDestinationAndConfiguredTimezoneOffset() })
       )
       .toDate();
 
@@ -74,7 +74,7 @@ const DateTimePickerInput = ({
     <DateTimePicker<dayjs.Dayjs>
       hideTabs
       PopperProps={{
-        open: isOpen,
+        open: isOpen
       }}
       maxDate={maxDate && dayjs(maxDate)}
       minDate={minDate && dayjs(minDate)}

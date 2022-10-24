@@ -7,8 +7,8 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     columnGap: theme.spacing(2),
     display: 'grid',
-    gridTemplateColumns: 'repeat(2, min-content)',
-  },
+    gridTemplateColumns: 'repeat(2, min-content)'
+  }
 }));
 
 const GlobalActionsSkeleton = (): JSX.Element => {

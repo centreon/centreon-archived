@@ -49,7 +49,7 @@ import {
   labelContactGroup,
   labelGroupValue,
   labelDefinedTheRelationBetweenGroupsAndContactGroups,
-  labelGroupsAttributePath,
+  labelGroupsAttributePath
 } from '../translatedLabels';
 import { AuthenticationType, EndpointType } from '../models';
 import {
@@ -57,12 +57,12 @@ import {
   labelAutoImportUsers,
   labelAuthenticationConditions,
   labelIdentityProvider,
-  labelGroupsMapping,
+  labelGroupsMapping
 } from '../../translatedLabels';
 import {
   accessGroupsEndpoint,
   contactGroupsEndpoint,
-  contactTemplatesEndpoint,
+  contactTemplatesEndpoint
 } from '../../api/endpoints';
 
 const isAutoImportDisabled = (values: FormikValues): boolean =>
@@ -77,41 +77,41 @@ const hideCustomEndpoint =
     !pathEq(
       [rootObject, 'endpoint', 'type'],
       EndpointType.CustomEndpoint,
-      values,
+      values
     );
 
 const authenticationConditions: Array<InputProps> = [
   {
     autocomplete: {
       creatable: true,
-      options: [],
+      options: []
     },
     fieldName: 'authenticationConditions.trustedClientAddresses',
     group: labelAuthenticationConditions,
     label: labelTrustedClientAddresses,
-    type: InputType.MultiAutocomplete,
+    type: InputType.MultiAutocomplete
   },
   {
     autocomplete: {
       creatable: true,
-      options: [],
+      options: []
     },
     fieldName: 'authenticationConditions.blacklistClientAddresses',
     group: labelAuthenticationConditions,
     label: labelBlacklistClientAddresses,
-    type: InputType.MultiAutocomplete,
+    type: InputType.MultiAutocomplete
   },
   {
     fieldName: 'authenticationConditions.isEnabled',
     group: labelAuthenticationConditions,
     label: labelEnableConditionsOnIdentityProvider,
-    type: InputType.Switch,
+    type: InputType.Switch
   },
   {
     fieldName: 'authenticationConditions.attributePath',
     group: labelAuthenticationConditions,
     label: labelConditionsAttributePath,
-    type: InputType.Text,
+    type: InputType.Text
   },
   {
     fieldName: 'authenticationConditions.endpoint.type',
@@ -121,26 +121,26 @@ const authenticationConditions: Array<InputProps> = [
       options: [
         {
           label: labelIntrospectionEndpoint,
-          value: EndpointType.IntrospectionEndpoint,
+          value: EndpointType.IntrospectionEndpoint
         },
         {
           label: labelUserIformation,
-          value: EndpointType.UserInformationEndpoint,
+          value: EndpointType.UserInformationEndpoint
         },
         {
           label: labelOther,
-          value: EndpointType.CustomEndpoint,
-        },
-      ],
+          value: EndpointType.CustomEndpoint
+        }
+      ]
     },
-    type: InputType.Radio,
+    type: InputType.Radio
   },
   {
     fieldName: 'authenticationConditions.endpoint.customEndpoint',
     group: labelAuthenticationConditions,
     hideInput: hideCustomEndpoint('authenticationConditions'),
     label: labelDefineYourEndpoint,
-    type: InputType.Text,
+    type: InputType.Text
   },
   {
     fieldName: 'authenticationConditions.authorizedValues',
@@ -149,19 +149,19 @@ const authenticationConditions: Array<InputProps> = [
         {
           fieldName: '',
           label: labelConditionValue,
-          type: InputType.Text,
-        },
+          type: InputType.Text
+        }
       ],
       defaultRowValue: {
-        conditionValue: '',
+        conditionValue: ''
       },
       deleteLabel: labelDeleteRelation,
-      hasSingleValue: true,
+      hasSingleValue: true
     },
     group: labelAuthenticationConditions,
     label: labelDefineAuthorizedConditionsValues,
-    type: InputType.FieldsTable,
-  },
+    type: InputType.FieldsTable
+  }
 ];
 
 const rolesMapping: Array<InputProps> = [
@@ -169,20 +169,20 @@ const rolesMapping: Array<InputProps> = [
     fieldName: 'rolesMapping.isEnabled',
     group: labelRolesMapping,
     label: labelEnableAutoManagement,
-    type: InputType.Switch,
+    type: InputType.Switch
   },
   {
     fieldName: 'rolesMapping.applyOnlyFirstRole',
     group: labelRolesMapping,
     label: labelApplyOnlyFirtsRole,
-    type: InputType.Switch,
+    type: InputType.Switch
   },
   {
     fieldName: 'rolesMapping.attributePath',
     group: labelRolesMapping,
     label: labelRolesAttributePath,
 
-    type: InputType.Text,
+    type: InputType.Text
   },
   {
     fieldName: 'rolesMapping.endpoint.type',
@@ -192,26 +192,26 @@ const rolesMapping: Array<InputProps> = [
       options: [
         {
           label: labelIntrospectionEndpoint,
-          value: EndpointType.IntrospectionEndpoint,
+          value: EndpointType.IntrospectionEndpoint
         },
         {
           label: labelUserIformation,
-          value: EndpointType.UserInformationEndpoint,
+          value: EndpointType.UserInformationEndpoint
         },
         {
           label: labelOther,
-          value: EndpointType.CustomEndpoint,
-        },
-      ],
+          value: EndpointType.CustomEndpoint
+        }
+      ]
     },
-    type: InputType.Radio,
+    type: InputType.Radio
   },
   {
     fieldName: 'rolesMapping.endpoint.customEndpoint',
     group: labelRolesMapping,
     hideInput: hideCustomEndpoint('rolesMapping'),
     label: labelDefineYourEndpoint,
-    type: InputType.Text,
+    type: InputType.Text
   },
   {
     fieldName: 'rolesMapping.relations',
@@ -220,28 +220,28 @@ const rolesMapping: Array<InputProps> = [
         {
           fieldName: 'claimValue',
           label: labelRoleValue,
-          type: InputType.Text,
+          type: InputType.Text
         },
         {
           connectedAutocomplete: {
             additionalConditionParameters: [],
-            endpoint: accessGroupsEndpoint,
+            endpoint: accessGroupsEndpoint
           },
           fieldName: 'accessGroup',
           label: labelAclAccessGroup,
-          type: InputType.SingleConnectedAutocomplete,
-        },
+          type: InputType.SingleConnectedAutocomplete
+        }
       ],
       defaultRowValue: {
         accessGroup: null,
-        claimValue: '',
+        claimValue: ''
       },
-      deleteLabel: labelDeleteRelation,
+      deleteLabel: labelDeleteRelation
     },
     group: labelRolesMapping,
     label: labelDefineRelationBetweenRolesAndAcl,
-    type: InputType.FieldsTable,
-  },
+    type: InputType.FieldsTable
+  }
 ];
 
 const groupsMapping: Array<InputProps> = [
@@ -249,13 +249,13 @@ const groupsMapping: Array<InputProps> = [
     fieldName: 'groupsMapping.isEnabled',
     group: labelGroupsMapping,
     label: labelEnableAutoManagement,
-    type: InputType.Switch,
+    type: InputType.Switch
   },
   {
     fieldName: 'groupsMapping.attributePath',
     group: labelGroupsMapping,
     label: labelGroupsAttributePath,
-    type: InputType.Text,
+    type: InputType.Text
   },
   {
     fieldName: 'groupsMapping.endpoint.type',
@@ -265,26 +265,26 @@ const groupsMapping: Array<InputProps> = [
       options: [
         {
           label: labelIntrospectionEndpoint,
-          value: EndpointType.IntrospectionEndpoint,
+          value: EndpointType.IntrospectionEndpoint
         },
         {
           label: labelUserIformation,
-          value: EndpointType.UserInformationEndpoint,
+          value: EndpointType.UserInformationEndpoint
         },
         {
           label: labelOther,
-          value: EndpointType.CustomEndpoint,
-        },
-      ],
+          value: EndpointType.CustomEndpoint
+        }
+      ]
     },
-    type: InputType.Radio,
+    type: InputType.Radio
   },
   {
     fieldName: 'groupsMapping.endpoint.customEndpoint',
     group: labelGroupsMapping,
     hideInput: hideCustomEndpoint('groupsMapping'),
     label: labelDefineYourEndpoint,
-    type: InputType.Text,
+    type: InputType.Text
   },
   {
     fieldName: 'groupsMapping.relations',
@@ -293,28 +293,28 @@ const groupsMapping: Array<InputProps> = [
         {
           fieldName: 'groupValue',
           label: labelGroupValue,
-          type: InputType.Text,
+          type: InputType.Text
         },
         {
           connectedAutocomplete: {
             additionalConditionParameters: [],
-            endpoint: contactGroupsEndpoint,
+            endpoint: contactGroupsEndpoint
           },
           fieldName: 'contactGroup',
           label: labelContactGroup,
-          type: InputType.SingleConnectedAutocomplete,
-        },
+          type: InputType.SingleConnectedAutocomplete
+        }
       ],
       defaultRowValue: {
         contactGroup: null,
-        groupValue: '',
+        groupValue: ''
       },
-      deleteLabel: labelDeleteRelation,
+      deleteLabel: labelDeleteRelation
     },
     group: labelGroupsMapping,
     label: labelDefinedTheRelationBetweenGroupsAndContactGroups,
-    type: InputType.FieldsTable,
-  },
+    type: InputType.FieldsTable
+  }
 ];
 
 export const inputs: Array<InputProps> = [
@@ -322,7 +322,7 @@ export const inputs: Array<InputProps> = [
     fieldName: 'isActive',
     group: labelActivation,
     label: labelEnableOpenIDConnectAuthentication,
-    type: InputType.Switch,
+    type: InputType.Switch
   },
   {
     fieldName: 'isForced',
@@ -332,85 +332,85 @@ export const inputs: Array<InputProps> = [
       options: [
         {
           label: labelOpenIDConnectOnly,
-          value: true,
+          value: true
         },
         {
           label: labelMixed,
-          value: false,
-        },
-      ],
+          value: false
+        }
+      ]
     },
-    type: InputType.Radio,
+    type: InputType.Radio
   },
   {
     fieldName: 'baseUrl',
     group: labelIdentityProvider,
     label: labelBaseUrl,
     required: true,
-    type: InputType.Text,
+    type: InputType.Text
   },
   {
     fieldName: 'authorizationEndpoint',
     group: labelIdentityProvider,
     label: labelAuthorizationEndpoint,
     required: true,
-    type: InputType.Text,
+    type: InputType.Text
   },
   {
     fieldName: 'tokenEndpoint',
     group: labelIdentityProvider,
     label: labelTokenEndpoint,
     required: true,
-    type: InputType.Text,
+    type: InputType.Text
   },
   {
     fieldName: 'clientId',
     group: labelIdentityProvider,
     label: labelClientID,
     required: true,
-    type: InputType.Text,
+    type: InputType.Text
   },
   {
     fieldName: 'clientSecret',
     group: labelIdentityProvider,
     label: labelClientSecret,
     required: true,
-    type: InputType.Password,
+    type: InputType.Password
   },
   {
     autocomplete: {
       creatable: true,
-      options: [],
+      options: []
     },
     fieldName: 'connectionScopes',
     group: labelIdentityProvider,
     label: labelScopes,
-    type: InputType.MultiAutocomplete,
+    type: InputType.MultiAutocomplete
   },
   {
     fieldName: 'loginClaim',
     group: labelIdentityProvider,
     label: labelLoginAttributePath,
-    type: InputType.Text,
+    type: InputType.Text
   },
   {
     fieldName: 'endSessionEndpoint',
     group: labelIdentityProvider,
     label: labelEndSessionEndpoint,
-    type: InputType.Text,
+    type: InputType.Text
   },
   {
     additionalLabel: labelAtLeastOneOfTheTwoFollowingFieldsMustBeFilled,
     fieldName: 'introspectionTokenEndpoint',
     group: labelIdentityProvider,
     label: labelIntrospectionTokenEndpoint,
-    type: InputType.Text,
+    type: InputType.Text
   },
   {
     fieldName: 'userinfoEndpoint',
     group: labelIdentityProvider,
     label: labelUserInformationEndpoint,
-    type: InputType.Text,
+    type: InputType.Text
   },
   {
     change: ({ setFieldValue, value }): void => {
@@ -418,7 +418,7 @@ export const inputs: Array<InputProps> = [
         'authenticationType',
         value
           ? AuthenticationType.ClientSecretBasic
-          : AuthenticationType.ClientSecretPost,
+          : AuthenticationType.ClientSecretPost
       );
     },
     fieldName: 'authenticationType',
@@ -426,33 +426,33 @@ export const inputs: Array<InputProps> = [
     label: labelUseBasicAuthenticatonForTokenEndpointAuthentication,
     switchInput: {
       getChecked: (value): boolean =>
-        equals(AuthenticationType.ClientSecretBasic, value),
+        equals(AuthenticationType.ClientSecretBasic, value)
     },
-    type: InputType.Switch,
+    type: InputType.Switch
   },
   {
     fieldName: 'verifyPeer',
     group: labelIdentityProvider,
     label: labelDisableVerifyPeer,
-    type: InputType.Switch,
+    type: InputType.Switch
   },
   {
     fieldName: 'autoImport',
     group: labelAutoImportUsers,
     label: labelEnableAutoImport,
-    type: InputType.Switch,
+    type: InputType.Switch
   },
   {
     connectedAutocomplete: {
       additionalConditionParameters: [],
-      endpoint: contactTemplatesEndpoint,
+      endpoint: contactTemplatesEndpoint
     },
     fieldName: 'contactTemplate',
     getDisabled: isAutoImportDisabled,
     getRequired: isAutoImportEnabled,
     group: labelAutoImportUsers,
     label: labelContactTemplate,
-    type: InputType.SingleConnectedAutocomplete,
+    type: InputType.SingleConnectedAutocomplete
   },
   {
     fieldName: 'emailBindAttribute',
@@ -460,7 +460,7 @@ export const inputs: Array<InputProps> = [
     getRequired: isAutoImportEnabled,
     group: labelAutoImportUsers,
     label: labelEmailAttributePath,
-    type: InputType.Text,
+    type: InputType.Text
   },
   {
     fieldName: 'fullnameBindAttribute',
@@ -468,9 +468,9 @@ export const inputs: Array<InputProps> = [
     getRequired: isAutoImportEnabled,
     group: labelAutoImportUsers,
     label: labelFullnameAttributePath,
-    type: InputType.Text,
+    type: InputType.Text
   },
   ...authenticationConditions,
   ...rolesMapping,
-  ...groupsMapping,
+  ...groupsMapping
 ];

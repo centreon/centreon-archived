@@ -10,7 +10,7 @@ import {
   ResourceDetails,
   ServicesTabParameters,
   TabParameters,
-  ResourceDetailsAtom,
+  ResourceDetailsAtom
 } from './models';
 import { detailsTabId } from './tabs';
 import { CustomTimePeriod, TimePeriodId } from './tabs/Graph/models';
@@ -18,14 +18,14 @@ import { TabId } from './tabs/models';
 
 export const panelWidthStorageAtom = atomWithStorage(
   'centreon-resource-status-details-21.10',
-  550,
+  550
 );
 export const openDetailsTabIdAtom = atom<TabId>(0);
 export const selectedResourceUuidAtom = atom<string | undefined>(undefined);
 export const detailsAtom = atom<ResourceDetails | undefined>(undefined);
 export const tabParametersAtom = atom<TabParameters>({});
 export const defaultSelectedTimePeriodIdAtom = atom<TimePeriodId | undefined>(
-  undefined,
+  undefined
 );
 export const defaultSelectedCustomTimePeriodAtom = atom<
   CustomTimePeriod | undefined
@@ -40,9 +40,9 @@ export const selectResourceDerivedAtom = atom(
       parentResourceId: resource?.parent?.id,
       parentResourceType: resource?.parent?.type,
       resourceId: resource?.id,
-      resourcesDetailsEndpoint: resource?.links?.endpoints?.details,
+      resourcesDetailsEndpoint: resource?.links?.endpoints?.details
     });
-  },
+  }
 );
 
 export const clearSelectedResourceDerivedAtom = atom(null, (_, set) => {
@@ -54,14 +54,14 @@ export const setServicesTabParametersDerivedAtom = atom(
   null,
   (get, set, parameters: ServicesTabParameters) => {
     set(tabParametersAtom, { ...get(tabParametersAtom), services: parameters });
-  },
+  }
 );
 
 export const setGraphTabParametersDerivedAtom = atom(
   null,
   (get, set, parameters: GraphTabParameters) => {
     set(tabParametersAtom, { ...get(tabParametersAtom), graph: parameters });
-  },
+  }
 );
 
 export const selectedResourcesDetailsAtom =
@@ -72,7 +72,7 @@ export const selectedResourceDetailsEndpointDerivedAtom = atom((get) => {
 
   const resourceDetailsEndPoint = replaceBasename({
     endpoint: selectedResourceDetails?.resourcesDetailsEndpoint || '',
-    newWord: './',
+    newWord: './'
   });
 
   if (!isNil(selectedResourceDetails?.parentResourceId)) {

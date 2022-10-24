@@ -21,7 +21,7 @@ import {
   labelName,
   labelNoContactGroupsIsConfiguredForThisResource,
   labelNoContactIsConfiguredForThisResource,
-  labelNotificationStatus,
+  labelNotificationStatus
 } from '../../../translatedLabels';
 
 import { Contact, ContactGroup, NotificationContacts } from './models';
@@ -36,7 +36,7 @@ const Notifications = (): JSX.Element => {
     useState<NotificationContacts | null>(null);
 
   const { sendRequest } = useRequest<NotificationContacts>({
-    request: getData,
+    request: getData
   });
   const details = useAtomValue(detailsAtom);
 
@@ -65,7 +65,7 @@ const Notifications = (): JSX.Element => {
         </>
       );
     },
-    [],
+    []
   );
 
   useEffect(() => {

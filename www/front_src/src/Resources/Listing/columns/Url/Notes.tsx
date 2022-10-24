@@ -9,12 +9,12 @@ import UrlColumn from '.';
 const NotesUrlColumn = ({ row }: ComponentColumnProps): JSX.Element => {
   const endpoint = path<string | undefined>(
     ['links', 'externals', 'notes', 'url'],
-    row,
+    row
   );
 
   const title = path<string | undefined>(
     ['links', 'externals', 'notes', 'label'],
-    row,
+    row
   );
 
   return (

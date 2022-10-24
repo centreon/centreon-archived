@@ -19,12 +19,12 @@ interface Props {
 const RessourceStatusCounter = <
   StatusCount extends {
     pending: number;
-  },
+  }
 >({
   endpoint,
   schema,
   children,
-  loaderWidth,
+  loaderWidth
 }: Props): JSX.Element | null => {
   const [data, setData] = useState<StatusCount>();
   const [toggled, setToggled] = useState<boolean>();

@@ -25,7 +25,7 @@ const FederatedModules = ({
             remoteEntry,
             moduleFederationName,
             federatedComponentsConfiguration,
-            moduleName,
+            moduleName
           }) => {
             return federatedComponentsConfiguration.federatedComponents.map(
               (component) => {
@@ -40,13 +40,13 @@ const FederatedModules = ({
                     {...rest}
                   />
                 );
-              },
+              }
             );
-          },
+          }
         )}
       </>
     ),
-    memoProps: [federatedModulesConfigurations],
+    memoProps: [federatedModulesConfigurations]
   });
 };
 
@@ -60,7 +60,7 @@ interface LoadableComponentsProps extends LoadableComponentsContainerProps {
 
 const getLoadableComponents = ({
   path,
-  federatedModules,
+  federatedModules
 }: LoadableComponentsProps): Array<FederatedModule> | null => {
   if (isNil(federatedModules)) {
     return null;
@@ -69,7 +69,7 @@ const getLoadableComponents = ({
   const components = path
     ? filter(
         pathEq(['federatedComponentsConfiguration', 'path'], path),
-        federatedModules,
+        federatedModules
       )
     : federatedModules;
 
@@ -84,7 +84,7 @@ const LoadableComponentsContainer = ({
 
   const federatedModulesToDisplay = useMemo(
     () => getLoadableComponents({ federatedModules, path }),
-    [federatedModules, path],
+    [federatedModules, path]
   );
 
   if (isNil(federatedModulesToDisplay)) {

@@ -2,7 +2,7 @@ import { map } from 'ramda';
 
 import {
   PasswordSecurityPolicy,
-  PasswordSecurityPolicyToAPI,
+  PasswordSecurityPolicyToAPI
 } from '../Local/models';
 import {
   OpenidConfiguration,
@@ -18,15 +18,15 @@ import {
   GroupsMapping,
   GroupsMappingToAPI,
   GroupsRelation,
-  GroupsRelationToAPI,
+  GroupsRelationToAPI
 } from '../Openid/models';
 import {
   WebSSOConfiguration,
-  WebSSOConfigurationToAPI,
+  WebSSOConfigurationToAPI
 } from '../WebSSO/models';
 
 export const adaptPasswordSecurityPolicyFromAPI = (
-  securityPolicy: PasswordSecurityPolicy,
+  securityPolicy: PasswordSecurityPolicy
 ): PasswordSecurityPolicy => {
   return {
     ...securityPolicy,
@@ -40,8 +40,8 @@ export const adaptPasswordSecurityPolicyFromAPI = (
       ...securityPolicy.passwordExpiration,
       expirationDelay: securityPolicy.passwordExpiration.expirationDelay
         ? securityPolicy.passwordExpiration.expirationDelay * 1000
-        : null,
-    },
+        : null
+    }
   };
 };
 
@@ -55,7 +55,7 @@ export const adaptPasswordSecurityPolicyToAPI = ({
   hasLowerCase,
   hasUpperCase,
   attempts,
-  blockingDuration,
+  blockingDuration
 }: PasswordSecurityPolicy): PasswordSecurityPolicyToAPI => {
   return {
     password_security_policy: {
@@ -73,17 +73,17 @@ export const adaptPasswordSecurityPolicyToAPI = ({
         excluded_users: passwordExpiration.excludedUsers,
         expiration_delay: passwordExpiration.expirationDelay
           ? passwordExpiration.expirationDelay / 1000
-          : null,
+          : null
       },
-      password_min_length: passwordMinLength,
-    },
+      password_min_length: passwordMinLength
+    }
   };
 };
 
 const adaptEndpoint = ({ customEndpoint, type }: Endpoint): EndpointToAPI => {
   return {
     custom_endpoint: customEndpoint,
-    type,
+    type
   };
 };
 
@@ -93,7 +93,7 @@ const adaptAuthentificationConditions = ({
   attributePath,
   endpoint,
   isEnabled,
-  authorizedValues,
+  authorizedValues
 }: AuthConditions): AuthConditionsToApi => {
   return {
     attribute_path: attributePath,
@@ -101,19 +101,19 @@ const adaptAuthentificationConditions = ({
     blacklist_client_addresses: blacklistClientAddresses,
     endpoint: adaptEndpoint(endpoint),
     is_enabled: isEnabled,
-    trusted_client_addresses: trustedClientAddresses,
+    trusted_client_addresses: trustedClientAddresses
   };
 };
 
 const adaptRolesRelationsToAPI = (
-  relations: Array<RolesRelation>,
+  relations: Array<RolesRelation>
 ): Array<RolesRelationToAPI> =>
   map(
     ({ claimValue, accessGroup }) => ({
       access_group_id: accessGroup.id,
-      claim_value: claimValue,
+      claim_value: claimValue
     }),
-    relations,
+    relations
   );
 
 const adaptRolesMapping = ({
@@ -121,39 +121,39 @@ const adaptRolesMapping = ({
   attributePath,
   endpoint,
   isEnabled,
-  relations,
+  relations
 }: RolesMapping): RolesMappingToApi => {
   return {
     apply_only_first_role: applyOnlyFirstRole,
     attribute_path: attributePath,
     endpoint: adaptEndpoint(endpoint),
     is_enabled: isEnabled,
-    relations: adaptRolesRelationsToAPI(relations),
+    relations: adaptRolesRelationsToAPI(relations)
   };
 };
 
 const adaptGroupsRelationsToAPI = (
-  relations: Array<GroupsRelation>,
+  relations: Array<GroupsRelation>
 ): Array<GroupsRelationToAPI> =>
   map(
     ({ groupValue, contactGroup }) => ({
       contact_group_id: contactGroup.id,
-      group_value: groupValue,
+      group_value: groupValue
     }),
-    relations,
+    relations
   );
 
 const adaptGroupsMapping = ({
   attributePath,
   endpoint,
   isEnabled,
-  relations,
+  relations
 }: GroupsMapping): GroupsMappingToAPI => {
   return {
     attribute_path: attributePath,
     endpoint: adaptEndpoint(endpoint),
     is_enabled: isEnabled,
-    relations: adaptGroupsRelationsToAPI(relations),
+    relations: adaptGroupsRelationsToAPI(relations)
   };
 };
 
@@ -178,10 +178,10 @@ export const adaptOpenidConfigurationToAPI = ({
   fullnameBindAttribute,
   authenticationConditions,
   rolesMapping,
-  groupsMapping,
+  groupsMapping
 }: OpenidConfiguration): OpenidConfigurationToAPI => ({
   authentication_conditions: adaptAuthentificationConditions(
-    authenticationConditions,
+    authenticationConditions
   ),
   authentication_type: authenticationType || null,
   authorization_endpoint: authorizationEndpoint || null,
@@ -202,7 +202,7 @@ export const adaptOpenidConfigurationToAPI = ({
   roles_mapping: adaptRolesMapping(rolesMapping),
   token_endpoint: tokenEndpoint || null,
   userinfo_endpoint: userinfoEndpoint || null,
-  verify_peer: verifyPeer,
+  verify_peer: verifyPeer
 });
 
 export const adaptWebSSOConfigurationToAPI = ({
@@ -212,7 +212,7 @@ export const adaptWebSSOConfigurationToAPI = ({
   blacklistClientAddresses,
   isActive,
   isForced,
-  trustedClientAddresses,
+  trustedClientAddresses
 }: WebSSOConfiguration): WebSSOConfigurationToAPI => ({
   blacklist_client_addresses: blacklistClientAddresses,
   is_active: isActive,
@@ -220,5 +220,5 @@ export const adaptWebSSOConfigurationToAPI = ({
   login_header_attribute: loginHeaderAttribute || null,
   pattern_matching_login: patternMatchingLogin || null,
   pattern_replace_login: patternReplaceLogin || null,
-  trusted_client_addresses: trustedClientAddresses,
+  trusted_client_addresses: trustedClientAddresses
 });

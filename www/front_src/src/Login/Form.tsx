@@ -22,8 +22,8 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexDirection: 'column',
     rowGap: theme.spacing(2),
-    width: '100%',
-  },
+    width: '100%'
+  }
 }));
 
 const getTouchedError = ({ fieldName, errors, touched }): string | undefined =>
@@ -41,7 +41,7 @@ const LoginForm = (): JSX.Element => {
     handleBlur,
     dirty,
     isSubmitting,
-    handleSubmit,
+    handleSubmit
   } = useFormikContext<FormikValues>();
 
   const changeVisibility = (): void => {
@@ -52,13 +52,13 @@ const LoginForm = (): JSX.Element => {
   const aliasError = getTouchedError({
     errors,
     fieldName: aliasFieldName,
-    touched,
+    touched
   });
   const passwordValue = prop(passwordFieldName, values);
   const passwordError = getTouchedError({
     errors,
     fieldName: passwordFieldName,
-    touched,
+    touched
   });
   const isDisabled = not(isEmpty(errors)) || isSubmitting || not(dirty);
 
@@ -69,7 +69,7 @@ const LoginForm = (): JSX.Element => {
         isVisible={isVisible}
       />
     ),
-    [isVisible],
+    [isVisible]
   );
 
   return (

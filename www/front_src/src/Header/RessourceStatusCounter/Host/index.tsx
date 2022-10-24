@@ -18,7 +18,7 @@ import {
   upCriterias,
   pendingCriterias,
   unhandledStateCriterias,
-  hostCriterias,
+  hostCriterias
 } from '../getResourcesUrl';
 import RessourceStatusCounter from '..';
 import getDefaultCriterias from '../../../Resources/Filter/Criterias/default';
@@ -31,7 +31,7 @@ const numberFormat = yup.number().required().integer();
 const statusSchema = yup.object().shape({
   down: yup.object().shape({
     total: numberFormat,
-    unhandled: numberFormat,
+    unhandled: numberFormat
   }),
   ok: numberFormat,
   pending: numberFormat,
@@ -39,8 +39,8 @@ const statusSchema = yup.object().shape({
   total: numberFormat,
   unreachable: yup.object().shape({
     total: numberFormat,
-    unhandled: numberFormat,
-  }),
+    unhandled: numberFormat
+  })
 });
 
 interface HostData {
@@ -75,39 +75,39 @@ const HostStatusCounter = (): JSX.Element => {
   const unhandledDownHostsCriterias = getDefaultCriterias({
     resourceTypes: hostCriterias.value,
     states: unhandledStateCriterias.value,
-    statuses: downCriterias.value as Array<SelectEntry>,
+    statuses: downCriterias.value as Array<SelectEntry>
   });
   const unhandledDownHostsLink = use_deprecated_pages
     ? '/main.php?p=20202&o=h_down&search='
     : getHostResourcesUrl({
         stateCriterias: unhandledStateCriterias,
-        statusCriterias: downCriterias,
+        statusCriterias: downCriterias
       });
 
   const unhandledUnreachableHostsCriterias = getDefaultCriterias({
     resourceTypes: hostCriterias.value,
     states: unhandledStateCriterias.value,
-    statuses: unreachableCriterias.value as Array<SelectEntry>,
+    statuses: unreachableCriterias.value as Array<SelectEntry>
   });
   const unhandledUnreachableHostsLink = use_deprecated_pages
     ? '/main.php?p=20202&o=h_unreachable&search='
     : getHostResourcesUrl({
         stateCriterias: unhandledStateCriterias,
-        statusCriterias: unreachableCriterias,
+        statusCriterias: unreachableCriterias
       });
 
   const upHostsCriterias = getDefaultCriterias({
     resourceTypes: hostCriterias.value,
-    statuses: upCriterias.value as Array<SelectEntry>,
+    statuses: upCriterias.value as Array<SelectEntry>
   });
   const upHostsLink = use_deprecated_pages
     ? '/main.php?p=20202&o=h_up&search='
     : getHostResourcesUrl({
-        statusCriterias: upCriterias,
+        statusCriterias: upCriterias
       });
 
   const hostsCriterias = getDefaultCriterias({
-    resourceTypes: hostCriterias.value,
+    resourceTypes: hostCriterias.value
   });
   const hostsLink = use_deprecated_pages
     ? '/main.php?p=20202&o=h&search='
@@ -115,12 +115,12 @@ const HostStatusCounter = (): JSX.Element => {
 
   const pendingHostsCriterias = getDefaultCriterias({
     resourceTypes: hostCriterias.value,
-    statuses: pendingCriterias.value as Array<SelectEntry>,
+    statuses: pendingCriterias.value as Array<SelectEntry>
   });
   const pendingHostsLink = use_deprecated_pages
     ? '/main.php?p=20202&o=h_pending&search='
     : getHostResourcesUrl({
-        statusCriterias: pendingCriterias,
+        statusCriterias: pendingCriterias
       });
 
   const changeFilterAndNavigate =
@@ -149,43 +149,43 @@ const HostStatusCounter = (): JSX.Element => {
                 count: data.down.unhandled,
                 onClick: changeFilterAndNavigate({
                   criterias: unhandledDownHostsCriterias,
-                  link: unhandledDownHostsLink,
+                  link: unhandledDownHostsLink
                 }),
                 severityCode: SeverityCode.High,
                 testId: 'Hosts Down',
-                to: unhandledDownHostsLink,
+                to: unhandledDownHostsLink
               },
               {
                 count: data.unreachable.unhandled,
                 onClick: changeFilterAndNavigate({
                   criterias: unhandledUnreachableHostsCriterias,
-                  link: unhandledUnreachableHostsLink,
+                  link: unhandledUnreachableHostsLink
                 }),
                 severityCode: SeverityCode.Low,
                 testId: 'Hosts Unreachable',
-                to: unhandledUnreachableHostsLink,
+                to: unhandledUnreachableHostsLink
               },
               {
                 count: data.ok,
                 onClick: changeFilterAndNavigate({
                   criterias: upHostsCriterias,
-                  link: upHostsLink,
+                  link: upHostsLink
                 }),
                 severityCode: SeverityCode.Ok,
                 testId: 'Hosts Up',
-                to: upHostsLink,
-              },
+                to: upHostsLink
+              }
             ]}
             hasPending={hasPending}
             iconHeader={{
               Icon: HostIcon,
               iconName: t('Hosts'),
-              onClick: toggleDetailedView,
+              onClick: toggleDetailedView
             }}
             iconToggleSubmenu={{
               onClick: toggleDetailedView,
               rotate: toggled,
-              testid: 'submenu-hosts',
+              testid: 'submenu-hosts'
             }}
             submenuItems={[
               {
@@ -193,69 +193,69 @@ const HostStatusCounter = (): JSX.Element => {
                 onClick: changeFilterAndNavigate({
                   criterias: hostsCriterias,
                   link: hostsLink,
-                  toggle: toggleDetailedView,
+                  toggle: toggleDetailedView
                 }),
                 submenuCount: numeral(data.total).format('0a'),
                 submenuTitle: t('All'),
                 titleTestId: 'submenu hosts title all',
-                to: hostsLink,
+                to: hostsLink
               },
               {
                 countTestId: 'submenu hosts count down',
                 onClick: changeFilterAndNavigate({
                   criterias: unhandledDownHostsCriterias,
                   link: unhandledDownHostsLink,
-                  toggle: toggleDetailedView,
+                  toggle: toggleDetailedView
                 }),
                 severityCode: SeverityCode.High,
                 submenuCount: `${numeral(data.down.unhandled).format(
-                  '0a',
+                  '0a'
                 )}/${numeral(data.down.total).format('0a')}`,
                 submenuTitle: t('Down'),
                 titleTestId: 'submenu hosts title down',
-                to: unhandledDownHostsLink,
+                to: unhandledDownHostsLink
               },
               {
                 countTestId: 'submenu hosts count unreachable',
                 onClick: changeFilterAndNavigate({
                   criterias: unhandledUnreachableHostsCriterias,
                   link: unhandledUnreachableHostsLink,
-                  toggle: toggleDetailedView,
+                  toggle: toggleDetailedView
                 }),
                 severityCode: SeverityCode.Low,
                 submenuCount: `${numeral(data.unreachable.unhandled).format(
-                  '0a',
+                  '0a'
                 )}/${numeral(data.unreachable.total).format('0a')}`,
                 submenuTitle: t('Unreachable'),
                 titleTestId: 'submenu hosts title unreachable',
-                to: unhandledUnreachableHostsLink,
+                to: unhandledUnreachableHostsLink
               },
               {
                 countTestId: 'submenu hosts count ok',
                 onClick: changeFilterAndNavigate({
                   criterias: upHostsCriterias,
                   link: upHostsLink,
-                  toggle: toggleDetailedView,
+                  toggle: toggleDetailedView
                 }),
                 severityCode: SeverityCode.Ok,
                 submenuCount: numeral(data.ok).format('0a'),
                 submenuTitle: t('Up'),
                 titleTestId: 'submenu hosts title ok',
-                to: upHostsLink,
+                to: upHostsLink
               },
               {
                 countTestId: 'submenu hosts count pending',
                 onClick: changeFilterAndNavigate({
                   criterias: pendingHostsCriterias,
                   link: pendingHostsLink,
-                  toggle: toggleDetailedView,
+                  toggle: toggleDetailedView
                 }),
                 severityCode: SeverityCode.Pending,
                 submenuCount: numeral(data.pending).format('0a'),
                 submenuTitle: t('Pending'),
                 titleTestId: 'submenu hosts title pending',
-                to: pendingHostsLink,
-              },
+                to: pendingHostsLink
+              }
             ]}
             toggled={toggled}
           />

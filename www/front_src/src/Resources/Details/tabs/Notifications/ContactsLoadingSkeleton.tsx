@@ -7,12 +7,12 @@ const useStyles = makeStyles((theme) => ({
   loadingSkeleton: {
     display: 'grid',
     gridTemplateRows: 'repeat(3, 67px)',
-    rowGap: theme.spacing(2),
-  },
+    rowGap: theme.spacing(2)
+  }
 }));
 
 const ContactsSkeleton = styled(LoadingSkeleton)(() => ({
-  transform: 'none',
+  transform: 'none'
 }));
 
 const ContactsLoadingSkeleton = (): JSX.Element => {

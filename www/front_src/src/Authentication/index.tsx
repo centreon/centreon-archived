@@ -16,7 +16,7 @@ import LocalAuthentication from './Local';
 import { labelPasswordSecurityPolicy } from './Local/translatedLabels';
 import {
   labelOpenIDConnectConfiguration,
-  labelRolesMapping,
+  labelRolesMapping
 } from './Openid/translatedLabels';
 import OpenidConfiguration from './Openid';
 import WebSSOConfigurationForm from './WebSSO';
@@ -27,7 +27,7 @@ import {
   labelAuthenticationConditions,
   labelIdentityProvider,
   labelClientAddresses,
-  labelGroupsMapping,
+  labelGroupsMapping
 } from './translatedLabels';
 import { tabAtom, appliedTabAtom } from './tabAtoms';
 import passwordPadlockLogo from './logos/passwordPadlock.svg';
@@ -38,68 +38,68 @@ const panels = [
     Component: LocalAuthentication,
     image: passwordPadlockLogo,
     title: labelPasswordSecurityPolicy,
-    value: Provider.Local,
+    value: Provider.Local
   },
   {
     Component: OpenidConfiguration,
     image: providerPadlockLogo,
     title: labelOpenIDConnectConfiguration,
-    value: Provider.Openid,
+    value: Provider.Openid
   },
   {
     Component: WebSSOConfigurationForm,
     image: providerPadlockLogo,
     title: labelWebSSOConfiguration,
-    value: Provider.WebSSO,
-  },
+    value: Provider.WebSSO
+  }
 ];
 
 export const groups: Array<Group> = [
   {
     name: labelActivation,
-    order: 1,
+    order: 1
   },
   {
     name: labelIdentityProvider,
-    order: 2,
+    order: 2
   },
   {
     name: labelAuthenticationConditions,
-    order: 3,
+    order: 3
   },
   {
     name: labelClientAddresses,
-    order: 4,
+    order: 4
   },
   {
     name: labelAutoImportUsers,
-    order: 5,
+    order: 5
   },
   {
     name: labelRolesMapping,
-    order: 6,
+    order: 6
   },
   {
     name: labelGroupsMapping,
-    order: 7,
-  },
+    order: 7
+  }
 ];
 
 const useStyles = makeStyles((theme) => ({
   box: {
-    overflowY: 'hidden',
+    overflowY: 'hidden'
   },
   container: {
     maxHeight: `calc(100vh - ${theme.spacing(12)})`,
     maxWidth: theme.spacing(125),
-    overflowY: 'hidden',
+    overflowY: 'hidden'
   },
   formContainer: {
     display: 'grid',
     gridTemplateColumns: '1.2fr 0.6fr',
     justifyItems: 'center',
     overflowY: 'hidden',
-    padding: theme.spacing(3),
+    padding: theme.spacing(3)
   },
   image: {
     height: '200px',
@@ -107,15 +107,15 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(0, 5),
     position: 'sticky',
     top: 0,
-    width: '200px',
+    width: '200px'
   },
   panel: {
     overflowY: 'auto',
-    padding: 0,
+    padding: 0
   },
   tabList: {
-    boxShadow: theme.shadows[2],
-  },
+    boxShadow: theme.shadows[2]
+  }
 }));
 
 const scrollMargin = 8;
@@ -159,7 +159,7 @@ const Authentication = (): JSX.Element => {
       panels.map(({ title, value }) => (
         <Tab key={value} label={t(title)} value={value} />
       )),
-    [],
+    []
   );
 
   const tabPanels = useMemo(
@@ -170,7 +170,7 @@ const Authentication = (): JSX.Element => {
             ref={formContainerRef}
             sx={{
               height: `${formContainerHeight}px`,
-              overflowY: 'auto',
+              overflowY: 'auto'
             }}
           >
             <div className={classes.formContainer}>
@@ -180,7 +180,7 @@ const Authentication = (): JSX.Element => {
           </Box>
         </TabPanel>
       )),
-    [themeMode, formContainerHeight],
+    [themeMode, formContainerHeight]
   );
 
   return (

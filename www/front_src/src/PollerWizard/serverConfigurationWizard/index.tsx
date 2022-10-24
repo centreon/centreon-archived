@@ -12,7 +12,7 @@ import {
   labelAddACentreonPoller,
   labelAddACentreonRemoteServer,
   labelNext,
-  labelChoseServerType,
+  labelChoseServerType
 } from '../translatedLabels';
 import { ServerType } from '../models';
 import { useStyles } from '../../styles/partials/form/PollerWizardStyle';
@@ -24,7 +24,7 @@ interface Props {
 
 const ServerConfigurationWizard = ({
   changeServerType,
-  goToNextStep,
+  goToNextStep
 }: Props): JSX.Element => {
   const classes = useStyles();
   const { t } = useTranslation();
@@ -47,12 +47,12 @@ const ServerConfigurationWizard = ({
   const configurationTypes = [
     {
       label: labelAddACentreonRemoteServer,
-      value: 1,
+      value: 1
     },
     {
       label: labelAddACentreonPoller,
-      value: 2,
-    },
+      value: 2
+    }
   ];
 
   return (

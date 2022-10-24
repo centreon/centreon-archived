@@ -23,7 +23,7 @@ const useMain = (): void => {
   const { sendRequest: getPlatformInstallationStatus } =
     useRequest<PlatformInstallationStatus>({
       decoder: platformInstallationStatusDecoder,
-      request: getData,
+      request: getData
     });
   const { showErrorMessage } = useSnackbar();
 
@@ -31,7 +31,7 @@ const useMain = (): void => {
     useInitializeTranslation();
 
   const setPlatformInstallationStatus = useSetAtom(
-    platformInstallationStatusAtom,
+    platformInstallationStatusAtom
   );
   const user = useAtomValue(userAtom);
   const areUserParametersLoaded = useAtomValue(areUserParametersLoadedAtom);
@@ -59,7 +59,7 @@ const useMain = (): void => {
     getPlatformVersions();
 
     getPlatformInstallationStatus({
-      endpoint: platformInstallationStatusEndpoint,
+      endpoint: platformInstallationStatusEndpoint
     }).then((retrievedPlatformInstallationStatus) => {
       setPlatformInstallationStatus(retrievedPlatformInstallationStatus);
     });
@@ -80,7 +80,7 @@ const useMain = (): void => {
   useEffect(() => {
     const canChangeToBrowserLanguage = and(
       isNil(areUserParametersLoaded),
-      i18next.isInitialized,
+      i18next.isInitialized
     );
     if (canChangeToBrowserLanguage) {
       i18next?.changeLanguage(getBrowserLocale());
@@ -88,7 +88,7 @@ const useMain = (): void => {
 
     const canRedirectToUserDefaultPage = and(
       areUserParametersLoaded,
-      includes(location.pathname, [reactRoutes.login, '/']),
+      includes(location.pathname, [reactRoutes.login, '/'])
     );
 
     if (not(canRedirectToUserDefaultPage)) {

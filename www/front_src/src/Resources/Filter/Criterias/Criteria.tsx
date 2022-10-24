@@ -6,12 +6,12 @@ import {
   PopoverMultiAutocompleteField,
   PopoverMultiConnectedAutocompleteField,
   SelectEntry,
-  useMemoComponent,
+  useMemoComponent
 } from '@centreon/ui';
 
 import {
   filterWithParsedSearchDerivedAtom,
-  setCriteriaAndNewFilterDerivedAtom,
+  setCriteriaAndNewFilterDerivedAtom
 } from '../filterAtoms';
 import useFilterByModule from '../useFilterByModule';
 
@@ -27,13 +27,13 @@ const CriteriaContent = ({ name, value }: Props): JSX.Element => {
   const { newSelectableCriterias } = useFilterByModule();
 
   const setCriteriaAndNewFilter = useUpdateAtom(
-    setCriteriaAndNewFilterDerivedAtom,
+    setCriteriaAndNewFilterDerivedAtom
   );
 
   const getTranslated = (values: Array<SelectEntry>): Array<SelectEntry> => {
     return values.map((entry) => ({
       id: entry.id,
-      name: t(entry.name),
+      name: t(entry.name)
     }));
   };
 
@@ -44,7 +44,7 @@ const CriteriaContent = ({ name, value }: Props): JSX.Element => {
   const getUntranslated = (values): Array<SelectEntry> => {
     return values.map(({ id }) => ({
       id,
-      name: criteriaValueNameById[id],
+      name: criteriaValueNameById[id]
     }));
   };
 
@@ -53,7 +53,7 @@ const CriteriaContent = ({ name, value }: Props): JSX.Element => {
 
   const commonProps = {
     label: t(label),
-    search: autocompleteSearch,
+    search: autocompleteSearch
   };
 
   if (isNil(options)) {
@@ -66,7 +66,7 @@ const CriteriaContent = ({ name, value }: Props): JSX.Element => {
       buildAutocompleteEndpoint({
         limit: 10,
         page,
-        search,
+        search
       });
 
     const displayedColumn = label.includes('level') ? 'level' : '';
@@ -105,12 +105,12 @@ const CriteriaContent = ({ name, value }: Props): JSX.Element => {
 
 const Criteria = ({ value, name }: Props): JSX.Element => {
   const filterWithParsedSearch = useAtomValue(
-    filterWithParsedSearchDerivedAtom,
+    filterWithParsedSearchDerivedAtom
   );
 
   return useMemoComponent({
     Component: <CriteriaContent name={name} value={value} />,
-    memoProps: [value, name, filterWithParsedSearch],
+    memoProps: [value, name, filterWithParsedSearch]
   });
 };
 

@@ -8,7 +8,7 @@ import {
   RenderResult,
   screen,
   waitFor,
-  SnackbarProvider,
+  SnackbarProvider
 } from '@centreon/ui';
 
 import { labelCentreonLogo } from '../Login/translatedLabels';
@@ -21,12 +21,12 @@ import {
   labelResetPassword,
   labelTheNewPasswordIstheSameAsTheOldPassword,
   labelNewPasswordsMustMatch,
-  labelPasswordRenewed,
+  labelPasswordRenewed
 } from './translatedLabels';
 import { getResetPasswordEndpoint } from './api/endpoint';
 import {
   passwordResetInformationsAtom,
-  PasswordResetInformations,
+  PasswordResetInformations
 } from './passwordResetInformationsAtom';
 
 import ResetPasswordPage from '.';
@@ -38,7 +38,7 @@ const cancelTokenRequestParam = { cancelToken: {} };
 jest.mock('../Navigation/Sidebar/Logo/centreon.png');
 
 jest.mock('@centreon/ui-context', () =>
-  jest.requireActual('centreon-frontend/packages/ui-context'),
+  jest.requireActual('centreon-frontend/packages/ui-context')
 );
 
 interface Props {
@@ -52,23 +52,23 @@ const retrievedUser = {
   locale: 'fr_FR.UTF8',
   name: 'Admin',
   timezone: 'Europe/Paris',
-  use_deprecated_pages: false,
+  use_deprecated_pages: false
 };
 
 const retrievedWeb = {
   web: {
-    version: '21.10.1',
-  },
+    version: '21.10.1'
+  }
 };
 
 const retrievedLogin = {
-  redirect_uri: '/monitoring/resources',
+  redirect_uri: '/monitoring/resources'
 };
 
 const retrievedTranslations = {
   en: {
-    hello: 'Hello',
-  },
+    hello: 'Hello'
+  }
 };
 
 const TestComponent = ({ initialValues }: Props): JSX.Element => (
@@ -87,8 +87,8 @@ const alias = 'admin';
 
 const renderResetPasswordPage = (
   initialValues: PasswordResetInformations | null = {
-    alias,
-  },
+    alias
+  }
 ): RenderResult => render(<TestComponent initialValues={initialValues} />);
 
 const retrievedProvidersConfiguration = [
@@ -97,32 +97,32 @@ const retrievedProvidersConfiguration = [
       '/centreon/authentication/providers/configurations/local',
     id: 1,
     is_active: true,
-    name: 'local',
-  },
+    name: 'local'
+  }
 ];
 
 describe('Reset password Page', () => {
   beforeEach(() => {
     mockedAxios.put.mockResolvedValue({
-      data: null,
+      data: null
     });
 
     mockedAxios.get
       .mockResolvedValueOnce({
-        data: retrievedWeb,
+        data: retrievedWeb
       })
       .mockResolvedValueOnce({
-        data: retrievedProvidersConfiguration,
+        data: retrievedProvidersConfiguration
       })
       .mockResolvedValueOnce({
-        data: retrievedTranslations,
+        data: retrievedTranslations
       })
       .mockResolvedValue({
-        data: retrievedUser,
+        data: retrievedUser
       });
 
     mockedAxios.post.mockResolvedValue({
-      data: retrievedLogin,
+      data: retrievedLogin
     });
   });
 
@@ -141,7 +141,7 @@ describe('Reset password Page', () => {
     expect(screen.getByLabelText(labelNewPassword)).toBeInTheDocument();
     expect(screen.getByLabelText(labelNewPassword)).toBeInTheDocument();
     expect(
-      screen.getByLabelText(labelNewPasswordConfirmation),
+      screen.getByLabelText(labelNewPasswordConfirmation)
     ).toBeInTheDocument();
     expect(screen.getByLabelText(labelCentreonLogo)).toBeInTheDocument();
   });
@@ -151,14 +151,14 @@ describe('Reset password Page', () => {
 
     userEvent.type(
       screen.getByLabelText(labelCurrentPassword),
-      'current-password',
+      'current-password'
     );
     userEvent.type(screen.getByLabelText(labelNewPassword), 'current-password');
     userEvent.tab();
 
     await waitFor(() => {
       expect(
-        screen.getByText(labelTheNewPasswordIstheSameAsTheOldPassword),
+        screen.getByText(labelTheNewPasswordIstheSameAsTheOldPassword)
       ).toBeInTheDocument();
     });
     expect(screen.getByText(labelResetPassword)).toBeDisabled();
@@ -167,7 +167,7 @@ describe('Reset password Page', () => {
     userEvent.type(screen.getByLabelText(labelNewPassword), 'new-password');
     userEvent.type(
       screen.getByLabelText(labelNewPasswordConfirmation),
-      'new-password-2',
+      'new-password-2'
     );
     userEvent.tab();
 
@@ -190,12 +190,12 @@ describe('Reset password Page', () => {
 
     userEvent.type(
       screen.getByLabelText(labelCurrentPassword),
-      'current-password',
+      'current-password'
     );
     userEvent.type(screen.getByLabelText(labelNewPassword), 'new-password');
     userEvent.type(
       screen.getByLabelText(labelNewPasswordConfirmation),
-      'new-password',
+      'new-password'
     );
 
     userEvent.click(screen.getByText(labelResetPassword));
@@ -205,21 +205,21 @@ describe('Reset password Page', () => {
         getResetPasswordEndpoint(alias),
         {
           new_password: 'new-password',
-          old_password: 'current-password',
+          old_password: 'current-password'
         },
         {
           ...cancelTokenRequestParam,
           headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-          },
-        },
+            'Content-Type': 'application/x-www-form-urlencoded'
+          }
+        }
       );
     });
 
     await waitFor(() => {
       expect(mockedAxios.post).toHaveBeenCalledWith(loginEndpoint, {
         login: alias,
-        password: 'new-password',
+        password: 'new-password'
       });
     });
 

@@ -10,20 +10,20 @@ import {
   NamedEntity,
   OpenidConfiguration,
   RolesMapping,
-  RolesRelation,
+  RolesRelation
 } from '../Openid/models';
 import { WebSSOConfiguration } from '../WebSSO/models';
 
 const passwordExpirationDecoder = JsonDecoder.object<PasswordExpiration>(
   {
     excludedUsers: JsonDecoder.array(JsonDecoder.string, 'excludedUsers'),
-    expirationDelay: JsonDecoder.nullable(JsonDecoder.number),
+    expirationDelay: JsonDecoder.nullable(JsonDecoder.number)
   },
   'PasswordExpiration',
   {
     excludedUsers: 'excluded_users',
-    expirationDelay: 'expiration_delay',
-  },
+    expirationDelay: 'expiration_delay'
+  }
 );
 
 export const securityPolicyDecoder = JsonDecoder.object<PasswordSecurityPolicy>(
@@ -37,7 +37,7 @@ export const securityPolicyDecoder = JsonDecoder.object<PasswordSecurityPolicy>(
     hasSpecialCharacter: JsonDecoder.boolean,
     hasUpperCase: JsonDecoder.boolean,
     passwordExpiration: passwordExpirationDecoder,
-    passwordMinLength: JsonDecoder.number,
+    passwordMinLength: JsonDecoder.number
   },
   'PasswordSecurityPolicy',
   {
@@ -49,54 +49,54 @@ export const securityPolicyDecoder = JsonDecoder.object<PasswordSecurityPolicy>(
     hasSpecialCharacter: 'has_special_character',
     hasUpperCase: 'has_uppercase',
     passwordExpiration: 'password_expiration',
-    passwordMinLength: 'password_min_length',
-  },
+    passwordMinLength: 'password_min_length'
+  }
 );
 
 const getNamedEntityDecoder = (
-  title: string,
+  title: string
 ): JsonDecoder.Decoder<NamedEntity> =>
   JsonDecoder.object<NamedEntity>(
     {
       id: JsonDecoder.number,
-      name: JsonDecoder.string,
+      name: JsonDecoder.string
     },
-    title,
+    title
   );
 
 const endpointDecoder = JsonDecoder.object<Endpoint>(
   {
     customEndpoint: JsonDecoder.nullable(JsonDecoder.string),
-    type: JsonDecoder.enumeration(EndpointType, 'type'),
+    type: JsonDecoder.enumeration(EndpointType, 'type')
   },
   'Endpoint',
   {
-    customEndpoint: 'custom_endpoint',
-  },
+    customEndpoint: 'custom_endpoint'
+  }
 );
 
 const rolesRelation = JsonDecoder.object<RolesRelation>(
   {
     accessGroup: getNamedEntityDecoder('Access group'),
-    claimValue: JsonDecoder.string,
+    claimValue: JsonDecoder.string
   },
   'Role Relation',
   {
     accessGroup: 'access_group',
-    claimValue: 'claim_value',
-  },
+    claimValue: 'claim_value'
+  }
 );
 
 const groupsRelationDecoder = JsonDecoder.object<GroupsRelation>(
   {
     contactGroup: getNamedEntityDecoder('Contact group'),
-    groupValue: JsonDecoder.string,
+    groupValue: JsonDecoder.string
   },
   'Group Relation',
   {
     contactGroup: 'contact_group',
-    groupValue: 'group_value',
-  },
+    groupValue: 'group_value'
+  }
 );
 
 const authConditions = JsonDecoder.object<AuthConditions>(
@@ -104,18 +104,18 @@ const authConditions = JsonDecoder.object<AuthConditions>(
     attributePath: JsonDecoder.string,
     authorizedValues: JsonDecoder.array(
       JsonDecoder.string,
-      'condition authorized value',
+      'condition authorized value'
     ),
     blacklistClientAddresses: JsonDecoder.array(
       JsonDecoder.string,
-      'blacklist client addresses',
+      'blacklist client addresses'
     ),
     endpoint: endpointDecoder,
     isEnabled: JsonDecoder.boolean,
     trustedClientAddresses: JsonDecoder.array(
       JsonDecoder.string,
-      'trusted client addresses',
-    ),
+      'trusted client addresses'
+    )
   },
   'Authentication conditions',
   {
@@ -123,8 +123,8 @@ const authConditions = JsonDecoder.object<AuthConditions>(
     authorizedValues: 'authorized_values',
     blacklistClientAddresses: 'blacklist_client_addresses',
     isEnabled: 'is_enabled',
-    trustedClientAddresses: 'trusted_client_addresses',
-  },
+    trustedClientAddresses: 'trusted_client_addresses'
+  }
 );
 
 const rolesMapping = JsonDecoder.object<RolesMapping>(
@@ -133,14 +133,14 @@ const rolesMapping = JsonDecoder.object<RolesMapping>(
     attributePath: JsonDecoder.string,
     endpoint: endpointDecoder,
     isEnabled: JsonDecoder.boolean,
-    relations: JsonDecoder.array(rolesRelation, 'Roles relation'),
+    relations: JsonDecoder.array(rolesRelation, 'Roles relation')
   },
   'Roles mapping',
   {
     applyOnlyFirstRole: 'apply_only_first_role',
     attributePath: 'attribute_path',
-    isEnabled: 'is_enabled',
-  },
+    isEnabled: 'is_enabled'
+  }
 );
 
 const groupsMappingDecoder = JsonDecoder.object<GroupsMapping>(
@@ -148,13 +148,13 @@ const groupsMappingDecoder = JsonDecoder.object<GroupsMapping>(
     attributePath: JsonDecoder.string,
     endpoint: endpointDecoder,
     isEnabled: JsonDecoder.boolean,
-    relations: JsonDecoder.array(groupsRelationDecoder, 'Groups relation'),
+    relations: JsonDecoder.array(groupsRelationDecoder, 'Groups relation')
   },
   'Groups mapping',
   {
     attributePath: 'attribute_path',
-    isEnabled: 'is_enabled',
-  },
+    isEnabled: 'is_enabled'
+  }
 );
 
 export const openidConfigurationDecoder =
@@ -170,10 +170,10 @@ export const openidConfigurationDecoder =
       clientSecret: JsonDecoder.nullable(JsonDecoder.string),
       connectionScopes: JsonDecoder.array(
         JsonDecoder.string,
-        'connectionScopes',
+        'connectionScopes'
       ),
       contactTemplate: JsonDecoder.nullable(
-        getNamedEntityDecoder('Contact template'),
+        getNamedEntityDecoder('Contact template')
       ),
       emailBindAttribute: JsonDecoder.nullable(JsonDecoder.string),
       endSessionEndpoint: JsonDecoder.nullable(JsonDecoder.string),
@@ -189,7 +189,7 @@ export const openidConfigurationDecoder =
 
       tokenEndpoint: JsonDecoder.nullable(JsonDecoder.string),
       userinfoEndpoint: JsonDecoder.nullable(JsonDecoder.string),
-      verifyPeer: JsonDecoder.boolean,
+      verifyPeer: JsonDecoder.boolean
     },
     'Open ID Configuration',
     {
@@ -213,8 +213,8 @@ export const openidConfigurationDecoder =
       rolesMapping: 'roles_mapping',
       tokenEndpoint: 'token_endpoint',
       userinfoEndpoint: 'userinfo_endpoint',
-      verifyPeer: 'verify_peer',
-    },
+      verifyPeer: 'verify_peer'
+    }
   );
 
 export const webSSOConfigurationDecoder =
@@ -222,23 +222,23 @@ export const webSSOConfigurationDecoder =
     {
       blacklistClientAddresses: JsonDecoder.array(
         JsonDecoder.string,
-        'blacklist client addresses',
+        'blacklist client addresses'
       ),
       isActive: JsonDecoder.boolean,
       isForced: JsonDecoder.boolean,
       loginHeaderAttribute: JsonDecoder.optional(
-        JsonDecoder.nullable(JsonDecoder.string),
+        JsonDecoder.nullable(JsonDecoder.string)
       ),
       patternMatchingLogin: JsonDecoder.optional(
-        JsonDecoder.nullable(JsonDecoder.string),
+        JsonDecoder.nullable(JsonDecoder.string)
       ),
       patternReplaceLogin: JsonDecoder.optional(
-        JsonDecoder.nullable(JsonDecoder.string),
+        JsonDecoder.nullable(JsonDecoder.string)
       ),
       trustedClientAddresses: JsonDecoder.array(
         JsonDecoder.string,
-        'trusted client addresses',
-      ),
+        'trusted client addresses'
+      )
     },
     'Web SSO Configuration',
     {
@@ -248,6 +248,6 @@ export const webSSOConfigurationDecoder =
       loginHeaderAttribute: 'login_header_attribute',
       patternMatchingLogin: 'pattern_matching_login',
       patternReplaceLogin: 'pattern_replace_login',
-      trustedClientAddresses: 'trusted_client_addresses',
-    },
+      trustedClientAddresses: 'trusted_client_addresses'
+    }
   );

@@ -12,7 +12,7 @@ import {
   labelCommand,
   labelCommandCopied,
   labelCopy,
-  labelSomethingWentWrong,
+  labelSomethingWentWrong
 } from '../../../../translatedLabels';
 
 interface Props {
@@ -21,8 +21,8 @@ interface Props {
 
 const useStyles = makeStyles((theme) => ({
   commandLineCard: {
-    padding: theme.spacing(1, 2, 2, 2),
-  },
+    padding: theme.spacing(1, 2, 2, 2)
+  }
 }));
 
 const CommandLineCard = ({ details }: Props): JSX.Element => {
@@ -31,7 +31,7 @@ const CommandLineCard = ({ details }: Props): JSX.Element => {
 
   const { copy } = useCopyToClipboard({
     errorMessage: t(labelSomethingWentWrong),
-    successMessage: t(labelCommandCopied),
+    successMessage: t(labelCommandCopied)
   });
 
   const copyCommandLine = (): Promise<void> =>

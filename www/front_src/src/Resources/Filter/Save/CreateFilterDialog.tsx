@@ -12,7 +12,7 @@ import {
   labelCancel,
   labelName,
   labelNewFilter,
-  labelRequired,
+  labelRequired
 } from '../../translatedLabels';
 import { createFilter } from '../api';
 import { Filter } from '../models';
@@ -30,16 +30,16 @@ const CreateFilterDialog = ({
   filter,
   onCreate,
   open,
-  onCancel,
+  onCancel
 }: Props): JSX.Element => {
   const { t } = useTranslation();
 
   const { sendRequest, sending } = useRequest<Filter>({
-    request: createFilter,
+    request: createFilter
   });
   const form = useFormik({
     initialValues: {
-      name: '',
+      name: ''
     },
     onSubmit: (values) => {
       sendRequest({ criterias: filter.criterias, name: values.name })
@@ -47,13 +47,13 @@ const CreateFilterDialog = ({
         .catch((requestError) => {
           form.setFieldError(
             'name',
-            path(['response', 'data', 'message'], requestError),
+            path(['response', 'data', 'message'], requestError)
           );
         });
     },
     validationSchema: Yup.object().shape({
-      name: Yup.string().required(labelRequired),
-    }),
+      name: Yup.string().required(labelRequired)
+    })
   });
 
   const submitFormOnEnterKey = (event: KeyboardEvent<HTMLDivElement>): void => {

@@ -4,11 +4,11 @@ import { SeverityCode, StatusChip } from '@centreon/ui';
 
 const useStyles = makeStyles((theme) => ({
   extraSmallChipContainer: {
-    height: 19,
+    height: 19
   },
   smallChipLabel: {
-    padding: theme.spacing(0.5),
-  },
+    padding: theme.spacing(0.5)
+  }
 }));
 
 interface Props {
@@ -22,7 +22,7 @@ const ShortTypeChip = ({ label }: Props): JSX.Element => {
     <StatusChip
       classes={{
         label: classes.smallChipLabel,
-        root: classes.extraSmallChipContainer,
+        root: classes.extraSmallChipContainer
       }}
       label={label}
       severityCode={SeverityCode.None}

@@ -6,7 +6,7 @@ import FlappingIcon from '@mui/icons-material/SwapCalls';
 
 import {
   labelResourceFlapping,
-  labelFlapping,
+  labelFlapping
 } from '../../../../translatedLabels';
 import { ResourceDetails } from '../../../models';
 
@@ -17,8 +17,8 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     columnGap: theme.spacing(1),
     display: 'grid',
-    gridTemplateColumns: 'auto min-content',
-  },
+    gridTemplateColumns: 'auto min-content'
+  }
 }));
 
 interface Props {

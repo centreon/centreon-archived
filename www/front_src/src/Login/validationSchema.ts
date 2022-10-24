@@ -9,7 +9,7 @@ const useValidationSchema = (): Yup.SchemaOf<LoginFormValues> => {
 
   const schema = Yup.object().shape({
     alias: Yup.string().required(t(labelRequired)),
-    password: Yup.string().required(t(labelRequired)),
+    password: Yup.string().required(t(labelRequired))
   });
 
   return schema;

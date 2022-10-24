@@ -39,7 +39,7 @@ const RegularLine = ({
   areaColor,
   transparency,
   graphHeight,
-  shapeCircleAnomalyDetection,
+  shapeCircleAnomalyDetection
 }: Props): JSX.Element => {
   const strokeWidth =
     equals(metric, 'connection_lower_thresholds') ||
@@ -59,7 +59,7 @@ const RegularLine = ({
     strokeWidth: isHighlighted,
     unit,
     x: (timeValue): number => xScale(getTime(timeValue)) as number,
-    y: (timeValue): number => yScale(prop(metric, timeValue)) ?? null,
+    y: (timeValue): number => yScale(prop(metric, timeValue)) ?? null
   };
 
   if (filled) {
@@ -88,13 +88,13 @@ export default memo(RegularLine, (prevProps, nextProps) => {
     timeSeries: prevTimeSeries,
     graphHeight: prevGraphHeight,
     highlight: prevHighlight,
-    xScale: prevXScale,
+    xScale: prevXScale
   } = prevProps;
   const {
     timeSeries: nextTimeSeries,
     graphHeight: nextGraphHeight,
     highlight: nextHighlight,
-    xScale: nextXScale,
+    xScale: nextXScale
   } = nextProps;
 
   const prevXScaleRange = prevXScale.range();

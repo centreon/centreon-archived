@@ -14,7 +14,7 @@ import WrenchIcon from '@mui/icons-material/Build';
 import {
   ContentWithCircularLoading,
   useLocaleDateTimeFormat,
-  IconButton,
+  IconButton
 } from '@centreon/ui';
 
 import {
@@ -24,7 +24,7 @@ import {
   labelPerformancePage,
   labelSmallSize,
   labelPerformanceGraphAD,
-  labelCSV,
+  labelCSV
 } from '../../translatedLabels';
 import { CustomTimePeriod } from '../../Details/tabs/Graph/models';
 import { TimelineEvent } from '../../Details/tabs/Timeline/models';
@@ -35,7 +35,7 @@ import { detailsAtom } from '../../Details/detailsAtoms';
 import exportToPng from './ExportableGraphWithTimeline/exportToPng';
 import {
   getDatesDerivedAtom,
-  selectedTimePeriodAtom,
+  selectedTimePeriodAtom
 } from './TimePeriods/timePeriodAtoms';
 
 interface Props {
@@ -53,8 +53,8 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     columnGap: theme.spacing(1),
     display: 'inline',
-    flexDirection: 'row',
-  },
+    flexDirection: 'row'
+  }
 }));
 
 const GraphActions = ({
@@ -64,7 +64,7 @@ const GraphActions = ({
   resourceType,
   timeline,
   performanceGraphRef,
-  getIsModalOpened,
+  getIsModalOpened
 }: Props): JSX.Element => {
   const classes = useStyles();
   const theme = useTheme();
@@ -75,7 +75,7 @@ const GraphActions = ({
   const navigate = useNavigate();
   const isResourceAnomalyDetection = equals(
     resourceType,
-    ResourceType.anomalydetection,
+    ResourceType.anomalydetection
   );
   const openSizeExportMenu = (event: MouseEvent<HTMLButtonElement>): void => {
     setMenuAnchor(event.currentTarget);
@@ -97,11 +97,11 @@ const GraphActions = ({
   const goToPerformancePage = (): void => {
     const startTimestamp = format({
       date: customTimePeriod?.start as Date,
-      formatString: 'X',
+      formatString: 'X'
     });
     const endTimestamp = format({
       date: customTimePeriod?.end as Date,
-      formatString: 'X',
+      formatString: 'X'
     });
 
     const urlParameters = (): string => {
@@ -109,7 +109,7 @@ const GraphActions = ({
         end: endTimestamp,
         mode: '0',
         start: startTimestamp,
-        svc_id: `${resourceParentName};${resourceName}`,
+        svc_id: `${resourceParentName};${resourceName}`
       });
 
       return params.toString();
@@ -125,7 +125,7 @@ const GraphActions = ({
       backgroundColor: theme.palette.background.paper,
       element: performanceGraphRef.current as HTMLElement,
       ratio,
-      title: `${resourceName}-performance`,
+      title: `${resourceName}-performance`
     }).finally(() => {
       setExporting(false);
     });
@@ -224,8 +224,8 @@ const MemoizedGraphActions = memoizeComponent<Props>({
     'resourceParentName',
     'resourceName',
     'timeline',
-    'performanceGraphRef',
-  ],
+    'performanceGraphRef'
+  ]
 });
 
 export default MemoizedGraphActions;

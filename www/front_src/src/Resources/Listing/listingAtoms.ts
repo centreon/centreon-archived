@@ -12,6 +12,6 @@ export const pageAtom = atom<number | undefined>(undefined);
 export const enabledAutorefreshAtom = atom<boolean>(true);
 export const selectedColumnIdsAtom = atomWithStorage(
   `${baseKey}column-ids`,
-  defaultSelectedColumnIds,
+  defaultSelectedColumnIds
 );
 export const sendingAtom = atom<boolean>(false);

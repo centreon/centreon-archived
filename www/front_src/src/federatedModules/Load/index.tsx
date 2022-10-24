@@ -24,12 +24,12 @@ const remoteEntriesLoadedAtom = atom([] as Array<string>);
 
 const useDynamicLoadRemoteEntry = ({
   remoteEntry,
-  moduleName,
+  moduleName
 }: UseDynamicLoadRemoteEntryProps): UseDynamicLoadRemoteEntryState => {
   const [failed, setFailed] = useState(false);
 
   const [remoteEntriesLoaded, setRemoteEntriesLoaded] = useAtom(
-    remoteEntriesLoadedAtom,
+    remoteEntriesLoadedAtom
   );
 
   useEffect((): (() => void) | undefined => {
@@ -51,7 +51,7 @@ const useDynamicLoadRemoteEntry = ({
     element.onload = (): void => {
       setRemoteEntriesLoaded((currentRemoteEntries) => [
         ...currentRemoteEntries,
-        moduleName,
+        moduleName
       ]);
     };
 
@@ -68,7 +68,7 @@ const useDynamicLoadRemoteEntry = ({
 
   return {
     failed,
-    ready: remoteEntriesLoaded.includes(moduleName),
+    ready: remoteEntriesLoaded.includes(moduleName)
   };
 };
 
@@ -86,7 +86,7 @@ const LoadComponent = ({
 }: LoadComponentProps): JSX.Element => {
   const Component = useMemo(
     () => lazy(loadComponent({ component, moduleFederationName })),
-    [moduleFederationName],
+    [moduleFederationName]
   );
 
   return (
@@ -100,7 +100,7 @@ const LoadComponent = ({
 
 const MemoizedLoadComponent = memoizeComponent<LoadComponentProps>({
   Component: LoadComponent,
-  memoProps: ['name', 'component', 'isFederatedModule'],
+  memoProps: ['name', 'component', 'isFederatedModule']
 });
 
 interface RemoteProps extends LoadComponentProps {
@@ -118,7 +118,7 @@ export const Remote = ({
 }: RemoteProps): JSX.Element => {
   const { ready, failed } = useDynamicLoadRemoteEntry({
     moduleName,
-    remoteEntry,
+    remoteEntry
   });
 
   if (!ready) {

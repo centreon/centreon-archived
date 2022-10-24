@@ -2,14 +2,14 @@ import { adaptPasswordSecurityPolicyToAPI } from '../api/adapters';
 
 import {
   PasswordSecurityPolicyFromAPI,
-  PasswordSecurityPolicyToAPI,
+  PasswordSecurityPolicyToAPI
 } from './models';
 import {
   fifteenMinutes,
   oneDay,
   oneHour,
   sevenDays,
-  twelveMonths,
+  twelveMonths
 } from './timestamps';
 
 export const defaultPasswordSecurityPolicy: PasswordSecurityPolicyFromAPI = {
@@ -24,10 +24,10 @@ export const defaultPasswordSecurityPolicy: PasswordSecurityPolicyFromAPI = {
     hasUpperCase: true,
     passwordExpiration: {
       excludedUsers: [],
-      expirationDelay: sevenDays,
+      expirationDelay: sevenDays
     },
-    passwordMinLength: 12,
-  },
+    passwordMinLength: 12
+  }
 };
 
 export const defaultPasswordSecurityPolicyWithNullValues: PasswordSecurityPolicyToAPI =
@@ -43,15 +43,15 @@ export const defaultPasswordSecurityPolicyWithNullValues: PasswordSecurityPolicy
       has_uppercase: false,
       password_expiration: {
         excluded_users: [],
-        expiration_delay: null,
+        expiration_delay: null
       },
-      password_min_length: 12,
-    },
+      password_min_length: 12
+    }
   };
 
 export const defaultPasswordSecurityPolicyAPI: PasswordSecurityPolicyToAPI =
   adaptPasswordSecurityPolicyToAPI(
-    defaultPasswordSecurityPolicy.password_security_policy,
+    defaultPasswordSecurityPolicy.password_security_policy
   );
 
 export const retrievedPasswordSecurityPolicyAPI: PasswordSecurityPolicyToAPI =
@@ -66,9 +66,9 @@ export const retrievedPasswordSecurityPolicyAPI: PasswordSecurityPolicyToAPI =
     hasUpperCase: false,
     passwordExpiration: {
       excludedUsers: [],
-      expirationDelay: sevenDays,
+      expirationDelay: sevenDays
     },
-    passwordMinLength: 42,
+    passwordMinLength: 42
   });
 
 export const securityPolicyWithInvalidPasswordExpiration: PasswordSecurityPolicyToAPI =
@@ -83,9 +83,9 @@ export const securityPolicyWithInvalidPasswordExpiration: PasswordSecurityPolicy
     hasUpperCase: true,
     passwordExpiration: {
       excludedUsers: [],
-      expirationDelay: twelveMonths + oneDay,
+      expirationDelay: twelveMonths + oneDay
     },
-    passwordMinLength: 12,
+    passwordMinLength: 12
   });
 
 export const securityPolicyWithInvalidDelayBeforeNewPassword: PasswordSecurityPolicyToAPI =
@@ -100,9 +100,9 @@ export const securityPolicyWithInvalidDelayBeforeNewPassword: PasswordSecurityPo
     hasUpperCase: true,
     passwordExpiration: {
       excludedUsers: [],
-      expirationDelay: sevenDays,
+      expirationDelay: sevenDays
     },
-    passwordMinLength: 12,
+    passwordMinLength: 12
   });
 
 export const securityPolicyWithInvalidBlockingDuration: PasswordSecurityPolicyToAPI =
@@ -117,7 +117,7 @@ export const securityPolicyWithInvalidBlockingDuration: PasswordSecurityPolicyTo
     hasUpperCase: true,
     passwordExpiration: {
       excludedUsers: [],
-      expirationDelay: sevenDays,
+      expirationDelay: sevenDays
     },
-    passwordMinLength: 12,
+    passwordMinLength: 12
   });

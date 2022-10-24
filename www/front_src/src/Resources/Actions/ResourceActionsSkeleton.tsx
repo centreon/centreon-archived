@@ -8,10 +8,10 @@ const useStyles = makeStyles((theme) => ({
     columnGap: theme.spacing(1),
     display: 'grid',
     gridTemplateColumns: `${theme.spacing(18)} ${theme.spacing(
-      17,
+      17
     )} ${theme.spacing(11)} min-content`,
-    gridTemplateRows: theme.spacing(3.5),
-  },
+    gridTemplateRows: theme.spacing(3.5)
+  }
 }));
 
 const ResourceActionsSkeleton = (): JSX.Element => {

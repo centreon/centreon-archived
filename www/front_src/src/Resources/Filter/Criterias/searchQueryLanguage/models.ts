@@ -6,7 +6,7 @@ import {
   selectableResourceTypes,
   selectableStates,
   selectableStateTypes,
-  selectableStatuses,
+  selectableStatuses
 } from '../models';
 
 export interface CriteriaId {
@@ -31,7 +31,7 @@ export const criteriaNameSortOrder = {
   [CriteriaNames.hostSeverities]: 10,
   [CriteriaNames.hostSeverityLevels]: 11,
   [CriteriaNames.serviceSeverities]: 12,
-  [CriteriaNames.serviceSeverityLevels]: 13,
+  [CriteriaNames.serviceSeverityLevels]: 13
 };
 
 export interface AutocompleteSuggestionProps {
@@ -50,7 +50,7 @@ export const searchableFields = [
   'parent_name',
   'parent_alias',
   'fqdn',
-  'information',
+  'information'
 ];
 
 const statusNameToQueryLanguageName = selectableStatuses
@@ -62,14 +62,14 @@ const statusNameToQueryLanguageName = selectableStatuses
 export const criteriaNameToQueryLanguageName = {
   ...statusNameToQueryLanguageName,
   resource_type: 'type',
-  unhandled_problems: 'unhandled',
+  unhandled_problems: 'unhandled'
 };
 
 const staticCriteriaValuesByName = {
   resource_type: selectableResourceTypes,
   state: selectableStates,
   status: selectableStatuses,
-  status_type: selectableStateTypes,
+  status_type: selectableStateTypes
 };
 
 export const dynamicCriteriaValuesByName = [
@@ -81,11 +81,11 @@ export const dynamicCriteriaValuesByName = [
   CriteriaNames.hostSeverities,
   CriteriaNames.serviceSeverities,
   CriteriaNames.hostSeverityLevels,
-  CriteriaNames.serviceSeverityLevels,
+  CriteriaNames.serviceSeverityLevels
 ];
 
 export const getSelectableCriteriasByName = (
-  name: string,
+  name: string
 ): Array<{ id: string; name: string }> => {
   return staticCriteriaValuesByName[name];
 };

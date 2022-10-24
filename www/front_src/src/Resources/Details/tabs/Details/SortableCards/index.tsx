@@ -15,7 +15,7 @@ import {
   propEq,
   remove,
   difference,
-  uniq,
+  uniq
 } from 'ramda';
 import { useAtom } from 'jotai';
 
@@ -25,7 +25,7 @@ import {
   SortableItems,
   useLocaleDateTimeFormat,
   RootComponentProps,
-  useMemoComponent,
+  useMemoComponent
 } from '@centreon/ui';
 
 import getDetailCardLines, { DetailCardLine } from '../DetailsCard/cards';
@@ -47,11 +47,11 @@ interface MergeDefaultAndStoredCardsProps {
 
 const mergeDefaultAndStoredCards = ({
   defaultCards,
-  storedCards,
+  storedCards
 }: MergeDefaultAndStoredCardsProps): Array<string> => {
   const differenceBetweenDefaultAndStoredCards = difference(
     defaultCards,
-    storedCards,
+    storedCards
   );
 
   return uniq([...storedCards, ...differenceBetweenDefaultAndStoredCards]);
@@ -66,7 +66,7 @@ const SortableCards = ({ panelWidth, details }: Props): JSX.Element => {
 
   const changeExpandedCards = ({
     action,
-    card,
+    card
   }: ChangeExpandedCardsProps): void => {
     if (equals(action, ExpandAction.add)) {
       setExpandedCards(append(card, expandedCards));
@@ -83,7 +83,7 @@ const SortableCards = ({ panelWidth, details }: Props): JSX.Element => {
     details,
     expandedCards,
     t,
-    toDateTime,
+    toDateTime
   });
 
   const allDetailsCardsTitle = pluck('title', allDetailsCards);
@@ -92,21 +92,21 @@ const SortableCards = ({ panelWidth, details }: Props): JSX.Element => {
     ? allDetailsCardsTitle
     : mergeDefaultAndStoredCards({
         defaultCards: allDetailsCardsTitle,
-        storedCards: storedDetailsCards,
+        storedCards: storedDetailsCards
       });
 
   const cards = map<string, CardsLayout>(
     (title) => ({
       id: title,
       width: panelWidth,
-      ...(find(propEq('title', title), allDetailsCards) as DetailCardLine),
+      ...(find(propEq('title', title), allDetailsCards) as DetailCardLine)
     }),
-    defaultDetailsCardsLayout,
+    defaultDetailsCardsLayout
   );
 
   const displayedCards = filter(
     ({ shouldBeDisplayed }) => shouldBeDisplayed,
-    cards,
+    cards
   );
 
   const RootComponent = ({ children }: RootComponentProps): JSX.Element => (
@@ -133,7 +133,7 @@ const SortableCards = ({ panelWidth, details }: Props): JSX.Element => {
             'xs',
             'isCustomCard',
             'width',
-            'title',
+            'title'
           ]}
           items={displayedCards}
           sortingStrategy={rectSortingStrategy}
@@ -141,7 +141,7 @@ const SortableCards = ({ panelWidth, details }: Props): JSX.Element => {
         />
       </Box>
     ),
-    memoProps: [panelWidth, expandedCards, details],
+    memoProps: [panelWidth, expandedCards, details]
   });
 };
 

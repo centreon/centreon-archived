@@ -10,8 +10,8 @@ const useStyles = makeStyles(() => ({
   column: {
     display: 'flex',
     justifyContent: 'center',
-    width: '100%',
-  },
+    width: '100%'
+  }
 }));
 
 const IconColumn = ({ children }: Props): JSX.Element => {

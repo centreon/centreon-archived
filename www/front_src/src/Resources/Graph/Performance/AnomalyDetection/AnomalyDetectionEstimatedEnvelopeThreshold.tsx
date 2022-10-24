@@ -48,7 +48,7 @@ const AnomalyDetectionEstimatedEnvelopeThreshold = ({
   rightScale,
   thirdUnit,
   graphHeight,
-  secondUnit,
+  secondUnit
 }: Props): JSX.Element => {
   const theme = useTheme();
 
@@ -56,7 +56,7 @@ const AnomalyDetectionEstimatedEnvelopeThreshold = ({
     metricUpper,
     metricLower,
     item,
-    factors,
+    factors
   }: EnvelopeVariation): number => {
     return (
       ((prop(metricUpper, item) as number) -
@@ -70,7 +70,7 @@ const AnomalyDetectionEstimatedEnvelopeThreshold = ({
       factors: data,
       item: timeValue,
       metricLower: metricY0,
-      metricUpper: metricY1,
+      metricUpper: metricY1
     });
 
     return y1Scale(prop(metricY1, timeValue) - diff) ?? null;
@@ -81,7 +81,7 @@ const AnomalyDetectionEstimatedEnvelopeThreshold = ({
       factors: data,
       item: timeValue,
       metricLower: metricY0,
-      metricUpper: metricY1,
+      metricUpper: metricY1
     });
 
     return y0Scale(prop(metricY0, timeValue) + diff) ?? null;
@@ -93,7 +93,7 @@ const AnomalyDetectionEstimatedEnvelopeThreshold = ({
     stroke: theme.palette.secondary.main,
     strokeDasharray: 5,
     strokeOpacity: 0.8,
-    x: getXPoint,
+    x: getXPoint
   };
 
   return (
@@ -101,11 +101,11 @@ const AnomalyDetectionEstimatedEnvelopeThreshold = ({
       <Threshold
         aboveAreaProps={{
           fill: theme.palette.secondary.main,
-          fillOpacity: 0.1,
+          fillOpacity: 0.1
         }}
         belowAreaProps={{
           fill: theme.palette.secondary.main,
-          fillOpacity: 0.1,
+          fillOpacity: 0.1
         }}
         clipAboveTo={0}
         clipBelowTo={graphHeight}
@@ -125,7 +125,7 @@ const AnomalyDetectionEstimatedEnvelopeThreshold = ({
           leftScale,
           rightScale,
           secondUnit,
-          unit,
+          unit
         });
         const originMetric =
           !equals(name, 'Upper Threshold') && !equals(name, 'Lower Threshold')

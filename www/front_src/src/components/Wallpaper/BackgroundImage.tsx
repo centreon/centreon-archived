@@ -23,8 +23,8 @@ const useStyles = makeStyles<Theme, Props>({
     left: 0,
     position: 'fixed',
     right: 0,
-    top: 0,
-  }),
+    top: 0
+  })
 });
 
 const BackgroundImage = ({ image }: Props): JSX.Element => {

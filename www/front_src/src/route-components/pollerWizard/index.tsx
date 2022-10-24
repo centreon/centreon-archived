@@ -14,22 +14,22 @@ import {
   labelAddAdvancedConfiguration,
   labelConfigureServer,
   labelFinishTheSetup,
-  labelSelectServerType,
+  labelSelectServerType
 } from './translatedLabels';
 
 const ServerConfigurationWizard = lazy(
-  () => import('../../PollerWizard/serverConfigurationWizard'),
+  () => import('../../PollerWizard/serverConfigurationWizard')
 );
 const RemoteServerStep1 = lazy(
-  () => import('../../PollerWizard/remoteServerStep1'),
+  () => import('../../PollerWizard/remoteServerStep1')
 );
 const PollerStep1 = lazy(() => import('../../PollerWizard/pollerStep1'));
 const RemoteServerStep2 = lazy(
-  () => import('../../PollerWizard/remoteServerStep2'),
+  () => import('../../PollerWizard/remoteServerStep2')
 );
 const PollerStep2 = lazy(() => import('../../PollerWizard/pollerStep2'));
 const RemoteServerStep3 = lazy(
-  () => import('../../PollerWizard/remoteServerStep3'),
+  () => import('../../PollerWizard/remoteServerStep3')
 );
 const PollerStep3 = lazy(() => import('../../PollerWizard/pollerStep3'));
 
@@ -37,20 +37,20 @@ const formSteps = [
   { [ServerType.Base]: ServerConfigurationWizard },
   { [ServerType.Remote]: RemoteServerStep1, [ServerType.Poller]: PollerStep1 },
   { [ServerType.Remote]: RemoteServerStep2, [ServerType.Poller]: PollerStep2 },
-  { [ServerType.Remote]: RemoteServerStep3, [ServerType.Poller]: PollerStep3 },
+  { [ServerType.Remote]: RemoteServerStep3, [ServerType.Poller]: PollerStep3 }
 ];
 
 const steps = [
   labelSelectServerType,
   labelConfigureServer,
   labelAddAdvancedConfiguration,
-  labelFinishTheSetup,
+  labelFinishTheSetup
 ];
 
 const useStyles = makeStyles((theme) => ({
   wrapper: {
-    margin: theme.spacing(2, 4),
-  },
+    margin: theme.spacing(2, 4)
+  }
 }));
 
 const PollerWizard = (): JSX.Element | null => {
@@ -87,7 +87,7 @@ const PollerWizard = (): JSX.Element | null => {
 
   const Form = path<(props: WizardFormProps) => JSX.Element>(
     [currentStep, equals(currentStep, 0) ? ServerType.Base : serverType],
-    formSteps,
+    formSteps
   );
 
   if (isNil(Form)) {
@@ -104,7 +104,7 @@ const PollerWizard = (): JSX.Element | null => {
         ref={listingRef}
         sx={{
           maxHeight: listingContainerHeight,
-          overflowY: 'auto',
+          overflowY: 'auto'
         }}
       >
         <div className={classes.wrapper}>

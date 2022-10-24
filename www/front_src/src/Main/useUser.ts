@@ -14,11 +14,11 @@ const useUser = (): (() => null | Promise<void>) => {
   const { sendRequest: getUser } = useRequest<User>({
     decoder: userDecoder,
     httpCodesBypassErrorSnackbar: [403, 401, 500],
-    request: getData,
+    request: getData
   });
 
   const [areUserParametersLoaded, setAreUserParametersLoaded] = useAtom(
-    areUserParametersLoadedAtom,
+    areUserParametersLoadedAtom
   );
   const setUser = useUpdateAtom(userAtom);
 
@@ -28,7 +28,7 @@ const useUser = (): (() => null | Promise<void>) => {
     }
 
     return getUser({
-      endpoint: userEndpoint,
+      endpoint: userEndpoint
     })
       .then((retrievedUser) => {
         if (isNil(retrievedUser)) {
@@ -43,7 +43,7 @@ const useUser = (): (() => null | Promise<void>) => {
           themeMode,
           timezone,
           use_deprecated_pages: useDeprecatedPages,
-          default_page: defaultPage,
+          default_page: defaultPage
         } = retrievedUser as User;
 
         setUser({
@@ -54,7 +54,7 @@ const useUser = (): (() => null | Promise<void>) => {
           name,
           themeMode,
           timezone,
-          use_deprecated_pages: useDeprecatedPages,
+          use_deprecated_pages: useDeprecatedPages
         });
         setAreUserParametersLoaded(true);
       })

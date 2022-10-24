@@ -17,5 +17,5 @@ export const loadImageDerivedAtom = atom(
     loadImage(imagePath)
       .then((image) => set(imageAtom, image))
       .catch(() => undefined);
-  },
+  }
 );

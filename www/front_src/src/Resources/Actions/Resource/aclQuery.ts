@@ -12,7 +12,7 @@ import {
   always,
   equals,
   isEmpty,
-  reject,
+  reject
 } from 'ramda';
 import { useTranslation } from 'react-i18next';
 import { useAtomValue } from 'jotai/utils';
@@ -45,14 +45,14 @@ const useAclQuery = (): AclQuery => {
 
   const can = ({
     resources,
-    action,
+    action
   }: {
     action: string;
     resources: Array<Resource>;
   }): boolean => {
     return pipe(
       map(toType),
-      any((type) => pathEq(['actions', type, action], true)(acl)),
+      any((type) => pathEq(['actions', type, action], true)(acl))
     )(resources);
   };
 
@@ -77,10 +77,10 @@ const useAclQuery = (): AclQuery => {
           ifElse(
             equals('host'),
             always(t(labelHostsDenied)),
-            always(t(labelServicesDenied)),
-          ),
-        ),
-      ),
+            always(t(labelServicesDenied))
+          )
+        )
+      )
     )(resources);
   };
 
@@ -89,7 +89,7 @@ const useAclQuery = (): AclQuery => {
   };
 
   const getDowntimeDeniedTypeAlert = (
-    resources: Array<Resource>,
+    resources: Array<Resource>
   ): string | undefined => {
     return getDeniedTypeAlert({ action: 'downtime', resources });
   };
@@ -102,7 +102,7 @@ const useAclQuery = (): AclQuery => {
   };
 
   const getAcknowledgementDeniedTypeAlert = (
-    resources: Array<Resource>,
+    resources: Array<Resource>
   ): string | undefined => {
     return getDeniedTypeAlert({ action: 'acknowledgement', resources });
   };
@@ -122,7 +122,7 @@ const useAclQuery = (): AclQuery => {
     pathEq(['actions', 'service', 'disacknowledgement'], true)(acl);
 
   const getDisacknowledgementDeniedTypeAlert = (
-    resources: Array<Resource>,
+    resources: Array<Resource>
   ): string | undefined => {
     return getDeniedTypeAlert({ action: 'disacknowledgement', resources });
   };
@@ -147,7 +147,7 @@ const useAclQuery = (): AclQuery => {
     canSubmitStatus,
     getAcknowledgementDeniedTypeAlert,
     getDisacknowledgementDeniedTypeAlert,
-    getDowntimeDeniedTypeAlert,
+    getDowntimeDeniedTypeAlert
   };
 };
 

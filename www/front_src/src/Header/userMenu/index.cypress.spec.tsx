@@ -17,12 +17,12 @@ describe('User Menu', () => {
     cy.route('GET', '**/internal.php?**', '@user').as('getUser');
 
     cy.intercept('PATCH', 'parameters', {
-      theme: 'dark',
+      theme: 'dark'
     }).as('updateTheme');
 
     cy.stub(centreonUi, 'useLocaleDateTimeFormat').returns({
       format: (): string => 'April 28,2022',
-      toTime: (): string => '4:20 PM',
+      toTime: (): string => '4:20 PM'
     });
 
     cy.mount(
@@ -30,7 +30,7 @@ describe('User Menu', () => {
         <div style={{ backgroundColor: '#000' }}>
           <UserMenu />
         </div>
-      </Router>,
+      </Router>
     );
   });
 

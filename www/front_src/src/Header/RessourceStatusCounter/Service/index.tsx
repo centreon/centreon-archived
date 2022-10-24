@@ -19,7 +19,7 @@ import {
   okCriterias,
   pendingCriterias,
   unhandledStateCriterias,
-  serviceCriteria,
+  serviceCriteria
 } from '../getResourcesUrl';
 import RessourceStatusCounter from '..';
 import { Criteria } from '../../../Resources/Filter/Criterias/models';
@@ -32,7 +32,7 @@ const numberFormat = yup.number().required().integer();
 const statusSchema = yup.object().shape({
   critical: yup.object().shape({
     total: numberFormat,
-    unhandled: numberFormat,
+    unhandled: numberFormat
   }),
   ok: numberFormat,
   pending: numberFormat,
@@ -40,12 +40,12 @@ const statusSchema = yup.object().shape({
   total: numberFormat,
   unknown: yup.object().shape({
     total: numberFormat,
-    unhandled: numberFormat,
+    unhandled: numberFormat
   }),
   warning: yup.object().shape({
     total: numberFormat,
-    unhandled: numberFormat,
-  }),
+    unhandled: numberFormat
+  })
 });
 
 interface SelectResourceProps {
@@ -65,49 +65,49 @@ const ServiceStatusCounter = (): JSX.Element => {
   const unhandledCriticalServicesCriterias = getDefaultCriterias({
     resourceTypes: serviceCriteria.value,
     states: unhandledStateCriterias.value,
-    statuses: criticalCriterias.value as Array<SelectEntry>,
+    statuses: criticalCriterias.value as Array<SelectEntry>
   });
   const unhandledCriticalServicesLink = use_deprecated_pages
     ? '/main.php?p=20201&o=svc_unhandled&statusFilter=critical&search='
     : getServiceResourcesUrl({
         stateCriterias: unhandledStateCriterias,
-        statusCriterias: criticalCriterias,
+        statusCriterias: criticalCriterias
       });
 
   const unhandledWarningServicesCriterias = getDefaultCriterias({
     resourceTypes: serviceCriteria.value,
     states: unhandledStateCriterias.value,
-    statuses: warningCriterias.value as Array<SelectEntry>,
+    statuses: warningCriterias.value as Array<SelectEntry>
   });
   const unhandledWarningServicesLink = use_deprecated_pages
     ? '/main.php?p=20201&o=svc_unhandled&statusFilter=warning&search='
     : getServiceResourcesUrl({
         stateCriterias: unhandledStateCriterias,
-        statusCriterias: warningCriterias,
+        statusCriterias: warningCriterias
       });
 
   const unhandledUnknownServicesCriterias = getDefaultCriterias({
     resourceTypes: serviceCriteria.value,
     states: unhandledStateCriterias.value,
-    statuses: unknownCriterias.value as Array<SelectEntry>,
+    statuses: unknownCriterias.value as Array<SelectEntry>
   });
   const unhandledUnknownServicesLink = use_deprecated_pages
     ? '/main.php?p=20201&o=svc_unhandled&statusFilter=unknown&search='
     : getServiceResourcesUrl({
         stateCriterias: unhandledStateCriterias,
-        statusCriterias: unknownCriterias,
+        statusCriterias: unknownCriterias
       });
 
   const okServicesCriterias = getDefaultCriterias({
     resourceTypes: serviceCriteria.value,
-    statuses: okCriterias.value as Array<SelectEntry>,
+    statuses: okCriterias.value as Array<SelectEntry>
   });
   const okServicesLink = use_deprecated_pages
     ? '/main.php?p=20201&o=svc&statusFilter=ok&search='
     : getServiceResourcesUrl({ statusCriterias: okCriterias });
 
   const servicesCriterias = getDefaultCriterias({
-    resourceTypes: serviceCriteria.value,
+    resourceTypes: serviceCriteria.value
   });
   const servicesLink = use_deprecated_pages
     ? '/main.php?p=20201&o=svc&statusFilter=&search='
@@ -115,12 +115,12 @@ const ServiceStatusCounter = (): JSX.Element => {
 
   const pendingServicesCriterias = getDefaultCriterias({
     resourceTypes: serviceCriteria.value,
-    statuses: pendingCriterias.value as Array<SelectEntry>,
+    statuses: pendingCriterias.value as Array<SelectEntry>
   });
   const pendingServicesLink = use_deprecated_pages
     ? '/main.php?p=20201&o=svc&statusFilter=&search='
     : getServiceResourcesUrl({
-        statusCriterias: pendingCriterias,
+        statusCriterias: pendingCriterias
       });
 
   const changeFilterAndNavigate =
@@ -149,56 +149,56 @@ const ServiceStatusCounter = (): JSX.Element => {
               count: data.critical.unhandled,
               onClick: changeFilterAndNavigate({
                 criterias: unhandledCriticalServicesCriterias,
-                link: unhandledCriticalServicesLink,
+                link: unhandledCriticalServicesLink
               }),
               severityCode: SeverityCode.High,
               testId: 'Services Critical',
-              to: unhandledCriticalServicesLink,
+              to: unhandledCriticalServicesLink
             },
 
             {
               count: data.warning.unhandled,
               onClick: changeFilterAndNavigate({
                 criterias: unhandledWarningServicesCriterias,
-                link: unhandledWarningServicesLink,
+                link: unhandledWarningServicesLink
               }),
               severityCode: SeverityCode.Medium,
               testId: 'Services Warning',
-              to: unhandledWarningServicesLink,
+              to: unhandledWarningServicesLink
             },
 
             {
               count: data.unknown.unhandled,
               onClick: changeFilterAndNavigate({
                 criterias: unhandledUnknownServicesCriterias,
-                link: unhandledUnknownServicesLink,
+                link: unhandledUnknownServicesLink
               }),
               severityCode: SeverityCode.Low,
               testId: 'Services Unknown',
-              to: unhandledUnknownServicesLink,
+              to: unhandledUnknownServicesLink
             },
 
             {
               count: data.ok,
               onClick: changeFilterAndNavigate({
                 criterias: okServicesCriterias,
-                link: okServicesLink,
+                link: okServicesLink
               }),
               severityCode: SeverityCode.Ok,
               testId: 'Services Ok',
-              to: okServicesLink,
-            },
+              to: okServicesLink
+            }
           ]}
           hasPending={hasPending}
           iconHeader={{
             Icon: ServiceIcon,
             iconName: t('Services'),
-            onClick: toggleDetailedView,
+            onClick: toggleDetailedView
           }}
           iconToggleSubmenu={{
             onClick: toggleDetailedView,
             rotate: toggled,
-            testid: 'submenu-service',
+            testid: 'submenu-service'
           }}
           submenuItems={[
             {
@@ -206,82 +206,82 @@ const ServiceStatusCounter = (): JSX.Element => {
               onClick: changeFilterAndNavigate({
                 criterias: servicesCriterias,
                 link: servicesLink,
-                toggle: toggleDetailedView,
+                toggle: toggleDetailedView
               }),
               submenuCount: numeral(data.total).format('0a'),
               submenuTitle: t('All'),
               titleTestId: 'submenu hosts title all',
-              to: servicesLink,
+              to: servicesLink
             },
             {
               countTestId: 'submenu services count critical',
               onClick: changeFilterAndNavigate({
                 criterias: unhandledCriticalServicesCriterias,
                 link: unhandledCriticalServicesLink,
-                toggle: toggleDetailedView,
+                toggle: toggleDetailedView
               }),
               severityCode: SeverityCode.High,
               submenuCount: `${numeral(data.critical.unhandled).format(
-                '0a',
+                '0a'
               )}/${numeral(data.critical.total).format('0a')}`,
               submenuTitle: t('Critical'),
               titleTestId: 'submenu services title critical',
-              to: unhandledCriticalServicesLink,
+              to: unhandledCriticalServicesLink
             },
             {
               countTestId: 'submenu services count warning',
               onClick: changeFilterAndNavigate({
                 criterias: unhandledWarningServicesCriterias,
                 link: unhandledWarningServicesLink,
-                toggle: toggleDetailedView,
+                toggle: toggleDetailedView
               }),
               severityCode: SeverityCode.Medium,
               submenuCount: `${numeral(data.warning.unhandled).format(
-                '0a',
+                '0a'
               )}/${numeral(data.warning.total).format('0a')}`,
               submenuTitle: t('Warning'),
               titleTestId: 'submenu services title warning',
-              to: unhandledWarningServicesLink,
+              to: unhandledWarningServicesLink
             },
             {
               countTestId: 'submenu services count unknown',
               onClick: changeFilterAndNavigate({
                 criterias: unhandledUnknownServicesCriterias,
                 link: unhandledUnknownServicesLink,
-                toggle: toggleDetailedView,
+                toggle: toggleDetailedView
               }),
               severityCode: SeverityCode.Low,
               submenuCount: `${numeral(data.unknown.unhandled).format(
-                '0a',
+                '0a'
               )}/${numeral(data.unknown.total).format('0a')}`,
               submenuTitle: t('Unknown'),
               titleTestId: 'submenu services title unknown',
-              to: unhandledUnknownServicesLink,
+              to: unhandledUnknownServicesLink
             },
             {
               countTestId: 'submenu services count ok',
               onClick: changeFilterAndNavigate({
                 criterias: okServicesCriterias,
                 link: okServicesLink,
-                toggle: toggleDetailedView,
+                toggle: toggleDetailedView
               }),
               severityCode: SeverityCode.Ok,
               submenuCount: numeral(data.ok).format('0a'),
               submenuTitle: t('Ok'),
               titleTestId: 'submenu services title ok',
-              to: okServicesLink,
+              to: okServicesLink
             },
             {
               onClick: changeFilterAndNavigate({
                 criterias: pendingServicesCriterias,
                 link: pendingServicesLink,
-                toggle: toggleDetailedView,
+                toggle: toggleDetailedView
               }),
               severityCode: SeverityCode.Pending,
               submenuCount: numeral(data.pending).format('0a'),
               submenuTitle: t('Pending'),
-              to: pendingServicesLink,
-            },
+              to: pendingServicesLink
+            }
           ]}
           toggled={toggled}
         />

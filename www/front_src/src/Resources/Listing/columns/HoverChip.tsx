@@ -9,12 +9,12 @@ import { useMemoComponent } from '@centreon/ui';
 
 const useStyles = makeStyles(() => ({
   iconButton: {
-    padding: 0,
+    padding: 0
   },
   tooltip: {
     backgroundColor: 'transparent',
-    maxWidth: 'none',
-  },
+    maxWidth: 'none'
+  }
 }));
 
 interface Props {
@@ -30,7 +30,7 @@ const HoverChip = ({
   Chip,
   label,
   onClick,
-  isHovered = false,
+  isHovered = false
 }: Props): JSX.Element => {
   const classes = useStyles();
 
@@ -54,7 +54,7 @@ const HoverChip = ({
           onClick: (e): void => {
             e.preventDefault();
             e.stopPropagation();
-          },
+          }
         }}
         aria-label={label}
         classes={{ tooltip: classes.tooltip }}
@@ -78,7 +78,7 @@ const HoverChip = ({
         </span>
       </Tooltip>
     ),
-    memoProps: [isHovered, isChipHovered, label],
+    memoProps: [isHovered, isChipHovered, label]
   });
 };
 

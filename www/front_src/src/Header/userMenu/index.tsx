@@ -15,7 +15,7 @@ import {
   ListItemText,
   Popper,
   ListItemButton,
-  Fade,
+  Fade
 } from '@mui/material';
 import UserIcon from '@mui/icons-material/Person';
 import FileCopyIcon from '@mui/icons-material/FileCopy';
@@ -30,7 +30,7 @@ import {
   getData,
   useRequest,
   useSnackbar,
-  useLocaleDateTimeFormat,
+  useLocaleDateTimeFormat
 } from '@centreon/ui';
 import { ThemeMode } from '@centreon/ui-context';
 
@@ -43,7 +43,7 @@ import reactRoutes from '../../reactRoutes/routeMap';
 import { passwordResetInformationsAtom } from '../../ResetPassword/passwordResetInformationsAtom';
 import {
   selectedNavigationItemsAtom,
-  hoveredNavigationItemsAtom,
+  hoveredNavigationItemsAtom
 } from '../../Navigation/Sidebar/sideBarAtoms';
 
 import { userEndpoint } from './api/endpoint';
@@ -53,7 +53,7 @@ import {
   labelLogout,
   labelPasswordWillExpireIn,
   labelProfile,
-  labelYouHaveBeenLoggedOut,
+  labelYouHaveBeenLoggedOut
 } from './translatedLabels';
 
 const editProfileTopologyPage = '50104';
@@ -80,40 +80,40 @@ const useStyles = makeStyles((theme) => ({
     fontSize: theme.typography.body1.fontSize,
     height: theme.spacing(2.5),
     justifyContent: 'spaceBetween',
-    minWidth: theme.spacing(2.5),
+    minWidth: theme.spacing(2.5)
   },
   clock: {
     display: 'none',
     [theme.breakpoints.up(648)]: {
-      display: 'block',
-    },
+      display: 'block'
+    }
   },
   containerList: {
     color: theme.palette.text.primary,
-    padding: 0,
+    padding: 0
   },
   fullname: {
     overflow: 'hidden',
     textOverflow: 'ellipsis',
-    whiteSpace: 'nowrap',
+    whiteSpace: 'nowrap'
   },
   hiddenInput: {
     height: theme.spacing(0),
     opacity: 0,
     position: 'absolute',
     top: theme.spacing(-13),
-    width: theme.spacing(0),
+    width: theme.spacing(0)
   },
   icon: {
-    marginRight: theme.spacing(1),
+    marginRight: theme.spacing(1)
   },
   icons: {
     borderLeft: `1px solid ${theme.palette.common.white}`,
-    paddingLeft: theme.spacing(3),
+    paddingLeft: theme.spacing(3)
   },
   listItem: {
     '&:first-child': {
-      borderBottom: `1px solid ${theme.palette.divider}`,
+      borderBottom: `1px solid ${theme.palette.divider}`
     },
     '&:hover': {
       background: equals(theme.palette.mode, ThemeMode.dark)
@@ -121,18 +121,18 @@ const useStyles = makeStyles((theme) => ({
         : theme.palette.primary.light,
       color: equals(theme.palette.mode, ThemeMode.dark)
         ? theme.palette.common.white
-        : theme.palette.primary.main,
+        : theme.palette.primary.main
     },
     '&:last-child': {
-      borderTop: `1px solid ${theme.palette.divider}`,
+      borderTop: `1px solid ${theme.palette.divider}`
     },
-    padding: theme.spacing(1),
+    padding: theme.spacing(1)
   },
   listItemButton: {
     '&:hover': {
-      background: 'none',
+      background: 'none'
     },
-    padding: 0,
+    padding: 0
   },
   menu: {
     backgroundColor: theme.palette.background.default,
@@ -140,35 +140,35 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: 0,
     boxShadow: theme.shadows[3],
     fontSize: theme.typography.body2.fontSize,
-    minWidth: 190,
+    minWidth: 190
   },
   passwordExpiration: {
-    color: theme.palette.warning.main,
+    color: theme.palette.warning.main
   },
   popper: {
-    zIndex: theme.zIndex.tooltip,
+    zIndex: theme.zIndex.tooltip
   },
   switchItem: {
-    padding: theme.spacing(0, 2, 0.25, 11 / 8),
+    padding: theme.spacing(0, 2, 0.25, 11 / 8)
   },
   text: {
     margin: 0,
     overflow: 'hidden',
     textOverflow: 'ellipsis',
-    whiteSpace: 'nowrap',
+    whiteSpace: 'nowrap'
   },
   userIcon: {
     color: theme.palette.common.white,
     cursor: 'pointer',
-    fontSize: theme.spacing(4),
+    fontSize: theme.spacing(4)
   },
   wrapper: {
     alignItems: 'center',
     display: 'flex',
     gap: theme.spacing(3),
     height: '100%',
-    justifyContent: 'flex-end',
-  },
+    justifyContent: 'flex-end'
+  }
 }));
 interface Props {
   headerRef?: RefObject<HTMLElement>;
@@ -189,10 +189,10 @@ const UserMenu = ({ headerRef }: Props): JSX.Element => {
   const refreshTimeout = useRef<NodeJS.Timeout>();
   const userIconRef = useRef<SVGSVGElement | null>(null);
   const { sendRequest: logoutRequest } = useRequest({
-    request: postData,
+    request: postData
   });
   const { sendRequest } = useRequest<UserData>({
-    request: getData,
+    request: getData
   });
 
   const navigate = useNavigate();
@@ -201,7 +201,7 @@ const UserMenu = ({ headerRef }: Props): JSX.Element => {
 
   const setAreUserParametersLoaded = useUpdateAtom(areUserParametersLoadedAtom);
   const setPasswordResetInformationsAtom = useUpdateAtom(
-    passwordResetInformationsAtom,
+    passwordResetInformationsAtom
   );
   const setSelectedNavigationItems = useUpdateAtom(selectedNavigationItemsAtom);
   const setHoveredNavigationItems = useUpdateAtom(hoveredNavigationItemsAtom);
@@ -222,7 +222,7 @@ const UserMenu = ({ headerRef }: Props): JSX.Element => {
   const logout = (): void => {
     logoutRequest({
       data: {},
-      endpoint: logoutEndpoint,
+      endpoint: logoutEndpoint
     }).then(() => {
       setAreUserParametersLoaded(false);
       setPasswordResetInformationsAtom(null);
@@ -335,11 +335,11 @@ const UserMenu = ({ headerRef }: Props): JSX.Element => {
     isGreaterThanSevenDays(data.password_remaining_time);
 
   const formattedPasswordRemainingTime = toHumanizedDuration(
-    data.password_remaining_time as number,
+    data.password_remaining_time as number
   );
 
   const primaryTypographyProps = {
-    className: classes.text,
+    className: classes.text
   };
 
   return (
@@ -354,7 +354,7 @@ const UserMenu = ({ headerRef }: Props): JSX.Element => {
             passwordIsNotYetAboutToExpire
               ? ''
               : `${t(
-                  labelPasswordWillExpireIn,
+                  labelPasswordWillExpireIn
                 )}: ${formattedPasswordRemainingTime}`
           }
         >
@@ -382,9 +382,9 @@ const UserMenu = ({ headerRef }: Props): JSX.Element => {
             {
               name: 'offset',
               options: {
-                offset: [0, anchorHeight],
-              },
-            },
+                offset: [0, anchorHeight]
+              }
+            }
           ]}
           open={not(isNil(anchorEl))}
           placement="bottom-end"
@@ -395,7 +395,7 @@ const UserMenu = ({ headerRef }: Props): JSX.Element => {
                 className={classes.menu}
                 ref={userMenu as RefObject<HTMLDivElement>}
                 sx={{
-                  display: isNil(anchorEl) ? 'none' : 'block',
+                  display: isNil(anchorEl) ? 'none' : 'block'
                 }}
               >
                 <List dense className={classes.containerList}>

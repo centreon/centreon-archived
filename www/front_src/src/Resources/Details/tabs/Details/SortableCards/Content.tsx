@@ -18,19 +18,19 @@ const useStyles = makeStyles<Theme, { isDragging: boolean }>((theme) => ({
     alignItems: 'center',
     cursor: isDragging ? 'grabbing' : 'grab',
     display: 'flex',
-    height: '100%',
+    height: '100%'
   }),
   paper: {
-    height: '100%',
+    height: '100%'
   },
   tile: {
     '&:hover': {
-      boxShadow: theme.shadows[3],
+      boxShadow: theme.shadows[3]
     },
     display: 'grid',
     gridTemplateColumns: 'min-content auto',
-    height: '100%',
-  },
+    height: '100%'
+  }
 }));
 
 interface ContentProps extends CardsLayout {
@@ -51,7 +51,7 @@ const Content = ({
   line,
   xs,
   isCustomCard,
-  width,
+  width
 }: ContentProps): JSX.Element => {
   const classes = useStyles({ isDragging });
   const { t } = useTranslation();

@@ -7,13 +7,13 @@ import {
   ListingPage,
   LoadingSkeleton,
   useMemoComponent,
-  WithPanel,
+  WithPanel
 } from '@centreon/ui';
 
 import Details from './Details';
 import {
   selectedResourcesDetailsAtom,
-  clearSelectedResourceDerivedAtom,
+  clearSelectedResourceDerivedAtom
 } from './Details/detailsAtoms';
 import useDetails from './Details/useDetails';
 import { editPanelOpenAtom } from './Filter/filterAtoms';
@@ -58,7 +58,7 @@ const ResourcesPage = (): JSX.Element => {
         />
       </WithPanel>
     ),
-    memoProps: [selectedResource?.resourceId, editPanelOpen],
+    memoProps: [selectedResource?.resourceId, editPanelOpen]
   });
 };
 

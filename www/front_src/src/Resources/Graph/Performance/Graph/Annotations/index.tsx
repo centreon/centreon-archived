@@ -17,13 +17,13 @@ const Annotations = ({
   xScale,
   timeline,
   graphHeight,
-  resourceId,
+  resourceId
 }: Props): JSX.Element => {
   const props = {
     graphHeight,
     resourceId,
     timeline,
-    xScale,
+    xScale
   };
 
   return (

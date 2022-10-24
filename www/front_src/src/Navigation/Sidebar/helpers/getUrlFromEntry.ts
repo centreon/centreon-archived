@@ -6,7 +6,7 @@ export const getUrlFromEntry = ({
   page,
   options,
   is_react,
-  url,
+  url
 }: Page): string | null | undefined => {
   const currentPage = isNil(page) ? '' : page;
   const currentOptions = isNil(options) ? '' : options;

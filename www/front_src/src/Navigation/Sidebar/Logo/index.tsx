@@ -8,8 +8,8 @@ interface Props {
 const useStyles = makeStyles((theme) => ({
   logo: {
     height: theme.spacing(5),
-    width: theme.spacing(16.9),
-  },
+    width: theme.spacing(16.9)
+  }
 }));
 
 const Logo = ({ onClick }: Props): JSX.Element => {

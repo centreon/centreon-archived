@@ -8,8 +8,8 @@ export const defaultGraphOptions = {
   [GraphOptionId.displayEvents]: {
     id: GraphOptionId.displayEvents,
     label: labelDisplayEvents,
-    value: false,
-  },
+    value: false
+  }
 };
 
 export const graphOptionsAtom = atom<GraphOptions>(defaultGraphOptions);
@@ -23,10 +23,10 @@ export const changeGraphOptionsDerivedAtom = atom(
       ...graphOptions,
       [graphOptionId]: {
         ...graphOptions[graphOptionId],
-        value: !graphOptions[graphOptionId].value,
-      },
+        value: !graphOptions[graphOptionId].value
+      }
     };
     set(graphOptionsAtom, newGraphOptions);
     changeTabGraphOptions(newGraphOptions);
-  },
+  }
 );

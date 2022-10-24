@@ -22,11 +22,11 @@ const useStyles = makeStyles((theme) => ({
   container: {
     alignItems: 'flex-end',
     display: 'grid',
-    gridTemplateColumns: 'repeat(2, 1fr)',
+    gridTemplateColumns: 'repeat(2, 1fr)'
   },
   passwordExpiration: {
-    marginTop: theme.spacing(1),
-  },
+    marginTop: theme.spacing(1)
+  }
 }));
 
 const PasswordExpiration = (): JSX.Element => {
@@ -41,39 +41,39 @@ const PasswordExpiration = (): JSX.Element => {
 
   const passwordExpirationValue = getField<number>({
     field: passwordExpirationFieldName,
-    object: values,
+    object: values
   });
 
   const passwordExpirationError = getField<string>({
     field: passwordExpirationFieldName,
-    object: errors,
+    object: errors
   });
 
   const minDaysOption = useMemo(
     (): number | undefined =>
       lte(
         dayjs.duration({ months: 1 }).asMilliseconds(),
-        passwordExpirationValue,
+        passwordExpirationValue
       )
         ? undefined
         : 7,
-    [passwordExpirationValue],
+    [passwordExpirationValue]
   );
 
   const maxDaysOption = useMemo(
     (): number | undefined =>
       lte(
         dayjs.duration({ years: 1 }).asMilliseconds(),
-        passwordExpirationValue,
+        passwordExpirationValue
       )
         ? 0
         : undefined,
-    [passwordExpirationValue],
+    [passwordExpirationValue]
   );
 
   const timeInputConfiguration: Array<TimeInputConfiguration> = [
     { unit: 'months' },
-    { maxOption: maxDaysOption, minOption: minDaysOption, unit: 'days' },
+    { maxOption: maxDaysOption, minOption: minDaysOption, unit: 'days' }
   ];
 
   return useMemoComponent({
@@ -93,7 +93,7 @@ const PasswordExpiration = (): JSX.Element => {
         )}
       </div>
     ),
-    memoProps: [passwordExpirationValue, passwordExpirationError, classes],
+    memoProps: [passwordExpirationValue, passwordExpirationError, classes]
   });
 };
 

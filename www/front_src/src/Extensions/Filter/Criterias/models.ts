@@ -8,7 +8,7 @@ import {
   labelUpToDate,
   labelType,
   labelStatus,
-  labelWidget,
+  labelWidget
 } from '../../translatedLabels';
 
 export type CriteriaValue = Array<SelectEntry> | string;
@@ -24,7 +24,7 @@ const criteriaValueNameById = {
   OUTDATED: labelOutdated,
   UNINSTALLED: labelUninstalled,
   UPTODATE: labelUpToDate,
-  WIDGET: labelWidget,
+  WIDGET: labelWidget
 };
 
 const installedId = 'INSTALLED';
@@ -33,7 +33,7 @@ const installed = { id: installedId, name: criteriaValueNameById[installedId] };
 const uninstalledId = 'UNINSTALLED';
 const uninstalled = {
   id: uninstalledId,
-  name: criteriaValueNameById[uninstalledId],
+  name: criteriaValueNameById[uninstalledId]
 };
 
 const outdatedId = 'OUTDATED';
@@ -62,23 +62,23 @@ export interface CriteriaById {
 
 export enum CriteriaNames {
   statuses = 'statuses',
-  types = 'types',
+  types = 'types'
 }
 
 const selectableCriterias: CriteriaById = {
   [CriteriaNames.statuses]: {
     label: labelStatus,
-    options: selectableStatuses,
+    options: selectableStatuses
   },
   [CriteriaNames.types]: {
     label: labelType,
-    options: selectableTypes,
-  },
+    options: selectableTypes
+  }
 };
 
 export {
   criteriaValueNameById,
   selectableStatuses,
   selectableCriterias,
-  selectableTypes,
+  selectableTypes
 };

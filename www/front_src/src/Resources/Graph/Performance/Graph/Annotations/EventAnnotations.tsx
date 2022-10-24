@@ -25,7 +25,7 @@ const EventAnnotations = ({
   Icon,
   ariaLabel,
   color,
-  resourceId,
+  resourceId
 }: Props): JSX.Element => {
   const events = filter(propEq('type', type), timeline);
 
@@ -39,7 +39,7 @@ const EventAnnotations = ({
           event,
           graphHeight,
           resourceId,
-          xScale,
+          xScale
         };
 
         if (isNil(event.startDate) && isNil(event.endDate)) {

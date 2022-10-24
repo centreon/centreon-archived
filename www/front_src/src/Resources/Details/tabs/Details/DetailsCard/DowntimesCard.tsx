@@ -7,7 +7,7 @@ import { useLocaleDateTimeFormat } from '@centreon/ui';
 import {
   labelDowntimeDuration,
   labelFrom,
-  labelTo,
+  labelTo
 } from '../../../../translatedLabels';
 import DowntimeChip from '../../../../Chip/Downtime';
 import StateCard from '../StateCard';
@@ -20,8 +20,8 @@ interface Props {
 const useStyles = makeStyles((theme) => ({
   downtimes: {
     display: 'grid',
-    rowGap: theme.spacing(1),
-  },
+    rowGap: theme.spacing(1)
+  }
 }));
 
 const DowntimesCard = ({ details }: Props): JSX.Element => {
@@ -38,8 +38,8 @@ const DowntimesCard = ({ details }: Props): JSX.Element => {
           contentLines={[
             ...[
               { prefix: t(labelFrom), time: start_time },
-              { prefix: t(labelTo), time: end_time },
-            ].map(({ prefix, time }) => `${prefix} ${toDateTime(time)}`),
+              { prefix: t(labelTo), time: end_time }
+            ].map(({ prefix, time }) => `${prefix} ${toDateTime(time)}`)
           ]}
           key={`downtime-${start_time}-${end_time}`}
           title={t(labelDowntimeDuration)}

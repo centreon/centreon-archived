@@ -9,10 +9,10 @@ interface memoizeComponentParameters {
 
 const memoizeComponent = <T,>({
   memoProps,
-  Component,
+  Component
 }: memoizeComponentParameters): NamedExoticComponent<T> =>
   memo(Component, (prevProps, nextProps) =>
-    equals(pick(memoProps, prevProps), pick(memoProps, nextProps)),
+    equals(pick(memoProps, prevProps), pick(memoProps, nextProps))
   );
 
 export default memoizeComponent;

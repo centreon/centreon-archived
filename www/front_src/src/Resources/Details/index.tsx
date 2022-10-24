@@ -20,7 +20,7 @@ import {
   detailsAtom,
   openDetailsTabIdAtom,
   panelWidthStorageAtom,
-  selectResourceDerivedAtom,
+  selectResourceDerivedAtom
 } from './detailsAtoms';
 
 export interface DetailsSectionProps {
@@ -78,8 +78,8 @@ const Details = (): JSX.Element | null => {
       ({ condition }) =>
         condition({
           acknowledged: !isNil(acknowledgement),
-          in_downtime: pipe(defaultTo([]), isEmpty, not)(downtimes),
-        }),
+          in_downtime: pipe(defaultTo([]), isEmpty, not)(downtimes)
+        })
     );
 
     if (isNil(foundColorCondition)) {

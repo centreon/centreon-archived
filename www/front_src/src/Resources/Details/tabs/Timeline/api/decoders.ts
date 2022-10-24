@@ -6,15 +6,15 @@ import { statusDecoder } from '../../../../decoders';
 import { TimelineEvent, WithName } from '../models';
 
 const getWithNameDecoder = (
-  decoderName: string,
+  decoderName: string
 ): JsonDecoder.Decoder<WithName | undefined> =>
   JsonDecoder.optional(
     JsonDecoder.object(
       {
-        name: JsonDecoder.string,
+        name: JsonDecoder.string
       },
-      decoderName,
-    ),
+      decoderName
+    )
   );
 
 const entityDecoder = JsonDecoder.object<TimelineEvent>(
@@ -27,19 +27,19 @@ const entityDecoder = JsonDecoder.object<TimelineEvent>(
     startDate: JsonDecoder.optional(JsonDecoder.string),
     status: JsonDecoder.optional(statusDecoder),
     tries: JsonDecoder.optional(JsonDecoder.number),
-    type: JsonDecoder.string,
+    type: JsonDecoder.string
   },
   'TimelineEvent',
   {
     endDate: 'end_date',
-    startDate: 'start_date',
-  },
+    startDate: 'start_date'
+  }
 );
 
 const listTimelineEventsDecoder = buildListingDecoder({
   entityDecoder,
   entityDecoderName: 'TimelineEvent',
-  listingDecoderName: 'TimelineEvents',
+  listingDecoderName: 'TimelineEvents'
 });
 
 export { listTimelineEventsDecoder };

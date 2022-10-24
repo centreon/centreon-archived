@@ -26,7 +26,7 @@ const StateHoverChip = ({
   endpoint,
   Chip,
   DetailsTable,
-  label,
+  label
 }: StateChipProps): JSX.Element => {
   return (
     <HoverChip Chip={Chip} label={label}>
@@ -36,7 +36,7 @@ const StateHoverChip = ({
 };
 
 const DowntimeHoverChip = ({
-  resource,
+  resource
 }: {
   resource: Resource;
 }): JSX.Element => {
@@ -53,13 +53,13 @@ const DowntimeHoverChip = ({
 };
 
 const AcknowledgeHoverChip = ({
-  resource,
+  resource
 }: {
   resource: Resource;
 }): JSX.Element => {
   const acknowledgementEndpoint = path(
     ['links', 'endpoints', 'acknowledgement'],
-    resource,
+    resource
   );
 
   return (

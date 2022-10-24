@@ -11,21 +11,21 @@ interface ListMetaServiceMetricsProps {
 
 const buildListMetaServiceMetricsEndpoint = ({
   endpoint,
-  parameters,
+  parameters
 }: ListMetaServiceMetricsProps): string =>
   buildListingEndpoint({
     baseEndpoint: endpoint,
-    parameters,
+    parameters
   });
 
 const listMetaServiceMetrics =
   (cancelToken: CancelToken) =>
   ({
     endpoint,
-    parameters,
+    parameters
   }: ListMetaServiceMetricsProps): Promise<MetaServiceMetricListing> => {
     return getData<MetaServiceMetricListing>(cancelToken)({
-      endpoint: buildListMetaServiceMetricsEndpoint({ endpoint, parameters }),
+      endpoint: buildListMetaServiceMetricsEndpoint({ endpoint, parameters })
     });
   };
 

@@ -8,7 +8,7 @@ import {
   not,
   pathEq,
   pathOr,
-  prop,
+  prop
 } from 'ramda';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 import { useAtom } from 'jotai';
@@ -18,7 +18,7 @@ import {
   getData,
   SelectEntry,
   useRequest,
-  getUrlQueryParameters,
+  getUrlQueryParameters
 } from '@centreon/ui';
 import { refreshIntervalAtom } from '@centreon/ui-context';
 
@@ -30,25 +30,25 @@ import {
   selectedResourceDetailsEndpointDerivedAtom,
   selectedResourceUuidAtom,
   sendingDetailsAtom,
-  selectedResourcesDetailsAtom,
+  selectedResourcesDetailsAtom
 } from '../../Details/detailsAtoms';
 import {
   enabledAutorefreshAtom,
   limitAtom,
   listingAtom,
   pageAtom,
-  sendingAtom,
+  sendingAtom
 } from '../listingAtoms';
 import { listResources } from '../api';
 import {
   labelNoResourceFound,
-  labelSomethingWentWrong,
+  labelSomethingWentWrong
 } from '../../translatedLabels';
 import { ResourceDetails } from '../../Details/models';
 import {
   appliedFilterAtom,
   customFiltersAtom,
-  getCriteriaValueDerivedAtom,
+  getCriteriaValueDerivedAtom
 } from '../../Filter/filterAtoms';
 
 export interface LoadResources {
@@ -65,9 +65,9 @@ const useLoadResources = (): LoadResources => {
     getErrorMessage: ifElse(
       pathEq(['response', 'status'], 404),
       always(t(labelNoResourceFound)),
-      pathOr(t(labelSomethingWentWrong), ['response', 'data', 'message']),
+      pathOr(t(labelSomethingWentWrong), ['response', 'data', 'message'])
     ),
-    request: listResources,
+    request: listResources
   });
 
   const { sendRequest: sendLoadDetailsRequest, sending: sendingDetails } =
@@ -75,9 +75,9 @@ const useLoadResources = (): LoadResources => {
       getErrorMessage: ifElse(
         pathEq(['response', 'status'], 404),
         always(t(labelNoResourceFound)),
-        pathOr(t(labelSomethingWentWrong), ['response', 'data', 'message']),
+        pathOr(t(labelSomethingWentWrong), ['response', 'data', 'message'])
       ),
-      request: getData,
+      request: getData
     });
 
   const [page, setPage] = useAtom(pageAtom);
@@ -87,7 +87,7 @@ const useLoadResources = (): LoadResources => {
   const limit = useAtomValue(limitAtom);
   const enabledAutorefresh = useAtomValue(enabledAutorefreshAtom);
   const selectedResourceDetailsEndpoint = useAtomValue(
-    selectedResourceDetailsEndpointDerivedAtom,
+    selectedResourceDetailsEndpointDerivedAtom
   );
   const selectedResourceDetails = useAtomValue(selectedResourcesDetailsAtom);
   const customFilters = useAtomValue(customFiltersAtom);
@@ -115,7 +115,7 @@ const useLoadResources = (): LoadResources => {
 
     return {
       [sortField]: sortOrder,
-      ...secondSortCriteria,
+      ...secondSortCriteria
     };
   };
 
@@ -125,7 +125,7 @@ const useLoadResources = (): LoadResources => {
     }
 
     sendLoadDetailsRequest({
-      endpoint: selectedResourceDetailsEndpoint,
+      endpoint: selectedResourceDetailsEndpoint
     })
       .then(setDetails)
       .catch(() => {
@@ -139,13 +139,13 @@ const useLoadResources = (): LoadResources => {
       ? {
           regex: {
             fields: searchableFields,
-            value: searchCriteria,
-          },
+            value: searchCriteria
+          }
         }
       : undefined;
 
     const getCriteriaIds = (
-      name: string,
+      name: string
     ): Array<string | number> | undefined => {
       const criteriaValue = getCriteriaValue(name) as
         | Array<SelectEntry>
@@ -193,7 +193,7 @@ const useLoadResources = (): LoadResources => {
       sort: getSort(),
       states: getCriteriaIds('states'),
       statusTypes: getCriteriaIds('status_types'),
-      statuses: getCriteriaIds('statuses'),
+      statuses: getCriteriaIds('statuses')
     }).then(setListing);
 
     if (isNil(details)) {
@@ -272,7 +272,7 @@ const useLoadResources = (): LoadResources => {
   }, [
     selectedResourceUuid,
     selectedResourceDetails?.parentResourceId,
-    selectedResourceDetails?.resourceId,
+    selectedResourceDetails?.resourceId
   ]);
 
   return { initAutorefreshAndLoad };

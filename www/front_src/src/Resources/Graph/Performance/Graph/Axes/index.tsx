@@ -9,7 +9,7 @@ import YAxes from './Y';
 
 const commonTickLabelProps = {
   fontFamily: 'Roboto, sans-serif',
-  fontSize: 10,
+  fontSize: 10
 };
 
 interface Props {
@@ -33,7 +33,7 @@ const Axes = ({
   xScale,
   xAxisTickFormat,
   isEditAnomalyDetectionDataDialogOpen,
-  base,
+  base
 }: Props): JSX.Element => {
   const { format } = useLocaleDateTimeFormat();
 
@@ -57,7 +57,7 @@ const Axes = ({
         tickFormat={formatXAxisTick}
         tickLabelProps={(): Record<string, unknown> => ({
           ...commonTickLabelProps,
-          textAnchor: 'middle',
+          textAnchor: 'middle'
         })}
         top={graphHeight}
       />

@@ -44,7 +44,7 @@ const LegacyRoute = (): JSX.Element => {
 
           navigate(`/${formattedHref}`, { replace: true });
         },
-        { once: true },
+        { once: true }
       );
     });
   };

@@ -9,7 +9,7 @@ import {
   getTimePeriodById,
   lastDayPeriod,
   TimePeriod,
-  TimePeriodId,
+  TimePeriodId
 } from '../../../Details/tabs/Graph/models';
 import { AdjustTimePeriodProps } from '../models';
 
@@ -23,20 +23,20 @@ const defaultTimePeriod = lastDayPeriod;
 
 export const resourceDetailsUpdatedAtom = atom(false);
 export const selectedTimePeriodAtom = atom<TimePeriod | null>(
-  defaultTimePeriod,
+  defaultTimePeriod
 );
 
 export const getTimeperiodFromNow = (
-  timePeriod: TimePeriod | null,
+  timePeriod: TimePeriod | null
 ): CustomTimePeriod => {
   return {
     end: new Date(Date.now()),
-    start: new Date(timePeriod?.getStart() || 0),
+    start: new Date(timePeriod?.getStart() || 0)
   };
 };
 
 export const customTimePeriodAtom = atom(
-  getTimeperiodFromNow(defaultTimePeriod),
+  getTimeperiodFromNow(defaultTimePeriod)
 );
 
 interface GetNewCustomTimePeriodProps {
@@ -46,7 +46,7 @@ interface GetNewCustomTimePeriodProps {
 
 export const getNewCustomTimePeriod = ({
   start,
-  end,
+  end
 }: GetNewCustomTimePeriodProps): CustomTimePeriod => {
   const customTimePeriodInDay = dayjs
     .duration(dayjs(end).diff(dayjs(start)))
@@ -57,14 +57,14 @@ export const getNewCustomTimePeriod = ({
   const timelineLimit = cond<number, number>([
     [gte(1), always(20)],
     [gte(7), always(100)],
-    [T, always(500)],
+    [T, always(500)]
   ])(customTimePeriodInDay);
 
   return {
     end,
     start,
     timelineLimit,
-    xAxisTickFormat,
+    xAxisTickFormat
   };
 };
 
@@ -76,15 +76,15 @@ export const getDatesDerivedAtom = atom(
       if (isNil(timePeriod)) {
         return [
           customTimePeriod.start.toISOString(),
-          customTimePeriod.end.toISOString(),
+          customTimePeriod.end.toISOString()
         ];
       }
 
       return [
         timePeriod.getStart().toISOString(),
-        new Date(Date.now()).toISOString(),
+        new Date(Date.now()).toISOString()
       ];
-    },
+    }
 );
 
 export const graphQueryParametersDerivedAtom = atom(
@@ -99,7 +99,7 @@ export const graphQueryParametersDerivedAtom = atom(
       }
 
       return `?start=${startDate?.toISOString()}&end=${endDate?.toISOString()}`;
-    },
+    }
 );
 
 export const changeSelectedTimePeriodDerivedAtom = atom(
@@ -113,7 +113,7 @@ export const changeSelectedTimePeriodDerivedAtom = atom(
 
     set(customTimePeriodAtom, newCustomTimePeriod);
     set(resourceDetailsUpdatedAtom, false);
-  },
+  }
 );
 
 export const changeCustomTimePeriodDerivedAtom = atom(
@@ -123,13 +123,13 @@ export const changeCustomTimePeriodDerivedAtom = atom(
 
     const newCustomTimePeriod = getNewCustomTimePeriod({
       ...customTimePeriod,
-      [property]: date,
+      [property]: date
     });
 
     set(customTimePeriodAtom, newCustomTimePeriod);
     set(selectedTimePeriodAtom, null);
     set(resourceDetailsUpdatedAtom, false);
-  },
+  }
 );
 
 export const adjustTimePeriodDerivedAtom = atom(
@@ -138,5 +138,5 @@ export const adjustTimePeriodDerivedAtom = atom(
     set(resourceDetailsUpdatedAtom, false);
     set(customTimePeriodAtom, getNewCustomTimePeriod(adjustTimePeriodProps));
     set(selectedTimePeriodAtom, null);
-  },
+  }
 );

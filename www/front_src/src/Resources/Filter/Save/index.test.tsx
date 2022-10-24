@@ -12,7 +12,7 @@ import {
   labelSaveFilter,
   labelSave,
   labelSaveAsNew,
-  labelName,
+  labelName
 } from '../../translatedLabels';
 import { filterEndpoint } from '../api';
 import { Filter } from '../models';
@@ -30,14 +30,14 @@ const SaveMenuTest = (): JSX.Element => {
 
   context = {
     ...listingState,
-    ...filterState,
+    ...filterState
   };
 
   return (
     <Context.Provider
       value={
         {
-          ...context,
+          ...context
         } as ResourceContext
       }
     >
@@ -67,9 +67,9 @@ const getFilter = ({ search = 'my search', name = 'MyFilter' }): Filter => ({
       value: [
         {
           id: 'host',
-          name: 'Host',
-        },
-      ],
+          name: 'Host'
+        }
+      ]
     },
     {
       name: 'states',
@@ -78,9 +78,9 @@ const getFilter = ({ search = 'my search', name = 'MyFilter' }): Filter => ({
       value: [
         {
           id: 'unhandled_problems',
-          name: 'Unhandled',
-        },
-      ],
+          name: 'Unhandled'
+        }
+      ]
     },
     {
       name: 'statuses',
@@ -89,9 +89,9 @@ const getFilter = ({ search = 'my search', name = 'MyFilter' }): Filter => ({
       value: [
         {
           id: 'OK',
-          name: 'Ok',
-        },
-      ],
+          name: 'Ok'
+        }
+      ]
     },
     {
       name: 'host_groups',
@@ -100,9 +100,9 @@ const getFilter = ({ search = 'my search', name = 'MyFilter' }): Filter => ({
       value: [
         {
           id: 0,
-          name: 'Linux-servers',
-        },
-      ],
+          name: 'Linux-servers'
+        }
+      ]
     },
     {
       name: 'service_groups',
@@ -111,15 +111,15 @@ const getFilter = ({ search = 'my search', name = 'MyFilter' }): Filter => ({
       value: [
         {
           id: 0,
-          name: 'Web-services',
-        },
-      ],
+          name: 'Web-services'
+        }
+      ]
     },
     {
       name: 'monitoring_servers',
       object_type: 'monitoring_servers',
       type: 'multi_select',
-      value: [],
+      value: []
     },
     {
       name: 'host_categories',
@@ -128,9 +128,9 @@ const getFilter = ({ search = 'my search', name = 'MyFilter' }): Filter => ({
       value: [
         {
           id: 0,
-          name: 'Linux',
-        },
-      ],
+          name: 'Linux'
+        }
+      ]
     },
     {
       name: 'service_categories',
@@ -139,34 +139,34 @@ const getFilter = ({ search = 'my search', name = 'MyFilter' }): Filter => ({
       value: [
         {
           id: 0,
-          name: 'web-services',
-        },
-      ],
+          name: 'web-services'
+        }
+      ]
     },
     {
       name: 'search',
       object_type: null,
       type: 'text',
-      value: search,
+      value: search
     },
     {
       name: 'sort',
       object_type: null,
       type: 'array',
-      value: [defaultSortField, defaultSortOrder],
-    },
+      value: [defaultSortField, defaultSortOrder]
+    }
   ],
   id: filterId,
-  name,
+  name
 });
 
 const retrievedCustomFilters = {
   meta: {
     limit: 30,
     page: 1,
-    total: 1,
+    total: 1
   },
-  result: [getFilter({})],
+  result: [getFilter({})]
 };
 
 describe(SaveMenu, () => {
@@ -191,11 +191,11 @@ describe(SaveMenu, () => {
 
     expect(last(getAllByText(labelSaveAsNew))).toHaveAttribute(
       'aria-disabled',
-      'true',
+      'true'
     );
 
     expect(
-      last(getAllByText(labelSave))?.parentElement?.parentElement,
+      last(getAllByText(labelSave))?.parentElement?.parentElement
     ).toHaveAttribute('aria-disabled', 'true');
   });
 
@@ -211,13 +211,13 @@ describe(SaveMenu, () => {
         getFilterWithUpdatedCriteria({
           criteriaName: 'search',
           criteriaValue: 'toto',
-          filter,
-        }),
+          filter
+        })
       );
     });
 
     expect(
-      last(getAllByText(labelSave))?.parentElement?.parentElement,
+      last(getAllByText(labelSave))?.parentElement?.parentElement
     ).not.toHaveAttribute('aria-disabled');
 
     fireEvent.click(last(getAllByText(labelSaveAsNew)) as HTMLElement);
@@ -225,8 +225,8 @@ describe(SaveMenu, () => {
     act(() => {
       fireEvent.change(getByLabelText(labelName), {
         target: {
-          value: 'My new filter',
-        },
+          value: 'My new filter'
+        }
       });
     });
 
@@ -236,7 +236,7 @@ describe(SaveMenu, () => {
       expect(mockedAxios.post).toHaveBeenCalledWith(
         filterEndpoint,
         omit(['id'], getFilter({ name: 'My new filter', search: 'toto' })),
-        expect.anything(),
+        expect.anything()
       );
     });
   });
@@ -259,13 +259,13 @@ describe(SaveMenu, () => {
         getFilterWithUpdatedCriteria({
           criteriaName: 'search',
           criteriaValue: newSearch,
-          filter,
-        }),
+          filter
+        })
       );
     });
 
     expect(last(getAllByText(labelSave))?.parentElement).not.toHaveAttribute(
-      'aria-disabled',
+      'aria-disabled'
     );
 
     fireEvent.click(last(getAllByText(labelSave)) as HTMLElement);
@@ -274,7 +274,7 @@ describe(SaveMenu, () => {
       expect(mockedAxios.put).toHaveBeenCalledWith(
         `${filterEndpoint}/${context.currentFilter.id}`,
         omit(['id'], getFilter({ search: newSearch })),
-        expect.anything(),
+        expect.anything()
       );
     });
   });

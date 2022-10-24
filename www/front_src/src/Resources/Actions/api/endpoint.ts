@@ -9,5 +9,5 @@ export {
   acknowledgeEndpoint,
   downtimeEndpoint,
   checkEndpoint,
-  commentEndpoint,
+  commentEndpoint
 };

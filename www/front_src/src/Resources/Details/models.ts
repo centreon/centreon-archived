@@ -7,7 +7,7 @@ import {
   ResourceLinks,
   NamedEntity,
   ResourceType,
-  Severity,
+  Severity
 } from '../models';
 
 import { CustomTimePeriod, TimePeriodId } from './tabs/Graph/models';

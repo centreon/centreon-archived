@@ -7,7 +7,7 @@ import {
   waitFor,
   RenderResult,
   screen,
-  SnackbarProvider,
+  SnackbarProvider
 } from '@centreon/ui';
 import { refreshIntervalAtom, userAtom } from '@centreon/ui-context';
 
@@ -16,7 +16,7 @@ import {
   labelConfigurationExportedAndReloaded,
   labelExportAndReload,
   labelExportConfiguration,
-  labelExportingAndReloadingTheConfiguration,
+  labelExportingAndReloadingTheConfiguration
 } from '../translatedLabels';
 
 import { exportAndReloadConfigurationEndpoint } from './api/endpoints';
@@ -28,7 +28,7 @@ const mockedAxios = axios as jest.Mocked<typeof axios>;
 const mockUser = {
   isExportButtonEnabled: true,
   locale: 'en',
-  timezone: 'Europe/Paris',
+  timezone: 'Europe/Paris'
 };
 const mockRefreshInterval = 60;
 const toggleDetailedView = jest.fn();
@@ -46,19 +46,19 @@ const renderExportConfiguration = (): RenderResult =>
       <Provider
         initialValues={[
           [userAtom, mockUser],
-          [refreshIntervalAtom, mockRefreshInterval],
+          [refreshIntervalAtom, mockRefreshInterval]
         ]}
       >
         <ExportConfigurationButton />
       </Provider>
-    </SnackbarProvider>,
+    </SnackbarProvider>
   );
 
 describe(ExportConfiguration, () => {
   beforeEach(() => {
     mockedAxios.get.mockReset();
     mockedAxios.get.mockResolvedValueOnce({
-      data: {},
+      data: {}
     });
   });
 
@@ -72,19 +72,19 @@ describe(ExportConfiguration, () => {
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalledWith(
         exportAndReloadConfigurationEndpoint,
-        cancelTokenRequestParam,
+        cancelTokenRequestParam
       );
     });
 
     expect(toggleDetailedView).toHaveBeenCalled();
 
     expect(
-      screen.getByText(labelExportingAndReloadingTheConfiguration),
+      screen.getByText(labelExportingAndReloadingTheConfiguration)
     ).toBeInTheDocument();
 
     await waitFor(() => {
       expect(
-        screen.getByText(labelConfigurationExportedAndReloaded),
+        screen.getByText(labelConfigurationExportedAndReloaded)
       ).toBeInTheDocument();
     });
   });

@@ -14,7 +14,7 @@ import {
   labelComment,
   labelEntryTime,
   labelPersistent,
-  labelSticky,
+  labelSticky
 } from '../../../../translatedLabels';
 
 import DetailsTable, { DetailsTableProps, getYesNoLabel } from '.';
@@ -24,8 +24,8 @@ const useStyles = makeStyles({
     display: 'block',
     overflow: 'hidden',
     textOverflow: 'ellipsis',
-    whiteSpace: 'nowrap',
-  },
+    whiteSpace: 'nowrap'
+  }
 });
 
 interface AcknowledgementDetails {
@@ -38,7 +38,7 @@ interface AcknowledgementDetails {
 }
 
 const AcknowledgementDetailsTable = ({
-  endpoint,
+  endpoint
 }: Pick<DetailsTableProps, 'endpoint'>): JSX.Element => {
   const classes = useStyles();
   const { t } = useTranslation();
@@ -52,7 +52,7 @@ const AcknowledgementDetailsTable = ({
       id: 'author',
       label: t(labelAuthor),
       type: ColumnType.string,
-      width: 100,
+      width: 100
     },
     {
       getContent: ({ entry_time }: AcknowledgementDetails): string =>
@@ -60,7 +60,7 @@ const AcknowledgementDetailsTable = ({
       id: 'entry_time',
       label: t(labelEntryTime),
       type: ColumnType.string,
-      width: 150,
+      width: 150
     },
     {
       getContent: ({ is_persistent_comment }: AcknowledgementDetails): string =>
@@ -68,7 +68,7 @@ const AcknowledgementDetailsTable = ({
       id: 'is_persistent',
       label: t(labelPersistent),
       type: ColumnType.string,
-      width: 100,
+      width: 100
     },
     {
       getContent: ({ is_sticky }: AcknowledgementDetails): string =>
@@ -76,7 +76,7 @@ const AcknowledgementDetailsTable = ({
       id: 'is_sticky',
       label: t(labelSticky),
       type: ColumnType.string,
-      width: 100,
+      width: 100
     },
 
     {
@@ -91,8 +91,8 @@ const AcknowledgementDetailsTable = ({
       id: 'comment',
       label: t(labelComment),
       type: ColumnType.string,
-      width: 250,
-    },
+      width: 250
+    }
   ];
 
   return (

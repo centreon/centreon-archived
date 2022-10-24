@@ -4,7 +4,7 @@ import { FallbackPage } from '@centreon/ui';
 
 import {
   labelLostInSpace,
-  labelYouAreNotAllowedToSeeThisPage,
+  labelYouAreNotAllowedToSeeThisPage
 } from './translatedLabels';
 
 const NotAllowedPage = (): JSX.Element => {

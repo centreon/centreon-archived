@@ -74,7 +74,7 @@
     [],
     function () {
       return {};
-    },
+    }
   ];
 
   const { getRegister } = systemJSPrototype;
@@ -102,9 +102,9 @@
         return {
           execute() {
             _export({ __useDefault: true, default: globalExport });
-          },
+          }
         };
-      },
+      }
     ];
   };
 })(typeof self !== 'undefined' ? self : global);

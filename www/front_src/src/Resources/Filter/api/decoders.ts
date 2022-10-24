@@ -27,43 +27,43 @@ const entityDecoder = JsonDecoder.object<Filter>(
                     {
                       id: JsonDecoder.oneOf<number | string>(
                         [JsonDecoder.number, JsonDecoder.string],
-                        'FilterCriteriaMultiSelectId',
+                        'FilterCriteriaMultiSelectId'
                       ),
-                      name: JsonDecoder.string,
+                      name: JsonDecoder.string
                     },
-                    'FilterCriteriaMultiSelectValue',
+                    'FilterCriteriaMultiSelectValue'
                   ),
-                  'FilterCriteriaValues',
+                  'FilterCriteriaValues'
                 ),
                 JsonDecoder.tuple(
                   [
                     JsonDecoder.string,
                     JsonDecoder.enumeration<SortOrder>(
                       SortOrder,
-                      'FilterCriteriaSortOrder',
-                    ),
+                      'FilterCriteriaSortOrder'
+                    )
                   ],
-                  'FilterCriteriaTuple',
-                ),
+                  'FilterCriteriaTuple'
+                )
               ],
-              'FilterCriteriaValue',
-            ),
-          ),
+              'FilterCriteriaValue'
+            )
+          )
         },
-        'FilterCriterias',
+        'FilterCriterias'
       ),
-      'FilterCriterias',
+      'FilterCriterias'
     ),
     id: JsonDecoder.number,
-    name: JsonDecoder.string,
+    name: JsonDecoder.string
   },
-  'CustomFilter',
+  'CustomFilter'
 );
 
 const listCustomFiltersDecoder = buildListingDecoder<Filter>({
   entityDecoder,
   entityDecoderName: 'CustomFilter',
-  listingDecoderName: 'CustomFilters',
+  listingDecoderName: 'CustomFilters'
 });
 
 export { listCustomFiltersDecoder };

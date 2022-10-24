@@ -14,7 +14,7 @@ import {
   labelNumberOfAttemptsBeforeUserIsBlocked,
   labelStrong,
   labelUnknown,
-  labelWeak,
+  labelWeak
 } from '../translatedLabels';
 import StrengthProgress from '../StrengthProgress';
 
@@ -24,8 +24,8 @@ export const attemptsFieldName = 'attempts';
 
 const useStyles = makeStyles((theme) => ({
   input: {
-    maxWidth: theme.spacing(43),
-  },
+    maxWidth: theme.spacing(43)
+  }
 }));
 
 const Attempts = (): JSX.Element => {
@@ -46,17 +46,17 @@ const Attempts = (): JSX.Element => {
 
       setFieldValue(attemptsFieldName, parseInt(value, 10));
     },
-    [attemptsFieldName],
+    [attemptsFieldName]
   );
 
   const attemptsError = getField<string | undefined>({
     field: attemptsFieldName,
-    object: errors,
+    object: errors
   });
 
   const attemptsValue = getField<number>({
     field: attemptsFieldName,
-    object: values,
+    object: values
   });
 
   const thresholds = useMemo(
@@ -64,14 +64,14 @@ const Attempts = (): JSX.Element => {
       { color: theme.palette.success.main, label: labelStrong, value: 0 },
       { color: theme.palette.warning.main, label: labelGood, value: 3 },
       { color: theme.palette.error.main, label: labelWeak, value: 6 },
-      { color: theme.palette.grey[500], label: labelUnknown, value: 11 },
+      { color: theme.palette.grey[500], label: labelUnknown, value: 11 }
     ],
-    [],
+    []
   );
 
   const displayStrengthProgress = useMemo(
     () => isNil(attemptsError) && not(isNil(attemptsValue)),
-    [attemptsError, attemptsValue],
+    [attemptsError, attemptsValue]
   );
 
   return useMemoComponent({
@@ -83,7 +83,7 @@ const Attempts = (): JSX.Element => {
           helperText={attemptsError}
           inputProps={{
             'aria-label': t(labelNumberOfAttemptsBeforeUserIsBlocked),
-            min: 1,
+            min: 1
           }}
           label={t(labelNumberOfAttemptsBeforeUserIsBlocked)}
           name={attemptsFieldName}
@@ -101,7 +101,7 @@ const Attempts = (): JSX.Element => {
         )}
       </div>
     ),
-    memoProps: [attemptsError, attemptsValue],
+    memoProps: [attemptsError, attemptsValue]
   });
 };
 

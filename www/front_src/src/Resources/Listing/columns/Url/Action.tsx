@@ -9,7 +9,7 @@ import UrlColumn from '.';
 const ActionUrlColumn = ({ row }: ComponentColumnProps): JSX.Element => {
   const endpoint = path<string | undefined>(
     ['links', 'externals', 'action_url'],
-    row,
+    row
   );
 
   return (

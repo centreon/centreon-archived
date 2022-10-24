@@ -20,7 +20,7 @@ const ResourceActionButton = ({
   label,
   onClick,
   disabled,
-  permitted = true,
+  permitted = true
 }: Props): JSX.Element => {
   const theme = useTheme();
   const { t } = useTranslation();

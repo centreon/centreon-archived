@@ -19,7 +19,7 @@ describe('Time input', () => {
       name: 'input',
       onChange: mockChange,
       timeValue: 0,
-      unit: 'minutes',
+      unit: 'minutes'
     });
 
     userEvent.click(screen.getByLabelText(`input ${labelMinute}`));
@@ -36,7 +36,7 @@ describe('Time input', () => {
       name: 'input',
       onChange: mockChange,
       timeValue: 0,
-      unit: 'minutes',
+      unit: 'minutes'
     });
 
     userEvent.click(screen.getByLabelText(`input ${labelMinute}`));
@@ -53,7 +53,7 @@ describe('Time input', () => {
       name: 'input',
       onChange: mockChange,
       timeValue: 0,
-      unit: 'minutes',
+      unit: 'minutes'
     });
 
     expect(screen.getByText(labelMinute)).toBeInTheDocument();
@@ -66,7 +66,7 @@ describe('Time input', () => {
       name: 'input',
       onChange: mockChange,
       timeValue: 60000,
-      unit: 'minutes',
+      unit: 'minutes'
     });
 
     expect(screen.getByText(labelMinute)).toBeInTheDocument();
@@ -79,7 +79,7 @@ describe('Time input', () => {
       name: 'input',
       onChange: mockChange,
       timeValue: 120000,
-      unit: 'minutes',
+      unit: 'minutes'
     });
 
     expect(screen.getByText(labelMinutes)).toBeInTheDocument();

@@ -8,7 +8,7 @@ import { useAtom } from 'jotai';
 import {
   useRequest,
   setUrlQueryParameters,
-  getUrlQueryParameters,
+  getUrlQueryParameters
 } from '@centreon/ui';
 
 import {
@@ -21,7 +21,7 @@ import {
   getCriteriaValueDerivedAtom,
   searchAtom,
   setCriteriaDerivedAtom,
-  storedFilterAtom,
+  storedFilterAtom
 } from '../Filter/filterAtoms';
 import { listCustomFilters } from '../Filter/api';
 import { listCustomFiltersDecoder } from '../Filter/api/decoders';
@@ -32,16 +32,16 @@ import { FilterState } from '../Filter/useFilter';
 const useFilter = (): FilterState => {
   const {
     sendRequest: sendListCustomFiltersRequest,
-    sending: customFiltersLoading,
+    sending: customFiltersLoading
   } = useRequest({
     decoder: listCustomFiltersDecoder,
-    request: listCustomFilters,
+    request: listCustomFilters
   });
 
   const [customFilters, setCustomFilters] = useAtom(customFiltersAtom);
   const [currentFilter, setCurrentFilter] = useAtom(currentFilterAtom);
   const filterWithParsedSearch = useAtomValue(
-    filterWithParsedSearchDerivedAtom,
+    filterWithParsedSearchDerivedAtom
   );
   const getCriteriaValue = useAtomValue(getCriteriaValueDerivedAtom);
   const defaultFilter = useAtomValue(storedFilterAtom);
@@ -78,8 +78,8 @@ const useFilter = (): FilterState => {
     const queryParameters = [
       {
         name: 'filter',
-        value: filterWithParsedSearch,
-      },
+        value: filterWithParsedSearch
+      }
     ];
 
     setUrlQueryParameters(queryParameters);
@@ -93,8 +93,8 @@ const useFilter = (): FilterState => {
     setUrlQueryParameters([
       {
         name: 'fromTopCounter',
-        value: false,
-      },
+        value: false
+      }
     ]);
 
     applyFilter(defaultFilter);
@@ -109,7 +109,7 @@ const useFilter = (): FilterState => {
     loadCustomFilters,
     setCriteria,
     setCurrentFilter,
-    setEditPanelOpen,
+    setEditPanelOpen
   };
 };
 

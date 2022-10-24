@@ -16,7 +16,7 @@ import { Page } from '../../models';
 import {
   selectedNavigationItemsAtom,
   hoveredNavigationItemsAtom,
-  setHoveredNavigationItemsDerivedAtom,
+  setHoveredNavigationItemsDerivedAtom
 } from '../sideBarAtoms';
 import { closedDrawerWidth, openedDrawerWidth } from '../index';
 import { searchUrlFromEntry } from '../helpers/getUrlFromEntry';
@@ -32,18 +32,18 @@ interface Props {
 
 const useStyles = makeStyles(() => ({
   icon: {
-    fontSize: 26,
+    fontSize: 26
   },
   list: {
     '&.MuiList-root': {
-      padding: 0,
-    },
-  },
+      padding: 0
+    }
+  }
 }));
 
 const NavigationMenu = ({
   isDrawerOpen,
-  navigationData,
+  navigationData
 }: Props): JSX.Element => {
   const classes = useStyles();
   const navigate = useNavigate();
@@ -62,15 +62,15 @@ const NavigationMenu = ({
   const timeoutRef = useRef<null | NodeJS.Timeout>(null);
   const menuRef = useRef<HTMLUListElement>(null);
   const [selectedNavigationItems, setSelectedNavigationItems] = useAtom(
-    selectedNavigationItemsAtom,
+    selectedNavigationItemsAtom
   );
   const [hoveredNavigationItems, setHoveredNavigationItems] = useAtom(
-    hoveredNavigationItemsAtom,
+    hoveredNavigationItemsAtom
   );
   const user = useAtomValue(userAtom);
 
   const setHoveredNavigationItemsDerived = useUpdateAtom(
-    setHoveredNavigationItemsDerivedAtom,
+    setHoveredNavigationItemsDerivedAtom
   );
 
   const levelName = 'level_0';
@@ -133,10 +133,10 @@ const NavigationMenu = ({
       (previousItem, currentItem, currentIndex) => {
         return {
           ...previousItem,
-          [`level_${currentIndex}`]: currentItem,
+          [`level_${currentIndex}`]: currentItem
         };
       },
-      {},
+      {}
     );
 
     setSelectedNavigationItems(selectedNavigationItemsToAdd);
@@ -271,7 +271,7 @@ const NavigationMenu = ({
       iframe.addEventListener('load', () => {
         iframe.contentWindow?.document?.addEventListener(
           'mousemove',
-          closeMenu,
+          closeMenu
         );
       });
     } else {
@@ -290,7 +290,7 @@ const NavigationMenu = ({
     pathname,
     search,
     setCollapseScrollMaxHeight,
-    setCollapseScrollMaxWidth,
+    setCollapseScrollMaxWidth
   };
 
   return useMemoComponent({
@@ -307,7 +307,7 @@ const NavigationMenu = ({
             isItemHovered({
               currentPage: item,
               level: levelName,
-              navigationItem: selectedNavigationItems,
+              navigationItem: selectedNavigationItems
             }) || equals(hoveredIndex, index);
 
           return (
@@ -351,8 +351,8 @@ const NavigationMenu = ({
       selectedNavigationItems,
       user,
       hoveredNavigationItems,
-      navigationData,
-    ],
+      navigationData
+    ]
   });
 };
 

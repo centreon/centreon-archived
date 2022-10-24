@@ -10,7 +10,7 @@ export const selectedNavigationItemsAtom = atomWithStorage<Record<
 > | null>('selectedNavigationItems', null);
 
 export const hoveredNavigationItemsAtom = atom<Record<string, Page> | null>(
-  null,
+  null
 );
 
 export const setHoveredNavigationItemsDerivedAtom = atom(
@@ -19,20 +19,20 @@ export const setHoveredNavigationItemsDerivedAtom = atom(
     const navigationKeysToRemove = keys(get(hoveredNavigationItemsAtom)).filter(
       (navigationItem) => {
         return navigationItem > levelName;
-      },
+      }
     );
 
     if (isNil(navigationKeysToRemove)) {
       set(hoveredNavigationItemsAtom, {
         ...get(hoveredNavigationItemsAtom),
-        [levelName]: currentPage,
+        [levelName]: currentPage
       });
 
       return;
     }
     set(hoveredNavigationItemsAtom, {
       ...omit(navigationKeysToRemove, get(hoveredNavigationItemsAtom)),
-      [levelName]: currentPage,
+      [levelName]: currentPage
     });
-  },
+  }
 );

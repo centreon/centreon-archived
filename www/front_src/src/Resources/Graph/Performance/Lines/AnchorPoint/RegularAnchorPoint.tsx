@@ -25,7 +25,7 @@ const getYAnchorPoint = ({
   timeTick,
   timeSeries,
   yScale,
-  metric,
+  metric
 }: Pick<Props, 'timeTick' | 'timeSeries' | 'yScale' | 'metric'>): number => {
   const index = bisectDate(getDates(timeSeries), timeTick);
   const timeValue = timeSeries[index];
@@ -42,7 +42,7 @@ const RegularAnchorPoint = ({
   areaColor,
   transparency,
   lineColor,
-  displayTimeValues,
+  displayTimeValues
 }: Props): JSX.Element | null => {
   if (isNil(timeTick) || not(displayTimeValues)) {
     return null;
@@ -53,7 +53,7 @@ const RegularAnchorPoint = ({
     metric,
     timeSeries,
     timeTick,
-    yScale,
+    yScale
   });
 
   if (isNil(yAnchorPoint)) {
@@ -75,5 +75,5 @@ export default memo(
   RegularAnchorPoint,
   (prevProps, nextProps) =>
     equals(prevProps.timeTick, nextProps.timeTick) &&
-    equals(prevProps.timeSeries, nextProps.timeSeries),
+    equals(prevProps.timeSeries, nextProps.timeSeries)
 );

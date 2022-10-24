@@ -9,14 +9,14 @@ import { build, parse } from './Criterias/searchQueryLanguage';
 export const getFilterDefaultCriteriasDerivedAtom = atom(
   () => (): Array<Criteria> => {
     return getDefaultCriterias();
-  },
+  }
 );
 export const currentFilterCriteriasAtom = atomWithDefault<Array<Criteria>>(
-  (get) => get(getFilterDefaultCriteriasDerivedAtom)(),
+  (get) => get(getFilterDefaultCriteriasDerivedAtom)()
 );
 
 export const appliedFilterCriteriasAtom = atomWithDefault<Array<Criteria>>(
-  (get) => get(getFilterDefaultCriteriasDerivedAtom)(),
+  (get) => get(getFilterDefaultCriteriasDerivedAtom)()
 );
 
 export const searchAtom = atom('');
@@ -30,13 +30,13 @@ export const getUpToDateFilterCriteriaDerivedAtom = atom(
   (get) =>
     ({ name, value }): Array<Criteria> => {
       const index = findIndex(propEq('name', name))(
-        get(filterWithParsedSearchDerivedAtom),
+        get(filterWithParsedSearchDerivedAtom)
       );
 
       const lens = lensPath([index, 'value']);
 
       return update(lens, value, get(filterWithParsedSearchDerivedAtom));
-    },
+    }
 );
 
 export const applyFilterDerivedAtom = atom(
@@ -45,7 +45,7 @@ export const applyFilterDerivedAtom = atom(
     set(currentFilterCriteriasAtom, criterias);
     set(appliedFilterCriteriasAtom, criterias);
     set(searchAtom, build(criterias));
-  },
+  }
 );
 
 export const setFilterCriteriaDerivedAtom = atom(
@@ -64,7 +64,7 @@ export const setFilterCriteriaDerivedAtom = atom(
     }
 
     set(currentFilterCriteriasAtom, upToDateFilter);
-  },
+  }
 );
 
 export const applyCurrentFilterDerivedAtom = atom(null, (get, set) => {

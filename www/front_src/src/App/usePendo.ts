@@ -13,17 +13,17 @@ const oneDayInMs = 24 * 60 * 60 * 1000;
 
 const centreonPlatformDataAtom = atomWithStorage<CeipData | null>(
   'centreonPlatformData',
-  null,
+  null
 );
 
 const usePendo = (): void => {
   const [isCeipEnabled, setIsCeipEnabled] = useState(false);
   const { sendRequest } = useRequest<CeipData>({
-    request: getData,
+    request: getData
   });
 
   const [centreonPlatformData, setCentreonPlatformData] = useAtom(
-    centreonPlatformDataAtom,
+    centreonPlatformDataAtom
   );
 
   const sendCeipInfo = (isOnline: boolean): void => {
@@ -32,7 +32,7 @@ const usePendo = (): void => {
     }
 
     sendRequest({
-      endpoint: './api/internal.php?object=centreon_ceip&action=ceipInfo',
+      endpoint: './api/internal.php?object=centreon_ceip&action=ceipInfo'
     }).then((data) => {
       if (not(data?.ceip)) {
         setCentreonPlatformData({ ceip: false });
@@ -47,7 +47,7 @@ const usePendo = (): void => {
         cacheGenerationDate: Date.now(),
         ceip: true,
         excludeAllText: data.excludeAllText,
-        visitor: data.visitor,
+        visitor: data.visitor
       };
       setCentreonPlatformData(platformData);
     });
@@ -63,7 +63,7 @@ const usePendo = (): void => {
     try {
       const isCacheOutdated = gte(
         (centreonPlatformData?.cacheGenerationDate || 0) + oneDayInMs,
-        Date.now(),
+        Date.now()
       );
 
       if (not(isCacheOutdated)) {

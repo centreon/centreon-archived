@@ -17,7 +17,7 @@ const InitializationPage = (): JSX.Element => {
   const [areUserParametersLoaded] = useAtom(areUserParametersLoadedAtom);
   const user = useAtomValue(userAtom);
   const platformInstallationStatus = useAtomValue(
-    platformInstallationStatusAtom,
+    platformInstallationStatusAtom
   );
 
   const canDisplayApp =

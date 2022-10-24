@@ -3,7 +3,7 @@ import {
   ReactNode,
   useEffect,
   useRef,
-  useState,
+  useState
 } from 'react';
 
 import { Responsive } from '@visx/visx';
@@ -24,7 +24,7 @@ import {
   propEq,
   propOr,
   reject,
-  sortBy,
+  sortBy
 } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
@@ -35,7 +35,7 @@ import {
   getData,
   timeFormat,
   useLocaleDateTimeFormat,
-  useRequest,
+  useRequest
 } from '@centreon/ui';
 
 import { labelNoDataForThisPeriod } from '../../translatedLabels';
@@ -45,7 +45,7 @@ import { CommentParameters } from '../../Actions/api';
 import { ResourceDetails } from '../../Details/models';
 import {
   CustomTimePeriod,
-  CustomTimePeriodProperty,
+  CustomTimePeriodProperty
 } from '../../Details/tabs/Graph/models';
 import { selectedResourcesDetailsAtom } from '../../Details/detailsAtoms';
 
@@ -53,7 +53,7 @@ import { CustomFactorsData } from './AnomalyDetection/models';
 import Graph from './Graph';
 import {
   isListingGraphOpenAtom,
-  timeValueAtom,
+  timeValueAtom
 } from './Graph/mouseTimeValueAtoms';
 import { TimeShiftDirection } from './Graph/TimeShiftZones';
 import Legend from './Legend';
@@ -62,7 +62,7 @@ import {
   AdjustTimePeriodProps,
   GraphData,
   Line as LineModel,
-  TimeValue,
+  TimeValue
 } from './models';
 import { getLineData, getMetrics, getTimeSeries } from './timeSeries';
 
@@ -74,7 +74,7 @@ interface Props {
   displayTitle?: boolean;
   endpoint?: string;
   getPerformanceGraphRef?: (
-    value: MutableRefObject<HTMLDivElement | null>,
+    value: MutableRefObject<HTMLDivElement | null>
   ) => void;
   graphActions?: ReactNode;
   graphHeight: number;
@@ -102,16 +102,16 @@ const useStyles = makeStyles<Theme, MakeStylesProps>((theme) => ({
     gridGap: theme.spacing(0.5),
     gridTemplateRows: ({ graphHeight, displayTitle }): string =>
       `${displayTitle ? 'min-content' : ''} ${theme.spacing(
-        2,
+        2
       )} ${graphHeight}px min-content`,
     height: '100%',
-    width: 'auto',
+    width: 'auto'
   },
   graphHeader: {
     display: 'grid',
     gridTemplateColumns: '0.4fr 1fr 0.4fr',
     justifyItems: 'end',
-    width: '100%',
+    width: '100%'
   },
   graphTranslation: {
     columnGap: theme.spacing(1),
@@ -121,25 +121,25 @@ const useStyles = makeStyles<Theme, MakeStylesProps>((theme) => ({
     justifyContent: ({ canAdjustTimePeriod }): string =>
       canAdjustTimePeriod ? 'space-between' : 'center',
     margin: theme.spacing(0, 1),
-    width: '90%',
+    width: '90%'
   },
   loadingContainer: {
     height: theme.spacing(2),
-    width: theme.spacing(2),
+    width: theme.spacing(2)
   },
   noDataContainer: {
     alignItems: 'center',
     display: 'flex',
     height: '100%',
-    justifyContent: 'center',
+    justifyContent: 'center'
   },
   title: {
     maxWidth: '100%',
     overflow: 'hidden',
     placeSelf: 'center',
     textOverflow: 'ellipsis',
-    whiteSpace: 'nowrap',
-  },
+    whiteSpace: 'nowrap'
+  }
 }));
 
 const shiftRatio = 2;
@@ -164,12 +164,12 @@ const PerformanceGraph = ({
   modal,
   graphActions,
   getPerformanceGraphRef,
-  resizeEnvelopeData,
+  resizeEnvelopeData
 }: Props): JSX.Element => {
   const classes = useStyles({
     canAdjustTimePeriod: not(isNil(adjustTimePeriod)),
     displayTitle,
-    graphHeight,
+    graphHeight
   });
   const { t } = useTranslation();
 
@@ -183,9 +183,9 @@ const PerformanceGraph = ({
 
   const {
     sendRequest: sendGetGraphDataRequest,
-    sending: sendingGetGraphDataRequest,
+    sending: sendingGetGraphDataRequest
   } = useRequest<GraphData>({
-    request: getData,
+    request: getData
   });
 
   const selectedResource = useAtomValue(selectedResourcesDetailsAtom);
@@ -201,7 +201,7 @@ const PerformanceGraph = ({
     }
 
     sendGetGraphDataRequest({
-      endpoint,
+      endpoint
     })
       .then((graphData) => {
         setTimeSeries(getTimeSeries(graphData));
@@ -214,8 +214,8 @@ const PerformanceGraph = ({
             newLineData.map((line) => ({
               ...line,
               display:
-                find(propEq('name', line.name), lineData)?.display ?? true,
-            })),
+                find(propEq('name', line.name), lineData)?.display ?? true
+            }))
           );
 
           return;
@@ -281,7 +281,7 @@ const PerformanceGraph = ({
   const originMetric = sortedLines.map(({ metric }) =>
     metric.includes('_upper_thresholds')
       ? metric.replace('_upper_thresholds', '')
-      : null,
+      : null
   );
 
   const lineOriginMetric = sortedLines.filter((item) => {
@@ -291,7 +291,7 @@ const PerformanceGraph = ({
   });
 
   const linesThreshold = sortedLines.filter(({ metric }) =>
-    metric.includes('thresholds'),
+    metric.includes('thresholds')
   );
 
   const newSortedLines = equals(resource.type, ResourceType.anomalydetection)
@@ -309,7 +309,7 @@ const PerformanceGraph = ({
 
     setLineData([
       ...reject(propEq('metric', metric), lineData),
-      { ...line, display: !line.display },
+      { ...line, display: !line.display }
     ]);
   };
 
@@ -318,7 +318,7 @@ const PerformanceGraph = ({
 
     setLineData([
       ...reject(propEq('metric', metric), fadedLines),
-      { ...getLineByMetric(metric), highlight: true },
+      { ...getLineByMetric(metric), highlight: true }
     ]);
   };
 
@@ -337,10 +337,10 @@ const PerformanceGraph = ({
         map(
           (line) => ({
             ...line,
-            display: true,
+            display: true
           }),
-          lineData,
-        ),
+          lineData
+        )
       );
 
       return;
@@ -350,10 +350,10 @@ const PerformanceGraph = ({
       map(
         (line) => ({
           ...line,
-          display: equals(line, metricLine),
+          display: equals(line, metricLine)
         }),
-        lineData,
-      ),
+        lineData
+      )
     );
   };
 
@@ -366,8 +366,8 @@ const PerformanceGraph = ({
         prop(property, timePeriod).getTime(),
         equals(direction, TimeShiftDirection.backward)
           ? negate(adjustTimePeriodProps)
-          : adjustTimePeriodProps,
-      ),
+          : adjustTimePeriodProps
+      )
     );
   };
 
@@ -380,20 +380,20 @@ const PerformanceGraph = ({
       end: getShiftedDate({
         direction,
         property: CustomTimePeriodProperty.end,
-        timePeriod: customTimePeriod,
+        timePeriod: customTimePeriod
       }),
       start: getShiftedDate({
         direction,
         property: CustomTimePeriodProperty.start,
-        timePeriod: customTimePeriod,
-      }),
+        timePeriod: customTimePeriod
+      })
     });
   };
 
   const timeTick = propOr<string, TimeValue | null, string>(
     '',
     'timeTick',
-    timeValue,
+    timeValue
   );
 
   const metrics = getMetrics(timeValue as TimeValue);

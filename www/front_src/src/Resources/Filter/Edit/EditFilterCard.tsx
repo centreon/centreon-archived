@@ -16,7 +16,7 @@ import {
   IconButton,
   useRequest,
   ConfirmDialog,
-  useSnackbar,
+  useSnackbar
 } from '@centreon/ui';
 
 import {
@@ -27,14 +27,14 @@ import {
   labelFilterUpdated,
   labelName,
   labelFilter,
-  labelNameCannotBeEmpty,
+  labelNameCannotBeEmpty
 } from '../../translatedLabels';
 import { updateFilter, deleteFilter } from '../api';
 import { Filter, newFilter } from '../models';
 import {
   appliedFilterAtom,
   currentFilterAtom,
-  customFiltersAtom,
+  customFiltersAtom
 } from '../filterAtoms';
 
 const useStyles = makeStyles((theme) => ({
@@ -43,8 +43,8 @@ const useStyles = makeStyles((theme) => ({
     display: 'grid',
     gridAutoFlow: 'column',
     gridGap: theme.spacing(2),
-    gridTemplateColumns: 'auto 1fr',
-  },
+    gridTemplateColumns: 'auto 1fr'
+  }
 }));
 
 interface Props {
@@ -67,16 +67,16 @@ const EditFilterCard = ({ filter }: Props): JSX.Element => {
 
   const {
     sendRequest: sendUpdateFilterRequest,
-    sending: sendingUpdateFilterRequest,
+    sending: sendingUpdateFilterRequest
   } = useRequest({
-    request: updateFilter,
+    request: updateFilter
   });
 
   const {
     sendRequest: sendDeleteFilterRequest,
-    sending: sendingDeleteFilterRequest,
+    sending: sendingDeleteFilterRequest
   } = useRequest({
-    request: deleteFilter,
+    request: deleteFilter
   });
 
   const [currentFilter, setCurrentFilter] = useAtom(currentFilterAtom);
@@ -86,20 +86,20 @@ const EditFilterCard = ({ filter }: Props): JSX.Element => {
   const { name, id } = filter;
 
   const validationSchema = Yup.object().shape({
-    name: Yup.string().required(t(labelNameCannotBeEmpty)),
+    name: Yup.string().required(t(labelNameCannotBeEmpty))
   });
 
   const form = useFormik({
     enableReinitialize: true,
     initialValues: {
-      name,
+      name
     },
     onSubmit: (values) => {
       const updatedFilter = { ...filter, name: values.name };
 
       sendUpdateFilterRequest({
         filter: omit(['id'], updatedFilter),
-        id: updatedFilter.id,
+        id: updatedFilter.id
       }).then(() => {
         showSuccessMessage(t(labelFilterUpdated));
 
@@ -112,7 +112,7 @@ const EditFilterCard = ({ filter }: Props): JSX.Element => {
         setCustomFilters(update(index, updatedFilter, customFilters));
       });
     },
-    validationSchema,
+    validationSchema
   });
 
   const askDelete = (): void => {
@@ -140,7 +140,7 @@ const EditFilterCard = ({ filter }: Props): JSX.Element => {
 
   const sendingRequest = any(equals(true), [
     sendingDeleteFilterRequest,
-    sendingUpdateFilterRequest,
+    sendingUpdateFilterRequest
   ]);
 
   const canRename = all(equals(true), [form.isValid, form.dirty]);

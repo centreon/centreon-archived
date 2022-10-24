@@ -9,13 +9,13 @@ import {
   IconButton,
   Paper,
   Tooltip,
-  Typography,
+  Typography
 } from '@mui/material';
 import SettingsIcon from '@mui/icons-material/Settings';
 
 import {
   labelConfigure,
-  labelNotAuthorizedToAccessConfiguration,
+  labelNotAuthorizedToAccessConfiguration
 } from '../../../translatedLabels';
 import memoizeComponent from '../../../memoizedComponent';
 
@@ -34,7 +34,7 @@ const Contacts = ({
   templateColumns,
   getColumns,
   headers,
-  noContactsMessage,
+  noContactsMessage
 }: Props): JSX.Element => {
   const goToUri = (uri): void => {
     window.location.href = uri as string;
@@ -63,7 +63,7 @@ const Contacts = ({
         </Tooltip>
       );
     },
-    [],
+    []
   );
 
   if (isEmpty(contacts)) {
@@ -73,7 +73,7 @@ const Contacts = ({
         display="grid"
         sx={{
           justifyContent: 'center',
-          py: 1,
+          py: 1
         }}
       >
         <Typography>{noContactsMessage}</Typography>
@@ -90,7 +90,7 @@ const Contacts = ({
         gap: 1,
         gridTemplateColumns: templateColumns,
         justifyContent: 'center',
-        py: 1,
+        py: 1
       }}
     >
       <>
@@ -113,7 +113,7 @@ const Contacts = ({
 
 const MemoizedConfigurationColumn = memoizeComponent<Props>({
   Component: Contacts,
-  memoProps: ['contacts', 'getColumns', 'headers', 'templateColumns'],
+  memoProps: ['contacts', 'getColumns', 'headers', 'templateColumns']
 });
 
 export default MemoizedConfigurationColumn;

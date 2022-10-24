@@ -10,12 +10,12 @@ import {
   TestQueryProvider,
   resetMocks,
   mockResponseOnce,
-  getFetchCall,
+  getFetchCall
 } from '@centreon/ui';
 
 import {
   authenticationProvidersEndpoint,
-  contactsEndpoint,
+  contactsEndpoint
 } from '../api/endpoints';
 import { Provider } from '../models';
 
@@ -51,7 +51,7 @@ import {
   labelChooseAValueBetween1and10,
   labelThisWillNotBeUsedBecauseNumberOfAttemptsIsNotDefined,
   labelBlockingDurationMustBeLessThanOrEqualTo7Days,
-  labelDay,
+  labelDay
 } from './translatedLabels';
 import {
   defaultPasswordSecurityPolicyAPI,
@@ -59,7 +59,7 @@ import {
   defaultPasswordSecurityPolicyWithNullValues,
   securityPolicyWithInvalidDelayBeforeNewPassword,
   securityPolicyWithInvalidPasswordExpiration,
-  securityPolicyWithInvalidBlockingDuration,
+  securityPolicyWithInvalidBlockingDuration
 } from './defaults';
 import { PasswordSecurityPolicyToAPI } from './models';
 
@@ -74,23 +74,23 @@ const cancelTokenRequestParam = { cancelToken: {} };
 const cancelTokenPutParams = {
   ...cancelTokenRequestParam,
   headers: {
-    'Content-Type': 'application/x-www-form-urlencoded',
-  },
+    'Content-Type': 'application/x-www-form-urlencoded'
+  }
 };
 
 const renderAuthentication = (): RenderResult =>
   render(
     <TestQueryProvider>
       <LocalAuthentication />
-    </TestQueryProvider>,
+    </TestQueryProvider>
   );
 
 const mockGetPasswordSecurityPolicy = (
-  securityPolicy: PasswordSecurityPolicyToAPI,
+  securityPolicy: PasswordSecurityPolicyToAPI
 ): void => {
   mockedAxios.get.mockReset();
   mockedAxios.get.mockResolvedValue({
-    data: securityPolicy,
+    data: securityPolicy
   });
 };
 
@@ -98,7 +98,7 @@ describe('Authentication', () => {
   beforeEach(() => {
     mockedAxios.put.mockReset();
     mockedAxios.put.mockResolvedValue({
-      data: {},
+      data: {}
     });
   });
 
@@ -107,13 +107,13 @@ describe('Authentication', () => {
     renderAuthentication();
 
     expect(
-      screen.getByText(labelDefinePasswordPasswordSecurityPolicy),
+      screen.getByText(labelDefinePasswordPasswordSecurityPolicy)
     ).toBeInTheDocument();
 
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalledWith(
         authenticationProvidersEndpoint(Provider.Local),
-        cancelTokenRequestParam,
+        cancelTokenRequestParam
       );
     });
 
@@ -129,7 +129,7 @@ describe('Authentication', () => {
 
     userEvent.type(
       screen.getByLabelText(labelMinimumPasswordLength),
-      '{selectall}{backspace}45',
+      '{selectall}{backspace}45'
     );
 
     await waitFor(() => {
@@ -144,10 +144,10 @@ describe('Authentication', () => {
         {
           password_security_policy: {
             ...defaultPasswordSecurityPolicyAPI.password_security_policy,
-            password_min_length: 45,
-          },
+            password_min_length: 45
+          }
         },
-        cancelTokenPutParams,
+        cancelTokenPutParams
       );
     });
   });
@@ -157,13 +157,13 @@ describe('Authentication', () => {
     renderAuthentication();
 
     expect(
-      screen.getByText(labelDefinePasswordPasswordSecurityPolicy),
+      screen.getByText(labelDefinePasswordPasswordSecurityPolicy)
     ).toBeInTheDocument();
 
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalledWith(
         authenticationProvidersEndpoint(Provider.Local),
-        cancelTokenRequestParam,
+        cancelTokenRequestParam
       );
     });
 
@@ -179,12 +179,12 @@ describe('Authentication', () => {
 
     userEvent.type(
       screen.getByLabelText(labelMinimumPasswordLength),
-      '{selectall}{backspace}45',
+      '{selectall}{backspace}45'
     );
 
     userEvent.type(
       screen.getByLabelText(labelNumberOfAttemptsBeforeUserIsBlocked),
-      '{selectall}{backspace}8',
+      '{selectall}{backspace}8'
     );
 
     await waitFor(() => {
@@ -211,13 +211,13 @@ describe('Authentication', () => {
     renderAuthentication();
 
     expect(
-      screen.getByText(labelDefinePasswordPasswordSecurityPolicy),
+      screen.getByText(labelDefinePasswordPasswordSecurityPolicy)
     ).toBeInTheDocument();
 
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalledWith(
         authenticationProvidersEndpoint(Provider.Local),
-        cancelTokenRequestParam,
+        cancelTokenRequestParam
       );
     });
 
@@ -233,7 +233,7 @@ describe('Authentication', () => {
 
     userEvent.type(
       screen.getByLabelText(labelNumberOfAttemptsBeforeUserIsBlocked),
-      '{selectall}{backspace}2',
+      '{selectall}{backspace}2'
     );
 
     await waitFor(() => {
@@ -248,10 +248,10 @@ describe('Authentication', () => {
         {
           password_security_policy: {
             ...retrievedPasswordSecurityPolicyAPI.password_security_policy,
-            attempts: 2,
-          },
+            attempts: 2
+          }
         },
-        cancelTokenPutParams,
+        cancelTokenPutParams
       );
     });
   });
@@ -267,7 +267,7 @@ describe('Password case policy', () => {
 
     await waitFor(() => {
       expect(
-        screen.getByLabelText(labelMinimumPasswordLength),
+        screen.getByLabelText(labelMinimumPasswordLength)
       ).toBeInTheDocument();
     });
 
@@ -277,16 +277,16 @@ describe('Password case policy', () => {
 
     expect(screen.getByLabelText(labelMinimumPasswordLength)).toHaveValue(12);
     expect(
-      screen.getAllByLabelText(labelPasswordMustContainLowerCase)[0],
+      screen.getAllByLabelText(labelPasswordMustContainLowerCase)[0]
     ).toBeInTheDocument();
     expect(
-      screen.getAllByLabelText(labelPasswordMustContainUpperCase)[0],
+      screen.getAllByLabelText(labelPasswordMustContainUpperCase)[0]
     ).toBeInTheDocument();
     expect(
-      screen.getAllByLabelText(labelPasswordMustContainNumbers)[0],
+      screen.getAllByLabelText(labelPasswordMustContainNumbers)[0]
     ).toBeInTheDocument();
     expect(
-      screen.getAllByLabelText(labelPasswordMustContainSpecialCharacters)[0],
+      screen.getAllByLabelText(labelPasswordMustContainSpecialCharacters)[0]
     ).toBeInTheDocument();
     expect(screen.getByText(labelStrong)).toBeInTheDocument();
   });
@@ -296,13 +296,13 @@ describe('Password case policy', () => {
 
     await waitFor(() => {
       expect(
-        screen.getByLabelText(labelMinimumPasswordLength),
+        screen.getByLabelText(labelMinimumPasswordLength)
       ).toBeInTheDocument();
     });
 
     userEvent.type(
       screen.getByLabelText(labelMinimumPasswordLength),
-      '{selectall}{backspace}45',
+      '{selectall}{backspace}45'
     );
 
     await waitFor(() => {
@@ -316,28 +316,28 @@ describe('Password case policy', () => {
 
     await waitFor(() => {
       expect(
-        screen.getByLabelText(labelMinimumPasswordLength),
+        screen.getByLabelText(labelMinimumPasswordLength)
       ).toBeInTheDocument();
     });
 
     userEvent.click(
-      screen.getAllByLabelText(labelPasswordMustContainLowerCase)[0],
+      screen.getAllByLabelText(labelPasswordMustContainLowerCase)[0]
     );
     userEvent.click(
-      screen.getAllByLabelText(labelPasswordMustContainUpperCase)[0],
+      screen.getAllByLabelText(labelPasswordMustContainUpperCase)[0]
     );
     userEvent.click(
-      screen.getAllByLabelText(labelPasswordMustContainNumbers)[0],
+      screen.getAllByLabelText(labelPasswordMustContainNumbers)[0]
     );
     userEvent.click(
-      screen.getAllByLabelText(labelPasswordMustContainSpecialCharacters)[0],
+      screen.getAllByLabelText(labelPasswordMustContainSpecialCharacters)[0]
     );
 
     await waitFor(() => {
       expect(screen.getByText(labelStrong)).toBeInTheDocument();
     });
     userEvent.click(
-      screen.getAllByLabelText(labelPasswordMustContainSpecialCharacters)[0],
+      screen.getAllByLabelText(labelPasswordMustContainSpecialCharacters)[0]
     );
 
     await waitFor(() => {
@@ -345,7 +345,7 @@ describe('Password case policy', () => {
     });
 
     userEvent.click(
-      screen.getAllByLabelText(labelPasswordMustContainNumbers)[0],
+      screen.getAllByLabelText(labelPasswordMustContainNumbers)[0]
     );
 
     await waitFor(() => {
@@ -360,22 +360,22 @@ const retrievedContacts = {
     page: 1,
     search: {},
     sort_by: {},
-    total: 2,
+    total: 2
   },
   result: [
     {
       alias: 'admin',
       email: 'admin@admin.com',
       id: 1,
-      is_admin: true,
+      is_admin: true
     },
     {
       alias: 'user',
       email: 'user@admin.com',
       id: 2,
-      is_admin: false,
-    },
-  ],
+      is_admin: false
+    }
+  ]
 };
 
 describe('Password expiration policy', () => {
@@ -384,7 +384,7 @@ describe('Password expiration policy', () => {
     mockResponseOnce({ data: retrievedContacts });
     mockedAxios.get.mockReset();
     mockedAxios.get.mockResolvedValueOnce({
-      data: defaultPasswordSecurityPolicyAPI,
+      data: defaultPasswordSecurityPolicyAPI
     });
   });
 
@@ -393,7 +393,7 @@ describe('Password expiration policy', () => {
 
     await waitFor(() => {
       expect(
-        screen.getByText(labelPasswordExpirationPolicy),
+        screen.getByText(labelPasswordExpirationPolicy)
       ).toBeInTheDocument();
     });
 
@@ -402,25 +402,25 @@ describe('Password expiration policy', () => {
     });
 
     expect(
-      screen.getByLabelText(`${labelPasswordExpiresAfter} ${labelMonth}`),
+      screen.getByLabelText(`${labelPasswordExpiresAfter} ${labelMonth}`)
     ).toBeInTheDocument();
 
     expect(screen.getByText(labelMonth)).toBeInTheDocument();
 
     expect(
-      screen.getByLabelText(`${labelPasswordExpiresAfter} ${labelDays}`),
+      screen.getByLabelText(`${labelPasswordExpiresAfter} ${labelDays}`)
     ).toHaveTextContent('7');
 
     expect(screen.getByText(labelDays)).toBeInTheDocument();
 
     expect(
-      screen.getByText(labelMinimumTimeBetweenPasswordChanges),
+      screen.getByText(labelMinimumTimeBetweenPasswordChanges)
     ).toBeInTheDocument();
 
     expect(
       screen.getByLabelText(
-        `${labelMinimumTimeBetweenPasswordChanges} ${labelHour}`,
-      ),
+        `${labelMinimumTimeBetweenPasswordChanges} ${labelHour}`
+      )
     ).toHaveTextContent('1');
 
     expect(screen.getByText(labelExcludedUsers)).toBeInTheDocument();
@@ -431,7 +431,7 @@ describe('Password expiration policy', () => {
 
     await waitFor(() => {
       expect(
-        screen.getByText(labelPasswordExpirationPolicy),
+        screen.getByText(labelPasswordExpirationPolicy)
       ).toBeInTheDocument();
     });
 
@@ -441,37 +441,37 @@ describe('Password expiration policy', () => {
 
     userEvent.type(
       screen.getByLabelText(`${labelPasswordExpiresAfter} ${labelDays}`),
-      '{selectall}{backspace}',
+      '{selectall}{backspace}'
     );
 
     await waitFor(() => {
       expect(
-        screen.queryByText(labelChooseADurationBetween7DaysAnd12Months),
+        screen.queryByText(labelChooseADurationBetween7DaysAnd12Months)
       ).not.toBeInTheDocument();
     });
   });
 
   it('displays an error message when the delay before new password time is outside the bounds', async () => {
     mockGetPasswordSecurityPolicy(
-      securityPolicyWithInvalidDelayBeforeNewPassword,
+      securityPolicyWithInvalidDelayBeforeNewPassword
     );
     renderAuthentication();
 
     await waitFor(() => {
       expect(
-        screen.getByText(labelPasswordExpirationPolicy),
+        screen.getByText(labelPasswordExpirationPolicy)
       ).toBeInTheDocument();
     });
 
     await waitFor(() => {
       expect(
-        screen.getByText(labelMinimumTimeBetweenPasswordChanges),
+        screen.getByText(labelMinimumTimeBetweenPasswordChanges)
       ).toBeInTheDocument();
     });
 
     await waitFor(() => {
       expect(
-        screen.getByText(labelChooseADurationBetween1HourAnd1Week),
+        screen.getByText(labelChooseADurationBetween1HourAnd1Week)
       ).toBeInTheDocument();
     });
 
@@ -480,7 +480,7 @@ describe('Password expiration policy', () => {
 
     await waitFor(() => {
       expect(
-        screen.getByText(labelChooseADurationBetween7DaysAnd12Months),
+        screen.getByText(labelChooseADurationBetween7DaysAnd12Months)
       ).toBeInTheDocument();
     });
   });
@@ -490,26 +490,26 @@ describe('Password expiration policy', () => {
 
     await waitFor(() => {
       expect(
-        screen.getByText(labelPasswordExpirationPolicy),
+        screen.getByText(labelPasswordExpirationPolicy)
       ).toBeInTheDocument();
     });
 
     await waitFor(() => {
       expect(
-        screen.getByText(labelMinimumTimeBetweenPasswordChanges),
+        screen.getByText(labelMinimumTimeBetweenPasswordChanges)
       ).toBeInTheDocument();
     });
 
     userEvent.type(
       screen.getByLabelText(
-        `${labelMinimumTimeBetweenPasswordChanges} ${labelHour}`,
+        `${labelMinimumTimeBetweenPasswordChanges} ${labelHour}`
       ),
-      '{selectall}{backspace}',
+      '{selectall}{backspace}'
     );
 
     await waitFor(() => {
       expect(
-        screen.queryByText(labelChooseADurationBetween1HourAnd1Week),
+        screen.queryByText(labelChooseADurationBetween1HourAnd1Week)
       ).not.toBeInTheDocument();
     });
   });
@@ -519,13 +519,13 @@ describe('Password expiration policy', () => {
 
     await waitFor(() => {
       expect(
-        screen.getByText(labelPasswordExpirationPolicy),
+        screen.getByText(labelPasswordExpirationPolicy)
       ).toBeInTheDocument();
     });
 
     await waitFor(() => {
       expect(
-        screen.getByText(labelLast3PasswordsCanBeReused),
+        screen.getByText(labelLast3PasswordsCanBeReused)
       ).toBeInTheDocument();
     });
 
@@ -533,7 +533,7 @@ describe('Password expiration policy', () => {
 
     await waitFor(() => {
       expect(
-        screen.getByLabelText(labelLast3PasswordsCanBeReused),
+        screen.getByLabelText(labelLast3PasswordsCanBeReused)
       ).toBeChecked();
     });
   });
@@ -543,7 +543,7 @@ describe('Password expiration policy', () => {
 
     await waitFor(() => {
       expect(
-        screen.getByText(labelPasswordExpirationPolicy),
+        screen.getByText(labelPasswordExpirationPolicy)
       ).toBeInTheDocument();
     });
 
@@ -564,15 +564,15 @@ describe('Password expiration policy', () => {
                 {
                   field: 'provider_name',
                   values: {
-                    $eq: 'local',
-                  },
-                },
-              ].filter(Boolean),
+                    $eq: 'local'
+                  }
+                }
+              ].filter(Boolean)
             },
-            sort: { alias: 'ASC' },
-          },
+            sort: { alias: 'ASC' }
+          }
         }),
-        cancelTokenRequestParam,
+        cancelTokenRequestParam
       );
     });
 
@@ -602,22 +602,22 @@ describe('Password Blocking Policy', () => {
 
     await waitFor(() => {
       expect(
-        screen.getByLabelText(labelNumberOfAttemptsBeforeUserIsBlocked),
+        screen.getByLabelText(labelNumberOfAttemptsBeforeUserIsBlocked)
       ).toBeInTheDocument();
     });
 
     expect(
-      screen.getByLabelText(labelNumberOfAttemptsBeforeUserIsBlocked),
+      screen.getByLabelText(labelNumberOfAttemptsBeforeUserIsBlocked)
     ).toHaveValue(5);
 
     expect(
-      screen.getByText(labelTimeThatMustPassBeforeNewConnection),
+      screen.getByText(labelTimeThatMustPassBeforeNewConnection)
     ).toBeInTheDocument();
 
     expect(
       screen.getByLabelText(
-        `${labelTimeThatMustPassBeforeNewConnection} ${labelMinutes}`,
-      ),
+        `${labelTimeThatMustPassBeforeNewConnection} ${labelMinutes}`
+      )
     ).toHaveTextContent('15');
 
     expect(screen.getByText(labelWeak)).toBeInTheDocument();
@@ -632,40 +632,40 @@ describe('Password Blocking Policy', () => {
 
     await waitFor(() => {
       expect(
-        screen.getByLabelText(labelNumberOfAttemptsBeforeUserIsBlocked),
+        screen.getByLabelText(labelNumberOfAttemptsBeforeUserIsBlocked)
       ).toBeInTheDocument();
     });
 
     userEvent.type(
       screen.getByLabelText(labelNumberOfAttemptsBeforeUserIsBlocked),
-      '0',
+      '0'
     );
 
     await waitFor(() => {
       expect(
-        screen.getByText(labelChooseAValueBetween1and10),
+        screen.getByText(labelChooseAValueBetween1and10)
       ).toBeInTheDocument();
     });
 
     userEvent.type(
       screen.getByLabelText(labelNumberOfAttemptsBeforeUserIsBlocked),
-      '{selectall}{backspace}8',
+      '{selectall}{backspace}8'
     );
 
     await waitFor(() => {
       expect(
-        screen.queryByText(labelChooseAValueBetween1and10),
+        screen.queryByText(labelChooseAValueBetween1and10)
       ).not.toBeInTheDocument();
     });
 
     userEvent.type(
       screen.getByLabelText(labelNumberOfAttemptsBeforeUserIsBlocked),
-      '11',
+      '11'
     );
 
     await waitFor(() => {
       expect(
-        screen.getByText(labelChooseAValueBetween1and10),
+        screen.getByText(labelChooseAValueBetween1and10)
       ).toBeInTheDocument();
     });
   });
@@ -679,20 +679,20 @@ describe('Password Blocking Policy', () => {
 
     await waitFor(() => {
       expect(
-        screen.getByLabelText(labelNumberOfAttemptsBeforeUserIsBlocked),
+        screen.getByLabelText(labelNumberOfAttemptsBeforeUserIsBlocked)
       ).toBeInTheDocument();
     });
 
     userEvent.type(
       screen.getByLabelText(labelNumberOfAttemptsBeforeUserIsBlocked),
-      '{selectall}{backspace}',
+      '{selectall}{backspace}'
     );
 
     await waitFor(() => {
       expect(
         screen.getByText(
-          labelThisWillNotBeUsedBecauseNumberOfAttemptsIsNotDefined,
-        ),
+          labelThisWillNotBeUsedBecauseNumberOfAttemptsIsNotDefined
+        )
       ).toBeInTheDocument();
     });
   });
@@ -707,7 +707,7 @@ describe('Password Blocking Policy', () => {
 
     await waitFor(() => {
       expect(
-        screen.getByText(labelBlockingDurationMustBeLessThanOrEqualTo7Days),
+        screen.getByText(labelBlockingDurationMustBeLessThanOrEqualTo7Days)
       ).toBeInTheDocument();
     });
   });
@@ -721,13 +721,13 @@ describe('Password Blocking Policy', () => {
 
     await waitFor(() => {
       expect(
-        screen.getByLabelText(labelNumberOfAttemptsBeforeUserIsBlocked),
+        screen.getByLabelText(labelNumberOfAttemptsBeforeUserIsBlocked)
       ).toBeInTheDocument();
     });
 
     userEvent.type(
       screen.getByLabelText(labelNumberOfAttemptsBeforeUserIsBlocked),
-      '{selectall}{backspace}2',
+      '{selectall}{backspace}2'
     );
 
     await waitFor(() => {
@@ -736,7 +736,7 @@ describe('Password Blocking Policy', () => {
 
     userEvent.type(
       screen.getByLabelText(labelNumberOfAttemptsBeforeUserIsBlocked),
-      '{selectall}{backspace}4',
+      '{selectall}{backspace}4'
     );
 
     await waitFor(() => {
@@ -754,15 +754,15 @@ describe('Password Blocking Policy', () => {
     await waitFor(() => {
       expect(
         screen.getByLabelText(
-          `${labelTimeThatMustPassBeforeNewConnection} ${labelDay}`,
-        ),
+          `${labelTimeThatMustPassBeforeNewConnection} ${labelDay}`
+        )
       ).toBeInTheDocument();
     });
 
     userEvent.click(
       screen.getByLabelText(
-        `${labelTimeThatMustPassBeforeNewConnection} ${labelDay}`,
-      ),
+        `${labelTimeThatMustPassBeforeNewConnection} ${labelDay}`
+      )
     );
     userEvent.click(screen.getByText('6'));
 
@@ -772,15 +772,15 @@ describe('Password Blocking Policy', () => {
 
     userEvent.click(
       screen.getByLabelText(
-        `${labelTimeThatMustPassBeforeNewConnection} ${labelDays}`,
-      ),
+        `${labelTimeThatMustPassBeforeNewConnection} ${labelDays}`
+      )
     );
     userEvent.click(screen.getByText('3'));
 
     userEvent.click(
       screen.getByLabelText(
-        `${labelTimeThatMustPassBeforeNewConnection} ${labelMinutes}`,
-      ),
+        `${labelTimeThatMustPassBeforeNewConnection} ${labelMinutes}`
+      )
     );
     userEvent.click(screen.getAllByText('0')[1]);
 

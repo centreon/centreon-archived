@@ -8,7 +8,7 @@ import { IconButton } from '@centreon/ui';
 
 import {
   labelDisplayThePassword,
-  labelHideThePassword,
+  labelHideThePassword
 } from './translatedLabels';
 
 interface Props {
@@ -18,7 +18,7 @@ interface Props {
 
 const PasswordEndAdornment = ({
   isVisible,
-  changeVisibility,
+  changeVisibility
 }: Props): JSX.Element => {
   const { t } = useTranslation();
 

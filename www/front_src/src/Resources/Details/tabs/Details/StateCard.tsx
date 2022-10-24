@@ -7,13 +7,13 @@ import { labelComment } from '../../../translatedLabels';
 
 const useStyles = makeStyles((theme) => ({
   chip: {
-    gridArea: 'chip',
+    gridArea: 'chip'
   },
   comment: {
-    gridArea: 'comment',
+    gridArea: 'comment'
   },
   commentTitle: {
-    gridArea: 'comment-title',
+    gridArea: 'comment-title'
   },
   container: {
     display: 'grid',
@@ -22,14 +22,14 @@ const useStyles = makeStyles((theme) => ({
       'content-title content chip'
       'comment-title comment chip'
       `,
-    gridTemplateColumns: '1fr 2fr auto',
+    gridTemplateColumns: '1fr 2fr auto'
   },
   content: {
-    gridArea: 'content',
+    gridArea: 'content'
   },
   contentTitle: {
-    gridArea: 'content-title',
-  },
+    gridArea: 'content-title'
+  }
 }));
 
 interface Props {
@@ -49,7 +49,7 @@ const StateCard = ({
   title,
   contentLines,
   commentLine,
-  chip,
+  chip
 }: Props): JSX.Element => {
   const classes = useStyles();
   const { t } = useTranslation();

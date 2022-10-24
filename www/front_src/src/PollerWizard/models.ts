@@ -1,12 +1,12 @@
 export enum ServerType {
   Base = 'base',
   Poller = 'poller',
-  Remote = 'remote',
+  Remote = 'remote'
 }
 
 export enum WizardButtonsTypes {
   'Next',
-  'Apply',
+  'Apply'
 }
 
 export interface WizardFormProps {

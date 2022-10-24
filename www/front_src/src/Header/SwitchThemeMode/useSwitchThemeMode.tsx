@@ -9,7 +9,7 @@ const useSwitchThemeMode = (): [
   isDarkMode: boolean,
   isPending: boolean,
   themeMode: ThemeMode,
-  updateUser: () => void,
+  updateUser: () => void
 ] => {
   const [user, setUser] = useAtom(userAtom);
   const isDarkMode = equals(user.themeMode, ThemeMode.dark);
@@ -20,7 +20,7 @@ const useSwitchThemeMode = (): [
     startTransition(() => {
       setUser({
         ...user,
-        themeMode,
+        themeMode
       });
     });
 

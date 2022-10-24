@@ -6,8 +6,8 @@ mockAxios.CancelToken = {
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   source: () => ({
     cancel: jest.fn(),
-    token: {},
-  }),
+    token: {}
+  })
 };
 
 export default mockAxios;

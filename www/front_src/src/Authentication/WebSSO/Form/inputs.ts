@@ -9,12 +9,12 @@ import {
   labelPatternMatchLogin,
   labelPatternReplaceLogin,
   labelEnableWebSSOAuthentication,
-  labelAuthenticationMode,
+  labelAuthenticationMode
 } from '../translatedLabels';
 import {
   labelActivation,
   labelClientAddresses,
-  labelIdentityProvider,
+  labelIdentityProvider
 } from '../../translatedLabels';
 
 export const inputs: Array<InputProps> = [
@@ -22,7 +22,7 @@ export const inputs: Array<InputProps> = [
     fieldName: 'isActive',
     group: labelActivation,
     label: labelEnableWebSSOAuthentication,
-    type: InputType.Switch,
+    type: InputType.Switch
   },
   {
     fieldName: 'isForced',
@@ -32,53 +32,53 @@ export const inputs: Array<InputProps> = [
       options: [
         {
           label: labelWebSSOOnly,
-          value: true,
+          value: true
         },
         {
           label: labelMixed,
-          value: false,
-        },
-      ],
+          value: false
+        }
+      ]
     },
-    type: InputType.Radio,
+    type: InputType.Radio
   },
   {
     autocomplete: {
       creatable: true,
-      options: [],
+      options: []
     },
     fieldName: 'trustedClientAddresses',
     group: labelClientAddresses,
     label: labelTrustedClientAddresses,
-    type: InputType.MultiAutocomplete,
+    type: InputType.MultiAutocomplete
   },
   {
     autocomplete: {
       creatable: true,
-      options: [],
+      options: []
     },
     fieldName: 'blacklistClientAddresses',
     group: labelClientAddresses,
     label: labelBlacklistClientAddresses,
-    type: InputType.MultiAutocomplete,
+    type: InputType.MultiAutocomplete
   },
   {
     fieldName: 'loginHeaderAttribute',
     group: labelIdentityProvider,
     label: labelLoginHeaderAttributeName,
     required: true,
-    type: InputType.Text,
+    type: InputType.Text
   },
   {
     fieldName: 'patternMatchingLogin',
     group: labelIdentityProvider,
     label: labelPatternMatchLogin,
-    type: InputType.Text,
+    type: InputType.Text
   },
   {
     fieldName: 'patternReplaceLogin',
     group: labelIdentityProvider,
     label: labelPatternReplaceLogin,
-    type: InputType.Text,
-  },
+    type: InputType.Text
+  }
 ];

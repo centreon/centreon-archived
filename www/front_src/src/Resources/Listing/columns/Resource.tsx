@@ -8,7 +8,7 @@ import { useColumnStyles } from '.';
 
 const ResourceColumn = ({
   row,
-  isHovered,
+  isHovered
 }: ComponentColumnProps): JSX.Element => {
   const classes = useColumnStyles({ isHovered });
 

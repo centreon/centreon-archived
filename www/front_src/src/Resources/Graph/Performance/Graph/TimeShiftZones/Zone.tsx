@@ -12,8 +12,8 @@ export const timeShiftZoneWidth = 50;
 
 const useStyles = makeStyles({
   translationZone: {
-    cursor: 'pointer',
-  },
+    cursor: 'pointer'
+  }
 });
 
 interface Props {
@@ -25,7 +25,7 @@ interface Props {
 const TimeShiftZone = ({
   direction,
   onDirectionHover,
-  directionHovered,
+  directionHovered
 }: Props): JSX.Element => {
   const theme = useTheme();
   const classes = useStyles();
@@ -60,8 +60,8 @@ const TimeShiftZone = ({
       graphHeight,
       graphWidth,
       marginLeft,
-      marginTop,
-    ],
+      marginTop
+    ]
   });
 };
 

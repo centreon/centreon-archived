@@ -8,14 +8,14 @@ import {
   IconButton,
   ListItemText,
   Tooltip,
-  TypographyProps,
+  TypographyProps
 } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount';
 
 import {
   MultiConnectedAutocompleteField,
-  buildListingEndpoint,
+  buildListingEndpoint
 } from '@centreon/ui';
 
 import { labelAdmin, labelExcludedUsers } from '../../translatedLabels';
@@ -28,16 +28,16 @@ const excludedUsersFieldName = 'passwordExpiration.excludedUsers';
 const useStyles = makeStyles((theme) => ({
   excludedUsersAutocomplete: {
     height: 'auto',
-    width: theme.spacing(32),
+    width: theme.spacing(32)
   },
   option: {
     alignItems: 'center',
     display: 'flex',
-    width: theme.spacing(25),
+    width: theme.spacing(25)
   },
   tooltip: {
-    zIndex: inc(theme.zIndex.tooltip),
-  },
+    zIndex: inc(theme.zIndex.tooltip)
+  }
 }));
 
 const optionTypographyProps = { component: 'span' } as TypographyProps;
@@ -57,14 +57,14 @@ const ExcludedUsers = (): JSX.Element => {
             {
               field: 'provider_name',
               values: {
-                $eq: 'local',
-              },
+                $eq: 'local'
+              }
             },
-            ...(search?.conditions || []),
-          ].filter(Boolean),
+            ...(search?.conditions || [])
+          ].filter(Boolean)
         },
-        sort: { alias: 'ASC' },
-      },
+        sort: { alias: 'ASC' }
+      }
     });
 
   const getRenderedOptionText = useCallback((option): JSX.Element => {
@@ -81,7 +81,7 @@ const ExcludedUsers = (): JSX.Element => {
         {isAdmin && (
           <Tooltip
             classes={{
-              popper: classes.tooltip,
+              popper: classes.tooltip
             }}
             placement="top"
             title={t(labelAdmin) as string}
@@ -109,12 +109,12 @@ const ExcludedUsers = (): JSX.Element => {
 
   const excludedUsers = getField<Array<string>>({
     field: excludedUsersFieldName,
-    object: values,
+    object: values
   });
 
   const formattedUsers = useMemo(
     () => map((user) => ({ alias: user, id: user, name: user }), excludedUsers),
-    [excludedUsers],
+    [excludedUsers]
   );
 
   return (
