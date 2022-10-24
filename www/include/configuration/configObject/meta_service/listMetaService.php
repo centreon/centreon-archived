@@ -97,17 +97,37 @@ $calcType = array("AVE" => _("Average"), "SOM" => _("Sum"), "MIN" => _("Min"), "
 /*
  * Meta Service list
  */
-if ($search) {
-    $rq = "SELECT * FROM meta_service " .
-        "WHERE meta_name LIKE '%" . $search . "%' " .
-        $acl->queryBuilder("AND", "meta_id", $metaStr) .
-        " ORDER BY meta_name LIMIT " . $num * $limit . ", " . $limit;
-} else {
-    $rq = "SELECT * FROM meta_service " .
-        $acl->queryBuilder("WHERE", "meta_id", $metaStr) .
-        " ORDER BY meta_name LIMIT " . $num * $limit . ", " . $limit;
+$conditionStr = "";
+$metaStrParams = [];
+//binding query params for non admin  acl rules
+if (!$acl->admin && $metaStr) {
+    $metaStrList = explode(',', $metaStr);
+    foreach ($metaStrList as $index => $metaId) {
+        $metaStrParams[':meta_' . $index] = (int) str_replace("'", "", $metaId);
+    }
+    $queryParams = implode(',', array_keys($metaStrParams));
+
+    if ($search !== '') {
+        $conditionStr = "AND meta_id IN (" . $queryParams . ")";
+    } else {
+        $conditionStr = "WHERE meta_id IN (" . $queryParams . ")";
+    }
 }
-$dbResult = $pearDB->query($rq);
+if ($search !== '') {
+    $statement = $pearDB->prepare("SELECT * FROM meta_service " .
+        "WHERE meta_name LIKE :search " . $conditionStr .
+        " ORDER BY meta_name LIMIT :offset, :limit");
+    $statement->bindValue(':search', '%' . $search . '%', \PDO::PARAM_STR);
+} else {
+    $statement = $pearDB->prepare("SELECT * FROM meta_service " . $conditionStr .
+        " ORDER BY meta_name LIMIT :offset, :limit");
+}
+foreach ($metaStrParams as $key => $metaId) {
+    $statement->bindValue($key, $metaId, \PDO::PARAM_INT);
+}
+$statement->bindValue(':offset', (int) $num * (int) $limit, \PDO::PARAM_INT);
+$statement->bindValue(':limit', $limit, \PDO::PARAM_INT);
+$statement->execute();
 
 $form = new HTML_QuickFormCustom('select_form', 'GET', "?p=" . $p);
 
@@ -125,7 +145,7 @@ $form->addElement('submit', 'Search', _("Search"), $attrBtnSuccess);
 $elemArr = array();
 $centreonToken = createCSRFToken();
 
-for ($i = 0; $ms = $dbResult->fetch(); $i++) {
+for ($i = 0; $ms = $statement->fetch(\PDO::FETCH_ASSOC); $i++) {
     $moptions = "";
     $selectedElements = $form->addElement('checkbox', "select[" . $ms['meta_id'] . "]");
     if ($ms["meta_select_mode"] == 1) {
