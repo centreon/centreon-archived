@@ -115,6 +115,7 @@ if ($isRemote === false) {
         $versions = $oStatistics->getVersion();
         $infos = $oStatistics->getPlatformInfo();
         $timezone = $oStatistics->getPlatformTimezone();
+        $authentication = $oStatistics->getAuthenticationOptions();
         $additional = [];
 
         /*
@@ -136,6 +137,7 @@ if ($isRemote === false) {
             'versions' => $versions,
             'infos' => $infos,
             'timezone' => $timezone,
+            'authentication' => $authentication,
             'additional' => $additional
         );
 
