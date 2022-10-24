@@ -139,7 +139,7 @@ class UpdateOpenIdConfiguration
     /**
      * Create Authorization Rules
      *
-     * @param array<array{claim_value: string, access_group_id: int}> $authorizationRulesFromRequest
+     * @param array<array{claim_value: string, access_group_id: int, priority: int}> $authorizationRulesFromRequest
      * @return AuthorizationRule[]
      * @throws \Throwable
      */
