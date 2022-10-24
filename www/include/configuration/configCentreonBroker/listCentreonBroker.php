@@ -95,7 +95,7 @@ if (!$centreon->user->admin && count($allowedBrokerConf)) {
     $aclCond .= "config_id IN (" . implode(',', array_keys($allowedBrokerConf)) . ") ";
 }
 
-if ($search != "") {
+if ($search !== '') {
     $cfgBrokerStmt = $pearDB->prepare(
         "SELECT SQL_CALC_FOUND_ROWS config_id, config_name, ns_nagios_server, config_activate " .
         "FROM cfg_centreonbroker " .
