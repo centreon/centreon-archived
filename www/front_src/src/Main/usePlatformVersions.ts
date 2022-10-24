@@ -17,14 +17,14 @@ interface UsePlatformVersionsState {
 
 const usePlatformVersions = (): UsePlatformVersionsState => {
   const { sendRequest: sendPlatformVersions } = useRequest<PlatformVersions>({
-    request: getData,
+    request: getData
   });
 
   const [platformVersions, setPlatformVersions] = useAtom(platformVersionsAtom);
 
   const getPlatformVersions = useCallback((): void => {
     sendPlatformVersions({ endpoint: platformVersionsEndpoint }).then(
-      setPlatformVersions,
+      setPlatformVersions
     );
   }, []);
 
@@ -38,7 +38,7 @@ const usePlatformVersions = (): UsePlatformVersionsState => {
 
   return {
     getModules,
-    getPlatformVersions,
+    getPlatformVersions
   };
 };
 

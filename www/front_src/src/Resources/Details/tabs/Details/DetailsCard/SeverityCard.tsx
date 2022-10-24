@@ -12,17 +12,17 @@ const useStyles = makeStyles((theme) => ({
   container: {
     display: 'flex',
     flexDirection: 'column',
-    padding: theme.spacing(1, 2, 2),
+    padding: theme.spacing(1, 2, 2)
   },
   item: {
     alignItems: 'center',
     display: 'flex',
-    flexDirection: 'row',
+    flexDirection: 'row'
   },
   label: {
     display: 'flex',
-    width: '10%',
-  },
+    width: '10%'
+  }
 }));
 
 interface Props {

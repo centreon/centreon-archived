@@ -11,7 +11,7 @@ import { ContentWithCircularLoading } from '@centreon/ui';
 import { useStylesWithProps } from '../../styles/partials/form/PollerWizardStyle';
 import {
   labelCreatingExportTask,
-  labelGeneratingExportFiles,
+  labelGeneratingExportFiles
 } from '../../PollerWizard/translatedLabels';
 
 interface Props {
@@ -25,7 +25,7 @@ export default ({
   formTitle,
   statusCreating,
   statusGenerating,
-  error,
+  error
 }: Props): JSX.Element => {
   const classes = useStylesWithProps({ statusCreating, statusGenerating });
 

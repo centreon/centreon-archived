@@ -17,12 +17,12 @@ const useStyles = makeStyles({
   centreonLogo: {
     height: '100%',
     objectFit: 'contain',
-    width: '100%',
+    width: '100%'
   },
   centreonLogoWhite: {
     height: 57,
-    width: 250,
-  },
+    width: 250
+  }
 });
 
 const Logo = (): JSX.Element => {
@@ -38,12 +38,12 @@ const Logo = (): JSX.Element => {
         alt={t(labelCentreonLogo)}
         aria-label={t(labelCentreonLogo)}
         className={clsx(classes.centreonLogo, {
-          [classes.centreonLogoWhite]: isDarkMode,
+          [classes.centreonLogoWhite]: isDarkMode
         })}
         src={logo}
       />
     ),
-    memoProps: [isDarkMode],
+    memoProps: [isDarkMode]
   });
 };
 

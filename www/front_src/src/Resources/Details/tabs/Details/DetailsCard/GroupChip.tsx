@@ -17,31 +17,31 @@ import { Group, Category } from '../../../models';
 const useStyles = makeStyles((theme) => ({
   chip: {
     alignSelf: 'center',
-    display: 'flex',
+    display: 'flex'
   },
   chipHovered: {
     backgroundColor: theme.palette.primary.main,
     display: 'flex',
     gap: theme.spacing(0.25),
-    gridArea: '1/1',
+    gridArea: '1/1'
   },
   chipIcon: {
-    color: theme.palette.common.white,
+    color: theme.palette.common.white
   },
   chipLabelContainer: {
     display: 'grid',
     justifyItems: 'center',
     minWidth: theme.spacing(7),
-    overflow: 'hidden',
+    overflow: 'hidden'
   },
   chipLabelContent: {
     gridArea: '1/1',
     maxWidth: theme.spacing(14),
     minWidth: theme.spacing(8),
     overflow: 'hidden',
-    textAlign: 'center',
+    textAlign: 'center'
   },
-  chipLabelContentHovered: { color: 'transparent' },
+  chipLabelContentHovered: { color: 'transparent' }
 }));
 
 interface Props {
@@ -56,7 +56,7 @@ const GroupChip = ({ group, type }: Props): JSX.Element => {
   const [isHovered, setIsHovered] = useState<boolean>(false);
 
   const setCriteriaAndNewFilter = useUpdateAtom(
-    setCriteriaAndNewFilterDerivedAtom,
+    setCriteriaAndNewFilterDerivedAtom
   );
 
   const mouseEnter = (): void => {
@@ -70,7 +70,7 @@ const GroupChip = ({ group, type }: Props): JSX.Element => {
   const filterByGroup = useCallback((): void => {
     setCriteriaAndNewFilter({
       name: type,
-      value: [group],
+      value: [group]
     });
   }, [group, type]);
 
@@ -91,7 +91,7 @@ const GroupChip = ({ group, type }: Props): JSX.Element => {
               <Typography
                 className={clsx(
                   classes.chipLabelContent,
-                  isHovered ? classes.chipLabelContentHovered : '',
+                  isHovered ? classes.chipLabelContentHovered : ''
                 )}
                 variant="body2"
               >

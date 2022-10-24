@@ -4,12 +4,12 @@ import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 import {
   PopoverMultiAutocompleteField,
   SelectEntry,
-  useMemoComponent,
+  useMemoComponent
 } from '@centreon/ui';
 
 import {
   filterWithParsedSearchDerivedAtom,
-  setFilterCriteriaDerivedAtom,
+  setFilterCriteriaDerivedAtom
 } from '../filterAtoms';
 
 import { criteriaValueNameById, selectableCriterias } from './models';
@@ -27,7 +27,7 @@ const CriteriaContent = ({ name, value }: Props): JSX.Element => {
   const getTranslated = (values: Array<SelectEntry>): Array<SelectEntry> => {
     return values.map((entry) => ({
       id: entry.id,
-      name: t(entry.name),
+      name: t(entry.name)
     }));
   };
 
@@ -38,14 +38,14 @@ const CriteriaContent = ({ name, value }: Props): JSX.Element => {
   const getUntranslated = (values): Array<SelectEntry> => {
     return values.map(({ id }) => ({
       id,
-      name: criteriaValueNameById[id],
+      name: criteriaValueNameById[id]
     }));
   };
 
   const { label, options } = selectableCriterias[name];
 
   const commonProps = {
-    label: t(label),
+    label: t(label)
   };
 
   const translatedValues = getTranslated(value);
@@ -66,12 +66,12 @@ const CriteriaContent = ({ name, value }: Props): JSX.Element => {
 
 const Criteria = ({ value, name }: Props): JSX.Element => {
   const filterWithParsedSearch = useAtomValue(
-    filterWithParsedSearchDerivedAtom,
+    filterWithParsedSearchDerivedAtom
   );
 
   return useMemoComponent({
     Component: <CriteriaContent name={name} value={value} />,
-    memoProps: [value, name, filterWithParsedSearch],
+    memoProps: [value, name, filterWithParsedSearch]
   });
 };
 

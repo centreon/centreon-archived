@@ -5,7 +5,7 @@ import { useRequest, useSnackbar, Form } from '@centreon/ui';
 import useValidationSchema from '../useValidationSchema';
 import {
   labelFailedToSaveWebSSOConfiguration,
-  labelWebSSOConfigurationSaved,
+  labelWebSSOConfigurationSaved
 } from '../translatedLabels';
 import { putProviderConfiguration } from '../../api';
 import { WebSSOConfiguration, WebSSOConfigurationToAPI } from '../models';
@@ -25,7 +25,7 @@ interface Props {
 const WebSSOForm = ({
   initialValues,
   loadWebSSOonfiguration,
-  isLoading,
+  isLoading
 }: Props): JSX.Element => {
   const { t } = useTranslation();
 
@@ -36,8 +36,8 @@ const WebSSOForm = ({
       WebSSOConfigurationToAPI
     >({
       adapter: adaptWebSSOConfigurationToAPI,
-      type: Provider.WebSSO,
-    }),
+      type: Provider.WebSSO
+    })
   });
   const { showSuccessMessage } = useSnackbar();
 
@@ -45,7 +45,7 @@ const WebSSOForm = ({
 
   const submit = (
     values: WebSSOConfiguration,
-    { setSubmitting },
+    { setSubmitting }
   ): Promise<void> =>
     sendRequest(values)
       .then(() => {

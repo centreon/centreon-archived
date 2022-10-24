@@ -13,7 +13,7 @@ import {
   reject,
   path,
   pathEq,
-  equals,
+  equals
 } from 'ramda';
 import { useUpdateAtom } from 'jotai/utils';
 
@@ -30,14 +30,14 @@ import postLogin from './api';
 import { providersConfigurationDecoder, redirectDecoder } from './api/decoder';
 import {
   labelLoginSucceeded,
-  labelPasswordHasExpired,
+  labelPasswordHasExpired
 } from './translatedLabels';
 import { providersConfigurationEndpoint } from './api/endpoint';
 import {
   LoginFormValues,
   Redirect,
   RedirectAPI,
-  ProviderConfiguration,
+  ProviderConfiguration
 } from './models';
 
 interface UseLoginState {
@@ -46,7 +46,7 @@ interface UseLoginState {
   sendLogin: (values) => Promise<Redirect>;
   submitLoginForm: (
     values: LoginFormValues,
-    { setSubmitting }: Pick<FormikHelpers<FormikValues>, 'setSubmitting'>,
+    { setSubmitting }: Pick<FormikHelpers<FormikValues>, 'setSubmitting'>
   ) => void;
 }
 
@@ -58,14 +58,14 @@ const useLogin = (): UseLoginState => {
   const { sendRequest: sendLogin } = useRequest<Redirect>({
     decoder: redirectDecoder,
     httpCodesBypassErrorSnackbar: [401],
-    request: postLogin,
+    request: postLogin
   });
 
   const { sendRequest: getProvidersConfiguration } = useRequest<
     Array<ProviderConfiguration>
   >({
     decoder: providersConfigurationDecoder,
-    request: getData,
+    request: getData
   });
 
   const { getInternalTranslation, getExternalTranslation } =
@@ -78,7 +78,7 @@ const useLogin = (): UseLoginState => {
 
   const [platformInstallationStatus] = useAtom(platformInstallationStatusAtom);
   const setPasswordResetInformations = useUpdateAtom(
-    passwordResetInformationsAtom,
+    passwordResetInformationsAtom
   );
 
   const checkPasswordExpiration = useCallback(
@@ -87,12 +87,12 @@ const useLogin = (): UseLoginState => {
 
       const { password_is_expired: passwordIsExpired } = path(
         ['response', 'data'],
-        error,
+        error
       ) as RedirectAPI;
 
       if (isUserNotAllowed && passwordIsExpired) {
         setPasswordResetInformations({
-          alias,
+          alias
         });
         navigate(routeMap.resetPassword);
         showWarningMessage(t(labelPasswordHasExpired));
@@ -103,25 +103,25 @@ const useLogin = (): UseLoginState => {
       setSubmitting(false);
       showErrorMessage(path(['response', 'data', 'message'], error) as string);
     },
-    [],
+    []
   );
 
   const submitLoginForm = (
     values: LoginFormValues,
-    { setSubmitting },
+    { setSubmitting }
   ): void => {
     sendLogin({
       login: values.alias,
-      password: values.password,
+      password: values.password
     })
       .then(({ redirectUri }) => {
         showSuccessMessage(t(labelLoginSucceeded));
         getInternalTranslation().finally(() =>
-          loadUser()?.then(() => navigate(redirectUri)),
+          loadUser()?.then(() => navigate(redirectUri))
         );
       })
       .catch((error) =>
-        checkPasswordExpiration({ alias: values.alias, error, setSubmitting }),
+        checkPasswordExpiration({ alias: values.alias, error, setSubmitting })
       );
   };
 
@@ -129,18 +129,18 @@ const useLogin = (): UseLoginState => {
 
   useEffect(() => {
     getExternalTranslation().then(() =>
-      i18n.changeLanguage?.(getBrowserLocale()),
+      i18n.changeLanguage?.(getBrowserLocale())
     );
 
     getProvidersConfiguration({
-      endpoint: providersConfigurationEndpoint,
+      endpoint: providersConfigurationEndpoint
     }).then((providers) => {
       const forcedProviders = filter<ProviderConfiguration>(
         (provider): boolean =>
           not(isNil(provider.isForced)) &&
           (provider.isForced as boolean) &&
           not(equals(provider.name, 'local')),
-        providers || [],
+        providers || []
       );
 
       if (not(isEmpty(forcedProviders))) {
@@ -151,12 +151,12 @@ const useLogin = (): UseLoginState => {
 
       const externalProviders = reject<ProviderConfiguration>(
         propEq('name', 'local'),
-        providers,
+        providers
       );
 
       const activeProviders = filter<ProviderConfiguration>(
         propEq('isActive', true),
-        externalProviders || [],
+        externalProviders || []
       );
 
       setProvidersConfiguration(activeProviders);
@@ -167,7 +167,7 @@ const useLogin = (): UseLoginState => {
     platformInstallationStatus,
     providersConfiguration,
     sendLogin,
-    submitLoginForm,
+    submitLoginForm
   };
 };
 

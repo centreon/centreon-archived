@@ -11,13 +11,13 @@ import { PopoverMenu, SelectEntry, useMemoComponent } from '@centreon/ui';
 import {
   labelClear,
   labelSearch,
-  labelSearchOptions,
+  labelSearchOptions
 } from '../../translatedLabels';
 import {
   applyCurrentFilterDerivedAtom,
   clearFilterDerivedAtom,
   filterWithParsedSearchDerivedAtom,
-  filterByInstalledModulesWithParsedSearchDerivedAtom,
+  filterByInstalledModulesWithParsedSearchDerivedAtom
 } from '../filterAtoms';
 import useFilterByModule from '../useFilterByModule';
 
@@ -27,11 +27,11 @@ import { criteriaNameSortOrder } from './searchQueryLanguage/models';
 
 const useStyles = makeStyles((theme) => ({
   container: {
-    padding: theme.spacing(2),
+    padding: theme.spacing(2)
   },
   searchButton: {
-    marginTop: theme.spacing(1),
-  },
+    marginTop: theme.spacing(1)
+  }
 }));
 
 const CriteriasContent = (): JSX.Element => {
@@ -42,17 +42,17 @@ const CriteriasContent = (): JSX.Element => {
   const { newCriteriaValueName, newSelectableCriterias } = useFilterByModule();
 
   const filterByInstalledModulesWithParsedSearch = useAtomValue(
-    filterByInstalledModulesWithParsedSearchDerivedAtom,
+    filterByInstalledModulesWithParsedSearchDerivedAtom
   );
 
   const getSelectableCriterias = (): Array<CriteriaModel> => {
     const criteriasValue = filterByInstalledModulesWithParsedSearch({
-      criteriaName: newCriteriaValueName,
+      criteriaName: newCriteriaValueName
     });
 
     const criterias = sortBy(
       ({ name }) => criteriaNameSortOrder[name],
-      criteriasValue.criterias,
+      criteriasValue.criterias
     );
 
     return reject(isNonSelectableCriteria)(criterias);
@@ -114,12 +114,12 @@ const CriteriasContent = (): JSX.Element => {
 
 const Criterias = (): JSX.Element => {
   const filterWithParsedSearch = useAtomValue(
-    filterWithParsedSearchDerivedAtom,
+    filterWithParsedSearchDerivedAtom
   );
 
   return useMemoComponent({
     Component: <CriteriasContent />,
-    memoProps: [filterWithParsedSearch],
+    memoProps: [filterWithParsedSearch]
   });
 };
 

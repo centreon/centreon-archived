@@ -14,12 +14,12 @@ export interface ActionsState {
 
 const useActions = (): ActionsState => {
   const [selectedResources, setSelectedResources] = useAtom(
-    selectedResourcesAtom,
+    selectedResourcesAtom
   );
 
   return {
     selectedResources,
-    setSelectedResources,
+    setSelectedResources
   };
 };
 

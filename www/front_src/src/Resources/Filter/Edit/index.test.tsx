@@ -24,7 +24,7 @@ const EditFilterPanelTest = (): JSX.Element => {
     <Context.Provider
       value={
         {
-          ...filterState,
+          ...filterState
         } as ResourceContext
       }
     >
@@ -43,7 +43,7 @@ const retrievedCustomFilters = {
   meta: {
     limit: 30,
     page: 1,
-    total: 1,
+    total: 1
   },
   result: [0, 1].map((index) => ({
     criterias: [
@@ -51,60 +51,60 @@ const retrievedCustomFilters = {
         name: 'resource_types',
         object_type: null,
         type: 'multi_select',
-        value: [],
+        value: []
       },
       {
         name: 'states',
         object_type: null,
         type: 'multi_select',
-        value: [],
+        value: []
       },
       {
         name: 'statuses',
         object_type: null,
         type: 'multi_select',
-        value: [],
+        value: []
       },
       {
         name: 'host_groups',
         object_type: 'host_groups',
         type: 'multi_select',
-        value: [],
+        value: []
       },
       {
         name: 'service_groups',
         object_type: 'service_groups',
         type: 'multi_select',
-        value: [],
+        value: []
       },
       {
         name: 'host_categories',
         object_type: 'host_categories',
         type: 'multi_select',
-        value: [],
+        value: []
       },
       {
         name: 'service_categories',
         object_type: 'service_categories',
         type: 'multi_select',
-        value: [],
+        value: []
       },
       {
         name: 'search',
         object_type: null,
         type: 'text',
-        value: '',
+        value: ''
       },
       {
         name: 'sort',
         object_type: null,
         type: 'array',
-        value: [defaultSortField, defaultSortOrder],
-      },
+        value: [defaultSortField, defaultSortOrder]
+      }
     ],
     id: index,
-    name: `My filter ${index}`,
-  })),
+    name: `My filter ${index}`
+  }))
 };
 
 const renderEditFilterPanel = (): RenderResult =>
@@ -146,22 +146,22 @@ describe(EditFilterPanel, () => {
 
     await waitFor(() =>
       expect(
-        getByLabelText(`${labelFilter}-${firstFilter.id}-${labelName}`),
-      ).toBeInTheDocument(),
+        getByLabelText(`${labelFilter}-${firstFilter.id}-${labelName}`)
+      ).toBeInTheDocument()
     );
 
     const renameFilterInput = getByLabelText(
-      `${labelFilter}-${firstFilter.id}-${labelName}`,
+      `${labelFilter}-${firstFilter.id}-${labelName}`
     );
 
     fireEvent.change(renameFilterInput, {
       target: {
-        value: newName,
-      },
+        value: newName
+      }
     });
 
     fireEvent.keyDown(renameFilterInput, {
-      keyCode: 13,
+      keyCode: 13
     });
 
     await waitFor(() => {
@@ -169,7 +169,7 @@ describe(EditFilterPanel, () => {
       expect(mockedAxios.put).toHaveBeenCalledWith(
         `${filterEndpoint}/${firstFilter.id}`,
         omit(['id'], { ...firstFilter, name: newName }),
-        expect.anything(),
+        expect.anything()
       );
     });
   });
@@ -191,17 +191,17 @@ describe(EditFilterPanel, () => {
     await waitFor(() => expect(getAllByLabelText(labelDelete)).toHaveLength(2));
 
     fireEvent.click(
-      head(getAllByLabelText(labelDelete))?.firstElementChild as HTMLElement,
+      head(getAllByLabelText(labelDelete))?.firstElementChild as HTMLElement
     );
     fireEvent.click(getByText(labelDelete) as HTMLElement);
 
     await waitFor(() => {
       expect(filterState.customFilters.map(prop('id'))).not.toContain(
-        firstFilter.id,
+        firstFilter.id
       );
       expect(mockedAxios.delete).toHaveBeenCalledWith(
         `${filterEndpoint}/${firstFilter.id}`,
-        expect.anything(),
+        expect.anything()
       );
     });
   });

@@ -17,7 +17,7 @@ import {
   pipe,
   Pred,
   T,
-  __,
+  __
 } from 'ramda';
 
 import { alpha } from '@mui/material';
@@ -53,7 +53,7 @@ interface AnnotationWithHoveredState {
 }
 
 export const annotationHoveredAtom = atom<AnnotationAtom | undefined>(
-  undefined,
+  undefined
 );
 
 export const getIsBetween = ({ start, end }: GetIsBetweenProps): Pred => {
@@ -73,12 +73,12 @@ export const changeAnnotationHoveredDerivedAtom = atom(
       mouseX,
       timeline,
       graphWidth,
-      resourceId,
-    }: ChangeAnnotationHoveredProps,
+      resourceId
+    }: ChangeAnnotationHoveredProps
   ) => {
     const isWithinErrorMargin = getIsBetween({
       end: inc(mouseX),
-      start: dec(mouseX),
+      start: dec(mouseX)
     });
 
     const annotationHovered = find(
@@ -89,30 +89,30 @@ export const changeAnnotationHoveredDerivedAtom = atom(
 
         const isBetweenStartAndEndDate = getIsBetween({
           end: xScale(
-            endDate ? new Date(endDate) : last(xScale.domain()) || graphWidth,
+            endDate ? new Date(endDate) : last(xScale.domain()) || graphWidth
           ),
-          start: xScale(new Date(startDate as string)),
+          start: xScale(new Date(startDate as string))
         });
 
         return isBetweenStartAndEndDate(mouseX);
       },
-      timeline ?? [],
+      timeline ?? []
     );
 
     set(annotationHoveredAtom, {
       event: annotationHovered,
-      resourceId,
+      resourceId
     });
-  },
+  }
 );
 
 const getIsNotHoveredOrNil = ({
   hoveredAnnotation,
-  annotation,
+  annotation
 }: AnnotationWithHoveredState): boolean =>
   or(
     isNil(hoveredAnnotation?.event),
-    not(equals(hoveredAnnotation?.resourceId, annotation?.resourceId)),
+    not(equals(hoveredAnnotation?.resourceId, annotation?.resourceId))
   );
 
 export const getStrokeWidthDerivedAtom = atom(
@@ -122,11 +122,11 @@ export const getStrokeWidthDerivedAtom = atom(
         [
           (hoveredAnnotation): boolean =>
             getIsNotHoveredOrNil({ annotation, hoveredAnnotation }),
-          always(1),
+          always(1)
         ],
         [equals(annotation), always(3)],
-        [T, always(1)],
-      ])(get(annotationHoveredAtom)),
+        [T, always(1)]
+      ])(get(annotationHoveredAtom))
 );
 
 export const getStrokeOpacityDerivedAtom = atom(
@@ -136,11 +136,11 @@ export const getStrokeOpacityDerivedAtom = atom(
         [
           (hoveredAnnotation): boolean =>
             getIsNotHoveredOrNil({ annotation, hoveredAnnotation }),
-          always(0.5),
+          always(0.5)
         ],
         [equals(annotation), always(0.7)],
-        [T, always(0.2)],
-      ])(get(annotationHoveredAtom)),
+        [T, always(0.2)]
+      ])(get(annotationHoveredAtom))
 );
 
 export const getFillColorDerivedAtom = atom(
@@ -150,14 +150,14 @@ export const getFillColorDerivedAtom = atom(
         [
           (hoveredAnnotation): boolean =>
             getIsNotHoveredOrNil({ annotation, hoveredAnnotation }),
-          always(alpha(color, 0.3)),
+          always(alpha(color, 0.3))
         ],
         [
           equals<AnnotationAtom | undefined>(annotation),
-          always(alpha(color, 0.5)),
+          always(alpha(color, 0.5))
         ],
-        [T, always(alpha(color, 0.1))],
-      ])(get(annotationHoveredAtom)),
+        [T, always(alpha(color, 0.1))]
+      ])(get(annotationHoveredAtom))
 );
 
 export const getIconColorDerivedAtom = atom(
@@ -167,12 +167,12 @@ export const getIconColorDerivedAtom = atom(
         [
           (hoveredAnnotation): boolean =>
             getIsNotHoveredOrNil({ annotation, hoveredAnnotation }),
-          always(color),
+          always(color)
         ],
         [
           pipe(equals<AnnotationAtom | undefined>(annotation), not),
-          always(alpha(color, 0.2)),
+          always(alpha(color, 0.2))
         ],
-        [T, always(color)],
-      ])(get(annotationHoveredAtom)),
+        [T, always(color)]
+      ])(get(annotationHoveredAtom))
 );

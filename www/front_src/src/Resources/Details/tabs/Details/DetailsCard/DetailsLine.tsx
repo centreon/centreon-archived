@@ -8,8 +8,8 @@ const useStyles = makeStyles((theme) => ({
     fontSize: theme.typography.body2.fontSize,
     overflow: 'hidden',
     textOverflow: 'ellipsis',
-    whiteSpace: 'nowrap',
-  },
+    whiteSpace: 'nowrap'
+  }
 }));
 
 interface Props {
@@ -27,7 +27,7 @@ const DetailsLine = ({ line }: Props): JSX.Element => {
             className={classes.lineText}
             lineHeight={1}
             style={{
-              maxWidth: width || 'unset',
+              maxWidth: width || 'unset'
             }}
           >
             {line}

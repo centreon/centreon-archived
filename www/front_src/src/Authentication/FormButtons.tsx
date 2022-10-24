@@ -12,7 +12,7 @@ import {
   ConfirmDialog,
   SaveButton,
   useMemoComponent,
-  UnsavedChangesDialog,
+  UnsavedChangesDialog
 } from '@centreon/ui';
 
 import {
@@ -22,7 +22,7 @@ import {
   labelResetTheForm,
   labelSave,
   labelSaved,
-  labelSaving,
+  labelSaving
 } from './Local/translatedLabels';
 import { tabAtom, appliedTabAtom } from './tabAtoms';
 
@@ -33,8 +33,8 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'flex-end',
-    marginTop: theme.spacing(2),
-  },
+    marginTop: theme.spacing(2)
+  }
 }));
 
 const FormButtons = (): JSX.Element => {
@@ -148,8 +148,8 @@ const FormButtons = (): JSX.Element => {
       askingBeforeReset,
       tab,
       unsavedDialogOpened,
-      classes,
-    ],
+      classes
+    ]
   });
 };
 

@@ -1,7 +1,7 @@
 export enum EndpointType {
   CustomEndpoint = 'custom_endpoint',
   IntrospectionEndpoint = 'introspection_endpoint',
-  UserInformationEndpoint = 'user_information_endpoint',
+  UserInformationEndpoint = 'user_information_endpoint'
 }
 
 export interface NamedEntity {
@@ -137,5 +137,5 @@ export interface OpenidConfigurationToAPI {
 
 export enum AuthenticationType {
   ClientSecretBasic = 'client_secret_basic',
-  ClientSecretPost = 'client_secret_post',
+  ClientSecretPost = 'client_secret_post'
 }

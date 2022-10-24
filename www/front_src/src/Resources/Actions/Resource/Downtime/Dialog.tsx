@@ -13,7 +13,7 @@ import {
   FormHelperText,
   Alert,
   TextFieldProps,
-  Stack,
+  Stack
 } from '@mui/material';
 import { Box } from '@mui/system';
 
@@ -33,7 +33,7 @@ import {
   labelSetDowntime,
   labelSetDowntimeOnServices,
   labelTo,
-  labelStartTime,
+  labelStartTime
 } from '../../../translatedLabels';
 import { Resource } from '../../../models';
 import useAclQuery from '../aclQuery';
@@ -68,7 +68,7 @@ const renderDateTimePickerTextField =
           ...inputProps,
           'aria-label': ariaLabel,
           ref: inputRef,
-          style: { padding: 8 },
+          style: { padding: 8 }
         }}
       />
     );
@@ -83,7 +83,7 @@ const DialogDowntime = ({
   values,
   submitting,
   handleChange,
-  setFieldValue,
+  setFieldValue
 }: Props): JSX.Element => {
   const { t } = useTranslation();
 
@@ -95,7 +95,7 @@ const DialogDowntime = ({
   const {
     Adapter,
     getDestinationAndConfiguredTimezoneOffset,
-    formatKeyboardValue,
+    formatKeyboardValue
   } = useDateTimePickerAdapter();
 
   const open = resources.length > 0;
@@ -118,8 +118,8 @@ const DialogDowntime = ({
         : dayjs(formatKeyboardValue(keyBoardValue))
             .add(
               dayjs.duration({
-                hours: getDestinationAndConfiguredTimezoneOffset(),
-              }),
+                hours: getDestinationAndConfiguredTimezoneOffset()
+              })
             )
             .toDate();
 
@@ -198,16 +198,16 @@ const DialogDowntime = ({
                 options={[
                   {
                     id: 'seconds',
-                    name: t(labelSeconds),
+                    name: t(labelSeconds)
                   },
                   {
                     id: 'minutes',
-                    name: t(labelMinutes),
+                    name: t(labelMinutes)
                   },
                   {
                     id: 'hours',
-                    name: t(labelHours),
-                  },
+                    name: t(labelHours)
+                  }
                 ]}
                 selectedOptionId={values.duration.unit}
                 onChange={handleChange('duration.unit')}

@@ -3,14 +3,14 @@ import {
   MouseEvent,
   MouseEventHandler,
   ReactNode,
-  useMemo,
+  useMemo
 } from 'react';
 
 import clsx from 'clsx';
 import { useAtomValue } from 'jotai/utils';
 import {
   Link as RouterLink,
-  LinkProps as RouterLinkProps,
+  LinkProps as RouterLinkProps
 } from 'react-router-dom';
 import { equals } from 'ramda';
 
@@ -28,7 +28,7 @@ import { searchUrlFromEntry } from '../helpers/getUrlFromEntry';
 import { Page } from '../../models';
 import {
   hoveredNavigationItemsAtom,
-  selectedNavigationItemsAtom,
+  selectedNavigationItemsAtom
 } from '../sideBarAtoms';
 
 import ArrowIcon from './ArrowIcon';
@@ -53,19 +53,19 @@ const useStyles = makeStyles((theme) => ({
   activated: ({ isRoot }): CreateCSSProperties => ({
     '& .MuiListItemText-root': {
       '& .MuiTypography-root': {
-        color: 'inherit',
-      },
+        color: 'inherit'
+      }
     },
     '& .MuiSvgIcon-root': {
       color: isDarkMode(theme)
         ? theme.palette.common.white
-        : theme.palette.primary.main,
+        : theme.palette.primary.main
     },
     '&:hover': {
       backgroundColor:
         isDarkMode(theme) && isRoot
           ? theme.palette.primary.main
-          : theme.palette.primary.light,
+          : theme.palette.primary.light
     },
     backgroundColor:
       isDarkMode(theme) && isRoot
@@ -74,33 +74,33 @@ const useStyles = makeStyles((theme) => ({
     color:
       isDarkMode(theme) && isRoot
         ? theme.palette.common.white
-        : theme.palette.primary.main,
+        : theme.palette.primary.main
   }),
   arrowIcon: {
-    color: 'inherit',
+    color: 'inherit'
   },
   iconButton: {
     alignItems: 'center',
     color: theme.palette.common.white,
-    height: theme.spacing(rootHeightItem / 8),
+    height: theme.spacing(rootHeightItem / 8)
   },
   iconWrapper: {
     alignItems: 'center',
     color: 'inherit',
-    minWidth: theme.spacing(5.75),
+    minWidth: theme.spacing(5.75)
   },
   label: {
     '& .MuiTypography-root': {
       color: 'inherit',
-      lineHeight: 1,
+      lineHeight: 1
     },
     color: theme.palette.text.primary,
-    margin: theme.spacing(0),
+    margin: theme.spacing(0)
   },
   rootLabel: {
     color: 'inherit',
-    margin: theme.spacing(0),
-  },
+    margin: theme.spacing(0)
+  }
 }));
 
 const MenuItems = ({
@@ -114,7 +114,7 @@ const MenuItems = ({
   data,
   isDrawerOpen,
   isRoot,
-  isDoubleClickedFromRoot,
+  isDoubleClickedFromRoot
 }: Props): JSX.Element => {
   const classes = useStyles({ isRoot });
   const user = useAtomValue(userAtom);
@@ -127,7 +127,7 @@ const MenuItems = ({
   const memoizedUrl = useMemo(() => searchUrlFromEntry(data) as string, [data]);
 
   const ItemLink = forwardRef<HTMLAnchorElement, Omit<RouterLinkProps, 'to'>>(
-    (props, ref) => <RouterLink ref={ref} to={memoizedUrl} {...props} />,
+    (props, ref) => <RouterLink ref={ref} to={memoizedUrl} {...props} />
   );
 
   const handleClickItem = (e: MouseEvent<HTMLAnchorElement>): void => {
@@ -145,7 +145,7 @@ const MenuItems = ({
       <ListItemButton
         disableTouchRipple
         className={clsx(classes.iconButton, {
-          [classes.activated]: hover,
+          [classes.activated]: hover
         })}
         component={ItemLink}
         sx={!isRoot ? { pl: 0 } : { pl: 1.2 }}
@@ -190,8 +190,8 @@ const MenuItems = ({
       isDoubleClickedFromRoot,
       user,
       hoveredNavigationItems,
-      selectedNavigationItems,
-    ],
+      selectedNavigationItems
+    ]
   });
 };
 

@@ -25,7 +25,7 @@ import {
   getDatesDerivedAtom,
   graphQueryParametersDerivedAtom,
   resourceDetailsUpdatedAtom,
-  selectedTimePeriodAtom,
+  selectedTimePeriodAtom
 } from '../TimePeriods/timePeriodAtoms';
 import { detailsAtom } from '../../../Details/detailsAtoms';
 import EditAnomalyDetectionDataDialog from '../AnomalyDetection/EditAnomalyDetectionDataDialog';
@@ -36,14 +36,14 @@ const useStyles = makeStyles((theme: Theme) => ({
   graph: {
     height: '100%',
     margin: 'auto',
-    width: '100%',
+    width: '100%'
   },
   graphContainer: {
     display: 'grid',
     gridTemplateRows: '1fr',
     height: '93%',
-    padding: theme.spacing(2, 1, 1),
-  },
+    padding: theme.spacing(2, 1, 1)
+  }
 }));
 
 interface Props {
@@ -61,7 +61,7 @@ const ExportablePerformanceGraphWithTimeline = ({
   limitLegendRows,
   isEditAnomalyDetectionDataDialogOpen,
   resizeEnvelopeData,
-  onReload,
+  onReload
 }: Props): JSX.Element => {
   const classes = useStyles();
   const [timeline, setTimeline] = useState<Array<TimelineEvent>>();
@@ -73,7 +73,7 @@ const ExportablePerformanceGraphWithTimeline = ({
     ListingModel<TimelineEvent>
   >({
     decoder: listTimelineEventsDecoder,
-    request: listTimelineEvents,
+    request: listTimelineEvents
   });
 
   const { alias } = useAtomValue(userAtom);
@@ -92,13 +92,13 @@ const ExportablePerformanceGraphWithTimeline = ({
 
   const displayEventAnnotations = path<boolean>(
     [GraphOptionId.displayEvents, 'value'],
-    graphOptions,
+    graphOptions
   );
 
   const endpoint = path(['links', 'endpoints', 'performance_graph'], resource);
   const timelineEndpoint = path<string>(
     ['links', 'endpoints', 'timeline'],
-    resource,
+    resource
   );
 
   const retrieveTimeline = (): void => {
@@ -122,12 +122,12 @@ const ExportablePerformanceGraphWithTimeline = ({
               field: 'date',
               values: {
                 $gt: start,
-                $lt: end,
-              },
-            },
-          ],
-        },
-      },
+                $lt: end
+              }
+            }
+          ]
+        }
+      }
     }).then(({ result }) => {
       setTimeline(result);
     });
@@ -153,14 +153,14 @@ const ExportablePerformanceGraphWithTimeline = ({
     const graphQuerParameters = getGraphQueryParameters({
       endDate: customTimePeriod.end,
       startDate: customTimePeriod.start,
-      timePeriod: selectedTimePeriod,
+      timePeriod: selectedTimePeriod
     });
 
     return `${endpoint}${graphQuerParameters}`;
   }, [
     customTimePeriod.start.toISOString(),
     customTimePeriod.end.toISOString(),
-    details,
+    details
   ]);
 
   const addCommentToTimeline = ({ date, comment }): void => {
@@ -173,8 +173,8 @@ const ExportablePerformanceGraphWithTimeline = ({
         content: comment,
         date,
         id,
-        type: 'comment',
-      },
+        type: 'comment'
+      }
     ]);
   };
 
@@ -240,7 +240,7 @@ const ExportablePerformanceGraphWithTimeline = ({
                   openModalConfirmation,
                   isEnvelopeResizingCanceled,
                   isResizeEnvelope,
-                  setIsResizeEnvelope,
+                  setIsResizeEnvelope
                 }): JSX.Element => (
                   <>
                     {factorsData && (

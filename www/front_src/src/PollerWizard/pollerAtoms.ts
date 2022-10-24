@@ -36,5 +36,5 @@ export const setRemoteServerWizardDerivedAtom = atom(
   null,
   (get, set, data: RemoteServerData) => {
     set(remoteServerAtom, { ...get(remoteServerAtom), ...data });
-  },
+  }
 );

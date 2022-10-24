@@ -11,15 +11,15 @@ const metaServiceMetricDecoder = JsonDecoder.object<MetaServiceMetric>(
     name: JsonDecoder.string,
     resource: resourceDecoder,
     unit: JsonDecoder.string,
-    value: JsonDecoder.number,
+    value: JsonDecoder.number
   },
-  'MetaServiceMetric',
+  'MetaServiceMetric'
 );
 
 const metaServiceMetricListingDecoder = buildListingDecoder<MetaServiceMetric>({
   entityDecoder: metaServiceMetricDecoder,
   entityDecoderName: 'MetaServiceMetric',
-  listingDecoderName: 'MetaServiceMetricListing',
+  listingDecoderName: 'MetaServiceMetricListing'
 });
 
 export { metaServiceMetricDecoder, metaServiceMetricListingDecoder };

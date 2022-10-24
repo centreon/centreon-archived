@@ -6,7 +6,7 @@ import {
   pipe,
   head,
   startsWith,
-  not,
+  not
 } from 'ramda';
 import commandParser from 'string-argv';
 
@@ -20,7 +20,7 @@ interface CommandWithArguments {
 }
 
 const getCommandsWithArguments = (
-  commandLine: string,
+  commandLine: string
 ): Array<CommandWithArguments> => {
   const pipedCommands = commandLine.split('|');
 
@@ -49,7 +49,7 @@ const getCommandWithArguments = (commandLine: string): CommandWithArguments => {
   const argumentWithValues = args.map((argument) => {
     const foundShortArgument = find(
       pipe(head, equals(argument)),
-      shortArgumentsWithValues,
+      shortArgumentsWithValues
     );
 
     if (!isNil(foundShortArgument)) {
@@ -68,7 +68,7 @@ const getCommandWithArguments = (commandLine: string): CommandWithArguments => {
 
   return {
     arguments: commandArguments,
-    command,
+    command
   };
 };
 

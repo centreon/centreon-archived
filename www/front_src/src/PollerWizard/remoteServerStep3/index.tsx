@@ -12,7 +12,7 @@ import routeMap from '../../reactRoutes/routeMap';
 import { remoteServerAtom, RemoteServerData } from '../pollerAtoms';
 import {
   labelExportGenerationTimeout,
-  labelFinalStep,
+  labelFinalStep
 } from '../translatedLabels';
 import { exportTaskEndpoint } from '../api/endpoints';
 
@@ -26,7 +26,7 @@ const RemoteServerWizardStepThree = (): JSX.Element => {
     status: string | null;
     success: boolean;
   }>({
-    request: postData,
+    request: postData
   });
 
   const navigate = useNavigate();
@@ -35,7 +35,7 @@ const RemoteServerWizardStepThree = (): JSX.Element => {
 
   const remainingGenerationTimeoutRef = useRef<number>(30);
   const pollerData = useAtomValue<RemoteServerData | null>(
-    remoteServerAtom,
+    remoteServerAtom
   ) as RemoteServerData;
 
   const refreshGeneration = (): void => {
@@ -43,7 +43,7 @@ const RemoteServerWizardStepThree = (): JSX.Element => {
 
     getExportTask({
       data: { task_id: taskId },
-      endpoint: exportTaskEndpoint,
+      endpoint: exportTaskEndpoint
     })
       .then((data) => {
         if (not(data.success)) {

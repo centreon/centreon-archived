@@ -5,8 +5,8 @@ const useStyles = makeStyles((theme) => {
   return {
     skeleton: {
       display: 'grid',
-      gridGap: theme.spacing(1),
-    },
+      gridGap: theme.spacing(1)
+    }
   };
 });
 

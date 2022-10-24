@@ -12,7 +12,7 @@ const exportToPng = async ({
   element,
   title,
   ratio,
-  backgroundColor,
+  backgroundColor
 }: Props): Promise<void> => {
   const dateTime = new Date().toISOString().substring(0, 19);
 
@@ -28,9 +28,9 @@ const exportToPng = async ({
       bgcolor: backgroundColor,
       height: element.offsetHeight * ratio,
       style: {
-        transform: `translate(-${translateX}px, -${translateY}px) scale(${ratio})`,
+        transform: `translate(-${translateX}px, -${translateY}px) scale(${ratio})`
       },
-      width: element.offsetWidth * ratio,
+      width: element.offsetWidth * ratio
     })
     .then((blob) => {
       return saveAs(blob, `${title}-${dateTime}.png`);

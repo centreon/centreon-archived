@@ -9,7 +9,7 @@ import {
   ButtonProps,
   Stack,
   Typography,
-  useTheme,
+  useTheme
 } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 
@@ -28,7 +28,7 @@ import {
   labelSpecialCharacters,
   labelStrong,
   labelUpperCase,
-  labelWeak,
+  labelWeak
 } from '../../translatedLabels';
 import StrengthProgress from '../../StrengthProgress';
 import { getFields } from '../utils';
@@ -36,7 +36,7 @@ import { getFields } from '../utils';
 import LabelWithTooltip from './LabelWithTooltip';
 
 const activeButtonProps = {
-  variant: 'contained',
+  variant: 'contained'
 } as ButtonProps;
 const hasLowerCaseName = 'hasLowerCase';
 const hasUpperCaseName = 'hasUpperCase';
@@ -45,17 +45,17 @@ const hasSpecialCharacterName = 'hasSpecialCharacter';
 
 const useStyles = makeStyles((theme) => ({
   button: {
-    minWidth: theme.spacing(4),
+    minWidth: theme.spacing(4)
   },
   caseButtonsContainer: {
     display: 'flex',
     flexDirection: 'column',
     rowGap: theme.spacing(0.5),
-    width: 'fit-content',
+    width: 'fit-content'
   },
   lowerCaseButton: {
-    textTransform: 'none',
-  },
+    textTransform: 'none'
+  }
 }));
 
 const CaseButtons = (): JSX.Element => {
@@ -75,25 +75,25 @@ const CaseButtons = (): JSX.Element => {
         hasLowerCaseName,
         hasUpperCaseName,
         hasNumberName,
-        hasSpecialCharacterName,
+        hasSpecialCharacterName
       ],
-      object: values,
+      object: values
     });
 
   const thresholds = useMemo(
     () => [
       { color: theme.palette.error.main, label: labelWeak, value: 2 },
       { color: theme.palette.warning.main, label: labelGood, value: 3 },
-      { color: theme.palette.success.main, label: labelStrong, value: 4 },
+      { color: theme.palette.success.main, label: labelStrong, value: 4 }
     ],
-    [],
+    []
   );
 
   const thresholdValue = [
     hasLowerCase,
     hasUpperCase,
     hasNumber,
-    hasSpecialCharacter,
+    hasSpecialCharacter
   ].filter(Boolean).length;
 
   return useMemoComponent({
@@ -169,7 +169,7 @@ const CaseButtons = (): JSX.Element => {
         />
       </div>
     ),
-    memoProps: [hasLowerCase, hasUpperCase, hasNumber, hasSpecialCharacter],
+    memoProps: [hasLowerCase, hasUpperCase, hasNumber, hasSpecialCharacter]
   });
 };
 

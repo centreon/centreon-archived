@@ -12,13 +12,13 @@ import { listResources } from '../../../Listing/api';
 
 const HostGraph = ({ details }: TabProps): JSX.Element => {
   const { sendRequest, sending } = useRequest({
-    request: listResources,
+    request: listResources
   });
 
   const limit = 6;
 
   const sendListingRequest = ({
-    atPage,
+    atPage
   }: {
     atPage?: number;
   }): Promise<ListingModel<Resource>> => {
@@ -32,11 +32,11 @@ const HostGraph = ({ details }: TabProps): JSX.Element => {
           {
             field: 'h.name',
             values: {
-              $eq: details?.name,
-            },
-          },
-        ],
-      },
+              $eq: details?.name
+            }
+          }
+        ]
+      }
     });
   };
 

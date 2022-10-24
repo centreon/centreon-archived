@@ -14,7 +14,7 @@ import {
   MemoizedSectionPanel as SectionPanel,
   useRequest,
   RootComponentProps,
-  SortableItems,
+  SortableItems
 } from '@centreon/ui';
 
 import { labelEditFilters } from '../../translatedLabels';
@@ -27,26 +27,26 @@ import SortableContent from './SortableContent';
 
 const useStyles = makeStyles((theme) => ({
   container: {
-    width: '100%',
+    width: '100%'
   },
   filters: {
     display: 'grid',
     gridAutoFlow: 'row',
     gridGap: theme.spacing(3),
     gridTemplateRows: '1fr',
-    width: '100%',
+    width: '100%'
   },
   header: {
     alignItems: 'center',
     display: 'flex',
     height: '100%',
-    justifyContent: 'center',
+    justifyContent: 'center'
   },
   loadingIndicator: {
     height: theme.spacing(1),
     marginBottom: theme.spacing(1),
-    width: '100%',
-  },
+    width: '100%'
+  }
 }));
 
 const EditFiltersPanel = (): JSX.Element => {
@@ -54,7 +54,7 @@ const EditFiltersPanel = (): JSX.Element => {
   const { t } = useTranslation();
 
   const { sendRequest, sending } = useRequest({
-    request: patchFilter,
+    request: patchFilter
   });
 
   const [customFilters, setCustomFilters] = useAtom(customFiltersAtom);
@@ -68,12 +68,12 @@ const EditFiltersPanel = (): JSX.Element => {
     const reorderedCutomFilters = map((id) => {
       const filter = find(
         (customFilter) => equals(Number(customFilter.id), Number(id)),
-        customFilters,
+        customFilters
       ) as Filter;
 
       return {
         ...filter,
-        order: items.indexOf(id),
+        order: items.indexOf(id)
       };
     }, items);
 
@@ -82,7 +82,7 @@ const EditFiltersPanel = (): JSX.Element => {
     const activeId = path(['active', 'id'], event);
     const destinationIndex = path(
       ['active', 'data', 'current', 'sortable', 'index'],
-      event,
+      event
     ) as number;
 
     sendRequest({ id: activeId, order: destinationIndex + 1 });
@@ -90,14 +90,14 @@ const EditFiltersPanel = (): JSX.Element => {
 
   const displayedFilters = map(
     ({ id, ...other }) => ({ ...other, id: `${id}` }),
-    customFilters,
+    customFilters
   );
 
   const RootComponent = useCallback(
     ({ children }: RootComponentProps): JSX.Element => (
       <Stack spacing={2}>{children}</Stack>
     ),
-    [],
+    []
   );
 
   const sections = [
@@ -124,8 +124,8 @@ const EditFiltersPanel = (): JSX.Element => {
             onDragEnd={dragEnd}
           />
         </div>
-      ),
-    },
+      )
+    }
   ];
 
   const header = (

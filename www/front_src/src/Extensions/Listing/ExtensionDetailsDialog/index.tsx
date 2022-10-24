@@ -12,7 +12,7 @@ import {
   Grid,
   Button,
   Link,
-  CircularProgress,
+  CircularProgress
 } from '@mui/material';
 import UpdateIcon from '@mui/icons-material/SystemUpdateAlt';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -25,7 +25,7 @@ import {
   labelDescription,
   labelLastUpdate,
   labelInstall,
-  labelDelete,
+  labelDelete
 } from '../../translatedLabels';
 import { Entity, ExtensionDetails } from '../models';
 import { buildEndPoint } from '../api/endpoint';
@@ -34,7 +34,7 @@ import {
   SliderSkeleton,
   HeaderSkeleton,
   ContentSkeleton,
-  ReleaseNoteSkeleton,
+  ReleaseNoteSkeleton
 } from './LoadingSkeleton';
 
 interface Props {
@@ -59,7 +59,7 @@ const ExtensionDetailPopup = ({
   onDelete,
   onInstall,
   onUpdate,
-  isLoading,
+  isLoading
 }: Props): JSX.Element | null => {
   const { t } = useTranslation();
   const [extensionDetails, setExtensionDetails] = useState<Entity | null>(null);
@@ -67,7 +67,7 @@ const ExtensionDetailPopup = ({
 
   const { sendRequest: sendExtensionDetailsValueRequests } =
     useRequest<ExtensionDetails>({
-      request: getData,
+      request: getData
     });
 
   useEffect(() => {
@@ -75,8 +75,8 @@ const ExtensionDetailPopup = ({
       endpoint: buildEndPoint({
         action: 'details',
         id,
-        type,
-      }),
+        type
+      })
     }).then((data) => {
       const { result } = data;
       if (result.images) {
@@ -105,7 +105,7 @@ const ExtensionDetailPopup = ({
     onDelete(
       extensionDetails.id,
       extensionDetails.type,
-      extensionDetails.title,
+      extensionDetails.title
     );
   };
 
@@ -130,7 +130,7 @@ const ExtensionDetailPopup = ({
                   height={imageHeight}
                   indicators={!hasOneImage(extensionDetails.images)}
                   navButtonsAlwaysInvisible={hasOneImage(
-                    extensionDetails.images,
+                    extensionDetails.images
                   )}
                 >
                   {extensionDetails.images?.map((image) => (

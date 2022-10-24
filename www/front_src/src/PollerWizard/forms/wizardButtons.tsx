@@ -16,7 +16,7 @@ interface Props {
 const WizardButtons = ({
   goToPreviousStep,
   disabled,
-  type,
+  type
 }: Props): JSX.Element => {
   const classes = useStyles();
   const { t } = useTranslation();

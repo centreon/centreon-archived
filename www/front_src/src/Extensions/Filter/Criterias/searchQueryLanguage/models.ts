@@ -13,7 +13,7 @@ export interface CriteriaValueSuggestionsProps {
 
 export const criteriaNameSortOrder = {
   [CriteriaNames.types]: 1,
-  [CriteriaNames.statuses]: 2,
+  [CriteriaNames.statuses]: 2
 };
 
 export interface AutocompleteSuggestionProps {
@@ -35,16 +35,16 @@ const typeNameToQueryLanguageName = selectableTypes
 
 export const criteriaNameToQueryLanguageName = {
   ...statusNameToQueryLanguageName,
-  ...typeNameToQueryLanguageName,
+  ...typeNameToQueryLanguageName
 };
 
 const staticCriteriaValuesByName = {
   status: selectableStatuses,
-  type: selectableTypes,
+  type: selectableTypes
 };
 
 export const getSelectableCriteriasByName = (
-  name: string,
+  name: string
 ): Array<{ id: string; name: string }> => {
   return staticCriteriaValuesByName[name];
 };

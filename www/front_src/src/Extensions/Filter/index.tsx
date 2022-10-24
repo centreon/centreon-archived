@@ -5,7 +5,7 @@ import {
   Suspense,
   useEffect,
   useRef,
-  useState,
+  useState
 } from 'react';
 
 import {
@@ -16,7 +16,7 @@ import {
   length,
   dec,
   isNil,
-  dropLast,
+  dropLast
 } from 'ramda';
 import { useTranslation } from 'react-i18next';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
@@ -30,7 +30,7 @@ import {
   MemoizedFilter,
   SearchField,
   IconButton,
-  LoadingSkeleton,
+  LoadingSkeleton
 } from '@centreon/ui';
 
 import { labelSearch, labelClearFilter } from '../translatedLabels';
@@ -40,12 +40,12 @@ import {
   currentFilterCriteriasAtom,
   applyCurrentFilterDerivedAtom,
   clearFilterDerivedAtom,
-  searchAtom,
+  searchAtom
 } from './filterAtoms';
 
 const useStyles = makeStyles((theme) => ({
   autocompletePopper: {
-    zIndex: theme.zIndex.tooltip,
+    zIndex: theme.zIndex.tooltip
   },
   container: {
     alignItems: 'center',
@@ -53,9 +53,9 @@ const useStyles = makeStyles((theme) => ({
     gridAutoFlow: 'column',
     gridGap: theme.spacing(2),
     gridTemplateColumns: '20px auto',
-    width: '100%',
+    width: '100%'
   },
-  loader: { display: 'flex', justifyContent: 'center' },
+  loader: { display: 'flex', justifyContent: 'center' }
 }));
 
 const Criterias = lazy(() => import('./Criterias'));
@@ -116,8 +116,8 @@ const Filter = (): JSX.Element => {
     setAutoCompleteSuggestions(
       getAutocompleteSuggestions({
         cursorPosition,
-        search,
-      }),
+        search
+      })
     );
   }, [search, cursorPosition]);
 
@@ -167,7 +167,7 @@ const Filter = (): JSX.Element => {
 
     const completedWord = acceptedSuggestion.slice(
       expressionAfterSeparator.length,
-      acceptedSuggestion.length,
+      acceptedSuggestion.length
     );
 
     const cursorCompletionShift =
@@ -185,7 +185,7 @@ const Filter = (): JSX.Element => {
       ? searchBeforeCompletedWord.trim()
       : dropLast(
           expressionAfterSeparator.length,
-          searchBeforeCompletedWord.trim(),
+          searchBeforeCompletedWord.trim()
         );
 
     const suggestion = isEmpty(expressionAfterSeparator.trim())
@@ -196,7 +196,7 @@ const Filter = (): JSX.Element => {
       searchBeforeSuggestion,
       suggestion,
       searchAfterCompletedWord.trim() === '' ? '' : ' ',
-      searchAfterCompletedWord,
+      searchAfterCompletedWord
     ].join('');
 
     setCursorPosition(cursorPosition + cursorCompletionShift);
@@ -220,8 +220,8 @@ const Filter = (): JSX.Element => {
           .replace(expressionToShiftToTheEnd, '')
           .trim(),
         ' ',
-        expressionToShiftToTheEnd,
-      ].join(''),
+        expressionToShiftToTheEnd
+      ].join('')
     );
   };
 
@@ -307,7 +307,7 @@ const Filter = (): JSX.Element => {
     autoCompleteSuggestions,
     open,
     selectedSuggestionIndex,
-    currentFilter,
+    currentFilter
   ];
 
   return (
@@ -342,7 +342,7 @@ const Filter = (): JSX.Element => {
                 className={classes.autocompletePopper}
                 open={open}
                 style={{
-                  width: searchRef?.current?.clientWidth,
+                  width: searchRef?.current?.clientWidth
                 }}
               >
                 <Paper square>

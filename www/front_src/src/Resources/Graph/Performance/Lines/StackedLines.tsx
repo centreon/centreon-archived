@@ -6,7 +6,7 @@ import { Line, TimeValue } from '../models';
 import { getTime } from '../timeSeries';
 
 import StackedAnchorPoint, {
-  StackValue,
+  StackValue
 } from './AnchorPoint/StackedAnchorPoint';
 
 import { getFillColor } from '.';
@@ -26,7 +26,7 @@ const StackLines = ({
   yScale,
   xScale,
   timeTick,
-  displayTimeValues,
+  displayTimeValues
 }: Props): JSX.Element => (
   <Shape.AreaStack
     curve={Curve.curveLinear}
@@ -34,7 +34,7 @@ const StackLines = ({
     defined={(d): boolean => {
       return pipe(
         map(prop('metric')) as (lines) => Array<string>,
-        all((metric) => pipe(path(['data', metric]), isNil, not)(d)),
+        all((metric) => pipe(path(['data', metric]), isNil, not)(d))
       )(lines);
     }}
     keys={map(prop('metric'), lines)}
@@ -46,7 +46,7 @@ const StackLines = ({
       return stacks.map((stack, index) => {
         const { areaColor, transparency, lineColor, highlight } = nth(
           index,
-          lines,
+          lines
         ) as Line;
 
         return (

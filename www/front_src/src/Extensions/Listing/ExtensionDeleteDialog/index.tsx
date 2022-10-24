@@ -12,7 +12,7 @@ interface Props {
 const ExtensionDeletePopup = ({
   deletingEntity,
   onConfirm,
-  onCancel,
+  onCancel
 }: Props): JSX.Element => {
   const confirmDelete = (): void => {
     onConfirm(deletingEntity.id, deletingEntity.type);

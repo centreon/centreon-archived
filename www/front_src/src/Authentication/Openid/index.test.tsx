@@ -10,7 +10,7 @@ import {
   resetMocks,
   screen,
   TestQueryProvider,
-  waitFor,
+  waitFor
 } from '@centreon/ui';
 
 import { Provider } from '../models';
@@ -18,13 +18,13 @@ import {
   accessGroupsEndpoint,
   authenticationProvidersEndpoint,
   contactGroupsEndpoint,
-  contactTemplatesEndpoint,
+  contactTemplatesEndpoint
 } from '../api/endpoints';
 import {
   labelDoYouWantToResetTheForm,
   labelReset,
   labelResetTheForm,
-  labelSave,
+  labelSave
 } from '../Local/translatedLabels';
 import { labelActivation } from '../translatedLabels';
 
@@ -66,7 +66,7 @@ import {
   labelTokenEndpoint,
   labelTrustedClientAddresses,
   labelUseBasicAuthenticatonForTokenEndpointAuthentication,
-  labelUserInformationEndpoint,
+  labelUserInformationEndpoint
 } from './translatedLabels';
 
 import OpenidConfigurationForm from '.';
@@ -80,15 +80,15 @@ const cancelTokenRequestParam = { cancelToken: {} };
 const cancelTokenPutParams = {
   ...cancelTokenRequestParam,
   headers: {
-    'Content-Type': 'application/x-www-form-urlencoded',
-  },
+    'Content-Type': 'application/x-www-form-urlencoded'
+  }
 };
 
 const renderOpenidConfigurationForm = (): RenderResult =>
   render(
     <TestQueryProvider>
       <OpenidConfigurationForm />
-    </TestQueryProvider>,
+    </TestQueryProvider>
   );
 
 const retrievedOpenidConfiguration = {
@@ -98,10 +98,10 @@ const retrievedOpenidConfiguration = {
     blacklist_client_addresses: ['127.0.0.1'],
     endpoint: {
       custom_endpoint: null,
-      type: 'introspection_endpoint',
+      type: 'introspection_endpoint'
     },
     is_enabled: false,
-    trusted_client_addresses: ['127.0.0.1'],
+    trusted_client_addresses: ['127.0.0.1']
   },
   authentication_type: 'client_secret_post',
   authorization_endpoint: '/authorize',
@@ -118,10 +118,10 @@ const retrievedOpenidConfiguration = {
     attribute_path: 'group attribute path',
     endpoint: {
       custom_endpoint: '/group/endpoint',
-      type: 'custom_endpoint',
+      type: 'custom_endpoint'
     },
     is_enabled: true,
-    relations: [],
+    relations: []
   },
   introspection_token_endpoint: '/introspect',
   is_active: true,
@@ -132,32 +132,32 @@ const retrievedOpenidConfiguration = {
     attribute_path: 'role attribute path',
     endpoint: {
       custom_endpoint: '/role/endpoint',
-      type: 'custom_endpoint',
+      type: 'custom_endpoint'
     },
     is_enabled: false,
-    relations: [],
+    relations: []
   },
   token_endpoint: '/token',
   userinfo_endpoint: '/userinfo',
-  verify_peer: false,
+  verify_peer: false
 };
 
 const getRetrievedEntities = (label: string): unknown => ({
   meta: {
     limit: 10,
     page: 1,
-    total: 30,
+    total: 30
   },
   result: [
     {
       id: 1,
-      name: `${label} 1`,
+      name: `${label} 1`
     },
     {
       id: 2,
-      name: `${label} 2`,
-    },
-  ],
+      name: `${label} 2`
+    }
+  ]
 });
 
 const retrievedAccessGroups = getRetrievedEntities('Access Group');
@@ -168,7 +168,7 @@ const mockGetBasicRequests = (): void => {
   resetMocks();
   mockedAxios.get.mockReset();
   mockedAxios.get.mockResolvedValue({
-    data: retrievedOpenidConfiguration,
+    data: retrievedOpenidConfiguration
   });
 };
 
@@ -178,7 +178,7 @@ describe('Openid configuration form', () => {
 
     mockedAxios.put.mockReset();
     mockedAxios.put.mockResolvedValue({
-      data: {},
+      data: {}
     });
   });
 
@@ -186,13 +186,13 @@ describe('Openid configuration form', () => {
     renderOpenidConfigurationForm();
 
     expect(
-      screen.getByText(labelDefineOpenIDConnectConfiguration),
+      screen.getByText(labelDefineOpenIDConnectConfiguration)
     ).toBeInTheDocument();
 
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalledWith(
         authenticationProvidersEndpoint(Provider.Openid),
-        cancelTokenRequestParam,
+        cancelTokenRequestParam
       );
     });
 
@@ -202,85 +202,85 @@ describe('Openid configuration form', () => {
 
     await waitFor(() => {
       expect(
-        screen.getByLabelText(labelEnableOpenIDConnectAuthentication),
+        screen.getByLabelText(labelEnableOpenIDConnectAuthentication)
       ).toBeChecked();
     });
 
     expect(screen.getByLabelText(labelOpenIDConnectOnly)).not.toBeChecked();
     expect(screen.getByLabelText(labelMixed)).toBeChecked();
     expect(
-      screen.getByLabelText(`${labelTrustedClientAddresses}`),
+      screen.getByLabelText(`${labelTrustedClientAddresses}`)
     ).toBeInTheDocument();
     expect(
-      screen.getByLabelText(`${labelBlacklistClientAddresses}`),
+      screen.getByLabelText(`${labelBlacklistClientAddresses}`)
     ).toBeInTheDocument();
     expect(screen.getAllByText('127.0.0.1')).toHaveLength(2);
     expect(screen.getByLabelText(labelBaseUrl)).toHaveValue(
-      'https://localhost:8080',
+      'https://localhost:8080'
     );
     expect(screen.getByLabelText(labelAuthorizationEndpoint)).toHaveValue(
-      '/authorize',
+      '/authorize'
     );
     expect(screen.getByLabelText(labelTokenEndpoint)).toHaveValue('/token');
     expect(screen.getByLabelText(labelIntrospectionTokenEndpoint)).toHaveValue(
-      '/introspect',
+      '/introspect'
     );
     expect(
-      screen.getByLabelText(labelUserInformationEndpoint),
+      screen.getByLabelText(labelUserInformationEndpoint)
     ).toBeInTheDocument();
     expect(screen.getByLabelText(labelEndSessionEndpoint)).toHaveValue(
-      '/logout',
+      '/logout'
     );
     expect(screen.getByLabelText(`${labelScopes}`)).toBeInTheDocument();
     expect(screen.getByText('openid')).toBeInTheDocument();
     expect(screen.getByLabelText(labelLoginAttributePath)).toHaveValue('sub');
     expect(screen.getByLabelText(labelClientID)).toHaveValue('client_id');
     expect(screen.getByLabelText(labelClientSecret)).toHaveValue(
-      'client_secret',
+      'client_secret'
     );
     expect(
       screen.getByLabelText(
-        labelUseBasicAuthenticatonForTokenEndpointAuthentication,
-      ),
+        labelUseBasicAuthenticatonForTokenEndpointAuthentication
+      )
     ).not.toBeChecked();
     expect(screen.getByLabelText(labelDisableVerifyPeer)).not.toBeChecked();
     expect(screen.getByLabelText(labelEnableAutoImport)).not.toBeChecked();
     expect(screen.getByLabelText(labelEmailAttributePath)).toHaveValue('email');
     expect(screen.getByLabelText(labelFullnameAttributePath)).toHaveValue(
-      'lastname',
+      'lastname'
     );
     expect(
-      screen.getByLabelText(labelEnableConditionsOnIdentityProvider),
+      screen.getByLabelText(labelEnableConditionsOnIdentityProvider)
     ).not.toBeChecked();
     expect(screen.getByLabelText(labelConditionsAttributePath)).toHaveValue(
-      'auth attribute path',
+      'auth attribute path'
     );
     expect(
-      head(screen.getAllByLabelText(labelIntrospectionEndpoint)),
+      head(screen.getAllByLabelText(labelIntrospectionEndpoint))
     ).toBeChecked();
     expect(head(screen.getAllByLabelText(labelConditionValue))).toHaveValue(
-      'authorized',
+      'authorized'
     );
     expect(
-      head(screen.getAllByLabelText(labelEnableAutoManagement)),
+      head(screen.getAllByLabelText(labelEnableAutoManagement))
     ).not.toBeChecked();
     expect(screen.getByLabelText(labelApplyOnlyFirtsRole)).toBeChecked();
     expect(screen.getByLabelText(labelRolesAttributePath)).toHaveValue(
-      'role attribute path',
+      'role attribute path'
     );
     expect(screen.getAllByLabelText(labelOther).at(1)).toBeChecked();
     expect(head(screen.getAllByLabelText(labelDefineYourEndpoint))).toHaveValue(
-      '/role/endpoint',
+      '/role/endpoint'
     );
     expect(
-      last(screen.getAllByLabelText(labelEnableAutoManagement)),
+      last(screen.getAllByLabelText(labelEnableAutoManagement))
     ).toBeChecked();
     expect(screen.getByLabelText(labelGroupsAttributePath)).toHaveValue(
-      'group attribute path',
+      'group attribute path'
     );
     expect(last(screen.getAllByLabelText(labelOther))).toBeChecked();
     expect(last(screen.getAllByLabelText(labelDefineYourEndpoint))).toHaveValue(
-      '/group/endpoint',
+      '/group/endpoint'
     );
   });
 
@@ -290,7 +290,7 @@ describe('Openid configuration form', () => {
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalledWith(
         authenticationProvidersEndpoint(Provider.Openid),
-        cancelTokenRequestParam,
+        cancelTokenRequestParam
       );
     });
 
@@ -300,7 +300,7 @@ describe('Openid configuration form', () => {
 
     userEvent.type(
       screen.getByLabelText(labelBaseUrl),
-      '{selectall}{backspace}invalid base url',
+      '{selectall}{backspace}invalid base url'
     );
     userEvent.tab();
 
@@ -310,25 +310,25 @@ describe('Openid configuration form', () => {
 
     userEvent.type(
       screen.getByLabelText(`${labelTrustedClientAddresses}`),
-      'invalid domain',
+      'invalid domain'
     );
     userEvent.keyboard('{Enter}');
 
     await waitFor(() => {
       expect(
-        screen.getByText(`invalid domain: ${labelInvalidIPAddress}`),
+        screen.getByText(`invalid domain: ${labelInvalidIPAddress}`)
       ).toBeInTheDocument();
     });
 
     userEvent.type(
       screen.getByLabelText(`${labelBlacklistClientAddresses}`),
-      '127.0.0.1111',
+      '127.0.0.1111'
     );
     userEvent.keyboard('{Enter}');
 
     await waitFor(() => {
       expect(
-        screen.getByText(`127.0.0.1111: ${labelInvalidIPAddress}`),
+        screen.getByText(`127.0.0.1111: ${labelInvalidIPAddress}`)
       ).toBeInTheDocument();
     });
 
@@ -340,13 +340,13 @@ describe('Openid configuration form', () => {
     renderOpenidConfigurationForm();
 
     mockResponseOnce({
-      data: retrievedContactGroups,
+      data: retrievedContactGroups
     });
 
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalledWith(
         authenticationProvidersEndpoint(Provider.Openid),
-        cancelTokenRequestParam,
+        cancelTokenRequestParam
       );
     });
 
@@ -356,7 +356,7 @@ describe('Openid configuration form', () => {
 
     userEvent.type(
       screen.getByLabelText(labelBaseUrl),
-      '{selectall}{backspace}http://localhost:8081/login',
+      '{selectall}{backspace}http://localhost:8081/login'
     );
     userEvent.tab();
 
@@ -374,7 +374,7 @@ describe('Openid configuration form', () => {
 
     userEvent.type(
       head(screen.getAllByLabelText(labelGroupValue)) as HTMLElement,
-      'groupValue',
+      'groupValue'
     );
 
     userEvent.click(screen.getByText(labelSave));
@@ -387,17 +387,17 @@ describe('Openid configuration form', () => {
           base_url: 'http://localhost:8081/login',
           groups_mapping: {
             ...retrievedOpenidConfiguration.groups_mapping,
-            relations: [{ contact_group_id: 2, group_value: 'groupValue' }],
-          },
+            relations: [{ contact_group_id: 2, group_value: 'groupValue' }]
+          }
         },
-        cancelTokenPutParams,
+        cancelTokenPutParams
       );
     });
 
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalledWith(
         authenticationProvidersEndpoint(Provider.Openid),
-        cancelTokenRequestParam,
+        cancelTokenRequestParam
       );
     });
   });
@@ -408,7 +408,7 @@ describe('Openid configuration form', () => {
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalledWith(
         authenticationProvidersEndpoint(Provider.Openid),
-        cancelTokenRequestParam,
+        cancelTokenRequestParam
       );
     });
 
@@ -418,7 +418,7 @@ describe('Openid configuration form', () => {
 
     userEvent.type(
       screen.getByLabelText(labelBaseUrl),
-      '{selectall}{backspace}http://localhost:8081/login',
+      '{selectall}{backspace}http://localhost:8081/login'
     );
     userEvent.tab();
 
@@ -438,7 +438,7 @@ describe('Openid configuration form', () => {
 
     await waitFor(() => {
       expect(screen.getByLabelText(labelBaseUrl)).toHaveValue(
-        'https://localhost:8080',
+        'https://localhost:8080'
       );
     });
   });
@@ -449,13 +449,13 @@ describe('Openid configuration form', () => {
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalledWith(
         authenticationProvidersEndpoint(Provider.Openid),
-        cancelTokenRequestParam,
+        cancelTokenRequestParam
       );
     });
 
     await waitFor(() => {
       expect(
-        screen.getByLabelText(labelEmailAttributePath),
+        screen.getByLabelText(labelEmailAttributePath)
       ).toBeInTheDocument();
     });
 
@@ -478,22 +478,22 @@ describe('Openid configuration form', () => {
       retrievedContactTemplates,
       contactTemplatesEndpoint,
       labelContactTemplate,
-      'Contact Template 2',
+      'Contact Template 2'
     ],
     [
       'access group',
       retrievedAccessGroups,
       accessGroupsEndpoint,
       labelAclAccessGroup,
-      'Access Group 2',
+      'Access Group 2'
     ],
     [
       'contact group',
       retrievedContactGroups,
       contactGroupsEndpoint,
       labelContactGroup,
-      'Contact Group 2',
-    ],
+      'Contact Group 2'
+    ]
   ])(
     'updates the %p field when an option is selected from the retrieved options',
     async (_, retrievedOptions, endpoint, label, value) => {
@@ -501,13 +501,13 @@ describe('Openid configuration form', () => {
       renderOpenidConfigurationForm();
 
       mockResponseOnce({
-        data: retrievedOptions,
+        data: retrievedOptions
       });
 
       await waitFor(() => {
         expect(mockedAxios.get).toHaveBeenCalledWith(
           authenticationProvidersEndpoint(Provider.Openid),
-          cancelTokenRequestParam,
+          cancelTokenRequestParam
         );
       });
 
@@ -522,8 +522,8 @@ describe('Openid configuration form', () => {
       await waitFor(() => {
         expect(getFetchCall(0)).toEqual(
           `${endpoint}?page=1&sort_by=${encodeURIComponent(
-            '{"name":"ASC"}',
-          )}&search=${encodeURIComponent('{"$and":[]}')}`,
+            '{"name":"ASC"}'
+          )}&search=${encodeURIComponent('{"$and":[]}')}`
         );
       });
 
@@ -536,7 +536,7 @@ describe('Openid configuration form', () => {
       await waitFor(() => {
         expect(screen.getAllByLabelText(label)[0]).toHaveValue(value);
       });
-    },
+    }
   );
 
   it('disables the save button when the "Groups mapping" custom endpoint field is cleared', async () => {
@@ -545,7 +545,7 @@ describe('Openid configuration form', () => {
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalledWith(
         authenticationProvidersEndpoint(Provider.Openid),
-        cancelTokenRequestParam,
+        cancelTokenRequestParam
       );
     });
 
@@ -555,7 +555,7 @@ describe('Openid configuration form', () => {
 
     userEvent.type(
       screen.getByLabelText(labelBaseUrl),
-      '{selectall}{backspace}http://localhost:8081/login',
+      '{selectall}{backspace}http://localhost:8081/login'
     );
 
     await waitFor(() => {
@@ -564,7 +564,7 @@ describe('Openid configuration form', () => {
 
     userEvent.type(
       last(screen.getAllByLabelText(labelDefineYourEndpoint)) as HTMLElement,
-      '{selectall}{backspace}',
+      '{selectall}{backspace}'
     );
 
     await waitFor(() => {
@@ -576,13 +576,13 @@ describe('Openid configuration form', () => {
     renderOpenidConfigurationForm();
 
     mockResponseOnce({
-      data: retrievedContactGroups,
+      data: retrievedContactGroups
     });
 
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalledWith(
         authenticationProvidersEndpoint(Provider.Openid),
-        cancelTokenRequestParam,
+        cancelTokenRequestParam
       );
     });
 
@@ -595,8 +595,8 @@ describe('Openid configuration form', () => {
     await waitFor(() => {
       expect(getFetchCall(0)).toEqual(
         `${contactGroupsEndpoint}?page=1&sort_by=${encodeURIComponent(
-          '{"name":"ASC"}',
-        )}&search=${encodeURIComponent('{"$and":[]}')}`,
+          '{"name":"ASC"}'
+        )}&search=${encodeURIComponent('{"$and":[]}')}`
       );
     });
 
@@ -608,7 +608,7 @@ describe('Openid configuration form', () => {
 
     await waitFor(() => {
       expect(screen.getAllByLabelText(labelContactGroup)[0]).toHaveValue(
-        'Contact Group 2',
+        'Contact Group 2'
       );
     });
 
@@ -637,7 +637,7 @@ describe('Openid configuration form', () => {
 
     userEvent.type(
       screen.getAllByLabelText(labelConditionValue)[1],
-      'some text',
+      'some text'
     );
 
     expect(screen.getAllByLabelText(labelConditionValue)).toHaveLength(3);
@@ -651,7 +651,7 @@ describe('Openid configuration form', () => {
 
     userEvent.type(
       screen.getAllByLabelText(labelConditionValue)[1],
-      'some text',
+      'some text'
     );
 
     expect(screen.getAllByLabelText(labelDeleteRelation)).toHaveLength(2);

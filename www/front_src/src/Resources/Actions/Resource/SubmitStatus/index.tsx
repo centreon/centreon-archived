@@ -9,7 +9,7 @@ import {
   Dialog,
   SelectField,
   useRequest,
-  TextField,
+  TextField
 } from '@centreon/ui';
 
 import { Resource } from '../../../models';
@@ -27,7 +27,7 @@ import {
   labelOk,
   labelWarning,
   labelCritical,
-  labelUnknown,
+  labelUnknown
 } from '../../../translatedLabels';
 
 import { submitResourceStatus } from './api';
@@ -41,7 +41,7 @@ interface Props {
 const SubmitStatusForm = ({
   resource,
   onClose,
-  onSuccess,
+  onSuccess
 }: Props): JSX.Element => {
   const { t } = useTranslation();
   const { showSuccessMessage } = useSnackbar();
@@ -53,34 +53,34 @@ const SubmitStatusForm = ({
   const serviceStatuses = [
     {
       id: 0,
-      name: t(labelOk),
+      name: t(labelOk)
     },
     {
       id: 1,
-      name: t(labelWarning),
+      name: t(labelWarning)
     },
     {
       id: 2,
-      name: t(labelCritical),
+      name: t(labelCritical)
     },
-    { id: 3, name: t(labelUnknown) },
+    { id: 3, name: t(labelUnknown) }
   ];
 
   const statuses = {
     host: [
       {
         id: 0,
-        name: t(labelUp),
+        name: t(labelUp)
       },
       { id: 1, name: t(labelDown) },
-      { id: 2, name: t(labelUnreachable) },
+      { id: 2, name: t(labelUnreachable) }
     ],
     metaservice: serviceStatuses,
-    service: serviceStatuses,
+    service: serviceStatuses
   };
 
   const { sendRequest, sending } = useRequest({
-    request: submitResourceStatus,
+    request: submitResourceStatus
   });
 
   const submitStatus = (): void => {
@@ -88,7 +88,7 @@ const SubmitStatusForm = ({
       output,
       performanceData,
       resource,
-      statusId: selectedStatusId,
+      statusId: selectedStatusId
     }).then(() => {
       showSuccessMessage(t(labelStatusSubmitted));
       onSuccess();

@@ -5,7 +5,7 @@ import { WebSSOConfiguration } from './models';
 import {
   labelRequired,
   labelInvalidIPAddress,
-  labelInvalidRegex,
+  labelInvalidRegex
 } from './translatedLabels';
 
 const IPAddressRegexp = /^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}(\/\d{1,3})?$/;
@@ -18,7 +18,7 @@ const useValidationSchema = (): Yup.SchemaOf<WebSSOConfiguration> => {
     blacklistClientAddresses: Yup.array().of(
       Yup.string()
         .matches(IPAddressRegexp, t(labelInvalidIPAddress))
-        .required(t(labelRequired)),
+        .required(t(labelRequired))
     ),
     isActive: Yup.boolean().required(t(labelRequired)),
     isForced: Yup.boolean().required(t(labelRequired)),
@@ -32,8 +32,8 @@ const useValidationSchema = (): Yup.SchemaOf<WebSSOConfiguration> => {
     trustedClientAddresses: Yup.array().of(
       Yup.string()
         .matches(IPAddressRegexp, t(labelInvalidIPAddress))
-        .required(t(labelRequired)),
-    ),
+        .required(t(labelRequired))
+    )
   });
 };
 

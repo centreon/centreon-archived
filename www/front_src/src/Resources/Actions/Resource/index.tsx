@@ -13,7 +13,7 @@ import {
   useCancelTokenSource,
   useSnackbar,
   SeverityCode,
-  PopoverMenu,
+  PopoverMenu
 } from '@centreon/ui';
 
 import IconDowntime from '../../icons/Downtime';
@@ -26,7 +26,7 @@ import {
   labelDisacknowledge,
   labelSubmitStatus,
   labelAddComment,
-  labelMoreActions,
+  labelMoreActions
 } from '../../translatedLabels';
 import { checkResources } from '../api';
 import { Resource } from '../../models';
@@ -36,7 +36,7 @@ import {
   resourcesToCheckAtom,
   resourcesToDisacknowledgeAtom,
   resourcesToSetDowntimeAtom,
-  selectedResourcesAtom,
+  selectedResourcesAtom
 } from '../actionsAtoms';
 
 import useAclQuery from './aclQuery';
@@ -49,12 +49,12 @@ import ActionMenuItem from './ActionMenuItem';
 
 const useStyles = makeStyles((theme) => ({
   action: {
-    marginRight: theme.spacing(1),
+    marginRight: theme.spacing(1)
   },
   flex: {
     alignItems: 'center',
-    display: 'flex',
-  },
+    display: 'flex'
+  }
 }));
 
 const ResourceActions = (): JSX.Element => {
@@ -68,17 +68,17 @@ const ResourceActions = (): JSX.Element => {
   const [resourceToComment, setResourceToComment] = useState<Resource | null>();
 
   const [selectedResources, setSelectedResources] = useAtom(
-    selectedResourcesAtom,
+    selectedResourcesAtom
   );
   const [resourcesToAcknowledge, setResourcesToAcknowledge] = useAtom(
-    resourcesToAcknowledgeAtom,
+    resourcesToAcknowledgeAtom
   );
   const [resourcesToSetDowntime, setResourcesToSetDowntime] = useAtom(
-    resourcesToSetDowntimeAtom,
+    resourcesToSetDowntimeAtom
   );
   const [resourcesToCheck, setResourcesToCheck] = useAtom(resourcesToCheckAtom);
   const [resourcesToDisacknowledge, setResourcesToDisacknowledge] = useAtom(
-    resourcesToDisacknowledgeAtom,
+    resourcesToDisacknowledgeAtom
   );
 
   const {
@@ -87,7 +87,7 @@ const ResourceActions = (): JSX.Element => {
     canCheck,
     canDisacknowledge,
     canSubmitStatus,
-    canComment,
+    canComment
   } = useAclQuery();
 
   const hasResourcesToCheck = resourcesToCheck.length > 0;
@@ -109,7 +109,7 @@ const ResourceActions = (): JSX.Element => {
 
     checkResources({
       cancelToken: token,
-      resources: resourcesToCheck,
+      resources: resourcesToCheck
     })
       .then(() => {
         confirmAction();
@@ -170,7 +170,7 @@ const ResourceActions = (): JSX.Element => {
 
   const areSelectedResourcesOk = all(
     pathEq(['status', 'severity_code'], SeverityCode.Ok),
-    selectedResources,
+    selectedResources
   );
 
   const disableAcknowledge =

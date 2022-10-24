@@ -11,29 +11,29 @@ import { PopoverMenu, SelectEntry, useMemoComponent } from '@centreon/ui';
 import {
   labelClear,
   labelSearch,
-  labelSearchOptions,
+  labelSearchOptions
 } from '../../translatedLabels';
 import {
   applyCurrentFilterDerivedAtom,
   clearFilterDerivedAtom,
-  filterWithParsedSearchDerivedAtom,
+  filterWithParsedSearchDerivedAtom
 } from '../filterAtoms';
 
 import Criteria from './Criteria';
 import {
   CriteriaDisplayProps,
   selectableCriterias,
-  Criteria as CriteriaModel,
+  Criteria as CriteriaModel
 } from './models';
 import { criteriaNameSortOrder } from './searchQueryLanguage/models';
 
 const useStyles = makeStyles((theme) => ({
   container: {
-    padding: theme.spacing(2),
+    padding: theme.spacing(2)
   },
   searchButton: {
-    marginTop: theme.spacing(1),
-  },
+    marginTop: theme.spacing(1)
+  }
 }));
 
 const getSelectableCriteriaByName = (name: string): CriteriaDisplayProps =>
@@ -48,13 +48,13 @@ const CriteriasContent = (): JSX.Element => {
   const { t } = useTranslation();
 
   const filterWithParsedSearch = useAtomValue(
-    filterWithParsedSearchDerivedAtom,
+    filterWithParsedSearchDerivedAtom
   );
 
   const getSelectableCriterias = (): Array<CriteriaModel> => {
     const criterias = sortBy(
       ({ name }) => criteriaNameSortOrder[name],
-      filterWithParsedSearch,
+      filterWithParsedSearch
     );
 
     return reject(isNonSelectableCriteria)(criterias);
@@ -110,12 +110,12 @@ const CriteriasContent = (): JSX.Element => {
 
 const Criterias = (): JSX.Element => {
   const filterWithParsedSearch = useAtomValue(
-    filterWithParsedSearchDerivedAtom,
+    filterWithParsedSearchDerivedAtom
   );
 
   return useMemoComponent({
     Component: <CriteriasContent />,
-    memoProps: [filterWithParsedSearch],
+    memoProps: [filterWithParsedSearch]
   });
 };
 

@@ -12,11 +12,11 @@ import { IconButton } from '@centreon/ui';
 import {
   labelRefresh,
   labelDisableAutorefresh,
-  labelEnableAutorefresh,
+  labelEnableAutorefresh
 } from '../../translatedLabels';
 import {
   enabledAutorefreshAtom,
-  sendingAtom,
+  sendingAtom
 } from '../../Listing/listingAtoms';
 
 interface AutorefreshProps {
@@ -26,7 +26,7 @@ interface AutorefreshProps {
 
 const AutorefreshButton = ({
   enabledAutorefresh,
-  toggleAutorefresh,
+  toggleAutorefresh
 }: AutorefreshProps): JSX.Element => {
   const { t } = useTranslation();
 
@@ -54,7 +54,7 @@ const RefreshActions = ({ onRefresh }: Props): JSX.Element => {
   const { t } = useTranslation();
 
   const [enabledAutorefresh, setEnabledAutorefresh] = useAtom(
-    enabledAutorefreshAtom,
+    enabledAutorefreshAtom
   );
   const sending = useAtomValue(sendingAtom);
 

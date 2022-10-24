@@ -14,11 +14,11 @@ const iconSize = 20;
 
 const useStyles = makeStyles((theme) => ({
   tooltip: {
-    backgroundColor: 'transparent',
+    backgroundColor: 'transparent'
   },
   tooltipContent: {
-    padding: theme.spacing(1),
-  },
+    padding: theme.spacing(1)
+  }
 }));
 
 export interface Props {
@@ -36,7 +36,7 @@ const Annotation = ({
   event,
   xIcon,
   marker,
-  resourceId,
+  resourceId
 }: Props): JSX.Element => {
   const classes = useStyles();
   const { t } = useTranslation();

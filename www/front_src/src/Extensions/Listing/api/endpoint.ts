@@ -23,7 +23,7 @@ const buildEndPoint = ({ action, id, type }: Parameter): string => {
 
 const buildExtensionEndPoint = ({
   action,
-  criteriaStatus,
+  criteriaStatus
 }: ParameterWithFilter): string => {
   let params = `${baseEndpoint}action=${action}`;
 

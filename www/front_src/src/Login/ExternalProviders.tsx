@@ -17,12 +17,12 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'column',
     marginTop: theme.spacing(1),
     rowGap: theme.spacing(1),
-    width: '100%',
-  },
+    width: '100%'
+  }
 }));
 
 const ExternalProviders = ({
-  providersConfiguration,
+  providersConfiguration
 }: Props): JSX.Element | null => {
   const classes = useStyles();
   const { t } = useTranslation();

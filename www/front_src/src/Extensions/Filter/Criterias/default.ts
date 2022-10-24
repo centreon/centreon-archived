@@ -10,22 +10,22 @@ interface DefaultCriteriaValues {
 const getDefaultCriterias = (
   { statuses = [], types = [] }: DefaultCriteriaValues = {
     statuses: [],
-    types: [],
-  },
+    types: []
+  }
 ): Array<Criteria> => {
   return [
     {
       name: 'statuses',
-      value: statuses,
+      value: statuses
     },
     {
       name: 'types',
-      value: types,
+      value: types
     },
     {
       name: 'search',
-      value: '',
-    },
+      value: ''
+    }
   ];
 };
 

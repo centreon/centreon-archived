@@ -13,7 +13,7 @@ const getStoredOrDefaultFilter = (defaultValue: Filter): Filter => {
     key: filterKey,
     onCachedItemUpdate: (updatedItem) => {
       cachedFilter = updatedItem;
-    },
+    }
   });
 };
 

@@ -8,8 +8,8 @@ const useStyles = makeStyles((theme) => ({
     height: 'fit-content',
     margin: '0 auto',
     padding: theme.spacing(2, 0),
-    width: '40%',
-  },
+    width: '40%'
+  }
 }));
 
 interface Props {

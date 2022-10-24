@@ -4,7 +4,7 @@ import {
   labelAll,
   labelNewFilter,
   labelUnhandledProblems,
-  labelResourceProblems,
+  labelResourceProblems
 } from '../translatedLabels';
 
 import getDefaultCriterias from './Criterias/default';
@@ -18,7 +18,7 @@ import {
   selectableStatuses,
   unhandledState,
   unknownStatus,
-  warningStatus,
+  warningStatus
 } from './Criterias/models';
 
 export interface Filter {
@@ -30,36 +30,36 @@ export interface Filter {
 const allFilter = {
   criterias: getDefaultCriterias(),
   id: 'all',
-  name: labelAll,
+  name: labelAll
 };
 
 const newFilter = {
   id: '',
-  name: labelNewFilter,
+  name: labelNewFilter
 } as Filter;
 
 const unhandledProblemsFilter: Filter = {
   criterias: getDefaultCriterias({
     states: [unhandledState],
     statusTypes: [hardStateType],
-    statuses: [warningStatus, downStatus, criticalStatus, unknownStatus],
+    statuses: [warningStatus, downStatus, criticalStatus, unknownStatus]
   }),
   id: 'unhandled_problems',
-  name: labelUnhandledProblems,
+  name: labelUnhandledProblems
 };
 
 const resourceProblemsFilter: Filter = {
   criterias: getDefaultCriterias({
-    statuses: [warningStatus, downStatus, criticalStatus, unknownStatus],
+    statuses: [warningStatus, downStatus, criticalStatus, unknownStatus]
   }),
   id: 'resource_problems',
-  name: labelResourceProblems,
+  name: labelResourceProblems
 };
 
 const standardFilterById = {
   all: allFilter,
   resource_problems: resourceProblemsFilter,
-  unhandled_problems: unhandledProblemsFilter,
+  unhandled_problems: unhandledProblemsFilter
 };
 
 const isCustom = ({ id }: Filter): boolean => {
@@ -75,5 +75,5 @@ export {
   selectableStates,
   selectableStatuses,
   standardFilterById,
-  isCustom,
+  isCustom
 };

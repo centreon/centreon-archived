@@ -15,14 +15,14 @@ import { WebSSOConfiguration } from './models';
 
 const useStyles = makeStyles((theme) => ({
   container: {
-    width: 'fit-content',
+    width: 'fit-content'
   },
   loading: {
-    height: theme.spacing(0.5),
+    height: theme.spacing(0.5)
   },
   paper: {
-    padding: theme.spacing(2),
-  },
+    padding: theme.spacing(2)
+  }
 }));
 
 const WebSSOConfigurationForm = (): JSX.Element => {
@@ -32,12 +32,12 @@ const WebSSOConfigurationForm = (): JSX.Element => {
   const {
     sendingGetWebSSOConfiguration,
     initialWebSSOConfiguration,
-    loadWebSSOonfiguration,
+    loadWebSSOonfiguration
   } = useWebSSO();
 
   const isWebSSOConfigurationEmpty = useMemo(
     () => isNil(initialWebSSOConfiguration),
-    [initialWebSSOConfiguration],
+    [initialWebSSOConfiguration]
   );
 
   useTab(isWebSSOConfigurationEmpty);

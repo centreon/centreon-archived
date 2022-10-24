@@ -14,7 +14,7 @@ const ContactCell = ({ paddingLeft, children }: Props): JSX.Element => {
         sx={{
           overflow: 'hidden',
           paddingLeft,
-          textOverflow: 'ellipsis',
+          textOverflow: 'ellipsis'
         }}
       >
         {children}

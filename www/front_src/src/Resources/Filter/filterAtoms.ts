@@ -14,7 +14,7 @@ import {
   propEq,
   reduce,
   set as update,
-  values,
+  values
 } from 'ramda';
 import { TFunction } from 'react-i18next';
 
@@ -30,7 +30,7 @@ import {
   isCustom,
   newFilter,
   resourceProblemsFilter,
-  unhandledProblemsFilter,
+  unhandledProblemsFilter
 } from './models';
 import { build, parse } from './Criterias/searchQueryLanguage';
 import { getStoredOrDefaultFilter } from './storedFilter';
@@ -39,7 +39,7 @@ export const filterKey = `${baseKey}filter`;
 
 export const storedFilterAtom = atomWithStorage<Filter>(
   filterKey,
-  unhandledProblemsFilter,
+  unhandledProblemsFilter
 );
 
 export const getDefaultFilterDerivedAtom = atom(() => (): Filter => {
@@ -55,12 +55,12 @@ export const getDefaultFilterDerivedAtom = atom(() => (): Filter => {
     const mergedCriterias = pipe(
       map(indexBy<Criteria>(prop('name'))),
       reduce(mergeWith(mergeRight), {}),
-      values,
+      values
     )([allFilter.criterias, filterFromUrl.criterias]);
 
     return {
       ...mergeRight(newFilter, filterFromUrl),
-      criterias: mergedCriterias,
+      criterias: mergedCriterias
     };
   }
 
@@ -69,10 +69,10 @@ export const getDefaultFilterDerivedAtom = atom(() => (): Filter => {
 
 export const customFiltersAtom = atom<Array<Filter>>([]);
 export const currentFilterAtom = atomWithDefault<Filter>((get) =>
-  get(getDefaultFilterDerivedAtom)(),
+  get(getDefaultFilterDerivedAtom)()
 );
 export const appliedFilterAtom = atomWithDefault<Filter>((get) =>
-  get(getDefaultFilterDerivedAtom)(),
+  get(getDefaultFilterDerivedAtom)()
 );
 export const editPanelOpenAtom = atom(false);
 export const searchAtom = atom('');
@@ -82,8 +82,8 @@ export const filterWithParsedSearchDerivedAtom = atom((get) => ({
   ...get(currentFilterAtom),
   criterias: [
     ...parse({ search: get(searchAtom) }),
-    find(propEq('name', 'sort'), get(currentFilterAtom).criterias) as Criteria,
-  ],
+    find(propEq('name', 'sort'), get(currentFilterAtom).criterias) as Criteria
+  ]
 }));
 
 export const filterByInstalledModulesWithParsedSearchDerivedAtom = atom(
@@ -95,36 +95,36 @@ export const filterByInstalledModulesWithParsedSearchDerivedAtom = atom(
           ...parse({ criteriaName, search: get(searchAtom) }),
           find(
             propEq('name', 'sort'),
-            get(currentFilterAtom).criterias,
-          ) as Criteria,
-        ],
+            get(currentFilterAtom).criterias
+          ) as Criteria
+        ]
       };
 
       return result;
-    },
+    }
 );
 
 export const getFilterWithUpdatedCriteriaDerivedAtom = atom(
   (get) =>
     ({ name, value }): Filter => {
       const index = findIndex(propEq('name', name))(
-        get(filterWithParsedSearchDerivedAtom).criterias,
+        get(filterWithParsedSearchDerivedAtom).criterias
       );
       const lens = lensPath(['criterias', index, 'value']);
 
       return update(lens, value, get(filterWithParsedSearchDerivedAtom));
-    },
+    }
 );
 
 export const setCriteriaDerivedAtom = atom(
   null,
   (get, set, { name, value = false }) => {
     const getFilterWithUpdatedCriteria = get(
-      getFilterWithUpdatedCriteriaDerivedAtom,
+      getFilterWithUpdatedCriteriaDerivedAtom
     );
 
     set(currentFilterAtom, getFilterWithUpdatedCriteria({ name, value }));
-  },
+  }
 );
 
 export const applyFilterDerivedAtom = atom(null, (get, set, filter: Filter) => {
@@ -138,13 +138,13 @@ export const setCriteriaAndNewFilterDerivedAtom = atom(
   (get, set, { name, value, apply = false }) => {
     const currentFilter = get(currentFilterAtom);
     const getFilterWithUpdatedCriteria = get(
-      getFilterWithUpdatedCriteriaDerivedAtom,
+      getFilterWithUpdatedCriteriaDerivedAtom
     );
 
     const isCustomFilter = isCustom(currentFilter);
     const updatedFilter = {
       ...getFilterWithUpdatedCriteria({ name, value }),
-      ...(!isCustomFilter && newFilter),
+      ...(!isCustomFilter && newFilter)
     };
 
     set(searchAtom, build(updatedFilter.criterias));
@@ -156,7 +156,7 @@ export const setCriteriaAndNewFilterDerivedAtom = atom(
     }
 
     set(currentFilterAtom, updatedFilter);
-  },
+  }
 );
 
 export const setNewFilterDerivedAtom = atom(null, (get, set, t: TFunction) => {
@@ -169,7 +169,7 @@ export const setNewFilterDerivedAtom = atom(null, (get, set, t: TFunction) => {
   const emptyFilter = {
     criterias: currentFilter.criterias,
     id: '',
-    name: t(labelNewFilter),
+    name: t(labelNewFilter)
   };
 
   set(currentFilterAtom, emptyFilter);
@@ -181,7 +181,7 @@ export const getCriteriaValueDerivedAtom = atom(
       const filterWithParsedSearch = get(filterWithParsedSearchDerivedAtom);
 
       const criteria = find<Criteria>(propEq('name', name))(
-        filterWithParsedSearch.criterias,
+        filterWithParsedSearch.criterias
       );
 
       if (isNil(criteria)) {
@@ -189,7 +189,7 @@ export const getCriteriaValueDerivedAtom = atom(
       }
 
       return criteria.value;
-    },
+    }
 );
 
 export const applyCurrentFilterDerivedAtom = atom(null, (get, set) => {
@@ -204,5 +204,5 @@ export const filtersDerivedAtom = atom((get) => [
   unhandledProblemsFilter,
   allFilter,
   resourceProblemsFilter,
-  ...get(customFiltersAtom),
+  ...get(customFiltersAtom)
 ]);

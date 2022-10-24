@@ -2,11 +2,11 @@ import { CriteriaValue } from '../../Resources/Filter/Criterias/models';
 
 const hostCriterias = {
   name: 'resource_types',
-  value: [{ id: 'host', name: 'Host' }],
+  value: [{ id: 'host', name: 'Host' }]
 };
 const serviceCriteria = {
   name: 'resource_types',
-  value: [{ id: 'service', name: 'Service' }],
+  value: [{ id: 'service', name: 'Service' }]
 };
 
 interface StatusCriterias {
@@ -21,13 +21,13 @@ const getStatusCriterias = (status): StatusCriterias => {
 const downCriterias = getStatusCriterias({ id: 'DOWN', name: 'Down' });
 const unreachableCriterias = getStatusCriterias({
   id: 'UNREACHABLE',
-  name: 'Unreachable',
+  name: 'Unreachable'
 });
 const upCriterias = getStatusCriterias({ id: 'UP', name: 'Up' });
 const pendingCriterias = getStatusCriterias({ id: 'PENDING', name: 'Pending' });
 const criticalCriterias = getStatusCriterias({
   id: 'CRITICAL',
-  name: 'Critical',
+  name: 'Critical'
 });
 const warningCriterias = getStatusCriterias({ id: 'WARNING', name: 'Warning' });
 const unknownCriterias = getStatusCriterias({ id: 'UNKNOWN', name: 'Unknown' });
@@ -35,25 +35,25 @@ const okCriterias = getStatusCriterias({ id: 'OK', name: 'Ok' });
 
 const unhandledStateCriterias = {
   name: 'states',
-  value: [{ id: 'unhandled_problems', name: 'Unhandled' }],
+  value: [{ id: 'unhandled_problems', name: 'Unhandled' }]
 };
 
 const getResourcesUrl = ({
   resourceTypeCriterias,
   statusCriterias,
-  stateCriterias,
+  stateCriterias
 }): string => {
   const filterQueryParameter = {
     criterias: [
       resourceTypeCriterias,
       statusCriterias,
       stateCriterias,
-      { name: 'search', value: '' },
-    ],
+      { name: 'search', value: '' }
+    ]
   };
 
   return `/monitoring/resources?filter=${JSON.stringify(
-    filterQueryParameter,
+    filterQueryParameter
   )}&fromTopCounter=true`;
 };
 
@@ -64,23 +64,23 @@ interface Criterias {
 
 const getHostResourcesUrl = ({
   statusCriterias = { name: 'statuses', value: [] },
-  stateCriterias = { name: 'states', value: [] },
+  stateCriterias = { name: 'states', value: [] }
 }: Criterias = {}): string => {
   return getResourcesUrl({
     resourceTypeCriterias: hostCriterias,
     stateCriterias,
-    statusCriterias,
+    statusCriterias
   });
 };
 
 const getServiceResourcesUrl = ({
   statusCriterias = { name: 'statuses', value: [] },
-  stateCriterias = { name: 'states', value: [] },
+  stateCriterias = { name: 'states', value: [] }
 }: Criterias = {}): string => {
   return getResourcesUrl({
     resourceTypeCriterias: serviceCriteria,
     stateCriterias,
-    statusCriterias,
+    statusCriterias
   });
 };
 
@@ -97,5 +97,5 @@ export {
   warningCriterias,
   okCriterias,
   unhandledStateCriterias,
-  getServiceResourcesUrl,
+  getServiceResourcesUrl
 };

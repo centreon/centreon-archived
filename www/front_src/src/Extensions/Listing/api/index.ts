@@ -19,8 +19,8 @@ const deleteExtension =
       buildEndPoint({
         action: 'remove',
         id: parameters.id,
-        type: parameters.type,
-      }),
+        type: parameters.type
+      })
     );
   };
 

@@ -9,7 +9,7 @@ const icons = {
   configuration: SettingsIcon,
   home: HomeIcon,
   monitoring: MonitoringIcon,
-  reporting: ReportingIcon,
+  reporting: ReportingIcon
 };
 
 export default icons;

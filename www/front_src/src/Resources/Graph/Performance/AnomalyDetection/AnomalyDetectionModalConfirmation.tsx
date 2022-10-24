@@ -8,7 +8,7 @@ import {
   labelEditAnomalyDetectionConfirmation,
   labelMenageEnvelope,
   labelSave,
-  labelCancel,
+  labelCancel
 } from '../../../translatedLabels';
 
 interface Props {
@@ -22,7 +22,7 @@ const AnomalyDetectionModalConfirmation = ({
   open,
   setOpen,
   sendCancel,
-  sendConfirm,
+  sendConfirm
 }: Props): JSX.Element => {
   const { t } = useTranslation();
 

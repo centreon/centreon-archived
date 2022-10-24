@@ -4,7 +4,7 @@ import {
   buildListingEndpoint,
   ListingModel,
   getData,
-  ListingParameters,
+  ListingParameters
 } from '@centreon/ui';
 
 import { TimelineEvent } from '../models';
@@ -16,21 +16,21 @@ interface ListTimeLineEventsProps {
 
 const buildListTimelineEventsEndpoint = ({
   endpoint,
-  parameters,
+  parameters
 }: ListTimeLineEventsProps): string =>
   buildListingEndpoint({
     baseEndpoint: endpoint,
-    parameters,
+    parameters
   });
 
 const listTimelineEvents =
   (cancelToken: CancelToken) =>
   ({
     endpoint,
-    parameters,
+    parameters
   }: ListTimeLineEventsProps): Promise<ListingModel<TimelineEvent>> => {
     return getData<ListingModel<TimelineEvent>>(cancelToken)({
-      endpoint: buildListTimelineEventsEndpoint({ endpoint, parameters }),
+      endpoint: buildListTimelineEventsEndpoint({ endpoint, parameters })
     });
   };
 

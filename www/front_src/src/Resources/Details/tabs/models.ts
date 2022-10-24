@@ -12,7 +12,7 @@ export enum TabId {
   timelineTabId = 2,
   graphTabId = 3,
   metricsTabId = 4,
-  notificationsTabId = 5,
+  notificationsTabId = 5
 }
 
 export interface Tab {

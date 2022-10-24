@@ -13,7 +13,7 @@ import {
   labelFixed,
   labelStartTime,
   labelEndTime,
-  labelComment,
+  labelComment
 } from '../../../../translatedLabels';
 
 import DetailsTable, { getYesNoLabel } from '.';
@@ -23,8 +23,8 @@ const useStyles = makeStyles({
     display: 'block',
     overflow: 'hidden',
     textOverflow: 'ellipsis',
-    whiteSpace: 'nowrap',
-  },
+    whiteSpace: 'nowrap'
+  }
 });
 
 interface DowntimeDetails {
@@ -52,21 +52,21 @@ const DowntimeDetailsTable = ({ endpoint }: Props): JSX.Element => {
       id: 'author',
       label: t(labelAuthor),
       type: ColumnType.string,
-      width: 100,
+      width: 100
     },
     {
       getContent: ({ is_fixed }): string => t(getYesNoLabel(is_fixed)),
       id: 'is_fixed',
       label: t(labelFixed),
       type: ColumnType.string,
-      width: 100,
+      width: 100
     },
     {
       getContent: ({ start_time }): string => toDateTime(start_time),
       id: 'start_time',
       label: t(labelStartTime),
       type: ColumnType.string,
-      width: 150,
+      width: 150
     },
     {
       // eslint-disable-next-line react/no-unstable-nested-components
@@ -76,7 +76,7 @@ const DowntimeDetailsTable = ({ endpoint }: Props): JSX.Element => {
       id: 'end_time',
       label: t(labelEndTime),
       type: ColumnType.string,
-      width: 150,
+      width: 150
     },
 
     {
@@ -93,8 +93,8 @@ const DowntimeDetailsTable = ({ endpoint }: Props): JSX.Element => {
       id: 'comment',
       label: t(labelComment),
       type: ColumnType.component,
-      width: 250,
-    },
+      width: 250
+    }
   ];
 
   return (

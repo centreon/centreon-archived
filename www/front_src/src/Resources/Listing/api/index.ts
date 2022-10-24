@@ -10,7 +10,7 @@ const listResources =
   (cancelToken: CancelToken) =>
   (parameters: ListResourcesProps): Promise<ResourceListing> =>
     getData<ResourceListing>(cancelToken)({
-      endpoint: buildResourcesEndpoint(parameters),
+      endpoint: buildResourcesEndpoint(parameters)
     });
 
 export { listResources };

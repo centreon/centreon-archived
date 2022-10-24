@@ -12,7 +12,7 @@ import {
   postData,
   useRequest,
   SelectEntry,
-  MultiAutocompleteField,
+  MultiAutocompleteField
 } from '@centreon/ui';
 
 import WizardButtons from '../forms/wizardButtons';
@@ -20,18 +20,18 @@ import { useStyles } from '../../styles/partials/form/PollerWizardStyle';
 import routeMap from '../../reactRoutes/routeMap';
 import {
   remoteServerAtom,
-  setRemoteServerWizardDerivedAtom,
+  setRemoteServerWizardDerivedAtom
 } from '../pollerAtoms';
 import {
   labelAdvancedServerConfiguration,
-  labelRemoteServers,
+  labelRemoteServers
 } from '../translatedLabels';
 import { Props, WizardButtonsTypes, Poller } from '../models';
 import { pollersEndpoint, wizardFormEndpoint } from '../api/endpoints';
 
 const RemoteServerWizardStepTwo = ({
   goToNextStep,
-  goToPreviousStep,
+  goToPreviousStep
 }: Props): JSX.Element => {
   const classes = useStyles();
   const { t } = useTranslation();
@@ -42,14 +42,14 @@ const RemoteServerWizardStepTwo = ({
   const { sendRequest: getPollersRequest } = useRequest<{
     items: Array<Poller>;
   }>({
-    request: getData,
+    request: getData
   });
   const { sendRequest: postWizardFormRequest, sending: loading } = useRequest<{
     s;
     success: boolean;
     task_id: number | string | null;
   }>({
-    request: postData,
+    request: postData
   });
 
   const pollerData = useAtomValue(remoteServerAtom);
@@ -62,14 +62,14 @@ const RemoteServerWizardStepTwo = ({
   const getPollers = (): void => {
     getPollersRequest({
       data: null,
-      endpoint: pollersEndpoint,
+      endpoint: pollersEndpoint
     }).then(({ items }) => {
       setPollers(
         isEmpty(items)
           ? null
           : filterOutDefaultPoller(
-              items.map(({ id, text }) => ({ id, name: text })),
-            ),
+              items.map(({ id, text }) => ({ id, name: text }))
+            )
       );
     });
   };
@@ -84,19 +84,19 @@ const RemoteServerWizardStepTwo = ({
     event.preventDefault();
     const dataToPost = {
       ...pollerData,
-      linked_pollers: linkedPollers.map(({ id }) => id),
+      linked_pollers: linkedPollers.map(({ id }) => id)
     };
     dataToPost.server_type = 'remote';
 
     postWizardFormRequest({
       data: dataToPost,
-      endpoint: wizardFormEndpoint,
+      endpoint: wizardFormEndpoint
     })
       .then(({ success, task_id }) => {
         if (success && task_id) {
           setWizard({
             submitStatus: success,
-            taskId: task_id,
+            taskId: task_id
           });
 
           goToNextStep();
@@ -108,7 +108,7 @@ const RemoteServerWizardStepTwo = ({
   };
 
   const pollersOptions = pollers?.map(
-    pick(['id', 'name']),
+    pick(['id', 'name'])
   ) as Array<SelectEntry>;
 
   useEffect(() => {

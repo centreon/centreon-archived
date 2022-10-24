@@ -11,24 +11,24 @@ import { Severity } from '../../models';
 
 const useStyles = makeStyles((theme) => ({
   container: {
-    display: 'flex',
+    display: 'flex'
   },
   firstColumn: {
     display: 'flex',
-    minWidth: theme.spacing(5),
+    minWidth: theme.spacing(5)
   },
   root: {
     display: 'flex',
-    flexDirection: 'column',
+    flexDirection: 'column'
   },
   rowContainer: {
     alignItems: 'center',
     display: 'flex',
-    flexWrap: 'wrap',
+    flexWrap: 'wrap'
   },
   text: {
-    display: 'flex',
-  },
+    display: 'flex'
+  }
 }));
 
 interface Props {

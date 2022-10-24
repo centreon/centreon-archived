@@ -6,8 +6,8 @@ import { useLocaleDateTimeFormat } from '@centreon/ui';
 const useStyles = makeStyles({
   copyright: {
     alignItems: 'center',
-    display: 'flex',
-  },
+    display: 'flex'
+  }
 });
 
 const Copyright = (): JSX.Element => {
@@ -16,7 +16,7 @@ const Copyright = (): JSX.Element => {
 
   const year = format({
     date: new Date(),
-    formatString: 'YYYY',
+    formatString: 'YYYY'
   });
 
   return (

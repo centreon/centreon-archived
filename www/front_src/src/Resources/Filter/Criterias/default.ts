@@ -37,7 +37,7 @@ const getDefaultCriterias = (
     monitoringServers = [],
     statusTypes = [],
     hostCategories = [],
-    serviceCategories = [],
+    serviceCategories = []
   }: DefaultCriteriaValues = {
     hostCategories: [],
     hostGroups: [],
@@ -51,100 +51,100 @@ const getDefaultCriterias = (
     serviceSeverityLevels: [],
     states: [],
     statusTypes: [],
-    statuses: [],
-  },
+    statuses: []
+  }
 ): Array<Criteria> => {
   return [
     {
       name: 'resource_types',
       object_type: null,
       type: 'multi_select',
-      value: resourceTypes,
+      value: resourceTypes
     },
     {
       name: 'states',
       object_type: null,
       type: 'multi_select',
-      value: states,
+      value: states
     },
     {
       name: 'statuses',
       object_type: null,
       type: 'multi_select',
-      value: statuses,
+      value: statuses
     },
     {
       name: 'status_types',
       object_type: null,
       type: 'multi_select',
-      value: statusTypes,
+      value: statusTypes
     },
     {
       name: 'host_groups',
       object_type: 'host_groups',
       type: 'multi_select',
-      value: hostGroups,
+      value: hostGroups
     },
     {
       name: 'service_groups',
       object_type: 'service_groups',
       type: 'multi_select',
-      value: serviceGroups,
+      value: serviceGroups
     },
     {
       name: 'monitoring_servers',
       object_type: 'monitoring_servers',
       type: 'multi_select',
-      value: monitoringServers,
+      value: monitoringServers
     },
     {
       name: 'host_categories',
       object_type: 'host_categories',
       type: 'multi_select',
-      value: hostCategories,
+      value: hostCategories
     },
     {
       name: 'service_categories',
       object_type: 'service_categories',
       type: 'multi_select',
-      value: serviceCategories,
+      value: serviceCategories
     },
     {
       name: 'host_severities',
       object_type: 'host_severities',
       type: 'multi_select',
-      value: hostSeverities,
+      value: hostSeverities
     },
     {
       name: 'host_severity_levels',
       object_type: 'host_severity_levels',
       type: 'multi_select',
-      value: hostSeverityLevels,
+      value: hostSeverityLevels
     },
     {
       name: 'service_severities',
       object_type: 'service_severities',
       type: 'multi_select',
-      value: serviceSeverities,
+      value: serviceSeverities
     },
     {
       name: 'service_severity_levels',
       object_type: 'service_severity_levels',
       type: 'multi_select',
-      value: serviceSeverityLevels,
+      value: serviceSeverityLevels
     },
     {
       name: 'search',
       object_type: null,
       type: 'text',
-      value: '',
+      value: ''
     },
     {
       name: 'sort',
       object_type: null,
       type: 'array',
-      value: [defaultSortField, defaultSortOrder],
-    },
+      value: [defaultSortField, defaultSortOrder]
+    }
   ];
 };
 
@@ -154,8 +154,8 @@ const getAllCriterias = (): Array<Criteria> => [
     name: 'monitoring_servers',
     object_type: 'monitoring_servers',
     type: 'multi_select',
-    value: [],
-  },
+    value: []
+  }
 ];
 
 export default getDefaultCriterias;

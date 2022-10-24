@@ -25,38 +25,38 @@ const openedMixin = (theme: Theme): CSSObject => ({
   overflowX: 'hidden',
   transition: theme.transitions.create('width', {
     duration: theme.transitions.duration.enteringScreen,
-    easing: theme.transitions.easing.sharp,
+    easing: theme.transitions.easing.sharp
   }),
-  width: theme.spacing(openedDrawerWidth / 8),
+  width: theme.spacing(openedDrawerWidth / 8)
 });
 
 const closedMixin = (theme: Theme): CSSObject => ({
   overflowX: 'hidden',
   transition: theme.transitions.create('width', {
     duration: theme.transitions.duration.leavingScreen,
-    easing: theme.transitions.easing.sharp,
+    easing: theme.transitions.easing.sharp
   }),
-  width: theme.spacing(closedDrawerWidth),
+  width: theme.spacing(closedDrawerWidth)
 });
 
 const DrawerHeader = styled('div')(({ theme }) => ({
   '&:hover': {
-    cursor: 'pointer',
+    cursor: 'pointer'
   },
   alignItems: 'center',
   display: 'flex',
   height: theme.spacing(headerHeight),
-  justifyContent: 'center',
+  justifyContent: 'center'
 }));
 
 const Drawer = styled(MuiDrawer, {
-  shouldForwardProp: (prop) => !equals(prop, 'open'),
+  shouldForwardProp: (prop) => !equals(prop, 'open')
 })(({ theme, open }) => ({
   '& .MuiPaper-root': {
     backgroundColor: isDarkMode(theme)
       ? theme.palette.common.black
       : theme.palette.primary.dark,
-    border: 'none',
+    border: 'none'
   },
   boxSizing: 'border-box',
   flexShrink: 0,
@@ -64,12 +64,12 @@ const Drawer = styled(MuiDrawer, {
   width: theme.spacing(openedDrawerWidth / 8),
   ...(open && {
     ...openedMixin(theme),
-    '& .MuiDrawer-paper': openedMixin(theme),
+    '& .MuiDrawer-paper': openedMixin(theme)
   }),
   ...(!open && {
     ...closedMixin(theme),
-    '& .MuiDrawer-paper': closedMixin(theme),
-  }),
+    '& .MuiDrawer-paper': closedMixin(theme)
+  })
 }));
 
 export interface Props {

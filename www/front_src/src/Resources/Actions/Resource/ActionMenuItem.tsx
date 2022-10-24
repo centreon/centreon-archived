@@ -13,7 +13,7 @@ const ActionMenuItem = ({
   permitted,
   label,
   onClick,
-  disabled,
+  disabled
 }: Props): JSX.Element => {
   const { t } = useTranslation();
 

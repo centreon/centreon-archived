@@ -11,8 +11,8 @@ type StylesProps = Pick<Props, 'bold'>;
 
 const useStyles = makeStyles<Theme, StylesProps>(() => ({
   information: ({ bold }): CreateCSSProperties<StylesProps> => ({
-    fontWeight: bold ? 600 : 'unset',
-  }),
+    fontWeight: bold ? 600 : 'unset'
+  })
 }));
 
 interface Props {

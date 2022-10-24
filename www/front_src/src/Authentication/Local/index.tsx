@@ -15,8 +15,8 @@ import { PasswordSecurityPolicy } from './models';
 
 const useStyles = makeStyles((theme: Theme) => ({
   loading: {
-    height: theme.spacing(0.5),
-  },
+    height: theme.spacing(0.5)
+  }
 }));
 
 const LocalAuthentication = (): JSX.Element => {
@@ -26,12 +26,12 @@ const LocalAuthentication = (): JSX.Element => {
   const {
     sendingGetPasswordPasswordSecurityPolicy,
     initialPasswordPasswordSecurityPolicy,
-    loadPasswordPasswordSecurityPolicy,
+    loadPasswordPasswordSecurityPolicy
   } = useAuthentication();
 
   const isPasswordSecurityPolicyEmpty = useMemo(
     () => isNil(initialPasswordPasswordSecurityPolicy),
-    [initialPasswordPasswordSecurityPolicy],
+    [initialPasswordPasswordSecurityPolicy]
   );
 
   useTab(isPasswordSecurityPolicyEmpty);

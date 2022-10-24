@@ -24,7 +24,7 @@ import {
   labelServerIp,
   labelCheckCertificate,
   labelServerConfiguration,
-  labelRequired,
+  labelRequired
 } from '../translatedLabels';
 import { Props, WaitList, WizardButtonsTypes } from '../models';
 import WizardButtons from '../forms/wizardButtons';
@@ -52,7 +52,7 @@ interface RemoteServerStepOneFormDataError {
 
 const RemoteServerWizardStepOne = ({
   goToNextStep,
-  goToPreviousStep,
+  goToPreviousStep
 }: Props): JSX.Element => {
   const classes = useStyles();
   const { t } = useTranslation();
@@ -69,7 +69,7 @@ const RemoteServerWizardStepOne = ({
       no_check_certificate: false,
       no_proxy: false,
       server_ip: '',
-      server_name: '',
+      server_name: ''
     });
 
   const [error, setError] = useState<RemoteServerStepOneFormDataError>({
@@ -78,11 +78,11 @@ const RemoteServerWizardStepOne = ({
     db_password: '',
     db_user: '',
     server_ip: '',
-    server_name: '',
+    server_name: ''
   });
 
   const { sendRequest } = useRequest<Array<WaitList>>({
-    request: postData,
+    request: postData
   });
 
   const setWizard = useUpdateAtom(setRemoteServerWizardDerivedAtom);
@@ -90,7 +90,7 @@ const RemoteServerWizardStepOne = ({
   const getWaitList = (): void => {
     sendRequest({
       data: null,
-      endpoint: remoteServerWaitListEndpoint,
+      endpoint: remoteServerWaitListEndpoint
     })
       .then((data): void => {
         setWaitList(data);
@@ -111,7 +111,7 @@ const RemoteServerWizardStepOne = ({
     if (name === 'no_check_certificate' || name === 'no_proxy') {
       setStepOneFormData({
         ...stepOneFormData,
-        [name]: !stepOneFormData[name],
+        [name]: !stepOneFormData[name]
       });
 
       return;
@@ -119,12 +119,12 @@ const RemoteServerWizardStepOne = ({
 
     setError({
       ...error,
-      [name]: isEmpty(value.trim()) ? t(labelRequired) : '',
+      [name]: isEmpty(value.trim()) ? t(labelRequired) : ''
     });
 
     setStepOneFormData({
       ...stepOneFormData,
-      [name]: value,
+      [name]: value
     });
   };
 
@@ -133,7 +133,7 @@ const RemoteServerWizardStepOne = ({
 
     setError({
       ...error,
-      [name]: isEmpty(value.trim()) ? t(labelRequired) : '',
+      [name]: isEmpty(value.trim()) ? t(labelRequired) : ''
     });
   };
 
@@ -159,12 +159,12 @@ const RemoteServerWizardStepOne = ({
   useEffect(() => {
     if (waitList) {
       const platform = waitList.find(
-        (server) => server.ip === stepOneFormData.server_ip,
+        (server) => server.ip === stepOneFormData.server_ip
       );
       if (platform) {
         setStepOneFormData({
           ...stepOneFormData,
-          server_name: platform.server_name,
+          server_name: platform.server_name
         });
       }
     }

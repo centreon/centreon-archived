@@ -15,7 +15,7 @@ const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 const mockUser = {
   locale: 'en',
-  timezone: 'Europe/Paris',
+  timezone: 'Europe/Paris'
 };
 const mockRefreshInterval = 60;
 
@@ -35,7 +35,7 @@ const TestComponent = (): JSX.Element => {
   context = {
     ...filterState,
     ...listingState,
-    ...detailsState,
+    ...detailsState
   } as ResourceContext;
 
   return (
@@ -49,7 +49,7 @@ const TestComponentWithJotai = (): JSX.Element => (
   <Provider
     initialValues={[
       [userAtom, mockUser],
-      [refreshIntervalAtom, mockRefreshInterval],
+      [refreshIntervalAtom, mockRefreshInterval]
     ]}
   >
     <TestComponent />
@@ -66,10 +66,10 @@ describe(useLoadResources, () => {
         meta: {
           limit: 30,
           page: 1,
-          total: 0,
+          total: 0
         },
-        result: [],
-      },
+        result: []
+      }
     });
   });
 
@@ -81,77 +81,77 @@ describe(useLoadResources, () => {
     [
       'sort',
       (): void => context.setCriteria?.({ name: 'sort', value: ['a', 'asc'] }),
-      2,
+      2
     ],
     ['limit', (): void => context.setLimit?.(20), 2],
     [
       'search',
       (): void => context.setCriteria?.({ name: 'search', value: 'toto' }),
-      3,
+      3
     ],
     [
       'states',
       (): void =>
         context.setCriteria?.({
           name: 'states',
-          value: [{ id: 'unhandled', name: 'Unhandled problems' }],
+          value: [{ id: 'unhandled', name: 'Unhandled problems' }]
         }),
-      3,
+      3
     ],
     [
       'statuses',
       (): void =>
         context.setCriteria?.({
           name: 'statuses',
-          value: [{ id: 'OK', name: 'Ok' }],
+          value: [{ id: 'OK', name: 'Ok' }]
         }),
-      3,
+      3
     ],
     [
       'resourceTypes',
       (): void =>
         context.setCriteria?.({
           name: 'resource_types',
-          value: [{ id: 'host', name: 'Host' }],
+          value: [{ id: 'host', name: 'Host' }]
         }),
-      3,
+      3
     ],
     [
       'hostGroups',
       (): void =>
         context.setCriteria?.({
           name: 'host_groups',
-          value: [{ id: 0, name: 'Linux-servers' }],
+          value: [{ id: 0, name: 'Linux-servers' }]
         }),
-      3,
+      3
     ],
     [
       'serviceGroups',
       (): void =>
         context.setCriteria?.({
           name: 'service_groups',
-          value: [{ id: 1, name: 'Web-services' }],
+          value: [{ id: 1, name: 'Web-services' }]
         }),
-      3,
+      3
     ],
     [
       'hostCategories',
       (): void =>
         context.setCriteria?.({
           name: 'host_categories',
-          value: [{ id: 0, name: 'Linux' }],
+          value: [{ id: 0, name: 'Linux' }]
         }),
-      3,
+      3
     ],
     [
       'serviceCategories',
       (): void =>
         context.setCriteria?.({
           name: 'service_categories',
-          value: [{ id: 1, name: 'Web-services' }],
+          value: [{ id: 1, name: 'Web-services' }]
         }),
-      3,
-    ],
+      3
+    ]
   ];
 
   it.each(testCases)(
@@ -180,6 +180,6 @@ describe(useLoadResources, () => {
         expect(context.page).toEqual(1);
         expect(mockedAxios.get).toHaveBeenCalled();
       });
-    },
+    }
   );
 });

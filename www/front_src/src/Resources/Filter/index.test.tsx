@@ -14,7 +14,7 @@ import {
   act,
   TestQueryProvider,
   resetMocks,
-  mockResponseOnce,
+  mockResponseOnce
 } from '@centreon/ui';
 import { refreshIntervalAtom, userAtom } from '@centreon/ui-context';
 
@@ -34,7 +34,7 @@ import {
   labelSearchOptions,
   labelStatusType,
   labelSoft,
-  labelType,
+  labelType
 } from '../translatedLabels';
 import useListing from '../Listing/useListing';
 import useActions from '../testUtils/useActions';
@@ -47,7 +47,7 @@ import {
   getFilterWithUpdatedCriteria,
   getListingEndpoint,
   searchableFields,
-  defaultStateTypes,
+  defaultStateTypes
 } from '../testUtils';
 import useLoadDetails from '../testUtils/useLoadDetails';
 import useDetails from '../Details/useDetails';
@@ -65,7 +65,7 @@ const mockedAxios = axios as jest.Mocked<typeof axios>;
 const mockUser = {
   isExportButtonEnabled: true,
   locale: 'en',
-  timezone: 'Europe/Paris',
+  timezone: 'Europe/Paris'
 };
 const mockRefreshInterval = 60;
 
@@ -73,19 +73,19 @@ jest.useFakeTimers();
 
 const linuxServersHostGroup = {
   id: 0,
-  name: 'Linux-servers',
+  name: 'Linux-servers'
 };
 
 const webAccessServiceGroup = {
   id: 0,
-  name: 'Web-access',
+  name: 'Web-access'
 };
 
 type FilterParameter = [
   string,
   string,
   Record<string, unknown>,
-  (() => void) | undefined,
+  (() => void) | undefined
 ];
 
 const filterParams: Array<FilterParameter> = [
@@ -94,90 +94,90 @@ const filterParams: Array<FilterParameter> = [
     labelState,
     labelAcknowledged,
     {
-      states: [...defaultStates, 'acknowledged'],
+      states: [...defaultStates, 'acknowledged']
     },
-    undefined,
+    undefined
   ],
   [
     labelStatus,
     labelOk,
     {
-      statuses: [...defaultStatuses, 'OK'],
+      statuses: [...defaultStatuses, 'OK']
     },
-    undefined,
+    undefined
   ],
   [
     labelStatusType,
     labelSoft,
     {
-      statusTypes: [...defaultStateTypes, 'soft'],
+      statusTypes: [...defaultStateTypes, 'soft']
     },
-    undefined,
+    undefined
   ],
   [
     labelHostGroup,
     linuxServersHostGroup.name,
     {
-      hostGroups: [linuxServersHostGroup.name],
+      hostGroups: [linuxServersHostGroup.name]
     },
     (): void => {
       mockResponseOnce({
         data: {
           meta: {
             limit: 10,
-            total: 1,
+            total: 1
           },
-          result: [linuxServersHostGroup],
-        },
+          result: [linuxServersHostGroup]
+        }
       });
-    },
+    }
   ],
   [
     labelServiceGroup,
     webAccessServiceGroup.name,
     {
-      serviceGroups: [webAccessServiceGroup.name],
+      serviceGroups: [webAccessServiceGroup.name]
     },
     (): void => {
       mockResponseOnce({
         data: {
           meta: {
             limit: 10,
-            total: 1,
+            total: 1
           },
-          result: [webAccessServiceGroup],
-        },
+          result: [webAccessServiceGroup]
+        }
       });
-    },
-  ],
+    }
+  ]
 ];
 
 const filter = {
   criterias: [
     {
       name: 'resource_types',
-      value: [{ id: 'host', name: labelHost }],
+      value: [{ id: 'host', name: labelHost }]
     },
     {
       name: 'states',
-      value: [{ id: 'acknowledged', name: labelAcknowledged }],
+      value: [{ id: 'acknowledged', name: labelAcknowledged }]
     },
     { name: 'statuses', value: [{ id: 'OK', name: labelOk }] },
     {
       name: 'host_groups',
       object_type: 'host_groups',
-      value: [linuxServersHostGroup],
+      value: [linuxServersHostGroup]
     },
     {
       name: 'service_groups',
       object_type: 'service_groups',
-      value: [webAccessServiceGroup],
+      value: [webAccessServiceGroup]
     },
     { name: 'search', value: 'Search me' },
-    { name: 'sort', value: [defaultSortField, defaultSortOrder] },
+    { name: 'sort', value: [defaultSortField, defaultSortOrder] }
   ],
   id: 0,
-  name: 'My filter',
+  name: 'My filter'
 };
 
 const hostGroupsData = {
@@ -186,22 +186,22 @@ const hostGroupsData = {
     page: 1,
     search: {},
     sort_by: {},
-    total: 3,
+    total: 3
   },
   result: [
     {
       id: 72,
-      name: 'ESX-Servers',
+      name: 'ESX-Servers'
     },
     {
       id: 60,
-      name: 'Firewall',
+      name: 'Firewall'
     },
     {
       id: 70,
-      name: 'IpCam-Hardware',
-    },
-  ],
+      name: 'IpCam-Hardware'
+    }
+  ]
 };
 
 const FilterWithLoading = (): JSX.Element => {
@@ -225,7 +225,7 @@ const FilterTest = (): JSX.Element | null => {
           {
             ...listingState,
             ...actionsState,
-            ...detailsState,
+            ...detailsState
           } as ResourceContext
         }
       >
@@ -239,7 +239,7 @@ const FilterTestWitJotai = (): JSX.Element => (
   <Provider
     initialValues={[
       [userAtom, mockUser],
-      [refreshIntervalAtom, mockRefreshInterval],
+      [refreshIntervalAtom, mockRefreshInterval]
     ]}
   >
     <FilterTest />
@@ -263,10 +263,10 @@ const dynamicCriteriaRequests = (): void => {
         meta: {
           limit: 30,
           page: 1,
-          total: 0,
+          total: 0
         },
-        result: [],
-      },
+        result: []
+      }
     })
     .mockResolvedValueOnce({ data: {} })
     .mockResolvedValue({ data: hostGroupsData });
@@ -280,10 +280,10 @@ describe(Filter, () => {
           meta: {
             limit: 30,
             page: 1,
-            total: 0,
+            total: 0
           },
-          result: [],
-        },
+          result: []
+        }
       })
       .mockResolvedValue({ data: {} });
   });
@@ -303,8 +303,8 @@ describe(Filter, () => {
     await waitFor(() =>
       expect(mockedAxios.get).toHaveBeenCalledWith(
         getListingEndpoint({}),
-        cancelTokenRequestParam,
-      ),
+        cancelTokenRequestParam
+      )
     );
   });
 
@@ -326,7 +326,7 @@ describe(Filter, () => {
       mockedAxios.get.mockResolvedValueOnce({ data: {} });
 
       userEvent.click(
-        getByLabelText(labelSearchOptions).firstElementChild as HTMLElement,
+        getByLabelText(labelSearchOptions).firstElementChild as HTMLElement
       );
 
       fireEvent.click(getByText(labelSearch));
@@ -334,16 +334,16 @@ describe(Filter, () => {
       const endpoint = getListingEndpoint({ search: fieldSearchValue });
 
       expect(decodeURIComponent(endpoint)).toContain(
-        `search={"$and":[{"${searchableField}":{"$rg":"${search}"}}]}`,
+        `search={"$and":[{"${searchableField}":{"$rg":"${search}"}}]}`
       );
 
       await waitFor(() =>
         expect(mockedAxios.get).toHaveBeenCalledWith(
           endpoint,
-          cancelTokenRequestParam,
-        ),
+          cancelTokenRequestParam
+        )
       );
-    },
+    }
   );
 
   it('executes a listing request with an "$or" search param containing all searchable fields when a string that does not correspond to any searchable field is typed in the search field', async () => {
@@ -358,7 +358,7 @@ describe(Filter, () => {
     userEvent.type(getByPlaceholderText(labelSearch), searchValue);
 
     userEvent.click(
-      getByLabelText(labelSearchOptions).firstElementChild as HTMLElement,
+      getByLabelText(labelSearchOptions).firstElementChild as HTMLElement
     );
 
     fireEvent.click(getByText(labelSearch));
@@ -366,18 +366,18 @@ describe(Filter, () => {
     const endpoint = getListingEndpoint({ search: searchValue });
 
     const searchableFieldExpressions = searchableFields.map(
-      (searchableField) => `{"${searchableField}":{"$rg":"${searchValue}"}}`,
+      (searchableField) => `{"${searchableField}":{"$rg":"${searchValue}"}}`
     );
 
     expect(decodeURIComponent(endpoint)).toContain(
-      `search={"$or":[${searchableFieldExpressions}]}`,
+      `search={"$or":[${searchableFieldExpressions}]}`
     );
 
     await waitFor(() =>
       expect(mockedAxios.get).toHaveBeenCalledWith(
         endpoint,
-        cancelTokenRequestParam,
-      ),
+        cancelTokenRequestParam
+      )
     );
 
     const searchInput = getByPlaceholderText(labelSearch);
@@ -387,8 +387,8 @@ describe(Filter, () => {
     await waitFor(() =>
       expect(mockedAxios.get).toHaveBeenCalledWith(
         endpoint,
-        cancelTokenRequestParam,
-      ),
+        cancelTokenRequestParam
+      )
     );
   });
 
@@ -399,8 +399,8 @@ describe(Filter, () => {
         resourceTypes: [],
         states: [],
         statusTypes: [],
-        statuses: defaultStatuses,
-      },
+        statuses: defaultStatuses
+      }
     ],
     [
       labelAll,
@@ -408,9 +408,9 @@ describe(Filter, () => {
         resourceTypes: [],
         states: [],
         statusTypes: [],
-        statuses: [],
-      },
-    ],
+        statuses: []
+      }
+    ]
   ])(
     'executes a listing request with "%p" parameters when "%p" filter is set',
     async (filterGroup, criterias) => {
@@ -423,7 +423,7 @@ describe(Filter, () => {
       mockedAxios.get.mockResolvedValueOnce({ data: {} });
 
       await waitFor(() =>
-        expect(getByText(labelUnhandledProblems)).toBeInTheDocument(),
+        expect(getByText(labelUnhandledProblems)).toBeInTheDocument()
       );
 
       userEvent.click(getByText(labelUnhandledProblems));
@@ -433,10 +433,10 @@ describe(Filter, () => {
       await waitFor(() => {
         expect(mockedAxios.get).toHaveBeenLastCalledWith(
           getListingEndpoint(criterias),
-          cancelTokenRequestParam,
+          cancelTokenRequestParam
         );
       });
-    },
+    }
   );
 
   it.each(filterParams)(
@@ -445,7 +445,7 @@ describe(Filter, () => {
       criteriaName,
       optionToSelect,
       endpointParamChanged,
-      selectEndpointMockAction,
+      selectEndpointMockAction
     ) => {
       const { getByLabelText, getByPlaceholderText, findByText, getByText } =
         renderFilter();
@@ -460,7 +460,7 @@ describe(Filter, () => {
       userEvent.type(getByPlaceholderText(labelSearch), searchValue);
 
       fireEvent.click(
-        getByLabelText(labelSearchOptions).firstElementChild as HTMLElement,
+        getByLabelText(labelSearchOptions).firstElementChild as HTMLElement
       );
 
       fireEvent.click(getByText(criteriaName));
@@ -474,12 +474,12 @@ describe(Filter, () => {
         expect(mockedAxios.get).toHaveBeenCalledWith(
           getListingEndpoint({
             search: searchValue,
-            ...endpointParamChanged,
+            ...endpointParamChanged
           }),
-          cancelTokenRequestParam,
+          cancelTokenRequestParam
         );
       });
-    },
+    }
   );
 
   it.each([
@@ -488,8 +488,8 @@ describe(Filter, () => {
       'enter',
       (): void => {
         userEvent.keyboard('{Enter}');
-      },
-    ],
+      }
+    ]
   ])(
     'accepts the selected autocomplete suggestion when the beginning of a dynamic criteria is input and the %p key is pressed',
     async (_, keyboardAction) => {
@@ -502,7 +502,7 @@ describe(Filter, () => {
 
       userEvent.type(
         getByPlaceholderText(labelSearch),
-        '{selectall}{backspace}host',
+        '{selectall}{backspace}host'
       );
 
       keyboardAction();
@@ -520,11 +520,11 @@ describe(Filter, () => {
               conditions: [],
               regex: {
                 fields: ['name'],
-                value: 'ESX',
-              },
-            },
+                value: 'ESX'
+              }
+            }
           }),
-          cancelTokenRequestParam,
+          cancelTokenRequestParam
         );
       });
 
@@ -534,8 +534,8 @@ describe(Filter, () => {
 
       await waitFor(() =>
         expect(getByPlaceholderText(labelSearch)).toHaveValue(
-          'host_group:ESX-Servers',
-        ),
+          'host_group:ESX-Servers'
+        )
       );
 
       userEvent.type(getByPlaceholderText(labelSearch), ',');
@@ -549,16 +549,16 @@ describe(Filter, () => {
               conditions: [
                 {
                   field: 'name',
-                  values: { $ni: ['ESX-Servers'] },
-                },
+                  values: { $ni: ['ESX-Servers'] }
+                }
               ],
               regex: {
                 fields: ['name'],
-                value: '',
-              },
-            },
+                value: ''
+              }
+            }
           }),
-          cancelTokenRequestParam,
+          cancelTokenRequestParam
         );
       });
 
@@ -570,10 +570,10 @@ describe(Filter, () => {
 
       await waitFor(() =>
         expect(getByPlaceholderText(labelSearch)).toHaveValue(
-          'host_group:ESX-Servers,Firewall',
-        ),
+          'host_group:ESX-Servers,Firewall'
+        )
       );
-    },
+    }
   );
 
   it('accepts the selected autocomplete suggestion when the beginning of a criteria is input and the tab key is pressed', async () => {
@@ -585,7 +585,7 @@ describe(Filter, () => {
 
     userEvent.type(
       getByPlaceholderText(labelSearch),
-      '{selectall}{backspace}stat',
+      '{selectall}{backspace}stat'
     );
 
     userEvent.tab();
@@ -603,7 +603,7 @@ describe(Filter, () => {
     userEvent.tab();
 
     expect(getByPlaceholderText(labelSearch)).toHaveValue(
-      'state:unhandled status:',
+      'state:unhandled status:'
     );
 
     userEvent.type(getByPlaceholderText(labelSearch), ' type:');
@@ -613,7 +613,7 @@ describe(Filter, () => {
     userEvent.tab();
 
     expect(getByPlaceholderText(labelSearch)).toHaveValue(
-      'state:unhandled status: type:service',
+      'state:unhandled status: type:service'
     );
   });
 
@@ -628,10 +628,10 @@ describe(Filter, () => {
           meta: {
             limit: 30,
             page: 1,
-            total: 0,
+            total: 0
           },
-          result: [linuxServersHostGroup],
-        },
+          result: [linuxServersHostGroup]
+        }
       });
 
       mockResponseOnce({
@@ -639,10 +639,10 @@ describe(Filter, () => {
           meta: {
             limit: 30,
             page: 1,
-            total: 0,
+            total: 0
           },
-          result: [webAccessServiceGroup],
-        },
+          result: [webAccessServiceGroup]
+        }
       });
 
       mockedAxios.get
@@ -651,20 +651,20 @@ describe(Filter, () => {
             meta: {
               limit: 30,
               page: 1,
-              total: 0,
+              total: 0
             },
-            result: [],
-          },
+            result: []
+          }
         })
         .mockResolvedValueOnce({
           data: {
             meta: {
               limit: 30,
               page: 1,
-              total: 0,
+              total: 0
             },
-            result: [],
-          },
+            result: []
+          }
         });
 
       const renderResult = renderFilter();
@@ -674,7 +674,7 @@ describe(Filter, () => {
         queryByLabelText,
         findByPlaceholderText,
         getByLabelText,
-        findByText,
+        findByText
       } = renderResult;
 
       await waitFor(() => expect(mockedAxios.get).toHaveBeenCalledTimes(3));
@@ -688,11 +688,11 @@ describe(Filter, () => {
       const searchField = await findByPlaceholderText(labelSearch);
 
       expect(searchField).toHaveValue(
-        'type:host state:acknowledged status:ok host_group:Linux-servers service_group:Web-access Search me',
+        'type:host state:acknowledged status:ok host_group:Linux-servers service_group:Web-access Search me'
       );
 
       userEvent.click(
-        getByLabelText(labelSearchOptions).firstElementChild as HTMLElement,
+        getByLabelText(labelSearchOptions).firstElementChild as HTMLElement
       );
 
       userEvent.click(getByText(labelType));
@@ -719,7 +719,7 @@ describe(Filter, () => {
       await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
 
       const webAccessServiceGroupOption = await findByText(
-        webAccessServiceGroup.name,
+        webAccessServiceGroup.name
       );
 
       expect(webAccessServiceGroupOption).toBeInTheDocument();
@@ -744,7 +744,7 @@ describe(Filter, () => {
 
       expect(mockedLocalStorageSetItem).toHaveBeenCalledWith(
         filterKey,
-        JSON.stringify(allFilter),
+        JSON.stringify(allFilter)
       );
 
       const searchField = await findByPlaceholderText(labelSearch);
@@ -758,10 +758,10 @@ describe(Filter, () => {
             getFilterWithUpdatedCriteria({
               criteriaName: 'search',
               criteriaValue: 'searching...',
-              filter: { ...allFilter, id: '', name: labelNewFilter },
-            }),
-          ),
-        ),
+              filter: { ...allFilter, id: '', name: labelNewFilter }
+            })
+          )
+        )
       );
     });
   });
@@ -771,8 +771,8 @@ describe(Filter, () => {
       setUrlQueryParameters([
         {
           name: 'filter',
-          value: filter,
-        },
+          value: filter
+        }
       ]);
 
       mockResponseOnce({
@@ -780,10 +780,10 @@ describe(Filter, () => {
           meta: {
             limit: 30,
             page: 1,
-            total: 0,
+            total: 0
           },
-          result: [linuxServersHostGroup],
-        },
+          result: [linuxServersHostGroup]
+        }
       });
 
       mockResponseOnce({
@@ -791,10 +791,10 @@ describe(Filter, () => {
           meta: {
             limit: 30,
             page: 1,
-            total: 0,
+            total: 0
           },
-          result: [webAccessServiceGroup],
-        },
+          result: [webAccessServiceGroup]
+        }
       });
 
       mockedAxios.get
@@ -803,27 +803,27 @@ describe(Filter, () => {
             meta: {
               limit: 30,
               page: 1,
-              total: 0,
+              total: 0
             },
-            result: [],
-          },
+            result: []
+          }
         })
         .mockResolvedValueOnce({
           data: {
             meta: {
               limit: 30,
               page: 1,
-              total: 0,
+              total: 0
             },
-            result: [],
-          },
+            result: []
+          }
         });
 
       const {
         getByText,
         getByDisplayValue,
         getAllByPlaceholderText,
-        getByLabelText,
+        getByLabelText
       } = renderFilter();
 
       await waitFor(() => {
@@ -835,12 +835,12 @@ describe(Filter, () => {
       });
       expect(
         getByDisplayValue(
-          'type:host state:acknowledged status:ok host_group:Linux-servers service_group:Web-access Search me',
-        ),
+          'type:host state:acknowledged status:ok host_group:Linux-servers service_group:Web-access Search me'
+        )
       ).toBeInTheDocument();
 
       fireEvent.click(
-        getByLabelText(labelSearchOptions).firstElementChild as HTMLElement,
+        getByLabelText(labelSearchOptions).firstElementChild as HTMLElement
       );
 
       fireEvent.click(getByText(labelType));
@@ -857,7 +857,7 @@ describe(Filter, () => {
       await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
 
       await waitFor(() =>
-        expect(getByText(linuxServersHostGroup.name)).toBeInTheDocument(),
+        expect(getByText(linuxServersHostGroup.name)).toBeInTheDocument()
       );
 
       await waitFor(() => {
@@ -869,7 +869,7 @@ describe(Filter, () => {
       await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
 
       await waitFor(() =>
-        expect(getByText(webAccessServiceGroup.name)).toBeInTheDocument(),
+        expect(getByText(webAccessServiceGroup.name)).toBeInTheDocument()
       );
 
       await waitFor(() => {
@@ -877,7 +877,7 @@ describe(Filter, () => {
       });
 
       fireEvent.change(getAllByPlaceholderText(labelSearch)[0], {
-        target: { value: 'Search me two' },
+        target: { value: 'Search me two' }
       });
 
       const filterFromUrlQueryParameters = getUrlQueryParameters()
@@ -886,8 +886,8 @@ describe(Filter, () => {
       expect(
         getCriteriaValue({
           filter: filterFromUrlQueryParameters,
-          name: 'search',
-        }),
+          name: 'search'
+        })
       ).toEqual('Search me two');
     });
 
@@ -900,9 +900,9 @@ describe(Filter, () => {
         {
           name: 'filter',
           value: {
-            criterias: [{ name: 'search', value: 'Search me' }],
-          },
-        },
+            criterias: [{ name: 'search', value: 'Search me' }]
+          }
+        }
       ]);
 
       const { getByDisplayValue, queryByText } = renderFilter();
@@ -912,7 +912,7 @@ describe(Filter, () => {
       });
 
       await waitFor(() =>
-        expect(getByDisplayValue('Search me')).toBeInTheDocument(),
+        expect(getByDisplayValue('Search me')).toBeInTheDocument()
       );
       expect(queryByText(labelHost)).toBeNull();
       expect(queryByText(labelAcknowledged)).toBeNull();
@@ -926,8 +926,8 @@ describe(Filter, () => {
       expect(
         getCriteriaValue({
           filter: filterFromUrlQueryParameters,
-          name: 'search',
-        }),
+          name: 'search'
+        })
       ).toEqual('Search me');
     });
   });

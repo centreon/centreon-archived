@@ -10,7 +10,7 @@ import { userAtom } from '@centreon/ui-context';
 
 import {
   externalTranslationEndpoint,
-  internalTranslationEndpoint,
+  internalTranslationEndpoint
 } from '../App/endpoint';
 
 interface UseInitializeTranslationState {
@@ -24,7 +24,7 @@ interface UseInitializeTranslationState {
 const useInitializeTranslation = (): UseInitializeTranslationState => {
   const { sendRequest: getTranslations } = useRequest<ResourceLanguage>({
     httpCodesBypassErrorSnackbar: [500],
-    request: getData,
+    request: getData
   });
 
   const { locale } = useAtomValue(userAtom);
@@ -42,15 +42,15 @@ const useInitializeTranslation = (): UseInitializeTranslationState => {
         reduce(
           (acc, [language, values]) =>
             mergeAll([acc, { [language]: { translation: values } }]),
-          {},
-        ),
-      )(retrievedTranslations) as Resource,
+          {}
+        )
+      )(retrievedTranslations) as Resource
     });
   };
 
   const getTranslation = (endpoint: string): Promise<void> => {
     return getTranslations({
-      endpoint,
+      endpoint
     })
       .then((retrievedTranslations) => {
         initializeI18n(retrievedTranslations);
@@ -75,7 +75,7 @@ const useInitializeTranslation = (): UseInitializeTranslationState => {
     getExternalTranslation,
     getInternalTranslation,
     i18next,
-    initializeI18n,
+    initializeI18n
   };
 };
 

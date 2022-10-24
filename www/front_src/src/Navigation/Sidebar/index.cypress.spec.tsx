@@ -14,7 +14,7 @@ describe('Navigation menu', () => {
       cy.mount(
         <Router>
           <SideBar navigationData={data.result} />
-        </Router>,
+        </Router>
       );
     });
 

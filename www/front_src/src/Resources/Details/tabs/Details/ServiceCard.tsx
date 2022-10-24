@@ -21,18 +21,18 @@ const useStyles = makeStyles((theme) => ({
   description: {
     display: 'grid',
     gridAutoFlow: 'row',
-    gridGap: theme.spacing(1),
+    gridGap: theme.spacing(1)
   },
   serviceCard: {
-    padding: theme.spacing(1),
+    padding: theme.spacing(1)
   },
   serviceDetails: {
     alignItems: 'center',
     display: 'grid',
     gridAutoFlow: 'columns',
     gridGap: theme.spacing(2),
-    gridTemplateColumns: 'auto 1fr auto',
-  },
+    gridTemplateColumns: 'auto 1fr auto'
+  }
 }));
 
 const ServiceCard = ({
@@ -40,7 +40,7 @@ const ServiceCard = ({
   status,
   information,
   subInformation,
-  onSelect,
+  onSelect
 }: Props): JSX.Element => {
   const classes = useStyles();
   const { t } = useTranslation();

@@ -3,7 +3,7 @@ import Navigation from './models';
 
 export const retrievedNavigationWithAnEmptySet: Navigation = {
   result: [],
-  status: true,
+  status: true
 };
 
 export const retrievedNavigation: Navigation = {
@@ -17,7 +17,7 @@ export const retrievedNavigation: Navigation = {
           options: null,
           page: '200',
           show: true,
-          url: '/monitoring/resources',
+          url: '/monitoring/resources'
         },
         {
           groups: [
@@ -29,7 +29,7 @@ export const retrievedNavigation: Navigation = {
                   options: '&o=svcOV_pb',
                   page: '20204',
                   show: true,
-                  url: './include/monitoring/status/monitoringService.php',
+                  url: './include/monitoring/status/monitoringService.php'
                 },
                 {
                   is_react: false,
@@ -37,19 +37,19 @@ export const retrievedNavigation: Navigation = {
                   options: '&o=svcOVHG_pb',
                   page: '20209',
                   show: true,
-                  url: './include/monitoring/status/monitoringService.php',
-                },
+                  url: './include/monitoring/status/monitoringService.php'
+                }
               ],
-              label: 'By Status',
-            },
+              label: 'By Status'
+            }
           ],
           is_react: false,
           label: 'Status Details',
           options: null,
           page: '202',
           show: true,
-          url: null,
-        },
+          url: null
+        }
       ],
       color: '85B446',
       icon: 'monitoring',
@@ -59,7 +59,7 @@ export const retrievedNavigation: Navigation = {
       options: '',
       page: '2',
       show: true,
-      url: null,
+      url: null
     },
     {
       children: [
@@ -73,7 +73,7 @@ export const retrievedNavigation: Navigation = {
                   options: null,
                   page: '60101',
                   show: true,
-                  url: './include/configuration/configObject/host/host.php',
+                  url: './include/configuration/configObject/host/host.php'
                 },
                 {
                   is_react: false,
@@ -81,7 +81,7 @@ export const retrievedNavigation: Navigation = {
                   options: null,
                   page: '60102',
                   show: true,
-                  url: './include/configuration/configObject/hostgroup/hostGroup.php',
+                  url: './include/configuration/configObject/hostgroup/hostGroup.php'
                 },
                 {
                   is_react: false,
@@ -89,7 +89,7 @@ export const retrievedNavigation: Navigation = {
                   options: null,
                   page: '60103',
                   show: true,
-                  url: './include/configuration/configObject/host_template_model/hostTemplateModel.php',
+                  url: './include/configuration/configObject/host_template_model/hostTemplateModel.php'
                 },
                 {
                   is_react: false,
@@ -97,18 +97,18 @@ export const retrievedNavigation: Navigation = {
                   options: null,
                   page: '60104',
                   show: true,
-                  url: './include/configuration/configObject/host_categories/hostCategories.php',
-                },
+                  url: './include/configuration/configObject/host_categories/hostCategories.php'
+                }
               ],
-              label: 'Hosts',
-            },
+              label: 'Hosts'
+            }
           ],
           is_react: false,
           label: 'Hosts',
           options: null,
           page: '601',
           show: true,
-          url: null,
+          url: null
         },
         {
           groups: [
@@ -120,10 +120,10 @@ export const retrievedNavigation: Navigation = {
                   options: null,
                   page: '60401',
                   show: true,
-                  url: './include/configuration/configObject/escalation/escalation.php',
-                },
+                  url: './include/configuration/configObject/escalation/escalation.php'
+                }
               ],
-              label: 'Escalations',
+              label: 'Escalations'
             },
             {
               children: [
@@ -133,7 +133,7 @@ export const retrievedNavigation: Navigation = {
                   options: null,
                   page: '60407',
                   show: true,
-                  url: './include/configuration/configObject/host_dependency/hostDependency.php',
+                  url: './include/configuration/configObject/host_dependency/hostDependency.php'
                 },
                 {
                   is_react: false,
@@ -141,7 +141,7 @@ export const retrievedNavigation: Navigation = {
                   options: null,
                   page: '60408',
                   show: true,
-                  url: './include/configuration/configObject/hostgroup_dependency/hostGroupDependency.php',
+                  url: './include/configuration/configObject/hostgroup_dependency/hostGroupDependency.php'
                 },
                 {
                   is_react: false,
@@ -149,7 +149,7 @@ export const retrievedNavigation: Navigation = {
                   options: null,
                   page: '60409',
                   show: true,
-                  url: './include/configuration/configObject/service_dependency/serviceDependency.php',
+                  url: './include/configuration/configObject/service_dependency/serviceDependency.php'
                 },
                 {
                   is_react: false,
@@ -157,7 +157,7 @@ export const retrievedNavigation: Navigation = {
                   options: null,
                   page: '60410',
                   show: true,
-                  url: './include/configuration/configObject/servicegroup_dependency/serviceGroupDependency.php',
+                  url: './include/configuration/configObject/servicegroup_dependency/serviceGroupDependency.php'
                 },
                 {
                   is_react: false,
@@ -165,19 +165,19 @@ export const retrievedNavigation: Navigation = {
                   options: null,
                   page: '60411',
                   show: true,
-                  url: './include/configuration/configObject/metaservice_dependency/MetaServiceDependency.php',
-                },
+                  url: './include/configuration/configObject/metaservice_dependency/MetaServiceDependency.php'
+                }
               ],
-              label: 'Dependencies',
-            },
+              label: 'Dependencies'
+            }
           ],
           is_react: false,
           label: 'Notifications',
           options: null,
           page: '604',
           show: true,
-          url: null,
-        },
+          url: null
+        }
       ],
       color: '319ED5',
       icon: 'configuration',
@@ -187,10 +187,10 @@ export const retrievedNavigation: Navigation = {
       options: null,
       page: '6',
       show: true,
-      url: null,
-    },
+      url: null
+    }
   ],
-  status: true,
+  status: true
 };
 
 export const allowedPages = [
@@ -211,9 +211,9 @@ export const allowedPages = [
   '60410',
   '60411',
   '604',
-  '6',
+  '6'
 ];
 
 export const reactRoutes = {
-  '/monitoring/resources': '200',
+  '/monitoring/resources': '200'
 };

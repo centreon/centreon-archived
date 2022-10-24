@@ -5,7 +5,7 @@ interface ReplaceBasename {
 
 export const replaceBasename = ({
   newWord,
-  endpoint,
+  endpoint
 }: ReplaceBasename): string => {
   const basename =
     (document

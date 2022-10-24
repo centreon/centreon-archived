@@ -9,14 +9,14 @@ import { useRequest, getData } from '@centreon/ui';
 
 import {
   labelNoResourceFound,
-  labelSomethingWentWrong,
+  labelSomethingWentWrong
 } from '../translatedLabels';
 import useTimePeriod from '../Graph/Performance/TimePeriods/useTimePeriod';
 import {
   customTimePeriodAtom,
   getNewCustomTimePeriod,
   resourceDetailsUpdatedAtom,
-  selectedTimePeriodAtom,
+  selectedTimePeriodAtom
 } from '../Graph/Performance/TimePeriods/timePeriodAtoms';
 import { ResourceDetails } from '../Details/models';
 import {
@@ -25,7 +25,7 @@ import {
   selectedResourceDetailsEndpointDerivedAtom,
   selectedResourceUuidAtom,
   sendingDetailsAtom,
-  selectedResourcesDetailsAtom,
+  selectedResourcesDetailsAtom
 } from '../Details/detailsAtoms';
 import { ChangeCustomTimePeriodProps } from '../Details/tabs/Graph/models';
 
@@ -41,16 +41,16 @@ const useLoadDetails = (): DetailsState => {
     getErrorMessage: ifElse(
       pathEq(['response', 'status'], 404),
       always(t(labelNoResourceFound)),
-      pathOr(t(labelSomethingWentWrong), ['response', 'data', 'message']),
+      pathOr(t(labelSomethingWentWrong), ['response', 'data', 'message'])
     ),
-    request: getData,
+    request: getData
   });
 
   const [customTimePeriod, setCustomTimePeriod] = useAtom(customTimePeriodAtom);
   const selectedResource = useAtomValue(selectedResourcesDetailsAtom);
   const selectedResourceUuid = useAtomValue(selectedResourceUuidAtom);
   const selectedResourceDetailsEndpoint = useAtomValue(
-    selectedResourceDetailsEndpointDerivedAtom,
+    selectedResourceDetailsEndpointDerivedAtom
   );
   const sendingDetails = useAtomValue(sendingDetailsAtom);
   const setDetails = useUpdateAtom(detailsAtom);
@@ -59,7 +59,7 @@ const useLoadDetails = (): DetailsState => {
   const setResourceDetailsUpdated = useUpdateAtom(resourceDetailsUpdatedAtom);
 
   useTimePeriod({
-    sending: sendingDetails,
+    sending: sendingDetails
   });
 
   const loadDetails = (): void => {
@@ -68,7 +68,7 @@ const useLoadDetails = (): DetailsState => {
     }
 
     sendRequest({
-      endpoint: selectedResourceDetailsEndpoint,
+      endpoint: selectedResourceDetailsEndpoint
     })
       .then(setDetails)
       .catch(() => {
@@ -79,7 +79,7 @@ const useLoadDetails = (): DetailsState => {
   const changeCustomTimePeriod = ({ date, property }): void => {
     const newCustomTimePeriod = getNewCustomTimePeriod({
       ...customTimePeriod,
-      [property]: date,
+      [property]: date
     });
 
     setCustomTimePeriod(newCustomTimePeriod);
@@ -93,12 +93,12 @@ const useLoadDetails = (): DetailsState => {
   }, [
     selectedResourceUuid,
     selectedResource?.parentResourceId,
-    selectedResource?.resourceId,
+    selectedResource?.resourceId
   ]);
 
   return {
     changeCustomTimePeriod,
-    loadDetails,
+    loadDetails
   };
 };
 

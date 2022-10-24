@@ -5,7 +5,7 @@ import { Link } from '@mui/material';
 import {
   labelApiNotFoundNotUpToDate,
   labelApiNotFoundContactAdmin,
-  labelApiNotFoundDocumentation,
+  labelApiNotFoundDocumentation
 } from '../translatedLabels';
 
 const ApiNotFoundMessage = (): JSX.Element => {
@@ -16,7 +16,7 @@ const ApiNotFoundMessage = (): JSX.Element => {
       <p style={{ margin: 0 }}>{`${t(labelApiNotFoundNotUpToDate)}.`}</p>
       <p style={{ margin: 0 }}>
         {`${t(
-          labelApiNotFoundContactAdmin,
+          labelApiNotFoundContactAdmin
         )} : /opt/rh/httpd24/root/etc/httpd/conf.d/10-centreon.conf`}
       </p>
       <p style={{ margin: 0 }}>

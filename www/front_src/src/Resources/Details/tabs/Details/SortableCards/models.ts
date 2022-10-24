@@ -7,7 +7,7 @@ export interface CardsLayout extends DetailCardLine {
 
 export enum ExpandAction {
   add,
-  remove,
+  remove
 }
 
 export interface ChangeExpandedCardsProps {

@@ -9,7 +9,7 @@ import {
   find,
   propEq,
   pipe,
-  symmetricDifference,
+  symmetricDifference
 } from 'ramda';
 import { useTranslation } from 'react-i18next';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
@@ -27,7 +27,7 @@ import {
   labelSave,
   labelFilterCreated,
   labelFilterSaved,
-  labelEditFilters,
+  labelEditFilters
 } from '../../translatedLabels';
 import { listCustomFilters, updateFilter as updateFilterRequest } from '../api';
 import { Filter } from '../models';
@@ -37,7 +37,7 @@ import {
   customFiltersAtom,
   editPanelOpenAtom,
   filtersDerivedAtom,
-  sendingFilterAtom,
+  sendingFilterAtom
 } from '../filterAtoms';
 import { listCustomFiltersDecoder } from '../api/decoders';
 
@@ -50,8 +50,8 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     display: 'grid',
     gridAutoFlow: 'column',
-    gridGap: theme.spacing(2),
-  },
+    gridGap: theme.spacing(2)
+  }
 }));
 
 const SaveFilterMenu = (): JSX.Element => {
@@ -64,14 +64,14 @@ const SaveFilterMenu = (): JSX.Element => {
 
   const { sendRequest: sendListCustomFiltersRequest, sending } = useRequest({
     decoder: listCustomFiltersDecoder,
-    request: listCustomFilters,
+    request: listCustomFilters
   });
 
   const {
     sendRequest: sendUpdateFilterRequest,
-    sending: sendingUpdateFilterRequest,
+    sending: sendingUpdateFilterRequest
   } = useRequest({
-    request: updateFilterRequest,
+    request: updateFilterRequest
   });
 
   const [customFilters, setCustomFilters] = useAtom(customFiltersAtom);
@@ -125,7 +125,7 @@ const SaveFilterMenu = (): JSX.Element => {
   const updateFilter = (): void => {
     sendUpdateFilterRequest({
       filter: omit(['id'], currentFilter),
-      id: currentFilter.id,
+      id: currentFilter.id
     }).then((savedFilter) => {
       closeSaveFilterMenu();
       showSuccessMessage(t(labelFilterSaved));
@@ -144,7 +144,7 @@ const SaveFilterMenu = (): JSX.Element => {
 
     return !areValuesEqual(
       currentFilter.criterias,
-      retrievedFilter?.criterias || [],
+      retrievedFilter?.criterias || []
     );
   };
 

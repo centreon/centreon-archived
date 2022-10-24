@@ -52,7 +52,7 @@ const importModules = ({ basename, files }) => {
 export const dynamicImport = (basename, parameters) =>
   new Promise(async (resolve, _reject) => {
     const {
-      js: { commons, chunks, bundle },
+      js: { commons, chunks, bundle }
     } = parameters;
     if (!bundle) {
       console.error(new Error('dynamic import should contains js parameter.'));
@@ -64,13 +64,13 @@ export const dynamicImport = (basename, parameters) =>
       // import commons and vendor chunks
       await importModules({
         basename,
-        files: commons,
+        files: commons
       });
 
       // import specific bundle chunks
       await importModules({
         basename,
-        files: chunks,
+        files: chunks
       });
 
       // import bundle itself

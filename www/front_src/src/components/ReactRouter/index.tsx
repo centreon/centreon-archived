@@ -22,12 +22,12 @@ const PageContainer = styled('div')(() => ({
   display: 'grid',
   gridTemplateRows: 'auto 1fr',
   height: '100%',
-  overflow: 'auto',
+  overflow: 'auto'
 }));
 
 const getExternalPageRoutes = ({
   allowedPages,
-  federatedModules,
+  federatedModules
 }): Array<JSX.Element> => {
   const isAllowedPage = (path): boolean =>
     allowedPages?.find((allowedPage) => path.includes(allowedPage));
@@ -58,7 +58,7 @@ const getExternalPageRoutes = ({
           />
         );
       });
-    },
+    }
   );
 };
 
@@ -71,7 +71,7 @@ interface Props {
 const ReactRouterContent = ({
   federatedModules,
   externalPagesFetched,
-  allowedPages,
+  allowedPages
 }: Props): JSX.Element => {
   return useMemoComponent({
     Component: (
@@ -101,7 +101,7 @@ const ReactRouterContent = ({
         </Routes>
       </Suspense>
     ),
-    memoProps: [externalPagesFetched, federatedModules, allowedPages],
+    memoProps: [externalPagesFetched, federatedModules, allowedPages]
   });
 };
 

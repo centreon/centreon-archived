@@ -21,8 +21,8 @@ const AcknowledgementCard = ({ details }: Props): JSX.Element => {
       commentLine={details.acknowledgement?.comment || ''}
       contentLines={[
         `${details.acknowledgement?.author_name} ${t(labelAt)} ${toDateTime(
-          details.acknowledgement?.entry_time || '',
-        )}`,
+          details.acknowledgement?.entry_time || ''
+        )}`
       ]}
       title={t(labelAcknowledgedBy)}
     />

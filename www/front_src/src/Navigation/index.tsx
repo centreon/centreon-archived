@@ -8,7 +8,7 @@ const Navigation = (): JSX.Element => {
 
   return useMemoComponent({
     Component: <Sidebar navigationData={menu} />,
-    memoProps: [menu],
+    memoProps: [menu]
   });
 };
 

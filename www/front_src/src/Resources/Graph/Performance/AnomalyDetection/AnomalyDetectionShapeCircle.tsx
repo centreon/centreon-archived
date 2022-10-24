@@ -26,7 +26,7 @@ const AnomalyDetectionShapeCircle = ({
   pointYLower,
   pointYUpper,
   pointXUpper,
-  originMetric,
+  originMetric
 }: AnomalyDetectionShapeCircleProps): JSX.Element => {
   const setCountedRedCircles = useUpdateAtom(countedRedCirclesAtom);
 
@@ -47,7 +47,7 @@ const AnomalyDetectionShapeCircle = ({
     pointY1,
     pointX2,
     pointY2,
-    maxDistance,
+    maxDistance
   }: IsOnline): boolean => {
     const dxL = pointX2 - pointX1;
     const dyL = pointY2 - pointY1;
@@ -78,7 +78,7 @@ const AnomalyDetectionShapeCircle = ({
       pointX2,
       pointY,
       pointY1,
-      pointY2,
+      pointY2
     });
 
     const arePointsDefined =
@@ -91,7 +91,7 @@ const AnomalyDetectionShapeCircle = ({
 
     return {
       coordinate: { key: index.toString(), x: pointX, y: pointY },
-      isCircleShown: !isPointBetweenPoint1Point2 && arePointsDefined,
+      isCircleShown: !isPointBetweenPoint1Point2 && arePointsDefined
     };
   });
 

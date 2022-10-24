@@ -18,7 +18,7 @@ import {
   pipe,
   prop,
   propEq,
-  T,
+  T
 } from 'ramda';
 
 import { getData, useRequest } from '@centreon/ui';
@@ -44,25 +44,25 @@ const getAllowedPages = ({ page, newAccumulator }): Array<string> => {
   return cond([
     [
       propEq('is_react', true) as (obj: Page) => boolean,
-      always(append<string>(page.url as string, newAccumulator)),
+      always(append<string>(page.url as string, newAccumulator))
     ],
     [
       propExists<Page>('page'),
-      always(append<string>(page.page as string, newAccumulator)),
+      always(append<string>(page.page as string, newAccumulator))
     ],
-    [T, always(newAccumulator)],
+    [T, always(newAccumulator)]
   ])(page);
 };
 
 const useNavigation = (): UseNavigationState => {
   const { sendRequest } = useRequest<Navigation>({
-    request: getData,
+    request: getData
   });
   const [navigation, setNavigation] = useAtom(navigationAtom);
 
   const getNavigation = (): void => {
     sendRequest({
-      endpoint: navigationEndpoint,
+      endpoint: navigationEndpoint
     }).then(setNavigation);
   };
 
@@ -76,14 +76,14 @@ const useNavigation = (): UseNavigationState => {
 
           return page[property].reduce(reduceAllowedPages, []);
         }),
-        filter(isDefined),
+        filter(isDefined)
       )(['groups', 'children']) as Array<string>;
 
       const newAccumulator = [...acc, ...flatten(children)];
 
       return getAllowedPages({ newAccumulator, page });
     },
-    [],
+    []
   );
 
   const filterShowableElements = (acc, page): Array<Page> => {
@@ -99,15 +99,15 @@ const useNavigation = (): UseNavigationState => {
 
         return {
           ...page,
-          [property]: page[property].reduce(filterShowableElements, []),
+          [property]: page[property].reduce(filterShowableElements, [])
         };
       },
-      ['groups', 'children'],
+      ['groups', 'children']
     );
 
     const getShowablePages = cond([
       [any(isDefined), find(isDefined)],
-      [T, always(page)],
+      [T, always(page)]
     ]);
 
     return [...acc, getShowablePages(pages)];
@@ -127,8 +127,8 @@ const useNavigation = (): UseNavigationState => {
         ...acc,
         {
           ...page,
-          children: page.children.reduce(removeEmptyGroups, []),
-        },
+          children: page.children.reduce(removeEmptyGroups, [])
+        }
       ];
     }
 
@@ -137,8 +137,8 @@ const useNavigation = (): UseNavigationState => {
         ...acc,
         {
           ...page,
-          groups: page.groups.filter(filterNotEmptyGroup),
-        },
+          groups: page.groups.filter(filterNotEmptyGroup)
+        }
       ];
     }
 
@@ -163,7 +163,7 @@ const useNavigation = (): UseNavigationState => {
       const newAccumulator = {
         ...acc,
         ...(filteredChildren?.children || {}),
-        ...(filteredChildren?.groups || {}),
+        ...(filteredChildren?.groups || {})
       };
 
       if (equals(page.is_react, false) || isNil(page.url)) {
@@ -172,10 +172,10 @@ const useNavigation = (): UseNavigationState => {
 
       return {
         ...newAccumulator,
-        [page.url as string]: page.page as string,
+        [page.url as string]: page.page as string
       };
     },
-    [],
+    []
   );
 
   const allowedPages = useMemo(
@@ -183,7 +183,7 @@ const useNavigation = (): UseNavigationState => {
       isNil(navigation)
         ? undefined
         : navigation.result.reduce(reduceAllowedPages, [] as Array<string>),
-    [navigation],
+    [navigation]
   );
 
   const menu = useMemo(
@@ -193,7 +193,7 @@ const useNavigation = (): UseNavigationState => {
         : navigation.result
             .reduce(filterShowableElements, [])
             .reduce(removeEmptyGroups, []),
-    [navigation],
+    [navigation]
   );
 
   const reactRoutes = useMemo(
@@ -201,14 +201,14 @@ const useNavigation = (): UseNavigationState => {
       isNil(navigation)
         ? undefined
         : navigation.result.reduce(findReactRoutes, {}),
-    [navigation],
+    [navigation]
   );
 
   return {
     allowedPages,
     getNavigation,
     menu,
-    reactRoutes,
+    reactRoutes
   };
 };
 

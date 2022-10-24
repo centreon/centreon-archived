@@ -11,11 +11,11 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexDirection: 'column',
     height: '100%',
-    justifyContent: 'space-between',
+    justifyContent: 'space-between'
   },
   nowrap: {
-    whiteSpace: 'nowrap',
-  },
+    whiteSpace: 'nowrap'
+  }
 }));
 
 const Clock = (): JSX.Element => {
@@ -24,7 +24,7 @@ const Clock = (): JSX.Element => {
   const refreshIntervalRef = useRef<number>();
   const [dateTime, setDateTime] = useState({
     date: '',
-    time: '',
+    time: ''
   });
 
   const { format, toTime } = centreonUi.useLocaleDateTimeFormat();
@@ -44,7 +44,7 @@ const Clock = (): JSX.Element => {
     const thirtySeconds = 30 * 1000;
     refreshIntervalRef.current = window.setInterval(
       updateDateTime,
-      thirtySeconds,
+      thirtySeconds
     );
 
     return (): void => {

@@ -11,7 +11,7 @@ import {
   useRequest,
   ListingModel,
   MultiAutocompleteField,
-  SearchParameter,
+  SearchParameter
 } from '@centreon/ui';
 
 import { labelEvent } from '../../../translatedLabels';
@@ -21,7 +21,7 @@ import TimePeriodButtonGroup from '../../../Graph/Performance/TimePeriods';
 import {
   customTimePeriodAtom,
   getDatesDerivedAtom,
-  selectedTimePeriodAtom,
+  selectedTimePeriodAtom
 } from '../../../Graph/Performance/TimePeriods/timePeriodAtoms';
 
 import { types } from './Event';
@@ -38,8 +38,8 @@ const useStyles = makeStyles((theme) => ({
   filterHeader: {
     alignItems: 'center',
     display: 'grid',
-    padding: theme.spacing(1),
-  },
+    padding: theme.spacing(1)
+  }
 }));
 
 const TimelineTab = ({ details }: TabProps): JSX.Element => {
@@ -48,7 +48,7 @@ const TimelineTab = ({ details }: TabProps): JSX.Element => {
 
   const translatedTypes = types.map((type) => ({
     ...type,
-    name: t(type.name),
+    name: t(type.name)
   })) as Array<Type>;
 
   const [selectedTypes, setSelectedTypes] =
@@ -56,7 +56,7 @@ const TimelineTab = ({ details }: TabProps): JSX.Element => {
 
   const { sendRequest, sending } = useRequest<TimelineListing>({
     decoder: listTimelineEventsDecoder,
-    request: listTimelineEvents,
+    request: listTimelineEvents
   });
 
   const getIntervalDates = useAtomValue(getDatesDerivedAtom);
@@ -78,27 +78,27 @@ const TimelineTab = ({ details }: TabProps): JSX.Element => {
           field: 'date',
           values: {
             $gt: start,
-            $lt: end,
-          },
-        },
+            $lt: end
+          }
+        }
       ],
       lists: [
         {
           field: 'type',
-          values: selectedTypes.map(prop('id')),
-        },
-      ],
+          values: selectedTypes.map(prop('id'))
+        }
+      ]
     };
   };
 
   const timelineEndpoint = path(['links', 'endpoints', 'timeline'], details);
   const timelineDownloadEndpoint = path(
     ['links', 'endpoints', 'timeline_download'],
-    details,
+    details
   );
 
   const listTimeline = ({
-    atPage,
+    atPage
   }: {
     atPage?: number;
   }): Promise<TimelineListing> => {
@@ -107,8 +107,8 @@ const TimelineTab = ({ details }: TabProps): JSX.Element => {
       parameters: {
         limit,
         page: atPage,
-        search: getSearch(),
-      },
+        search: getSearch()
+      }
     });
   };
 
@@ -147,7 +147,7 @@ const TimelineTab = ({ details }: TabProps): JSX.Element => {
       reloadDependencies={[
         selectedTypes,
         selectedTimePeriod?.id || customTimePeriod,
-        timelineEndpoint,
+        timelineEndpoint
       ]}
       sendListingRequest={isNil(timelineEndpoint) ? undefined : listTimeline}
     >

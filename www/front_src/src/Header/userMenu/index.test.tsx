@@ -19,7 +19,7 @@ import UserMenu from '.';
 window.document.execCommand = jest.fn();
 
 jest.mock('@centreon/ui-context', () =>
-  jest.requireActual('centreon-frontend/packages/ui-context'),
+  jest.requireActual('centreon-frontend/packages/ui-context')
 );
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
@@ -31,7 +31,7 @@ const retrievedUser = {
   locale: 'en_US.UTF8',
   name: 'Admin',
   timezone: 'Europe/Paris',
-  use_deprecated_pages: false,
+  use_deprecated_pages: false
 };
 
 mockdate.set('2022-01-01T12:20:00Z');
@@ -41,24 +41,24 @@ const renderUserMenu = (): RenderResult =>
     <Provider
       initialValues={[
         [userAtom, retrievedUser],
-        [areUserParametersLoadedAtom, true],
+        [areUserParametersLoadedAtom, true]
       ]}
     >
       <BrowserRouter>
         <UserMenu />
       </BrowserRouter>
-    </Provider>,
+    </Provider>
   );
 
 const retrievedUserData = {
   fullname: 'Admin admin',
-  username: 'admin',
+  username: 'admin'
 };
 
 const retrievedUserDataAutologinKey = {
   autologinkey: 'autologinKey',
   fullname: 'Admin admin',
-  username: 'admin',
+  username: 'admin'
 };
 
 const cancelTokenRequestParam = { cancelToken: {} };
@@ -98,7 +98,7 @@ describe('User Menu', () => {
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalledWith(
         userEndpoint,
-        cancelTokenRequestParam,
+        cancelTokenRequestParam
       );
     });
 
@@ -168,9 +168,9 @@ describe('User Menu', () => {
         {
           ...cancelTokenRequestParam,
           headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-          },
-        },
+            'Content-Type': 'application/x-www-form-urlencoded'
+          }
+        }
       );
     });
 

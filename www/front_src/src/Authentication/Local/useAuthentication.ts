@@ -17,19 +17,19 @@ interface UseAuthenticationState {
 const useAuthentication = (): UseAuthenticationState => {
   const [
     initialPasswordPasswordSecurityPolicy,
-    setInitialPasswordSecurityPolicy,
+    setInitialPasswordSecurityPolicy
   ] = useState<PasswordSecurityPolicy | null>(null);
   const { sendRequest, sending } = useRequest<PasswordSecurityPolicy>({
     decoder: securityPolicyDecoder,
-    request: getPasswordPasswordSecurityPolicy,
+    request: getPasswordPasswordSecurityPolicy
   });
 
   const loadPasswordPasswordSecurityPolicy = (): void => {
     sendRequest()
       .then((securityPolicy) =>
         setInitialPasswordSecurityPolicy(
-          adaptPasswordSecurityPolicyFromAPI(securityPolicy),
-        ),
+          adaptPasswordSecurityPolicyFromAPI(securityPolicy)
+        )
       )
       .catch(() => undefined);
   };
@@ -41,7 +41,7 @@ const useAuthentication = (): UseAuthenticationState => {
   return {
     initialPasswordPasswordSecurityPolicy,
     loadPasswordPasswordSecurityPolicy,
-    sendingGetPasswordPasswordSecurityPolicy: sending,
+    sendingGetPasswordPasswordSecurityPolicy: sending
   };
 };
 

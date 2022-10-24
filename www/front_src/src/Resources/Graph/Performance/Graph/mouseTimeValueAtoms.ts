@@ -24,13 +24,13 @@ export const changeTimeValueDerivedAtom = atom(
   (
     _,
     set,
-    { newTimeValue, isInViewport }: NewTimeValueInViewportState,
+    { newTimeValue, isInViewport }: NewTimeValueInViewportState
   ): void => {
     if (not(isInViewport)) {
       return;
     }
     set(timeValueAtom, newTimeValue);
-  },
+  }
 );
 
 export const changeMousePositionAndTimeValueDerivedAtom = atom(
@@ -45,5 +45,5 @@ export const changeMousePositionAndTimeValueDerivedAtom = atom(
     set(mousePositionAtom, position);
 
     set(timeValueAtom, timeValue);
-  },
+  }
 );

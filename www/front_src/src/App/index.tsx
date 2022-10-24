@@ -19,23 +19,23 @@ const useStyles = makeStyles((theme) => ({
     overflow: 'hidden',
     position: 'relative',
     transition: 'all 0.3s',
-    width: '100%',
+    width: '100%'
   },
   fullScreenWrapper: {
     flexGrow: 1,
     height: '100%',
     overflow: 'hidden',
-    width: '100%',
+    width: '100%'
   },
   fullscreenButton: {
     bottom: '10px',
     position: 'absolute',
     right: '20px',
-    zIndex: 1500,
+    zIndex: 1500
   },
   mainContent: {
     height: `calc(100vh - ${theme.spacing(headerHeight)})`,
-    width: '100%',
+    width: '100%'
   },
   wrapper: {
     alignItems: 'stretch',
@@ -43,8 +43,8 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     fontFamily: theme.typography.fontFamily,
     height: '100%',
-    overflow: 'hidden',
-  },
+    overflow: 'hidden'
+  }
 }));
 
 const MainRouter = lazy(() => import('../components/mainRouter'));

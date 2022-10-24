@@ -15,11 +15,11 @@ import getBreadcrumbsByPath from './getBreadcrumbsByPath';
 
 const useStyles = makeStyles((theme) => ({
   item: {
-    display: 'flex',
+    display: 'flex'
   },
   root: {
-    padding: theme.spacing(0.5, 3),
-  },
+    padding: theme.spacing(0.5, 3)
+  }
 }));
 
 interface Props {
@@ -29,7 +29,7 @@ interface Props {
 
 const getBreadcrumbs = ({
   breadcrumbsByPath,
-  path,
+  path
 }): Array<BreadcrumbModel> => {
   if (breadcrumbsByPath[path]) {
     return breadcrumbsByPath[path];
@@ -49,7 +49,7 @@ const BreadcrumbTrail = ({ breadcrumbsByPath, path }: Props): JSX.Element => {
 
   const breadcrumbs = useMemo(
     () => getBreadcrumbs({ breadcrumbsByPath, path }),
-    [breadcrumbsByPath, path],
+    [breadcrumbsByPath, path]
   );
 
   return (

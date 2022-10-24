@@ -22,9 +22,9 @@ describe(AddCommentForm, () => {
     const resource = {
       id: 0,
       parent: {
-        id: 1,
+        id: 1
       },
-      type: 'service',
+      type: 'service'
     } as Resource;
 
     const onSuccess = jest.fn();
@@ -35,7 +35,7 @@ describe(AddCommentForm, () => {
         resource={resource}
         onClose={jest.fn()}
         onSuccess={onSuccess}
-      />,
+      />
     );
 
     expect(screen.getByText(labelAdd)).toBeDisabled();
@@ -46,7 +46,7 @@ describe(AddCommentForm, () => {
 
     const commentParameters = {
       comment: 'plop',
-      date: '2020-11-26T15:49:39Z',
+      date: '2020-11-26T15:49:39Z'
     };
 
     await waitFor(() => {
@@ -56,11 +56,11 @@ describe(AddCommentForm, () => {
           resources: [
             {
               ...resource,
-              ...commentParameters,
-            },
-          ],
+              ...commentParameters
+            }
+          ]
         },
-        expect.anything(),
+        expect.anything()
       );
 
       expect(onSuccess).toHaveBeenCalledWith(commentParameters);

@@ -10,7 +10,7 @@ import {
   labelTimeline,
   labelServices,
   labelMetrics,
-  labelNotification,
+  labelNotification
 } from '../../translatedLabels';
 import { ResourceDetails } from '../models';
 import DetailsLoadingSkeleton from '../LoadingSkeleton';
@@ -41,7 +41,7 @@ const tabs: Array<Tab> = [
     ariaLabel: labelDetails,
     getIsActive: (): boolean => true,
     id: detailsTabId,
-    title: labelDetails,
+    title: labelDetails
   },
   {
     Component: ServicesTab,
@@ -49,13 +49,13 @@ const tabs: Array<Tab> = [
       return details.type === 'host';
     },
     id: servicesTabId,
-    title: labelServices,
+    title: labelServices
   },
   {
     Component: TimelineTab,
     getIsActive: (): boolean => true,
     id: timelineTabId,
-    title: labelTimeline,
+    title: labelTimeline
   },
   {
     Component: GraphTab,
@@ -71,7 +71,7 @@ const tabs: Array<Tab> = [
       return !isNil(path(['links', 'endpoints', 'performance_graph'], details));
     },
     id: graphTabId,
-    title: labelGraph,
+    title: labelGraph
   },
   {
     Component: MetricsTab,
@@ -83,21 +83,21 @@ const tabs: Array<Tab> = [
       return details.type === 'metaservice';
     },
     id: metricsTabId,
-    title: labelMetrics,
+    title: labelMetrics
   },
   {
     Component: NotificationsTab,
     ariaLabel: labelNotification,
     getIsActive: (): boolean => true,
     id: notificationsTabId,
-    title: labelNotification,
-  },
+    title: labelNotification
+  }
 ];
 
 const useStyles = makeStyles((theme) => ({
   container: {
-    padding: theme.spacing(2),
-  },
+    padding: theme.spacing(2)
+  }
 }));
 
 interface TabByIdProps {
@@ -125,7 +125,7 @@ const tabIdByLabel = {
   metrics: metricsTabId,
   notification: notificationsTabId,
   services: servicesTabId,
-  timeline: timelineTabId,
+  timeline: timelineTabId
 };
 
 const getTabIdFromLabel = (label: string): TabId => {
@@ -152,5 +152,5 @@ export {
   tabs,
   TabById,
   getTabIdFromLabel,
-  getTabLabelFromId,
+  getTabLabelFromId
 };

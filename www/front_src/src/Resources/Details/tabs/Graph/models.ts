@@ -9,7 +9,7 @@ import {
   label7Days,
   labelLast7Days,
   label1Day,
-  labelLastDay,
+  labelLastDay
 } from '../../../translatedLabels';
 
 export type TimePeriodId = 'last_24_h' | 'last_7_days' | 'last_31_days';
@@ -37,7 +37,7 @@ export interface StoredCustomTimePeriod {
 
 export enum CustomTimePeriodProperty {
   end = 'end',
-  start = 'start',
+  start = 'start'
 }
 
 export interface ChangeCustomTimePeriodProps {
@@ -51,7 +51,7 @@ const lastDayPeriod: TimePeriod = {
   id: 'last_24_h',
   largeName: labelLastDay,
   name: label1Day,
-  timelineEventsLimit: 20,
+  timelineEventsLimit: 20
 };
 
 const last7Days: TimePeriod = {
@@ -60,7 +60,7 @@ const last7Days: TimePeriod = {
   id: 'last_7_days',
   largeName: labelLast7Days,
   name: label7Days,
-  timelineEventsLimit: 100,
+  timelineEventsLimit: 100
 };
 
 const last31Days: TimePeriod = {
@@ -69,7 +69,7 @@ const last31Days: TimePeriod = {
   id: 'last_31_days',
   largeName: labelLast31Days,
   name: label31Days,
-  timelineEventsLimit: 500,
+  timelineEventsLimit: 500
 };
 
 const timePeriods: Array<TimePeriod> = [lastDayPeriod, last7Days, last31Days];

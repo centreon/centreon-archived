@@ -21,9 +21,9 @@ const useLoadWallpaper = (): void => {
       cond<number, string>([
         [lte(theme.breakpoints.values.xl), always(centreonWallpaperXl)],
         [lte(theme.breakpoints.values.lg), always(centreonWallpaperLg)],
-        [lte(theme.breakpoints.values.sm), always(centreonWallpaperSm)],
+        [lte(theme.breakpoints.values.sm), always(centreonWallpaperSm)]
       ])(window.screen.width),
-    [],
+    []
   );
 
   useEffect(() => {

@@ -9,7 +9,7 @@ import {
   acknowledgeEndpoint,
   checkEndpoint,
   commentEndpoint,
-  downtimeEndpoint,
+  downtimeEndpoint
 } from './endpoint';
 
 interface ResourcesWithAcknowledgeParams {
@@ -22,12 +22,12 @@ const acknowledgeResources =
   (cancelToken: CancelToken) =>
   ({
     resources,
-    params,
+    params
   }: ResourcesWithAcknowledgeParams): Promise<Array<AxiosResponse>> => {
     const payload = resources.map(({ type, id, parent, service_id }) => ({
       id: equals(type, ResourceType.anomalydetection) ? service_id : id,
       parent: parent ? { id: parent?.id } : null,
-      type: ResourceCategory[type],
+      type: ResourceCategory[type]
     }));
 
     return axios.post(
@@ -38,11 +38,11 @@ const acknowledgeResources =
           is_notify_contacts: params.notify,
           is_persistent_comment: params.persistent,
           is_sticky: params.isSticky,
-          with_services: params.acknowledgeAttachedResources,
+          with_services: params.acknowledgeAttachedResources
         },
-        resources: payload,
+        resources: payload
       },
-      { cancelToken },
+      { cancelToken }
     );
   };
 
@@ -55,12 +55,12 @@ const setDowntimeOnResources =
   (cancelToken: CancelToken) =>
   ({
     resources,
-    params,
+    params
   }: ResourcesWithDowntimeParams): Promise<AxiosResponse> => {
     const payload = resources.map(({ type, id, parent, service_id }) => ({
       id: equals(type, ResourceType.anomalydetection) ? service_id : id,
       parent: parent ? { id: parent?.id } : null,
-      type: ResourceCategory[type],
+      type: ResourceCategory[type]
     }));
 
     return axios.post(
@@ -72,11 +72,11 @@ const setDowntimeOnResources =
           end_time: params.endTime,
           is_fixed: params.fixed,
           start_time: params.startTime,
-          with_services: params.isDowntimeWithServices,
+          with_services: params.isDowntimeWithServices
         },
-        resources: payload,
+        resources: payload
       },
-      { cancelToken },
+      { cancelToken }
     );
   };
 
@@ -87,20 +87,20 @@ interface ResourcesWithRequestParams {
 
 const checkResources = ({
   resources,
-  cancelToken,
+  cancelToken
 }: ResourcesWithRequestParams): Promise<AxiosResponse> => {
   const payload = resources.map(({ type, id, parent, service_id }) => ({
     id: equals(type, ResourceType.anomalydetection) ? service_id : id,
     parent: parent ? { id: parent?.id } : null,
-    type: ResourceCategory[type],
+    type: ResourceCategory[type]
   }));
 
   return axios.post(
     checkEndpoint,
     {
-      resources: payload,
+      resources: payload
     },
-    { cancelToken },
+    { cancelToken }
   );
 };
 
@@ -118,7 +118,7 @@ const commentResources =
   (cancelToken: CancelToken) =>
   ({
     resources,
-    parameters,
+    parameters
   }: ResourcesWithCommentParams): Promise<AxiosResponse> => {
     return axios.post(
       commentEndpoint,
@@ -130,10 +130,10 @@ const commentResources =
             ? resource?.service_id
             : resource.id,
           parent: resource?.parent ? { id: resource?.parent?.id } : null,
-          type: ResourceCategory[resource.type],
-        })),
+          type: ResourceCategory[resource.type]
+        }))
       },
-      { cancelToken },
+      { cancelToken }
     );
   };
 
@@ -141,5 +141,5 @@ export {
   acknowledgeResources,
   setDowntimeOnResources,
   checkResources,
-  commentResources,
+  commentResources
 };

@@ -7,8 +7,8 @@ import { labelNoResultsFound } from '../translatedLabels';
 
 const useStyles = makeStyles((theme) => ({
   container: {
-    padding: theme.spacing(1),
-  },
+    padding: theme.spacing(1)
+  }
 }));
 
 const NoResultsMessage = (): JSX.Element => {

@@ -27,17 +27,17 @@ const useStyles = makeStyles((theme) => ({
     height: '100vh',
     justifyContent: 'center',
     rowGap: theme.spacing(2),
-    width: '100vw',
+    width: '100vw'
   },
   paper: {
-    padding: theme.spacing(4, 3),
-  },
+    padding: theme.spacing(4, 3)
+  }
 }));
 
 const initialValues = {
   newPassword: '',
   newPasswordConfirmation: '',
-  oldPassword: '',
+  oldPassword: ''
 };
 
 const ResetPassword = (): JSX.Element | null => {

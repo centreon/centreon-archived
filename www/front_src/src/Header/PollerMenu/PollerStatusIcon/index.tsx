@@ -13,7 +13,7 @@ import {
   labelDatabaseNotActive,
   labelDatabaseUpdateAndActive,
   labelLatencyDetected,
-  labelNoLatencyDetected,
+  labelNoLatencyDetected
 } from '../translatedLabels';
 import { Issues } from '../models';
 
@@ -41,36 +41,36 @@ const useStatusStyles = makeStyles<Theme, StyleProps>((theme) => {
   const getSeverityColor = (severityCode): CreateCSSProperties<StyleProps> => ({
     background: getStatusColors({
       severityCode,
-      theme,
+      theme
     }).backgroundColor,
     color: getStatusColors({
       severityCode,
-      theme,
-    }).color,
+      theme
+    }).color
   });
 
   return {
     avatar: {
       fontSize: theme.typography.body1.fontSize,
       height: theme.spacing(2.5),
-      width: theme.spacing(2.5),
+      width: theme.spacing(2.5)
     },
     container: {
       display: 'flex',
       gap: theme.spacing(0.5),
       [theme.breakpoints.down(768)]: {
         bottom: 0,
-        right: theme.spacing(1),
-      },
+        right: theme.spacing(1)
+      }
     },
     database: ({ databaseSeverity }): CreateCSSProperties<StyleProps> =>
       getSeverityColor(databaseSeverity),
     icon: {
       height: theme.spacing(1.75),
-      width: theme.spacing(1.75),
+      width: theme.spacing(1.75)
     },
     latency: ({ latencySeverity }): CreateCSSProperties<StyleProps> =>
-      getSeverityColor(latencySeverity),
+      getSeverityColor(latencySeverity)
   };
 });
 

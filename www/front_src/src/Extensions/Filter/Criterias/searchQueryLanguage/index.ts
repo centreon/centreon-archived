@@ -27,7 +27,7 @@ import {
   startsWith,
   trim,
   without,
-  __,
+  __
 } from 'ramda';
 import pluralize from 'pluralize';
 
@@ -36,7 +36,7 @@ import { SelectEntry } from '@centreon/ui';
 import {
   Criteria,
   criteriaValueNameById,
-  selectableCriterias,
+  selectableCriterias
 } from '../models';
 import getDefaultCriterias from '../default';
 
@@ -46,7 +46,7 @@ import {
   criteriaNameSortOrder,
   CriteriaValueSuggestionsProps,
   AutocompleteSuggestionProps,
-  getSelectableCriteriasByName,
+  getSelectableCriteriasByName
 } from './models';
 
 const singular = pluralize.singular as (string) => string;
@@ -68,14 +68,14 @@ const isCriteriaPart = pipe(
   head,
   getCriteriaNameFromQueryLanguageName,
   pluralize,
-  isIn(selectableCriteriaNames),
+  isIn(selectableCriteriaNames)
 );
 const isFilledCriteria = pipe(endsWith(':'), not);
 
 const parse = (search: string): Array<Criteria> => {
   const [criteriaParts, rawSearchParts] = partition(
     allPass([includes(':'), isCriteriaPart, isFilledCriteria]),
-    search.split(' '),
+    search.split(' ')
   );
 
   const criterias: Array<Criteria> = criteriaParts.map((criteria) => {
@@ -90,9 +90,9 @@ const parse = (search: string): Array<Criteria> => {
 
         return {
           id,
-          name: criteriaValueNameById[id],
+          name: criteriaValueNameById[id]
         };
-      }),
+      })
     };
   });
 
@@ -100,8 +100,8 @@ const parse = (search: string): Array<Criteria> => {
     ...criterias,
     {
       name: 'search',
-      value: rawSearchParts.join(' ').trim(),
-    },
+      value: rawSearchParts.join(' ').trim()
+    }
   ];
 
   const toNames = map(prop('name'));
@@ -115,7 +115,7 @@ const parse = (search: string): Array<Criteria> => {
 
   return sortBy(
     ({ name }) => criteriaNameSortOrder[name],
-    [...defaultCriterias, ...criteriasWithSearch],
+    [...defaultCriterias, ...criteriasWithSearch]
   );
 };
 
@@ -135,11 +135,11 @@ const build = (criterias: Array<Criteria>): string => {
       const values = value as Array<SelectEntry>;
 
       const formattedValues = values.map(
-        pipe(({ id }) => id as string, getCriteriaQueryLanguageName),
+        pipe(({ id }) => id as string, getCriteriaQueryLanguageName)
       );
       const criteriaName = compose(
         getCriteriaQueryLanguageName,
-        singular,
+        singular
       )(name);
 
       return `${criteriaName}:${formattedValues.join(',')}`;
@@ -156,7 +156,7 @@ const build = (criterias: Array<Criteria>): string => {
 const getCriteriaNameSuggestions = (word: string): Array<string> => {
   const criteriaNames = map(
     compose(getCriteriaQueryLanguageName, pluralize.singular),
-    selectableCriteriaNames,
+    selectableCriteriaNames
   );
 
   if (isEmpty(word)) {
@@ -170,10 +170,10 @@ const getCriteriaNameSuggestions = (word: string): Array<string> => {
 
 const getCriteriaValueSuggestions = ({
   selectedValues,
-  criterias,
+  criterias
 }: CriteriaValueSuggestionsProps): Array<string> => {
   const criteriaNames = map<CriteriaId, string>(
-    compose(getCriteriaQueryLanguageName, prop('id')),
+    compose(getCriteriaQueryLanguageName, prop('id'))
   )(criterias);
 
   return without(selectedValues, criteriaNames);
@@ -181,7 +181,7 @@ const getCriteriaValueSuggestions = ({
 
 const getIsNextCharacterEmpty = ({
   search,
-  cursorPosition,
+  cursorPosition
 }: AutocompleteSuggestionProps): boolean => {
   const nextCharacter = search[cursorPosition];
 
@@ -196,36 +196,36 @@ interface CriteriaExpression {
 
 const getCriteriaAndExpression = ({
   search,
-  cursorPosition,
+  cursorPosition
 }: AutocompleteSuggestionProps): CriteriaExpression => {
   const searchBeforeCursor = slice(0, cursorPosition + 1, search);
   const expressionBeforeCursor = pipe(
     trim,
     split(' '),
-    last,
+    last
   )(searchBeforeCursor) as string;
 
   const expressionCriteria = expressionBeforeCursor.split(':');
   const criteriaQueryLanguageName = head(expressionCriteria) as string;
   const criteriaName = getCriteriaNameFromQueryLanguageName(
-    criteriaQueryLanguageName,
+    criteriaQueryLanguageName
   );
   const expressionCriteriaValues = pipe(last, split(','))(expressionCriteria);
 
   return {
     criteriaName,
     expressionBeforeCursor,
-    expressionCriteriaValues,
+    expressionCriteriaValues
   };
 };
 
 const getAutocompleteSuggestions = ({
   search,
-  cursorPosition,
+  cursorPosition
 }: AutocompleteSuggestionProps): Array<string> => {
   const isNextCharacterEmpty = getIsNextCharacterEmpty({
     cursorPosition,
-    search,
+    search
   });
 
   if (isNil(cursorPosition) || !isNextCharacterEmpty) {
@@ -245,12 +245,12 @@ const getAutocompleteSuggestions = ({
 
     const criteriaValueSuggestions = getCriteriaValueSuggestions({
       criterias,
-      selectedValues: expressionCriteriaValues,
+      selectedValues: expressionCriteriaValues
     });
 
     const isLastValueInSuggestions = getCriteriaValueSuggestions({
       criterias,
-      selectedValues: [],
+      selectedValues: []
     }).includes(lastCriteriaValue);
 
     return isLastValueInSuggestions

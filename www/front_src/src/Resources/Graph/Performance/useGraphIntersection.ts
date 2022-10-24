@@ -19,8 +19,8 @@ export const useIntersection = (): GraphIntersectionState => {
     observer.current = new window.IntersectionObserver(
       ([newEntry]) => setEntry(newEntry),
       {
-        threshold: 0,
-      },
+        threshold: 0
+      }
     );
 
     if (element) {
@@ -34,6 +34,6 @@ export const useIntersection = (): GraphIntersectionState => {
 
   return {
     isInViewport: entry?.isIntersecting ?? true,
-    setElement,
+    setElement
   };
 };

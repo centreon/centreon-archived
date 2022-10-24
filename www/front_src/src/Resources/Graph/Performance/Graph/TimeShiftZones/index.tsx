@@ -13,7 +13,7 @@ import TimeShiftIcon, { timeShiftIconSize } from './Icon';
 
 export enum TimeShiftDirection {
   backward,
-  forward,
+  forward
 }
 
 interface TimeShiftContextProps {

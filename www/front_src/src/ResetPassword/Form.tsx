@@ -4,7 +4,7 @@ import {
   FormikErrors,
   FormikTouched,
   FormikValues,
-  useFormikContext,
+  useFormikContext
 } from 'formik';
 import { equals, isEmpty, not, prop } from 'ramda';
 import { useTranslation } from 'react-i18next';
@@ -20,7 +20,7 @@ import {
   labelCurrentPassword,
   labelNewPassword,
   labelNewPasswordConfirmation,
-  labelResetPassword,
+  labelResetPassword
 } from './translatedLabels';
 
 const oldPasswordFieldName = 'oldPassword';
@@ -41,7 +41,7 @@ const contentLayout = [
     getValue: (values: FormikValues): string =>
       prop(oldPasswordFieldName, values),
     label: labelCurrentPassword,
-    name: oldPasswordFieldName,
+    name: oldPasswordFieldName
   },
   {
     getError: ({ errors, touched }: GetErrorProps): string | undefined =>
@@ -51,7 +51,7 @@ const contentLayout = [
     getValue: (values: FormikValues): string =>
       prop(newPasswordFieldName, values),
     label: labelNewPassword,
-    name: newPasswordFieldName,
+    name: newPasswordFieldName
   },
   {
     getError: ({ errors, touched }: GetErrorProps): string | undefined =>
@@ -61,8 +61,8 @@ const contentLayout = [
     getValue: (values: FormikValues): string =>
       prop(newPasswordConfirmationFieldName, values),
     label: labelNewPasswordConfirmation,
-    name: newPasswordConfirmationFieldName,
-  },
+    name: newPasswordConfirmationFieldName
+  }
 ];
 
 const useStyles = makeStyles((theme) => ({
@@ -70,8 +70,8 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexDirection: 'column',
     marginTop: theme.spacing(3),
-    rowGap: theme.spacing(2),
-  },
+    rowGap: theme.spacing(2)
+  }
 }));
 
 const Form = (): JSX.Element => {
@@ -81,7 +81,7 @@ const Form = (): JSX.Element => {
   const [passwordVisibility, setPasswordVisibility] = useState({
     [newPasswordConfirmationFieldName]: false,
     [newPasswordFieldName]: false,
-    [oldPasswordFieldName]: false,
+    [oldPasswordFieldName]: false
   });
 
   const {
@@ -92,13 +92,13 @@ const Form = (): JSX.Element => {
     touched,
     handleBlur,
     isSubmitting,
-    dirty,
+    dirty
   } = useFormikContext<FormikValues>();
 
   const changeVisibility = (fieldName: string): void => {
     setPasswordVisibility((currentPasswordVisibility) => ({
       ...currentPasswordVisibility,
-      [fieldName]: !currentPasswordVisibility[fieldName],
+      [fieldName]: !currentPasswordVisibility[fieldName]
     }));
   };
 

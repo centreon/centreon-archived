@@ -5,12 +5,12 @@ const useStyles = makeStyles((theme) => ({
   skeleton: {
     height: 62,
     transform: 'none',
-    width: '100%',
+    width: '100%'
   },
   skeletons: {
     display: 'grid',
-    gridGap: theme.spacing(1),
-  },
+    gridGap: theme.spacing(1)
+  }
 }));
 
 const LoadingSkeleton = (): JSX.Element => {

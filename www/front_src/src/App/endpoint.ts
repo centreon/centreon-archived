@@ -12,5 +12,5 @@ export {
   externalTranslationEndpoint,
   internalTranslationEndpoint,
   aclEndpoint,
-  userEndpoint,
+  userEndpoint
 };

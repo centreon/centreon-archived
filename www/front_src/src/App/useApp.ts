@@ -10,7 +10,7 @@ import {
   aclAtom,
   Actions,
   downtimeAtom,
-  refreshIntervalAtom,
+  refreshIntervalAtom
 } from '@centreon/ui-context';
 import { getData, useRequest, useSnackbar, postData } from '@centreon/ui';
 
@@ -44,17 +44,17 @@ const useApp = (): UseAppState => {
 
   const { sendRequest: keepAliveRequest } = useRequest({
     httpCodesBypassErrorSnackbar: [401],
-    request: getData,
+    request: getData
   });
   const { sendRequest: getParameters } = useRequest<DefaultParameters>({
-    request: getData,
+    request: getData
   });
   const { sendRequest: getAcl } = useRequest<Actions>({
-    request: getData,
+    request: getData
   });
 
   const { sendRequest: logoutRequest } = useRequest({
-    request: postData,
+    request: postData
   });
 
   const setDowntime = useUpdateAtom(downtimeAtom);
@@ -69,7 +69,7 @@ const useApp = (): UseAppState => {
     setAreUserParametersLoaded(false);
     logoutRequest({
       data: {},
-      endpoint: logoutEndpoint,
+      endpoint: logoutEndpoint
     }).then(() => {
       showErrorMessage(t(labelYouAreDisconnected));
       navigate(reactRoutes.login);
@@ -81,24 +81,24 @@ const useApp = (): UseAppState => {
 
     Promise.all([
       getParameters({
-        endpoint: parametersEndpoint,
+        endpoint: parametersEndpoint
       }),
       getAcl({
-        endpoint: aclEndpoint,
-      }),
+        endpoint: aclEndpoint
+      })
     ])
       .then(([retrievedParameters, retrievedAcl]) => {
         setDowntime({
           duration: parseInt(
             retrievedParameters.monitoring_default_downtime_duration,
-            10,
+            10
           ),
           fixed: retrievedParameters.monitoring_default_downtime_fixed,
           with_services:
-            retrievedParameters.monitoring_default_downtime_with_services,
+            retrievedParameters.monitoring_default_downtime_with_services
         });
         setRefreshInterval(
-          parseInt(retrievedParameters.monitoring_default_refresh_interval, 10),
+          parseInt(retrievedParameters.monitoring_default_refresh_interval, 10)
         );
         setAcl({ actions: retrievedAcl });
         setAcknowledgement({
@@ -109,7 +109,7 @@ const useApp = (): UseAppState => {
             retrievedParameters.monitoring_default_acknowledgement_persistent,
           sticky: retrievedParameters.monitoring_default_acknowledgement_sticky,
           with_services:
-            retrievedParameters.monitoring_default_acknowledgement_with_services,
+            retrievedParameters.monitoring_default_acknowledgement_with_services
         });
       })
       .catch((error) => {
@@ -123,7 +123,7 @@ const useApp = (): UseAppState => {
 
   const keepAlive = (): void => {
     keepAliveRequest({
-      endpoint: keepAliveEndpoint,
+      endpoint: keepAliveEndpoint
     }).catch((error) => {
       if (not(pathEq(['response', 'status'], 401, error))) {
         return;
@@ -145,7 +145,7 @@ const useApp = (): UseAppState => {
   }, []);
 
   return {
-    hasMinArgument,
+    hasMinArgument
   };
 };
 

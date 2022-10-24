@@ -23,24 +23,24 @@ const useStyles = makeStyles((theme) => ({
     gridColumnGap: theme.spacing(2),
     gridTemplateColumns: '1fr 1fr auto',
     justifyItems: 'flex-start',
-    width: '100%',
+    width: '100%'
   },
   container: {
     display: 'grid',
-    gridGap: theme.spacing(1),
+    gridGap: theme.spacing(1)
   },
   iconValuePair: {
     alignItems: 'center',
     display: 'flex',
     flexDirection: 'row',
-    gridGap: theme.spacing(1),
+    gridGap: theme.spacing(1)
   },
   resources: {
     display: 'flex',
     flexDirection: 'column',
     gridGap: theme.spacing(1),
-    overflow: 'hidden',
-  },
+    overflow: 'hidden'
+  }
 }));
 
 interface Props {

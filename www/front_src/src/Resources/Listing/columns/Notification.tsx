@@ -16,7 +16,7 @@ interface NotificationTooltipProps {
 
 const NotificationTooltip = ({
   Icon,
-  title,
+  title
 }: NotificationTooltipProps): JSX.Element => {
   const icon = <Icon color="primary" fontSize="small" />;
 
@@ -24,7 +24,7 @@ const NotificationTooltip = ({
 };
 
 const NotificationColumn = ({
-  row,
+  row
 }: ComponentColumnProps): JSX.Element | null => {
   const { t } = useTranslation();
 

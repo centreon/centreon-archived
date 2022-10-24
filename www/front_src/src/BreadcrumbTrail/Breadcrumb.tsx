@@ -8,12 +8,12 @@ import { Breadcrumb as BreadcrumbModel } from './models';
 const useStyles = makeStyles(() => ({
   link: {
     '&:hover': {
-      textDecoration: 'underline',
+      textDecoration: 'underline'
     },
     color: 'inherit',
     fontSize: 'small',
-    textDecoration: 'none',
-  },
+    textDecoration: 'none'
+  }
 }));
 
 interface Props {

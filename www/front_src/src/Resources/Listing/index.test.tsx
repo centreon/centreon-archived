@@ -16,7 +16,7 @@ import {
   isNil,
   last,
   equals,
-  not,
+  not
 } from 'ramda';
 import userEvent from '@testing-library/user-event';
 import { Provider } from 'jotai';
@@ -28,7 +28,7 @@ import {
   fireEvent,
   Matcher,
   act,
-  Column,
+  Column
 } from '@centreon/ui';
 import { refreshIntervalAtom, userAtom } from '@centreon/ui-context';
 
@@ -40,7 +40,7 @@ import { labelInDowntime, labelAcknowledged } from '../translatedLabels';
 import {
   getListingEndpoint,
   cancelTokenRequestParam,
-  defaultSecondSortCriteria,
+  defaultSecondSortCriteria
 } from '../testUtils';
 import { unhandledProblemsFilter } from '../Filter/models';
 import useLoadDetails from '../testUtils/useLoadDetails';
@@ -53,7 +53,7 @@ import Listing from '.';
 
 const columns = getColumns({
   actions: { onAcknowledge: jest.fn() },
-  t: identity,
+  t: identity
 }) as Array<Column>;
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
@@ -61,7 +61,7 @@ const mockedAxios = axios as jest.Mocked<typeof axios>;
 const mockUser = {
   isExportButtonEnabled: true,
   locale: 'en',
-  timezone: 'Europe/Paris',
+  timezone: 'Europe/Paris'
 };
 const mockRefreshInterval = 60;
 
@@ -87,18 +87,18 @@ const fillEntities = (): Array<Resource> => {
         metrics: 'endpoint',
         performance_graph: index % 6 === 0 ? 'endpoint' : undefined,
         status_graph: index % 3 === 0 ? 'endpoint' : undefined,
-        timeline: 'endpoint',
+        timeline: 'endpoint'
       },
       externals: {
         notes: {
-          url: 'https://centreon.com',
-        },
+          url: 'https://centreon.com'
+        }
       },
       uris: {
         configuration: index % 7 === 0 ? 'uri' : undefined,
         logs: index % 4 === 0 ? 'uri' : undefined,
-        reporting: index % 3 === 0 ? 'uri' : undefined,
-      },
+        reporting: index % 3 === 0 ? 'uri' : undefined
+      }
     },
     name: `E${index}`,
     passive_checks: index % 8 === 0,
@@ -106,11 +106,11 @@ const fillEntities = (): Array<Resource> => {
     short_type: index % 4 === 0 ? 's' : 'h',
     status: {
       name: 'OK',
-      severity_code: 5,
+      severity_code: 5
     },
     tries: '1',
     type: index % 4 === 0 ? ResourceType.service : ResourceType.host,
-    uuid: `${index}`,
+    uuid: `${index}`
   }));
 };
 
@@ -121,9 +121,9 @@ const retrievedListing = {
     page: 1,
     search: {},
     sort_by: {},
-    total: entities.length,
+    total: entities.length
   },
-  result: entities,
+  result: entities
 };
 
 let context: ResourceContext;
@@ -140,7 +140,7 @@ const ListingTest = (): JSX.Element => {
     ...listingState,
     ...actionsState,
     ...detailsState,
-    ...filterState,
+    ...filterState
   };
 
   return (
@@ -154,7 +154,7 @@ const ListingTestWithJotai = (): JSX.Element => (
   <Provider
     initialValues={[
       [userAtom, mockUser],
-      [refreshIntervalAtom, mockRefreshInterval],
+      [refreshIntervalAtom, mockRefreshInterval]
     ]}
   >
     <ListingTest />
@@ -171,10 +171,10 @@ describe(Listing, () => {
           meta: {
             limit: 30,
             page: 1,
-            total: 0,
+            total: 0
           },
-          result: [],
-        },
+          result: []
+        }
       })
       .mockResolvedValue({ data: retrievedListing });
   });
@@ -191,10 +191,10 @@ describe(Listing, () => {
           meta: {
             limit: 30,
             page: 1,
-            total: 0,
+            total: 0
           },
-          result: [],
-        },
+          result: []
+        }
       })
       .mockResolvedValueOnce({ data: retrievedListing });
 
@@ -206,7 +206,7 @@ describe(Listing, () => {
 
     const [resourcesWithMultipleLines, resourcesWithSingleLines] = partition(
       where({ information: includes('\n') }),
-      retrievedListing.result,
+      retrievedListing.result
     );
 
     await waitFor(() =>
@@ -214,10 +214,10 @@ describe(Listing, () => {
         getByText(
           pipe<string, Array<string>, Matcher>(
             split('\n'),
-            head,
-          )(resourcesWithMultipleLines[0].information as string),
-        ),
-      ).toBeInTheDocument(),
+            head
+          )(resourcesWithMultipleLines[0].information as string)
+        )
+      ).toBeInTheDocument()
     );
 
     resourcesWithMultipleLines.forEach(({ information }) => {
@@ -225,9 +225,9 @@ describe(Listing, () => {
         getByText(
           pipe<string, Array<string>, Matcher>(
             split('\n'),
-            head,
-          )(information as string),
-        ),
+            head
+          )(information as string)
+        )
       ).toBeInTheDocument();
       expect(queryByText(information as string)).not.toBeInTheDocument();
     });
@@ -252,7 +252,7 @@ describe(Listing, () => {
       columns
         .filter(({ sortable }) => sortable !== false)
         .filter(({ id }) => includes(id, defaultSelectedColumnIds))
-        .map(({ id, label, sortField }) => [id, label, sortField]),
+        .map(({ id, label, sortField }) => [id, label, sortField])
     )(
       'executes a listing request with sort_by param and stores the order parameter in the URL when %p column is clicked',
       async (id, label, sortField) => {
@@ -277,10 +277,10 @@ describe(Listing, () => {
             getListingEndpoint({
               sort: {
                 [sortBy]: 'desc',
-                ...secondSortCriteria,
-              },
+                ...secondSortCriteria
+              }
             }),
-            cancelTokenRequestParam,
+            cancelTokenRequestParam
           );
         });
 
@@ -291,13 +291,13 @@ describe(Listing, () => {
             getListingEndpoint({
               sort: {
                 [sortBy]: 'asc',
-                ...secondSortCriteria,
-              },
+                ...secondSortCriteria
+              }
             }),
-            cancelTokenRequestParam,
-          ),
+            cancelTokenRequestParam
+          )
         );
-      },
+      }
     );
   });
 
@@ -311,8 +311,8 @@ describe(Listing, () => {
     mockedAxios.get.mockResolvedValueOnce({
       data: {
         ...retrievedListing,
-        meta: { ...retrievedListing.meta, page: 2 },
-      },
+        meta: { ...retrievedListing.meta, page: 2 }
+      }
     });
 
     await waitFor(() => expect(getByLabelText('Next page')).toBeEnabled());
@@ -322,43 +322,43 @@ describe(Listing, () => {
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenLastCalledWith(
         getListingEndpoint({ page: 2 }),
-        cancelTokenRequestParam,
+        cancelTokenRequestParam
       );
     });
 
     mockedAxios.get.mockResolvedValueOnce({
       data: {
         ...retrievedListing,
-        meta: { ...retrievedListing.meta, page: 1 },
-      },
+        meta: { ...retrievedListing.meta, page: 1 }
+      }
     });
 
     fireEvent.click(getByLabelText('Previous page'));
 
     expect(mockedAxios.get).toHaveBeenLastCalledWith(
       getListingEndpoint({ page: 1 }),
-      cancelTokenRequestParam,
+      cancelTokenRequestParam
     );
 
     mockedAxios.get.mockResolvedValueOnce({
       data: {
         ...retrievedListing,
-        meta: { ...retrievedListing.meta, page: 4 },
-      },
+        meta: { ...retrievedListing.meta, page: 4 }
+      }
     });
 
     fireEvent.click(getByLabelText('Last page'));
 
     expect(mockedAxios.get).toHaveBeenLastCalledWith(
       getListingEndpoint({ page: 4 }),
-      cancelTokenRequestParam,
+      cancelTokenRequestParam
     );
 
     mockedAxios.get.mockResolvedValueOnce({
       data: {
         ...retrievedListing,
-        meta: { ...retrievedListing.meta, page: 4 },
-      },
+        meta: { ...retrievedListing.meta, page: 4 }
+      }
     });
 
     fireEvent.click(getByLabelText('First page'));
@@ -366,8 +366,8 @@ describe(Listing, () => {
     await waitFor(() =>
       expect(mockedAxios.get).toHaveBeenLastCalledWith(
         getListingEndpoint({ page: 1 }),
-        cancelTokenRequestParam,
-      ),
+        cancelTokenRequestParam
+      )
     );
   });
 
@@ -377,14 +377,14 @@ describe(Listing, () => {
     mockedAxios.get.mockResolvedValueOnce({ data: retrievedListing });
 
     fireEvent.change(getByDisplayValue('10'), {
-      target: { value: '20' },
+      target: { value: '20' }
     });
 
     await waitFor(() =>
       expect(mockedAxios.get).toHaveBeenCalledWith(
         getListingEndpoint({ limit: 30 }),
-        cancelTokenRequestParam,
-      ),
+        cancelTokenRequestParam
+      )
     );
   });
 
@@ -402,16 +402,16 @@ describe(Listing, () => {
             end_time: '2020-02-28T08:18:16Z',
             id: 0,
             is_fixed: true,
-            start_time: '2020-02-28T08:16:16Z',
-          },
-        ],
-      },
+            start_time: '2020-02-28T08:16:16Z'
+          }
+        ]
+      }
     });
 
     const chipLabel = `${entityInDowntime?.name} ${labelInDowntime}`;
 
     const chip = await findByLabelText(chipLabel, undefined, {
-      timeout: 10000,
+      timeout: 10000
     });
 
     fireEvent.mouseEnter(chip);
@@ -420,8 +420,8 @@ describe(Listing, () => {
     await waitFor(() =>
       expect(mockedAxios.get).toHaveBeenLastCalledWith(
         entityInDowntime?.links?.endpoints.downtime,
-        cancelTokenRequestParam,
-      ),
+        cancelTokenRequestParam
+      )
     );
 
     await waitFor(() => expect(getByText('admin')).toBeInTheDocument());
@@ -435,7 +435,7 @@ describe(Listing, () => {
     const { findByLabelText, getByText } = renderListing();
 
     const acknowledgedEntity = entities.find(
-      ({ acknowledged }) => acknowledged,
+      ({ acknowledged }) => acknowledged
     );
 
     mockedAxios.get.mockResolvedValueOnce({
@@ -447,16 +447,16 @@ describe(Listing, () => {
             entry_time: '2020-02-28T08:16:00Z',
             id: 0,
             is_persistent_comment: true,
-            is_sticky: false,
-          },
-        ],
-      },
+            is_sticky: false
+          }
+        ]
+      }
     });
 
     const chipLabel = `${acknowledgedEntity?.name} ${labelAcknowledged}`;
 
     const chip = await findByLabelText(chipLabel, undefined, {
-      timeout: 10000,
+      timeout: 10000
     });
 
     fireEvent.mouseEnter(chip);
@@ -465,8 +465,8 @@ describe(Listing, () => {
     await waitFor(() =>
       expect(mockedAxios.get).toHaveBeenLastCalledWith(
         acknowledgedEntity?.links?.endpoints.acknowledgement,
-        cancelTokenRequestParam,
-      ),
+        cancelTokenRequestParam
+      )
     );
 
     await waitFor(() => expect(getByText('admin')).toBeInTheDocument());
@@ -480,7 +480,7 @@ describe(Listing, () => {
 
   const additionalIds = reject(
     includes(__, defaultSelectedColumnIds),
-    columnIds,
+    columnIds
   );
 
   it.each(additionalIds)(
@@ -510,12 +510,12 @@ describe(Listing, () => {
       const expectedLabelCount = hasShortLabel ? 1 : 2;
 
       expect(getAllByText(columnDisplayLabel).length).toEqual(
-        expectedLabelCount,
+        expectedLabelCount
       );
 
       if (hasShortLabel) {
         expect(getByText(columnDisplayLabel)).toBeInTheDocument();
       }
-    },
+    }
   );
 });

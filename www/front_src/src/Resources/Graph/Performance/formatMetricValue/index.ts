@@ -10,7 +10,7 @@ interface FormatMetricValueProps {
 const formatMetricValue = ({
   value,
   unit,
-  base = 1000,
+  base = 1000
 }: FormatMetricValueProps): string | null => {
   if (isNil(value)) {
     return null;
@@ -25,7 +25,7 @@ const formatMetricValue = ({
     'o',
     'octets',
     'b/s',
-    'b',
+    'b'
   ];
 
   const base1024 = base2Units.includes(unit) || Number(base) === 1024;

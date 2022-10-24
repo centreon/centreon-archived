@@ -10,7 +10,7 @@ import { downtimeAtom, userAtom } from '@centreon/ui-context';
 
 import {
   labelDowntimeCommandSent,
-  labelDowntimeBy,
+  labelDowntimeBy
 } from '../../../translatedLabels';
 import { Resource } from '../../../models';
 import { setDowntimeOnResources } from '../../api';
@@ -51,7 +51,7 @@ export interface DowntimeToPost {
 const DowntimeForm = ({
   resources,
   onClose,
-  onSuccess,
+  onSuccess
 }: Props): JSX.Element | null => {
   const { t } = useTranslation();
   const { showSuccessMessage } = useSnackbar();
@@ -60,9 +60,9 @@ const DowntimeForm = ({
 
   const {
     sendRequest: sendSetDowntimeOnResources,
-    sending: sendingSetDowntingOnResources,
+    sending: sendingSetDowntingOnResources
   } = useRequest({
-    request: setDowntimeOnResources,
+    request: setDowntimeOnResources
   });
 
   const { alias } = useAtomValue(userAtom);
@@ -78,12 +78,12 @@ const DowntimeForm = ({
       comment: undefined,
       duration: {
         unit: 'seconds',
-        value: downtime.duration,
+        value: downtime.duration
       },
       endTime: defaultEndDate,
       fixed: downtime.fixed,
       isDowntimeWithServices: downtime.with_services,
-      startTime: currentDate,
+      startTime: currentDate
     },
     onSubmit: (values, { setSubmitting }) => {
       setSubmitting(true);
@@ -93,7 +93,7 @@ const DowntimeForm = ({
       const unitMultipliers = {
         hours: 3600,
         minutes: 60,
-        seconds: 1,
+        seconds: 1
       };
       const durationDivider = unitMultipliers?.[values.duration.unit] || 1;
       const duration = values.duration.value * durationDivider;
@@ -103,15 +103,15 @@ const DowntimeForm = ({
           ...values,
           duration,
           endTime: toIsoString(endTime),
-          startTime: toIsoString(startTime),
+          startTime: toIsoString(startTime)
         },
-        resources,
+        resources
       }).then(() => {
         showSuccessMessage(t(labelDowntimeCommandSent));
         onSuccess();
       });
     },
-    validationSchema: getValidationSchema(t),
+    validationSchema: getValidationSchema(t)
   });
 
   useEffect(() => {

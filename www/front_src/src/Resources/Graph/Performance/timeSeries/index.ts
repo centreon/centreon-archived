@@ -19,7 +19,7 @@ import {
   sortBy,
   add,
   isEmpty,
-  any,
+  any
 } from 'ramda';
 
 import { Metric, TimeValue, GraphData, Line } from '../models';
@@ -31,24 +31,24 @@ interface TimeTickWithMetrics {
 
 const toTimeTickWithMetrics = ({
   metrics,
-  times,
+  times
 }): Array<TimeTickWithMetrics> =>
   map(
     (timeTick) => ({
       metrics,
-      timeTick,
+      timeTick
     }),
-    times,
+    times
   );
 
 const toTimeTickValue = (
   { timeTick, metrics }: TimeTickWithMetrics,
-  timeIndex: number,
+  timeIndex: number
 ): TimeValue => {
   const getMetricsForIndex = (): Omit<TimeValue, 'timeTick'> => {
     const addMetricForTimeIndex = (acc, { metric, data }): TimeValue => ({
       ...acc,
-      [metric]: data[timeIndex],
+      [metric]: data[timeIndex]
     });
 
     return reduce(addMetricForTimeIndex, {} as TimeValue, metrics);
@@ -73,7 +73,7 @@ const getTimeSeries = (graphData: GraphData): Array<TimeValue> => {
     ...metrics
   }: TimeValue): TimeValue => ({
     ...filter(isGreaterThanLowerLimit, metrics),
-    timeTick,
+    timeTick
   });
 
   const indexedMap = addIndex<TimeTickWithMetrics, TimeValue>(map);
@@ -81,7 +81,7 @@ const getTimeSeries = (graphData: GraphData): Array<TimeValue> => {
   return pipe(
     toTimeTickWithMetrics,
     indexedMap(toTimeTickValue),
-    map(rejectLowerThanLimit),
+    map(rejectLowerThanLimit)
   )(graphData);
 };
 
@@ -92,7 +92,7 @@ const toLine = ({
   unit,
   average_value,
   minimum_value,
-  maximum_value,
+  maximum_value
 }: Metric): Line => ({
   areaColor: ds_data.ds_color_area,
   average_value,
@@ -111,7 +111,7 @@ const toLine = ({
     ? parseInt(ds_data.ds_order || '0', 10)
     : null,
   transparency: ds_data.ds_transparency,
-  unit,
+  unit
 });
 
 const getLineData = (graphData: GraphData): Array<Line> =>
@@ -144,12 +144,12 @@ interface ValuesForUnitProps {
 const getMetricValuesForUnit = ({
   lines,
   timeSeries,
-  unit,
+  unit
 }: ValuesForUnitProps): Array<number> => {
   const getTimeSeriesValuesForMetric = (metric): Array<number> =>
     map(
       (timeValue) => getValueForMetric(timeValue)(metric),
-      timeSeries,
+      timeSeries
     ) as Array<number>;
 
   return pipe(
@@ -157,7 +157,7 @@ const getMetricValuesForUnit = ({
     map(prop('metric')),
     map(getTimeSeriesValuesForMetric),
     flatten,
-    reject(isNil),
+    reject(isNil)
   )(lines) as Array<number>;
 };
 
@@ -175,7 +175,7 @@ interface LineForMetricProps {
 
 const getLineForMetric = ({
   lines,
-  metric,
+  metric
 }: LineForMetricProps): Line | undefined =>
   find(propEq('metric', metric), lines);
 
@@ -186,24 +186,24 @@ interface LinesTimeSeries {
 
 const getMetricValuesForLines = ({
   lines,
-  timeSeries,
+  timeSeries
 }: LinesTimeSeries): Array<number> =>
   pipe(
     getUnits,
     map((unit) => getMetricValuesForUnit({ lines, timeSeries, unit })),
-    flatten,
+    flatten
   )(lines);
 
 const getStackedMetricValues = ({
   lines,
-  timeSeries,
+  timeSeries
 }: LinesTimeSeries): Array<number> => {
   const getTimeSeriesValuesForMetric = (metric): Array<number> =>
     map((timeValue) => getValueForMetric(timeValue)(metric), timeSeries);
 
   const metricsValues = pipe(
     map(prop('metric')) as (metric) => Array<string>,
-    map(getTimeSeriesValuesForMetric) as () => Array<Array<number>>,
+    map(getTimeSeriesValuesForMetric) as () => Array<Array<number>>
   )(lines as Array<Line>);
 
   if (isEmpty(metricsValues) || isNil(metricsValues)) {
@@ -214,33 +214,33 @@ const getStackedMetricValues = ({
     reduce(
       (acc: number, metricValue: Array<number>) => add(metricValue[index], acc),
       0,
-      metricsValues,
-    ),
+      metricsValues
+    )
   );
 };
 
 const getSortedStackedLines = (lines: Array<Line>): Array<Line> =>
   pipe(
     reject(({ stackOrder }: Line): boolean => isNil(stackOrder)) as (
-      lines,
+      lines
     ) => Array<Line>,
-    sortBy(prop('stackOrder')),
+    sortBy(prop('stackOrder'))
   )(lines);
 
 const getInvertedStackedLines = (lines: Array<Line>): Array<Line> =>
   pipe(
     reject(({ invert }: Line): boolean => isNil(invert)) as (
-      lines,
+      lines
     ) => Array<Line>,
-    getSortedStackedLines,
+    getSortedStackedLines
   )(lines);
 
 const getNotInvertedStackedLines = (lines: Array<Line>): Array<Line> =>
   pipe(
     filter(({ invert }: Line): boolean => isNil(invert)) as (
-      lines,
+      lines
     ) => Array<Line>,
-    getSortedStackedLines,
+    getSortedStackedLines
   )(lines);
 
 interface HasStackedLines {
@@ -253,7 +253,7 @@ const hasUnitStackedLines = ({ lines, unit }: HasStackedLines): boolean =>
 
 const getTimeSeriesForLines = ({
   lines,
-  timeSeries,
+  timeSeries
 }: LinesTimeSeries): Array<TimeValue> => {
   const metrics = map(prop('metric'), lines);
 
@@ -262,14 +262,14 @@ const getTimeSeriesForLines = ({
       ...reduce(
         (acc, metric): Omit<TimeValue, 'timePick'> => ({
           ...acc,
-          [metric]: metricsValue[metric],
+          [metric]: metricsValue[metric]
         }),
         {},
-        metrics,
+        metrics
       ),
-      timeTick,
+      timeTick
     }),
-    timeSeries,
+    timeSeries
   );
 };
 
@@ -288,7 +288,7 @@ const getYScale = ({
   secondUnit,
   leftScale,
   rightScale,
-  invert,
+  invert
 }: GetYScaleProps): ScaleLinear<number, number> => {
   const isLeftScale = hasMoreThanTwoUnits || unit !== secondUnit;
   const scale = isLeftScale ? leftScale : rightScale;
@@ -297,7 +297,7 @@ const getYScale = ({
     ? Scale.scaleLinear<number>({
         domain: scale.domain().reverse(),
         nice: true,
-        range: scale.range().reverse(),
+        range: scale.range().reverse()
       })
     : scale;
 };
@@ -321,5 +321,5 @@ export {
   getInvertedStackedLines,
   getNotInvertedStackedLines,
   hasUnitStackedLines,
-  getYScale,
+  getYScale
 };

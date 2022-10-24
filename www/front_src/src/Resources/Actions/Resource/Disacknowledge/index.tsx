@@ -11,7 +11,7 @@ import {
   labelCancel,
   labelDisacknowledgeServices,
   labelDisacknowledge,
-  labelDisacknowledgementCommandSent,
+  labelDisacknowledgementCommandSent
 } from '../../../translatedLabels';
 import { Resource } from '../../../models';
 import useAclQuery from '../aclQuery';
@@ -27,7 +27,7 @@ interface Props {
 const DisacknowledgeForm = ({
   resources,
   onClose,
-  onSuccess,
+  onSuccess
 }: Props): JSX.Element | null => {
   const { t } = useTranslation();
   const { showSuccessMessage } = useSnackbar();
@@ -36,9 +36,9 @@ const DisacknowledgeForm = ({
 
   const {
     sendRequest: sendDisacknowledgeResources,
-    sending: sendingDisacknowledgeResources,
+    sending: sendingDisacknowledgeResources
   } = useRequest({
-    request: disacknowledgeResources,
+    request: disacknowledgeResources
   });
 
   const { getDisacknowledgementDeniedTypeAlert, canDisacknowledgeServices } =
@@ -57,7 +57,7 @@ const DisacknowledgeForm = ({
   const submitDisacknowledge = (): void => {
     sendDisacknowledgeResources({
       disacknowledgeAttachedResources,
-      resources,
+      resources
     }).then(() => {
       showSuccessMessage(t(labelDisacknowledgementCommandSent));
       onSuccess();

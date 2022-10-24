@@ -5,7 +5,7 @@ import { OpenidConfiguration, NamedEntity, EndpointType } from './models';
 import {
   labelRequired,
   labelInvalidURL,
-  labelInvalidIPAddress,
+  labelInvalidIPAddress
 } from './translatedLabels';
 
 const IPAddressRegexp = /^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}(\/\d{1,3})?$/;
@@ -17,17 +17,17 @@ const useValidationSchema = (): Yup.SchemaOf<OpenidConfiguration> => {
 
   const namedEntitySchema: Yup.SchemaOf<NamedEntity> = Yup.object({
     id: Yup.number().required(t(labelRequired)),
-    name: Yup.string().required(t(labelRequired)),
+    name: Yup.string().required(t(labelRequired))
   });
 
   const rolesRelationSchema = Yup.object({
     accessGroup: namedEntitySchema.nullable().required(t(labelRequired)),
-    claimValue: Yup.string().required(t(labelRequired)),
+    claimValue: Yup.string().required(t(labelRequired))
   });
 
   const groupsRelationSchema = Yup.object({
     contactGroup: namedEntitySchema.nullable().required(t(labelRequired)),
-    groupValue: Yup.string().required(t(labelRequired)),
+    groupValue: Yup.string().required(t(labelRequired))
   });
 
   const endpointTypeSchema = Yup.mixed<EndpointType>()
@@ -38,9 +38,9 @@ const useValidationSchema = (): Yup.SchemaOf<OpenidConfiguration> => {
     customEndpoint: Yup.string().when('type', {
       is: EndpointType.CustomEndpoint,
       otherwise: (schema) => schema.nullable(),
-      then: (schema) => schema.required(t(labelRequired)),
+      then: (schema) => schema.required(t(labelRequired))
     }),
-    type: endpointTypeSchema,
+    type: endpointTypeSchema
   });
 
   return Yup.object({
@@ -50,15 +50,15 @@ const useValidationSchema = (): Yup.SchemaOf<OpenidConfiguration> => {
       blacklistClientAddresses: Yup.array().of(
         Yup.string()
           .matches(IPAddressRegexp, t(labelInvalidIPAddress))
-          .required(t(labelRequired)),
+          .required(t(labelRequired))
       ),
       endpoint: endpointSchema,
       isEnabled: switchSchema,
       trustedClientAddresses: Yup.array().of(
         Yup.string()
           .matches(IPAddressRegexp, t(labelInvalidIPAddress))
-          .required(t(labelRequired)),
-      ),
+          .required(t(labelRequired))
+      )
     }),
     authenticationType: Yup.string().required(t(labelRequired)),
     authorizationEndpoint: Yup.string().nullable().required(t(labelRequired)),
@@ -84,7 +84,7 @@ const useValidationSchema = (): Yup.SchemaOf<OpenidConfiguration> => {
         return autoImport
           ? schema.nullable().required(t(labelRequired))
           : schema.nullable();
-      },
+      }
     ),
     endSessionEndpoint: Yup.string().nullable(),
     fullnameBindAttribute: Yup.string().when(
@@ -93,13 +93,13 @@ const useValidationSchema = (): Yup.SchemaOf<OpenidConfiguration> => {
         return autoImport
           ? schema.nullable().required(t(labelRequired))
           : schema.nullable();
-      },
+      }
     ),
     groupsMapping: Yup.object({
       attributePath: Yup.string(),
       endpoint: endpointSchema,
       isEnabled: switchSchema,
-      relations: Yup.array().of(groupsRelationSchema),
+      relations: Yup.array().of(groupsRelationSchema)
     }),
     introspectionTokenEndpoint: Yup.string().nullable(),
     isActive: switchSchema,
@@ -110,11 +110,11 @@ const useValidationSchema = (): Yup.SchemaOf<OpenidConfiguration> => {
       attributePath: Yup.string(),
       endpoint: endpointSchema,
       isEnabled: switchSchema,
-      relations: Yup.array().of(rolesRelationSchema),
+      relations: Yup.array().of(rolesRelationSchema)
     }),
     tokenEndpoint: Yup.string().nullable().required(t(labelRequired)),
     userinfoEndpoint: Yup.string().nullable(),
-    verifyPeer: switchSchema,
+    verifyPeer: switchSchema
   });
 };
 

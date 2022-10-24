@@ -27,22 +27,22 @@ const useStyles = makeStyles((theme) => ({
       : theme.palette.primary.dark,
     display: 'flex',
     height: theme.spacing(headerHeight),
-    padding: `0 ${theme.spacing(3)}`,
+    padding: `0 ${theme.spacing(3)}`
   },
   item: {
-    flex: '1 0 120px',
+    flex: '1 0 120px'
   },
   leftContainer: {
     alignItems: 'center',
     display: 'flex',
     gap: theme.spacing(2),
     [theme.breakpoints.up(768)]: {
-      gap: theme.spacing(3),
-    },
+      gap: theme.spacing(3)
+    }
   },
   userMenuContainer: {
-    marginLeft: 'auto',
-  },
+    marginLeft: 'auto'
+  }
 }));
 
 const Header = (): JSX.Element => {

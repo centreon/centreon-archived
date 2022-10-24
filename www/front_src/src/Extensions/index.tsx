@@ -8,7 +8,7 @@ const Listing = lazy(() => import('./Listing'));
 const Extensions = (): JSX.Element => {
   return useMemoComponent({
     Component: <ListingPage filter={<Filter />} listing={<Listing />} />,
-    memoProps: [],
+    memoProps: []
   });
 };
 

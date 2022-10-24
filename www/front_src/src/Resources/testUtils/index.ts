@@ -38,7 +38,7 @@ const getListingEndpoint = ({
   limit = 30,
   sort = {
     status_severity_code: SortOrder.asc,
-    ...defaultSecondSortCriteria,
+    ...defaultSecondSortCriteria
   },
   statuses = defaultStatuses,
   states = defaultStates,
@@ -53,7 +53,7 @@ const getListingEndpoint = ({
   serviceSeverityLevels = [],
   monitoringServers = [],
   search,
-  statusTypes = defaultStateTypes,
+  statusTypes = defaultStateTypes
 }: EndpointParams): string =>
   buildResourcesEndpoint({
     hostCategories,
@@ -68,8 +68,8 @@ const getListingEndpoint = ({
       ? {
           regex: {
             fields: searchableFields,
-            value: search,
-          },
+            value: search
+          }
         }
       : undefined,
     serviceCategories,
@@ -79,7 +79,7 @@ const getListingEndpoint = ({
     sort,
     states,
     statusTypes,
-    statuses,
+    statuses
   });
 
 const cancelTokenRequestParam = { cancelToken: {} };
@@ -91,7 +91,7 @@ interface CriteriaValueProps {
 
 const getCriteriaValue = ({
   filter,
-  name,
+  name
 }: CriteriaValueProps): CriteriaValue | undefined => {
   return filter.criterias.find(propEq('name', name))?.value;
 };
@@ -105,7 +105,7 @@ interface FilterAndCriteriaToUpdate {
 const getFilterWithUpdatedCriteria = ({
   filter,
   criteriaName,
-  criteriaValue,
+  criteriaValue
 }: FilterAndCriteriaToUpdate): Filter => {
   const index = findIndex(propEq('name', criteriaName))(filter.criterias);
   const lens = lensPath(['criterias', index, 'value']);
@@ -123,5 +123,5 @@ export {
   getCriteriaValue,
   getFilterWithUpdatedCriteria,
   defaultSecondSortCriteria,
-  defaultStateTypes,
+  defaultStateTypes
 };

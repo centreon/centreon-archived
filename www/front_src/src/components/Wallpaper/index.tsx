@@ -15,8 +15,8 @@ const useStyles = makeStyles({
     left: 0,
     position: 'absolute',
     right: 0,
-    top: 0,
-  },
+    top: 0
+  }
 });
 
 const Wallpaper = (): JSX.Element => {
@@ -36,5 +36,5 @@ const Wallpaper = (): JSX.Element => {
 
 export default memoizeComponent({
   Component: Wallpaper,
-  memoProps: [],
+  memoProps: []
 });

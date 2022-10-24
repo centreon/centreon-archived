@@ -8,7 +8,7 @@ import { Tooltip } from '@mui/material';
 import { Resource } from './models';
 import {
   labelChecksDisabled,
-  labelOnlyPassiveChecksEnabled,
+  labelOnlyPassiveChecksEnabled
 } from './translatedLabels';
 
 interface IconProps {
@@ -31,7 +31,7 @@ type Props = Pick<Resource, 'active_checks' | 'passive_checks'>;
 
 const ChecksIcon = ({
   active_checks,
-  passive_checks,
+  passive_checks
 }: Props): JSX.Element | null => {
   if (equals(passive_checks, false) && equals(active_checks, false)) {
     return <Icon Component={SyncDisabledIcon} title={labelChecksDisabled} />;

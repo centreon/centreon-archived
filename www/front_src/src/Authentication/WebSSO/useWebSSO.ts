@@ -19,7 +19,7 @@ const useWebSSO = (): UseWebSSOState => {
     useState<WebSSOConfiguration | null>(null);
   const { sendRequest, sending } = useRequest<WebSSOConfiguration>({
     decoder: webSSOConfigurationDecoder,
-    request: getProviderConfiguration<WebSSOConfiguration>(Provider.WebSSO),
+    request: getProviderConfiguration<WebSSOConfiguration>(Provider.WebSSO)
   });
 
   const loadWebSSOonfiguration = (): void => {
@@ -31,7 +31,7 @@ const useWebSSO = (): UseWebSSOState => {
   return {
     initialWebSSOConfiguration,
     loadWebSSOonfiguration,
-    sendingGetWebSSOConfiguration: sending,
+    sendingGetWebSSOConfiguration: sending
   };
 };
 
