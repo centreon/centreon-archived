@@ -631,7 +631,7 @@ $tpl->display("service.ihtml");
         _keyPrefix = '<?= $keyPrefix; ?>';
         _tm = <?= $tM ?>;
         _o = '<?= $o; ?>';
-        _defaultStatusFilter = '<?= $defaultStatusFilter; ?>';
+        _defaultStatusFilter = '<?=  htmlspecialchars($defaultStatusFilter, ENT_QUOTES, 'UTF-8'); ?>';
         _defaultStatusService = '<?= $defaultStatusService; ?>';
         sSetOrderInMemory = '<?= $sSetOrderInMemory; ?>';
 
