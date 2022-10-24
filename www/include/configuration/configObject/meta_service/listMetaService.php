@@ -107,13 +107,13 @@ if (!$acl->admin && $metaStr) {
     }
     $queryParams = implode(',', array_keys($metaStrParams));
 
-    if ($search) {
+    if ($search !== '') {
         $conditionStr = "AND meta_id IN (" . $queryParams . ")";
     } else {
         $conditionStr = "WHERE meta_id IN (" . $queryParams . ")";
     }
 }
-if ($search != "") {
+if ($search !== '') {
     $statement = $pearDB->prepare("SELECT * FROM meta_service " .
         "WHERE meta_name LIKE :search " . $conditionStr .
         " ORDER BY meta_name LIMIT :offset, :limit");
@@ -125,7 +125,7 @@ if ($search != "") {
 foreach ($metaStrParams as $key => $metaId) {
     $statement->bindValue($key, $metaId, \PDO::PARAM_INT);
 }
-$statement->bindValue(':offset', $num * $limit, \PDO::PARAM_INT);
+$statement->bindValue(':offset', (int) $num * (int) $limit, \PDO::PARAM_INT);
 $statement->bindValue(':limit', $limit, \PDO::PARAM_INT);
 $statement->execute();
 
