@@ -157,13 +157,17 @@ class UpdateOpenIdConfiguration
         $this->logNonExistentAccessGroupsIds($accessGroupIds, $foundAccessGroups);
 
         $authorizationRules = [];
-        foreach ($authorizationRulesFromRequest as $authorizationRule) {
+        foreach ($authorizationRulesFromRequest as $priority => $authorizationRule) {
             $accessGroup = $this->findAccessGroupFromFoundAccessGroups(
                 $authorizationRule["access_group_id"],
                 $foundAccessGroups
             );
             if ($accessGroup !== null) {
-                $authorizationRules[] = new AuthorizationRule($authorizationRule["claim_value"], $accessGroup);
+                $authorizationRules[] = new AuthorizationRule(
+                    $authorizationRule["claim_value"],
+                    $accessGroup,
+                    $priority
+                );
             }
         }
 
