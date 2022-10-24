@@ -6,6 +6,6 @@
         "types": ["cypress", "@testing-library/cypress"],
       },
     "include": ["../www/front_src/src/**/*.spec.tsx"],
-     "exclude": []
+    "exclude": []
 }
 
