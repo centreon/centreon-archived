@@ -3,10 +3,10 @@ import { useCallback } from 'react';
 import { useAtom } from 'jotai';
 import { isNil, keys } from 'ramda';
 
-// import { getData, useRequest } from '@centreon/ui';
+import { getData, useRequest } from '@centreon/ui';
 
-// import { platformVersionsEndpoint } from '../api/endpoint';
-// import { PlatformVersions } from '../api/models';
+import { platformVersionsEndpoint } from '../api/endpoint';
+import { PlatformVersions } from '../api/models';
 
 import { platformVersionsAtom } from './atoms/platformVersionsAtom';
 
@@ -17,16 +17,36 @@ interface UsePlatformVersionsState {
 }
 
 const usePlatformVersions = (): UsePlatformVersionsState => {
-  // const { sendRequest: sendPlatformVersions } = useRequest<PlatformVersions>({
-  //   request: getData,
-  // });
+  const { sendRequest: sendPlatformVersions } = useRequest<PlatformVersions>({
+    request: getData,
+  });
 
-  const [platformVersions] = useAtom(platformVersionsAtom);
+  const [platformVersions, setPlatformVersions] = useAtom(platformVersionsAtom);
 
   const getPlatformVersions = useCallback((): void => {
-    // sendPlatformVersions({ endpoint: platformVersionsEndpoint }).then(
-    //   setPlatformVersions,
-    // );
+    sendPlatformVersions({ endpoint: platformVersionsEndpoint }).then(() =>
+      setPlatformVersions({
+        modules: {
+          'centreon-bam-server': {
+            version: '21.10.0-beta.1',
+          },
+        },
+        web: {
+          version: '21.10.0-beta.1',
+        },
+        widgets: {
+          'centreon-performance-graph': {
+            version: '21.10.0-beta.1',
+          },
+          'centreon-text-widget': {
+            version: '21.10.0-beta.1',
+          },
+          'centreon-website-widget': {
+            version: '21.10.0-beta.1',
+          },
+        },
+      }),
+    );
   }, []);
 
   const getModules = useCallback((): Array<string> | null => {
