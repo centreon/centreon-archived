@@ -3,10 +3,10 @@ import { useCallback } from 'react';
 import { useAtom } from 'jotai';
 import { isNil, keys } from 'ramda';
 
-import { getData, useRequest } from '@centreon/ui';
+// import { getData, useRequest } from '@centreon/ui';
 
-import { platformVersionsEndpoint } from '../api/endpoint';
-import { PlatformVersions } from '../api/models';
+// import { platformVersionsEndpoint } from '../api/endpoint';
+// import { PlatformVersions } from '../api/models';
 
 import { platformVersionsAtom } from './atoms/platformVersionsAtom';
 
@@ -17,16 +17,16 @@ interface UsePlatformVersionsState {
 }
 
 const usePlatformVersions = (): UsePlatformVersionsState => {
-  const { sendRequest: sendPlatformVersions } = useRequest<PlatformVersions>({
-    request: getData,
-  });
+  // const { sendRequest: sendPlatformVersions } = useRequest<PlatformVersions>({
+  //   request: getData,
+  // });
 
-  const [platformVersions, setPlatformVersions] = useAtom(platformVersionsAtom);
+  const [platformVersions] = useAtom(platformVersionsAtom);
 
   const getPlatformVersions = useCallback((): void => {
-    sendPlatformVersions({ endpoint: platformVersionsEndpoint }).then(
-      setPlatformVersions,
-    );
+    // sendPlatformVersions({ endpoint: platformVersionsEndpoint }).then(
+    //   setPlatformVersions,
+    // );
   }, []);
 
   const getModules = useCallback((): Array<string> | null => {
