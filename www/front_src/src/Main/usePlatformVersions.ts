@@ -24,28 +24,8 @@ const usePlatformVersions = (): UsePlatformVersionsState => {
   const [platformVersions, setPlatformVersions] = useAtom(platformVersionsAtom);
 
   const getPlatformVersions = useCallback((): void => {
-    sendPlatformVersions({ endpoint: platformVersionsEndpoint }).then(() =>
-      setPlatformVersions({
-        modules: {
-          'centreon-bam-server': {
-            version: '21.10.0-beta.1',
-          },
-        },
-        web: {
-          version: '21.10.0-beta.1',
-        },
-        widgets: {
-          'centreon-performance-graph': {
-            version: '21.10.0-beta.1',
-          },
-          'centreon-text-widget': {
-            version: '21.10.0-beta.1',
-          },
-          'centreon-website-widget': {
-            version: '21.10.0-beta.1',
-          },
-        },
-      }),
+    sendPlatformVersions({ endpoint: platformVersionsEndpoint }).then(
+      setPlatformVersions,
     );
   }, []);
 
