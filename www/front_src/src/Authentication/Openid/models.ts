@@ -12,11 +12,13 @@ export interface NamedEntity {
 export interface RolesRelation {
   accessGroup: NamedEntity;
   claimValue: string;
+  priority: number;
 }
 
 export interface RolesRelationToAPI {
   access_group_id: number;
   claim_value: string;
+  priority: number;
 }
 
 export interface GroupsRelation {

@@ -250,6 +250,8 @@ const rolesMapping: Array<InputProps> = [
         claimValue: '',
       },
       deleteLabel: labelDeleteRelation,
+      getSortable: (values: FormikValues): boolean =>
+        prop('applyOnlyFirstRole', values?.rolesMapping),
     },
     group: labelRolesMapping,
     label: labelDefineRelationBetweenRolesAndAcl,
