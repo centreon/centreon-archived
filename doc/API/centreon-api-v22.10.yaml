@@ -4001,6 +4001,27 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
+  /administration/vaults:
+    post:
+      tags:
+        - Administration
+      summary: "Administration vault"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Administration.Vault'
+      responses:
+        '201':
+          description: "OK"
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      
 components:
   securitySchemes:
     Token:
@@ -7224,3 +7245,28 @@ components:
           type: string
           description: "Fix version"
           example: "0"
+    Administration.Vault:
+      type: object
+      required: [name, type, address, port, storage]
+      description: "vault configuration"
+      properties:
+        name:
+          type: string
+          description: "Vault name"
+          example: "centreon_vault"
+        type:
+          type: string
+          description: "Vault type"
+          example: "hashicorp"
+        address:
+          type: string
+          description: "Vault URL or IP"
+          example: "127.0.0.1"
+        port:
+          type: integer
+          description: "Vault Port"
+          example: 8200
+        storage:
+          type: string
+          description: "Vault storage name"
+          example: "centreon"

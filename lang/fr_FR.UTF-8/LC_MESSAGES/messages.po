@@ -17106,3 +17106,12 @@ msgstr "Modèles (simplifiés)"
 
 msgid "Host Groups (simplified)"
 msgstr "Groupes d'hôtes (simplifiés)"
+
+msgid "Vault configuration with these properties already exists"
+msgstr "Une configuration de vault existe déjà avec ces propriétés"
+
+msgid "Impossible to create vault configuration"
+msgstr "Impossible de créer la configuration de vault"
+
+msgid "Invalid vault type: %s"
+msgstr "Type de vault invalide: %s"
