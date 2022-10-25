@@ -25,15 +25,12 @@ namespace Core\Security\Vault\Application\UseCase\CreateVaultConfiguration;
 
 use Centreon\Domain\Log\LoggerTrait;
 use Core\Application\Common\UseCase\ErrorResponse;
-use Centreon\Domain\Common\Assertion\AssertionException;
-use Core\Security\Vault\Domain\Model\NewVaultConfiguration;
+use Core\Application\Common\UseCase\CreatedResponse;
 use Core\Application\Common\UseCase\InvalidArgumentResponse;
-use Core\Security\Vault\Domain\Model\VaultConfigurationFactory;
-use Core\Security\Vault\Domain\Exceptions\VaultConfigurationException;
-use Core\Security\Vault\Application\Interface\VaultHealthCheckerInterface;
 use Core\Security\Vault\Application\Repository\ReadVaultConfigurationRepositoryInterface;
 use Core\Security\Vault\Application\Repository\WriteVaultConfigurationRepositoryInterface;
-use Core\Security\Vault\Infrastructure\Exceptions\VaultHealthCheckerException;
+use Core\Security\Vault\Domain\Model\VaultConfigurationFactory;
+use Core\Security\Vault\Domain\Exceptions\VaultConfigurationException;
 
 class CreateVaultConfiguration
 {
@@ -46,7 +43,6 @@ class CreateVaultConfiguration
     public function __construct(
         private ReadVaultConfigurationRepositoryInterface $readRepository,
         private WriteVaultConfigurationRepositoryInterface $writeRepository,
-        private VaultHealthCheckerInterface $vaultHealthChecker
     ) {
 
     }
@@ -68,7 +64,7 @@ class CreateVaultConfiguration
                 )
             ) {
                 $presenter->setResponseStatus(
-                    new InvalidArgumentResponse(_('Vault configuration with these properties already exists'))
+                    new InvalidArgumentResponse(VaultConfigurationException::configurationExists()->getMessage())
                 );
 
                 return;
@@ -77,32 +73,13 @@ class CreateVaultConfiguration
             $newVaultConfiguration = VaultConfigurationFactory::createNewVaultConfiguration(
                 $createVaultConfigurationRequest
             );
-            if (! $this->isHealthCheckValid($newVaultConfiguration)) {
-                // What kind of response should be returned
-                $presenter->setResponseStatus(
-                    new InvalidArgumentResponse(
-                        _(sprintf(
-                            'Vault health check response is not an OK status: %d given, 200 expected',
-                            $this->vaultHealthChecker->getStatusCode()
-                        ))
-                    )
-                );
 
-                return;
-            }
             $this->writeRepository->createVaultConfiguration($newVaultConfiguration);
-            // replace hardcoded error msgs by $ex->getMsg
-        } catch (AssertionException|VaultConfigurationException $ex) {
+            $presenter->setResponseStatus(new CreatedResponse());
+        } catch (VaultConfigurationException $ex) {
             $this->error('Some parameters are not valid', ['trace' => (string) $ex]);
             $presenter->setResponseStatus(
-                new InvalidArgumentResponse(_('Some parameters are not valid'))
-            );
-
-            return;
-        } catch (VaultHealthCheckerException $ex) {
-            $this->error('Unable to check vault\'s health', ['trace' => (string) $ex]);
-            $presenter->setResponseStatus(
-                new ErrorResponse(_('Unable to check vault\'s health'))
+                new InvalidArgumentResponse($ex->getMessage())
             );
 
             return;
@@ -112,7 +89,7 @@ class CreateVaultConfiguration
                 ['trace' => (string) $ex]
             );
             $presenter->setResponseStatus(
-                new ErrorResponse(_('Impossible to create vault configuration'))
+                new ErrorResponse(VaultConfigurationException::impossibleToCreate()->getMessage())
             );
 
             return;
@@ -150,36 +127,5 @@ class CreateVaultConfiguration
         }
 
         return false;
-    }
-
-    /**
-     * Checks if vault health is OK
-     *
-     * @param NewVaultConfiguration $newVaultConfiguration
-     * @param CreateVaultConfigurationPresenterInterface $presenter
-     * @return bool
-     * @throws VaultHealthCheckerException
-     */
-    private function isHealthCheckValid(
-        NewVaultConfiguration $newVaultConfiguration,
-    ): bool {
-        $vaultHealthCheckAddress = $newVaultConfiguration->getAddress() . ':' . $newVaultConfiguration->getPort()
-            . NewVaultConfiguration::ENDPOINTS_BY_TYPE[$newVaultConfiguration->getType()];
-
-        // change: sendRequest... method to isVaultHealthCheckValid()
-        $this->vaultHealthChecker->sendRequestToHealthEndpoint($vaultHealthCheckAddress);
-        if ($this->vaultHealthChecker->getStatusCode() !== 200) {
-            $this->error(
-                'Vault health check response is not an OK status',
-                [
-                    'address' => $vaultHealthCheckAddress,
-                    'statusCode' => $this->vaultHealthChecker->getStatusCode()
-                ]
-            );
-
-            return false;
-        }
-
-        return true;
     }
 }

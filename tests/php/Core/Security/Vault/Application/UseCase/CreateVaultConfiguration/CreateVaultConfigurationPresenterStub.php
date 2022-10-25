@@ -21,20 +21,12 @@
 
 declare(strict_types=1);
 
-namespace Core\Security\Vault\Application\Interface;
+namespace Tests\Core\Security\Vault\Application\UseCase\CreateVaultConfiguration;
 
-use Core\Security\Vault\Infrastructure\Exceptions\VaultHealthCheckerException;
+use Core\Application\Common\UseCase\AbstractPresenter;
+use Core\Security\Vault\Application\UseCase\CreateVaultConfiguration\CreateVaultConfigurationPresenterInterface;
 
-interface VaultHealthCheckerInterface
+class CreateVaultConfigurationPresenterStub extends AbstractPresenter implements CreateVaultConfigurationPresenterInterface
 {
-    /**
-     * @param string $vaultHealthEndpoint
-     * @throws VaultHealthCheckerException
-     */
-    public function sendRequestToHealthEndpoint(string $vaultHealthEndpoint): void;
 
-    /**
-     * @return int
-     */
-    public function getStatusCode(): int;
 }

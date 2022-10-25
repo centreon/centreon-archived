@@ -25,8 +25,45 @@ namespace Core\Security\Vault\Domain\Exceptions;
 
 class VaultConfigurationException extends \Exception
 {
+    /**
+     * Exception thrown when type is not allowed
+     *
+     * @param string $type
+     * @return self
+     */
     public static function invalidType(string $type): self
     {
         return new self(_(sprintf('Invalid vault type: %s', $type)));
+    }
+
+    /**
+     * Exception thrown when vault configuration already exists
+     *
+     * @return self
+     */
+    public static function configurationExists(): self
+    {
+        return new self(_('Vault configuration with these properties already exists'));
+    }
+
+    /**
+     * Exception thrown when parameters are not valid
+     *
+     * @param string[] $parameters
+     * @return self
+     */
+    public static function invalidParameters(array $parameters): self
+    {
+        return new self(_(sprintf('Invalid parameter(s): %s', implode(', ', $parameters))));
+    }
+
+    /**
+     * Exception thrown when unhandled error occurs
+     *
+     * @return self
+     */
+    public static function impossibleToCreate(): self
+    {
+        return new self(_('Impossible to create vault configuration'));
     }
 }

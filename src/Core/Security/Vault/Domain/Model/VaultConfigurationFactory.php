@@ -23,10 +23,9 @@ declare(strict_types=1);
 
 namespace Core\Security\Vault\Domain\Model;
 
-use Centreon\Domain\Common\Assertion\AssertionException;
+use Core\Security\Vault\Application\UseCase\CreateVaultConfiguration\CreateVaultConfigurationRequest;
 use Core\Security\Vault\Domain\Model\NewVaultConfiguration;
 use Core\Security\Vault\Domain\Exceptions\VaultConfigurationException;
-use Core\Security\Vault\Application\UseCase\CreateVaultConfiguration\CreateVaultConfigurationRequest;
 
 class VaultConfigurationFactory
 {
@@ -35,7 +34,7 @@ class VaultConfigurationFactory
      *
      * @param CreateVaultConfigurationRequest $request
      * @return NewVaultConfiguration
-     * @throws AssertionException|VaultConfigurationException
+     * @throws VaultConfigurationException
      */
     public static function createNewVaultConfiguration(CreateVaultConfigurationRequest $request): NewVaultConfiguration
     {
@@ -55,21 +54,23 @@ class VaultConfigurationFactory
      *
      * @param string $address
      * @param string $type
-     * @throws AssertionException|VaultConfigurationException
+     * @throws VaultConfigurationException
      */
     private static function validateParameters(string $address, string $type)
     {
+        $errors = [];
         if (
             filter_var($address, FILTER_VALIDATE_IP) === false
             && filter_var($address, FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME) === false
         ) {
-            throw AssertionException::ipOrDomain(
-                $address,
-                'NewVaultConfiguration::address'
-            );
+            $errors[] = 'address';
         }
         if (! in_array($type, NewVaultConfiguration::ALLOWED_TYPES)) {
-            throw VaultConfigurationException::invalidType($type);
+            $errors[] = 'type';
+        }
+
+        if (! empty($errors)) {
+            throw VaultConfigurationException::invalidParameters($errors);
         }
     }
 }
