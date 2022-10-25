@@ -27,6 +27,10 @@ const reactRoutes = [
     comp: lazy(() => import('../ResetPassword')),
     path: routeMap.resetPassword,
   },
+  {
+    comp: lazy(() => import('../CustomViews')),
+    path: routeMap.customViews,
+  },
 ];
 
 export default reactRoutes;

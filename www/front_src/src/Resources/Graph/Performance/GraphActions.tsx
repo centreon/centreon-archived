@@ -4,9 +4,9 @@ import { isNil, equals } from 'ramda';
 import { useTranslation } from 'react-i18next';
 import { useAtomValue } from 'jotai';
 import { useNavigate } from 'react-router-dom';
+import { makeStyles } from 'tss-react/mui';
 
 import { Divider, Menu, MenuItem, useTheme } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
 import SaveAsImageIcon from '@mui/icons-material/SaveAlt';
 import LaunchIcon from '@mui/icons-material/Launch';
 import WrenchIcon from '@mui/icons-material/Build';
@@ -48,7 +48,7 @@ interface Props {
   timeline?: Array<TimelineEvent>;
 }
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
   buttonGroup: {
     alignItems: 'center',
     columnGap: theme.spacing(1),
@@ -66,7 +66,7 @@ const GraphActions = ({
   performanceGraphRef,
   getIsModalOpened,
 }: Props): JSX.Element => {
-  const classes = useStyles();
+  const { classes } = useStyles();
   const theme = useTheme();
   const { t } = useTranslation();
   const [menuAnchor, setMenuAnchor] = useState<Element | null>(null);

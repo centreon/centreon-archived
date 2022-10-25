@@ -1,4 +1,5 @@
 import dayjs from 'dayjs';
+import duration from 'dayjs/plugin/duration';
 import { atom } from 'jotai';
 import { always, cond, gte, isNil, not, pipe, T } from 'ramda';
 
@@ -20,6 +21,8 @@ interface GraphQueryParametersProps {
 }
 
 const defaultTimePeriod = lastDayPeriod;
+
+dayjs.extend(duration);
 
 export const resourceDetailsUpdatedAtom = atom(false);
 export const selectedTimePeriodAtom = atom<TimePeriod | null>(

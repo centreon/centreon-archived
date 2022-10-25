@@ -1,4 +1,12 @@
-import { memo, MouseEvent, useEffect, useMemo, useRef, useState } from 'react';
+import {
+  memo,
+  MouseEvent,
+  MouseEventHandler,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 
 import {
   equals,
@@ -25,19 +33,18 @@ import { bisector } from 'd3-array';
 import { ScaleLinear } from 'd3-scale';
 import { useTranslation } from 'react-i18next';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
+import { makeStyles } from 'tss-react/mui';
 
 import {
   Button,
   ClickAwayListener,
   Paper,
   Typography,
-  Theme,
   alpha,
   useTheme,
   CircularProgress,
   Tooltip,
 } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
 import { grey } from '@mui/material/colors';
 
 import {
@@ -117,67 +124,68 @@ interface Props {
   xAxisTickFormat: string;
 }
 
-const useStyles = makeStyles<Theme, Pick<Props, 'onAddComment'>>((theme) => ({
-  addCommentButton: {
-    fontSize: 10,
-  },
-  addCommentTooltip: {
-    display: 'grid',
-    fontSize: 10,
-    gridAutoFlow: 'row',
-    justifyItems: 'center',
-    padding: theme.spacing(0.5),
-    position: 'absolute',
-  },
-  container: {
-    '& .visx-axis-bottom': {
-      '& .visx-axis-tick': {
-        '& .visx-line': {
-          stroke: theme.palette.text.primary,
+const useStyles = makeStyles<Pick<Props, 'onAddComment'>>()(
+  (theme, { onAddComment }) => ({
+    addCommentButton: {
+      fontSize: 10,
+    },
+    addCommentTooltip: {
+      display: 'grid',
+      fontSize: 10,
+      gridAutoFlow: 'row',
+      justifyItems: 'center',
+      padding: theme.spacing(0.5),
+      position: 'absolute',
+    },
+    container: {
+      '& .visx-axis-bottom': {
+        '& .visx-axis-tick': {
+          '& .visx-line': {
+            stroke: theme.palette.text.primary,
+          },
         },
       },
-    },
-    '& .visx-axis-line': {
-      stroke: theme.palette.text.primary,
-    },
-    '& .visx-axis-right': {
-      '& .visx-axis-tick': {
-        '& .visx-line': {
-          stroke: theme.palette.text.primary,
+      '& .visx-axis-line': {
+        stroke: theme.palette.text.primary,
+      },
+      '& .visx-axis-right': {
+        '& .visx-axis-tick': {
+          '& .visx-line': {
+            stroke: theme.palette.text.primary,
+          },
         },
       },
-    },
-    '& .visx-columns': {
-      '& .visx-line': {
-        stroke: theme.palette.divider,
+      '& .visx-columns': {
+        '& .visx-line': {
+          stroke: theme.palette.divider,
+        },
       },
-    },
-    '& .visx-rows': {
-      '& .visx-line': {
-        stroke: theme.palette.divider,
+      '& .visx-rows': {
+        '& .visx-line': {
+          stroke: theme.palette.divider,
+        },
       },
+      fill: theme.palette.text.primary,
+      position: 'relative',
     },
-    fill: theme.palette.text.primary,
-    position: 'relative',
-  },
-  graphLoader: {
-    alignItems: 'center',
-    backgroundColor: alpha(theme.palette.common.white, 0.5),
-    display: 'flex',
-    height: '100%',
-    justifyContent: 'center',
-    position: 'absolute',
-    width: '100%',
-  },
-  overlay: {
-    cursor: ({ onAddComment }): string =>
-      isNil(onAddComment) ? 'normal' : 'crosshair',
-  },
-  tooltip: {
-    padding: 12,
-    zIndex: theme.zIndex.tooltip,
-  },
-}));
+    graphLoader: {
+      alignItems: 'center',
+      backgroundColor: alpha(theme.palette.common.white, 0.5),
+      display: 'flex',
+      height: '100%',
+      justifyContent: 'center',
+      position: 'absolute',
+      width: '100%',
+    },
+    overlay: {
+      cursor: isNil(onAddComment) ? 'normal' : 'crosshair',
+    },
+    tooltip: {
+      padding: 12,
+      zIndex: theme.zIndex.tooltip,
+    },
+  }),
+);
 
 interface ZoomBoundaries {
   end: number;
@@ -258,7 +266,7 @@ const GraphContent = ({
   displayTimeValues,
   resizeEnvelopeData,
 }: GraphContentProps): JSX.Element => {
-  const classes = useStyles({ onAddComment });
+  const { classes } = useStyles({ onAddComment });
   const { t } = useTranslation();
 
   const [addingComment, setAddingComment] = useState(false);
@@ -387,6 +395,9 @@ const GraphContent = ({
   };
 
   const displayTooltip = (event: MouseEvent<SVGRectElement>): void => {
+    event.preventDefault();
+    event.stopPropagation();
+
     const { x, y } = Event.localPoint(
       graphSvgRef.current as SVGSVGElement,
       event,
@@ -473,7 +484,11 @@ const GraphContent = ({
     onAddComment?.(comment);
   };
 
-  const displayZoomPreview = (event): void => {
+  const displayZoomPreview = (
+    event: MouseEventHandler<SVGRectElement>,
+  ): void => {
+    event.preventDefault();
+    event.stopPropagation();
     if (isNil(onAddComment)) {
       return;
     }
