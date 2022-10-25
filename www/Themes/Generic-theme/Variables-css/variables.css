@@ -11,6 +11,13 @@
 
     /*****************/
 
+    /** Scrollbar color **/
+    --scrollbar-width: 8px;
+    --scrollbar-background: var(--color-wild-sand);
+    --scrollbar-thumb-background: var(--color-dusty-gray);
+    --scrollbar-thumb-background-hover: var(--color-primary-light);
+    /*****************/
+
     /** Body color **/
     --body-background: var(--color-primary-body-background-light);
     --body-color:var(--color-martar);
