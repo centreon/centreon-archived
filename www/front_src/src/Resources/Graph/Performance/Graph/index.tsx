@@ -40,7 +40,6 @@ import {
   ClickAwayListener,
   Paper,
   Typography,
-  Theme,
   alpha,
   useTheme,
   CircularProgress,

@@ -29,7 +29,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import { makeStyles } from 'tss-react/mui';
 
-import { Skeleton, Theme, Typography } from '@mui/material';
+import { Skeleton, Typography } from '@mui/material';
 
 import {
   getData,

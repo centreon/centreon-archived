@@ -21,13 +21,11 @@ import {
   Typography,
   useTheme,
   alpha,
-  Theme,
   Tooltip,
   Box,
   Button,
 } from '@mui/material';
 import BarChartIcon from '@mui/icons-material/BarChart';
-import { CreateCSSProperties } from '@mui/styles';
 
 import { Line, TimeValue } from '../models';
 import memoizeComponent from '../../../memoizedComponent';

@@ -40,12 +40,10 @@ const HostGraph = ({ details }: TabProps): JSX.Element => {
     });
   };
 
-  const loading = isNil(details) || sending;
-
   return (
     <InfiniteScroll<Resource>
       details={details}
-      filter={<TimePeriodButtonGroup disabled={loading} />}
+      filter={<TimePeriodButtonGroup />}
       limit={limit}
       loading={sending}
       loadingSkeleton={<LoadingSkeleton />}
