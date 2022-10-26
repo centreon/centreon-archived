@@ -79,6 +79,7 @@ const Attempts = (): JSX.Element => {
       <div className={classes.input}>
         <TextField
           fullWidth
+          dataTestId={labelNumberOfAttemptsBeforeUserIsBlocked}
           error={attemptsError}
           helperText={attemptsError}
           inputProps={{
