@@ -57,7 +57,6 @@ it('Should return an instance of NewVaultConfiguration when all vault parametes 
         'myStorage'
     );
 
-
     expect($newVaultConfiguration->getName())->toBe('myVault');
     expect($newVaultConfiguration->getType())->toBe(NewVaultConfiguration::TYPE_HASHICORP);
     expect($newVaultConfiguration->getAddress())->toBe('127.0.0.1');
