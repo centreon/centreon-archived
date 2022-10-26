@@ -7,6 +7,8 @@ import { IconButton } from '@centreon/ui';
 import ActionButton from '../ActionButton';
 import { labelActionNotPermitted } from '../../translatedLabels';
 
+import useMediaQueryListing from './useMediaQueryListing';
+
 interface Props {
   disabled: boolean;
   icon: JSX.Element;
@@ -25,7 +27,10 @@ const ResourceActionButton = ({
   const theme = useTheme();
   const { t } = useTranslation();
 
-  const displayCondensed = Boolean(useMediaQuery(theme.breakpoints.down(1100)));
+  const { applyBreakPoint } = useMediaQueryListing();
+
+  const displayCondensed =
+    Boolean(useMediaQuery(theme.breakpoints.down(1100))) || applyBreakPoint;
 
   const title = permitted ? label : `${label} (${t(labelActionNotPermitted)})`;
 

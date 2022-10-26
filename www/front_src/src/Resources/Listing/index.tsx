@@ -16,6 +16,7 @@ import {
   openDetailsTabIdAtom,
   selectedResourceUuidAtom,
   selectedResourcesDetailsAtom,
+  panelWidthStorageAtom,
 } from '../Details/detailsAtoms';
 import {
   resourcesToAcknowledgeAtom,
@@ -65,6 +66,7 @@ const ResourceListing = (): JSX.Element => {
   const enabledAutoRefresh = useAtomValue(enabledAutorefreshAtom);
   const getCriteriaValue = useAtomValue(getCriteriaValueDerivedAtom);
   const search = useAtomValue(searchAtom);
+  const panelWidth = useAtomValue(panelWidthStorageAtom);
 
   const setOpenDetailsTabId = useUpdateAtom(openDetailsTabIdAtom);
   const setLimit = useUpdateAtom(limitAtom);
@@ -76,6 +78,8 @@ const ResourceListing = (): JSX.Element => {
   );
 
   const { initAutorefreshAndLoad } = useLoadResources();
+
+  const isPanelOpen = !isNil(selectedResourceDetails?.resourceId);
 
   const changeSort = ({ sortField, sortOrder }): void => {
     setCriteriaAndNewFilter({
@@ -197,6 +201,7 @@ const ResourceListing = (): JSX.Element => {
         enabledAutoRefresh,
         selectedResourceDetails,
       ]}
+      moveTablePagination={isPanelOpen}
       predefinedRowsSelection={predefinedRowsSelection}
       rowColorConditions={[
         resourceDetailsOpenCondition,
@@ -207,6 +212,7 @@ const ResourceListing = (): JSX.Element => {
       sortField={sortField}
       sortOrder={sortOrder}
       totalRows={listing?.meta.total}
+      widthToMoveTablePagination={panelWidth}
       onLimitChange={changeLimit}
       onPaginate={changePage}
       onResetColumns={resetColumns}
