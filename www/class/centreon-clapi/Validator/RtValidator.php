@@ -51,7 +51,7 @@ class RtValidator
     }
 
     /**
-     * Mysql perform an insensitive case search. We want to enforce the strictness here.
+     * Data storage perform an insensitive case search. We want to enforce the strictness here.
      * This also automatically checks the existence of the object.
      *
      * @param string $host
@@ -74,7 +74,7 @@ class RtValidator
     }
 
     /**
-     * Mysql perform an insensitive case search. We want to enforce the strictness here.
+     * Data storage perform an insensitive case search. We want to enforce the strictness here.
      * This also automatically checks the existence of the object.
      *
      * @param string $name
