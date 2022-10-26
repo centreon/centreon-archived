@@ -44,7 +44,6 @@ class CreateVaultConfiguration
         private ReadVaultConfigurationRepositoryInterface $readRepository,
         private WriteVaultConfigurationRepositoryInterface $writeRepository,
     ) {
-
     }
 
     /**
@@ -106,7 +105,6 @@ class CreateVaultConfiguration
      * @param string $address
      * @param int $port
      * @param string $storage
-     * @param CreateVaultConfigurationPresenterInterface $presenter
      * @return bool
      * @throws \Throwable
      */

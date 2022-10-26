@@ -30,8 +30,8 @@ use Core\Security\Vault\Domain\Exceptions\VaultConfigurationException;
  */
 class NewVaultConfiguration
 {
-    const TYPE_HASHICORP = 'hashicorp';
-    const ALLOWED_TYPES = [self::TYPE_HASHICORP];
+    public const TYPE_HASHICORP = 'hashicorp';
+    public const ALLOWED_TYPES = [self::TYPE_HASHICORP];
 
     /**
      * @param string $name
