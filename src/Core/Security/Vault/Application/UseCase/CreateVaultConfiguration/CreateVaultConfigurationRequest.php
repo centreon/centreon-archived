@@ -23,7 +23,7 @@ declare(strict_types=1);
 
 namespace Core\Security\Vault\Application\UseCase\CreateVaultConfiguration;
 
-class CreateVaultConfigurationRequest
+final class CreateVaultConfigurationRequest
 {
     /**
      * @var string

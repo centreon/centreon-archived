@@ -33,7 +33,7 @@ use Core\Security\Vault\Application\UseCase\CreateVaultConfiguration\{
 };
 use Symfony\Component\HttpFoundation\Request;
 
-class CreateVaultConfigurationController extends AbstractController
+final class CreateVaultConfigurationController extends AbstractController
 {
     /**
      * @param CreateVaultConfiguration $useCase
@@ -56,6 +56,15 @@ class CreateVaultConfigurationController extends AbstractController
             return $presenter->show();
         }
 
+        /**
+         * @var array{
+         *  "name": string,
+         *  "type": string,
+         *  "address": string,
+         *  "port": integer,
+         *  "storage": string
+         * } $decodedRequest
+         */
         $decodedRequest = $this->validateAndRetrieveDataSent(
             $request,
             __DIR__ . '/CreateVaultConfigurationSchema.json'
@@ -69,12 +78,12 @@ class CreateVaultConfigurationController extends AbstractController
     }
 
     /**
-     * @param array {
-     *  name: string,
-     *  type: string,
-     *  address: string,
-     *  port: integer,
-     *  storage: string
+     * @param array{
+     *  "name": string,
+     *  "type": string,
+     *  "address": string,
+     *  "port": integer,
+     *  "storage": string
      * } $decodedRequest
      * @return CreateVaultConfigurationRequest
      */

@@ -32,7 +32,7 @@ use Core\Security\Vault\Domain\Exceptions\VaultConfigurationException;
 use Core\Security\Vault\Application\Repository\ReadVaultConfigurationRepositoryInterface;
 use Core\Security\Vault\Application\Repository\WriteVaultConfigurationRepositoryInterface;
 
-class CreateVaultConfiguration
+final class CreateVaultConfiguration
 {
     use LoggerTrait;
 
