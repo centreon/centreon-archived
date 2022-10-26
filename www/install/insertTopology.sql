@@ -191,10 +191,6 @@ INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VAL
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES (41,307,NULL,'./include/common/javascript/Timeline/src/main/webapp/api/timeline-api.js','initTimeline');
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES (42,30701,NULL,'./include/common/javascript/Timeline/src/main/webapp/api/timeline-api.js','initTimeline');
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES (43,30702,NULL,'./include/common/javascript/Timeline/src/main/webapp/api/timeline-api.js','initTimeline');
-INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES (47,20404,'a','./include/common/javascript/color_picker_mb.js',NULL);
-INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES (48,20404,'c','./include/common/javascript/color_picker_mb.js',NULL);
-INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES (52,20405,'a','./include/common/javascript/color_picker_mb.js',NULL);
-INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES (53,20405,'c','./include/common/javascript/color_picker_mb.js',NULL);
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES (65,602,'a','./include/common/javascript/commandGetArgs/cmdGetExample.js',NULL);
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES (66,602,'c','./include/common/javascript/commandGetArgs/cmdGetExample.js',NULL);
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES (67,602,'mc','./include/common/javascript/commandGetArgs/cmdGetExample.js',NULL);
