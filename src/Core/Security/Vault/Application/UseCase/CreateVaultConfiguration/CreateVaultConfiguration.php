@@ -26,11 +26,11 @@ namespace Core\Security\Vault\Application\UseCase\CreateVaultConfiguration;
 use Centreon\Domain\Log\LoggerTrait;
 use Core\Application\Common\UseCase\ErrorResponse;
 use Core\Application\Common\UseCase\CreatedResponse;
+use Core\Security\Vault\Domain\Model\NewVaultConfiguration;
 use Core\Application\Common\UseCase\InvalidArgumentResponse;
+use Core\Security\Vault\Domain\Exceptions\VaultConfigurationException;
 use Core\Security\Vault\Application\Repository\ReadVaultConfigurationRepositoryInterface;
 use Core\Security\Vault\Application\Repository\WriteVaultConfigurationRepositoryInterface;
-use Core\Security\Vault\Domain\Model\VaultConfigurationFactory;
-use Core\Security\Vault\Domain\Exceptions\VaultConfigurationException;
 
 class CreateVaultConfiguration
 {
@@ -70,8 +70,12 @@ class CreateVaultConfiguration
                 return;
             }
 
-            $newVaultConfiguration = VaultConfigurationFactory::createNewVaultConfiguration(
-                $createVaultConfigurationRequest
+            $newVaultConfiguration = new NewVaultConfiguration(
+                $createVaultConfigurationRequest->name,
+                $createVaultConfigurationRequest->address,
+                $createVaultConfigurationRequest->type,
+                $createVaultConfigurationRequest->port,
+                $createVaultConfigurationRequest->storage
             );
 
             $this->writeRepository->createVaultConfiguration($newVaultConfiguration);

@@ -23,15 +23,15 @@ declare(strict_types=1);
 
 namespace Core\Security\Vault\Domain\Model;
 
+use Core\Security\Vault\Domain\Exceptions\VaultConfigurationException;
+
 /**
  * This class represents vault configuration being created.
  */
 class NewVaultConfiguration
 {
     const TYPE_HASHICORP = 'hashicorp';
-    const HASHICORP_HEALTH_ENDPOINT = '/v1/sys/health';
     const ALLOWED_TYPES = [self::TYPE_HASHICORP];
-    const ENDPOINTS_BY_TYPE = [self::TYPE_HASHICORP => self::HASHICORP_HEALTH_ENDPOINT];
 
     /**
      * @param string $name
@@ -47,6 +47,26 @@ class NewVaultConfiguration
         private int $port,
         private string $storage
     ) {
+        $errors = [];
+        if (empty($name)) {
+            $errors[] = 'name';
+        }
+        if (
+            filter_var($address, FILTER_VALIDATE_IP) === false
+            && filter_var($address, FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME) === false
+        ) {
+            $errors[] = 'address';
+        }
+        if (! in_array($type, NewVaultConfiguration::ALLOWED_TYPES)) {
+            $errors[] = 'type';
+        }
+        if (empty($storage)) {
+            $errors[] = 'storage';
+        }
+
+        if (! empty($errors)) {
+            throw VaultConfigurationException::invalidParameters($errors);
+        }
     }
 
     /**
