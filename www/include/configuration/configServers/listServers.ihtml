@@ -108,9 +108,7 @@
         {section name=elem loop=$elemArr}
         <tr class={$elemArr[elem].MenuClass}>
             <td class="ListColPicker">{if !$isRemote}{$elemArr[elem].RowMenu_select} {/if}</td>
-            <td class="ListColLeft">
-                {if $can_create_edit == 1}<a href="{$elemArr[elem].RowMenu_link}">{/if}
-                    {$elemArr[elem].RowMenu_name}{if $can_create_edit == 1}</a>{/if}</td>
+            <td class="ListColLeft">{if $can_create_edit == 1}<a href="{$elemArr[elem].RowMenu_link}">{/if}{$elemArr[elem].RowMenu_name}{if $can_create_edit == 1}</a>{/if}</td>
             <td class="ListColCenter">{if $can_create_edit == 1}<a href="{$elemArr[elem].RowMenu_link}">{/if}{$elemArr[elem].RowMenu_ip_address}{if $can_create_edit == 1}</a>{/if}</td>
             <td class="ListColCenter">{$elemArr[elem].RowMenu_type}</td>
             <td class="ListColCenter">
