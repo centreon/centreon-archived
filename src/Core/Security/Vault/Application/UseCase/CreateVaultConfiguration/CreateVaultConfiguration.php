@@ -72,8 +72,8 @@ class CreateVaultConfiguration
 
             $newVaultConfiguration = new NewVaultConfiguration(
                 $createVaultConfigurationRequest->name,
-                $createVaultConfigurationRequest->address,
                 $createVaultConfigurationRequest->type,
+                $createVaultConfigurationRequest->address,
                 $createVaultConfigurationRequest->port,
                 $createVaultConfigurationRequest->storage
             );

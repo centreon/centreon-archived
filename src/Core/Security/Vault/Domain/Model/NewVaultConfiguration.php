@@ -57,7 +57,7 @@ class NewVaultConfiguration
         ) {
             $errors[] = 'address';
         }
-        if (! in_array($type, NewVaultConfiguration::ALLOWED_TYPES)) {
+        if (! in_array($type, self::ALLOWED_TYPES)) {
             $errors[] = 'type';
         }
         if (empty($storage)) {
