@@ -2448,6 +2448,7 @@ CREATE TABLE `security_provider_contact_group_relation` (
 CREATE TABLE `vault` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(255) NOT NULL,
+  PRIMARY KEY (`id`),
   UNIQUE KEY `unique_name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
