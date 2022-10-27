@@ -28,5 +28,4 @@ use Core\Security\Vault\Application\UseCase\CreateVaultConfiguration\CreateVault
 
 class CreateVaultConfigurationPresenterStub extends AbstractPresenter implements CreateVaultConfigurationPresenterInterface
 {
-
 }
