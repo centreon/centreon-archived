@@ -31,8 +31,10 @@ interface ReadVaultConfigurationRepositoryInterface
      * @param string $address
      * @param int $port
      * @param string $storage
-     * @return VaultConfiguration|null
+     *
      * @throws \Throwable
+     *
+     * @return VaultConfiguration|null
      */
     public function findVaultConfigurationByAddressAndPortAndStorage(
         string $address,

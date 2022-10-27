@@ -28,8 +28,8 @@ use Centreon\Domain\Contact\Contact;
 use Core\Application\Common\UseCase\UnauthorizedResponse;
 use Core\Security\Vault\Application\UseCase\CreateVaultConfiguration\{
     CreateVaultConfiguration,
-    CreateVaultConfigurationRequest,
-    CreateVaultConfigurationPresenterInterface
+    CreateVaultConfigurationPresenterInterface,
+    CreateVaultConfigurationRequest
 };
 use Symfony\Component\HttpFoundation\Request;
 
@@ -39,6 +39,7 @@ final class CreateVaultConfigurationController extends AbstractController
      * @param CreateVaultConfiguration $useCase
      * @param Request $request
      * @param CreateVaultConfigurationPresenterInterface $presenter
+     *
      * @return object
      */
     public function __invoke(
@@ -85,6 +86,7 @@ final class CreateVaultConfigurationController extends AbstractController
      *  "port": integer,
      *  "storage": string
      * } $decodedRequest
+     *
      * @return CreateVaultConfigurationRequest
      */
     private function createCreateVaultConfigurationRequest(array $decodedRequest): CreateVaultConfigurationRequest

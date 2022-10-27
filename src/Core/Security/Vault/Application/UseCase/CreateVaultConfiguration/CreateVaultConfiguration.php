@@ -24,13 +24,13 @@ declare(strict_types=1);
 namespace Core\Security\Vault\Application\UseCase\CreateVaultConfiguration;
 
 use Centreon\Domain\Log\LoggerTrait;
-use Core\Application\Common\UseCase\ErrorResponse;
 use Core\Application\Common\UseCase\CreatedResponse;
-use Core\Security\Vault\Domain\Model\NewVaultConfiguration;
+use Core\Application\Common\UseCase\ErrorResponse;
 use Core\Application\Common\UseCase\InvalidArgumentResponse;
-use Core\Security\Vault\Domain\Exceptions\VaultConfigurationException;
 use Core\Security\Vault\Application\Repository\ReadVaultConfigurationRepositoryInterface;
 use Core\Security\Vault\Application\Repository\WriteVaultConfigurationRepositoryInterface;
+use Core\Security\Vault\Domain\Exceptions\VaultConfigurationException;
+use Core\Security\Vault\Domain\Model\NewVaultConfiguration;
 
 final class CreateVaultConfiguration
 {
@@ -100,13 +100,15 @@ final class CreateVaultConfiguration
     }
 
     /**
-     * Checks if same vault configuration exists
+     * Checks if same vault configuration exists.
      *
      * @param string $address
      * @param int $port
      * @param string $storage
-     * @return bool
+     *
      * @throws \Throwable
+     *
+     * @return bool
      */
     private function isSameVaultConfigurationExists(
         string $address,
@@ -121,7 +123,7 @@ final class CreateVaultConfiguration
                 [
                     'address' => $address,
                     'port' => $port,
-                    'storage' => $storage
+                    'storage' => $storage,
                 ]
             );
 

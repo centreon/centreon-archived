@@ -25,28 +25,18 @@ namespace Core\Security\Vault\Application\UseCase\CreateVaultConfiguration;
 
 final class CreateVaultConfigurationRequest
 {
-    /**
-     * @var string
-     */
+    /** @var string */
     public string $name = '';
 
-    /**
-     * @var string
-     */
+    /** @var string */
     public string $type = '';
 
-    /**
-     * @var string
-     */
+    /** @var string */
     public string $address = '';
 
-    /**
-     * @var int
-     */
+    /** @var int */
     public int $port = 8200;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     public string $storage = '';
 }

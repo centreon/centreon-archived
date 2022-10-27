@@ -24,7 +24,7 @@ declare(strict_types=1);
 namespace Core\Security\Vault\Domain\Model;
 
 /**
- * This class represents already existing vault configuration
+ * This class represents already existing vault configuration.
  */
 class VaultConfiguration extends NewVaultConfiguration
 {

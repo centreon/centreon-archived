@@ -29,6 +29,7 @@ interface WriteVaultConfigurationRepositoryInterface
 {
     /**
      * @param NewVaultConfiguration $vaultConfiguration
+     *
      * @throws \Throwable
      */
     public function createVaultConfiguration(NewVaultConfiguration $vaultConfiguration): void;

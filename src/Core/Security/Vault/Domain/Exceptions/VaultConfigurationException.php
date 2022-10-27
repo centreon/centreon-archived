@@ -26,9 +26,10 @@ namespace Core\Security\Vault\Domain\Exceptions;
 class VaultConfigurationException extends \Exception
 {
     /**
-     * Exception thrown when type is not allowed
+     * Exception thrown when type is not allowed.
      *
      * @param string $type
+     *
      * @return self
      */
     public static function invalidType(string $type): self
@@ -37,7 +38,7 @@ class VaultConfigurationException extends \Exception
     }
 
     /**
-     * Exception thrown when vault configuration already exists
+     * Exception thrown when vault configuration already exists.
      *
      * @return self
      */
@@ -47,9 +48,10 @@ class VaultConfigurationException extends \Exception
     }
 
     /**
-     * Exception thrown when parameters are not valid
+     * Exception thrown when parameters are not valid.
      *
      * @param string[] $parameters
+     *
      * @return self
      */
     public static function invalidParameters(array $parameters): self
@@ -58,7 +60,7 @@ class VaultConfigurationException extends \Exception
     }
 
     /**
-     * Exception thrown when unhandled error occurs
+     * Exception thrown when unhandled error occurs.
      *
      * @return self
      */
