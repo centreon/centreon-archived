@@ -34,6 +34,8 @@
  *
  */
 
+use enshrined\svgSanitize\Sanitizer;
+
 /**
  * Displays the SVG file in HTML.
  *
@@ -49,9 +51,15 @@ function displaySvg(string $svgPath, string $color, float $height, float $width)
     $svgPath = str_replace('.', '', $path['dirname']) . DIRECTORY_SEPARATOR . $path['basename'];
     $path = _CENTREON_PATH_ . DIRECTORY_SEPARATOR . $svgPath;
     if (file_exists($path)) {
-        $data = file_get_contents($path);
-        $data = str_replace('<svg ', "<svg height='$height' width='$width' ", $data);
-        echo "<span style='fill:$color; vertical-align: middle'>" . $data . '</span>';
+        $sanitizer = new Sanitizer();
+        $svg = file_get_contents($path);
+        if ($svg === false) {
+            echo 'Unable to get content of file: ' . $path;
+        } else {
+            $cleanSvg = $sanitizer->sanitize($svg);
+            $cleanSvg = str_replace('<svg ', "<svg height='$height' width='$width' ", $cleanSvg);
+            echo "<span style='fill:$color; vertical-align: middle'>" . $cleanSvg . '</span>';
+        }
     } else {
         echo 'SVG file not found: ' . $svgPath;
     }
