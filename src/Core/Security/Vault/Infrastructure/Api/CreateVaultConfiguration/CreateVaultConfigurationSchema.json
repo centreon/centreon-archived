@@ -15,7 +15,8 @@
             "type": "string"
         },
         "type": {
-            "type": "string"
+            "type": "string",
+            "enum": ["hashicorp"]
         },
         "address": {
             "type": "string"

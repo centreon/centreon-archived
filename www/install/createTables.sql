@@ -2445,6 +2445,26 @@ CREATE TABLE `security_provider_contact_group_relation` (
     REFERENCES `provider_configuration` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+CREATE TABLE `vault_configuration` (
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(255) NOT NULL,
+  `type_id` INT UNSIGNED NOT NULL,
+  `url` VARCHAR(1024) NOT NULL,
+  `port` SMALLINT UNSIGNED NOT NULL,
+  `storage` VARCHAR(255) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_vault_configuration` (`url`, `port`, `storage`),
+  CONSTRAINT `vault_configuration_type_id`
+    FOREIGN KEY (`type_id`)
+    REFERENCES `vault` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `vault` (
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(255) NOT NULL,
+  UNIQUE KEY `unique_name` (`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
 /*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;

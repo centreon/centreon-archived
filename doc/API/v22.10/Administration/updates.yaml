@@ -26,5 +26,5 @@ patch:
     404:
       description: "Updates not found"
     500:
-      $ref: "../../centreon-api-v22.10.yaml#/components/responses/InternalServerError"
+      $ref: "../../centreon-api-v23.04.yaml#/components/responses/InternalServerError"
 ...
