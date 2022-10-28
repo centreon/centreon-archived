@@ -512,6 +512,26 @@ function insertOrUpdateLogger(CentreonDB $pearDB, array $data, int $nagiosId): v
     }
 }
 
+/**
+ * This function is here to manage legacy encoded field while allowing to avoid this
+ * bad design for specific fields : this is why these fields are hard coded here.
+ *
+ * @param string $value
+ * @param string $columnName
+ * @return string
+ */
+function encodeFieldNagios(string $value, string $columnName): string
+{
+    $notEncodedFields = [
+        'illegal_macro_output_chars',
+        'illegal_object_name_chars',
+    ];
+
+    return in_array($columnName, $notEncodedFields, true)
+        ? $value
+        : htmlentities($value, ENT_QUOTES, "UTF-8");
+}
+
 function insertNagios($data = array(), $brokerTab = array())
 {
     global $form, $pearDB, $centreon;
@@ -534,11 +554,11 @@ function insertNagios($data = array(), $brokerTab = array())
                 : $nagiosColumns[$columnName]['default'] ;
         } elseif (! empty($nagiosColumns[$columnName]['isRadio'])) {
             $value = isset($rawValue[$columnName])
-                ? htmlentities($rawValue[$columnName], ENT_QUOTES, "UTF-8")
+                ? encodeFieldNagios($rawValue[$columnName], $columnName)
                 : $nagiosColumns[$columnName]['default'];
         } else {
             $value = isset($rawValue) && $rawValue !== ''
-                ? htmlentities($rawValue, ENT_QUOTES, "UTF-8")
+                ? encodeFieldNagios($rawValue, $columnName)
                 : $nagiosColumns[$columnName]['default'];
         }
         $nagiosCfg[$columnName] = $value;
@@ -619,11 +639,11 @@ function updateNagios($nagiosId = null)
                 : $nagiosColumns[$columnName]['default'] ;
         } elseif (! empty($nagiosColumns[$columnName]['isRadio'])) {
             $value = isset($rawValue[$columnName])
-                ? htmlentities($rawValue[$columnName], ENT_QUOTES, "UTF-8")
+                ? encodeFieldNagios($rawValue[$columnName], $columnName)
                 : $nagiosColumns[$columnName]['default'];
         } else {
             $value = isset($rawValue) && $rawValue !== ''
-                ? htmlentities($rawValue, ENT_QUOTES, "UTF-8")
+                ? encodeFieldNagios($rawValue, $columnName)
                 : $nagiosColumns[$columnName]['default'];
         }
         $nagiosCfg[$columnName] = $value;

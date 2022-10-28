@@ -348,17 +348,6 @@ class Engine extends AbstractObject
 
         $object = $this->engine;
 
-        // Decode
-        if (!is_null($object['illegal_macro_output_chars'])) {
-            $object['illegal_macro_output_chars'] = html_entity_decode(
-                $object['illegal_macro_output_chars'],
-                ENT_QUOTES
-            );
-        }
-        if (!is_null($object['illegal_object_name_chars'])) {
-            $object['illegal_object_name_chars'] = html_entity_decode($object['illegal_object_name_chars'], ENT_QUOTES);
-        }
-
         $timezoneInstance = Timezone::getInstance($this->dependencyInjector);
         $timezone = $timezoneInstance->getTimezoneFromId($object['use_timezone'], true);
         $object['use_timezone'] = null;

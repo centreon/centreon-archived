@@ -141,11 +141,10 @@ class EngineConfiguration
      */
     public function removeIllegalCharacters(string $stringToAnalyse): string
     {
-        if ($this->illegalObjectNameCharacters === null) {
+        if ($this->illegalObjectNameCharacters === null || $this->illegalObjectNameCharacters === '') {
             return $stringToAnalyse;
         }
-        $illegalCharacters = html_entity_decode($this->illegalObjectNameCharacters);
-        return str_replace(str_split($illegalCharacters), '', $stringToAnalyse);
+        return str_replace(str_split($this->illegalObjectNameCharacters), '', $stringToAnalyse);
     }
 
     /**

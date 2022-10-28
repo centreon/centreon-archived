@@ -630,10 +630,7 @@ class CentreonHost
         }
 
         while ($data = $stmt->fetch()) {
-            $tab = str_split(html_entity_decode($data['illegal_object_name_chars'], ENT_QUOTES, "UTF-8"));
-            foreach ($tab as $char) {
-                $hostName = str_replace($char, "", $hostName);
-            }
+            $hostName = str_replace(str_split($data['illegal_object_name_chars']), '', $hostName);
         }
         $stmt->closeCursor();
         return $hostName;
@@ -1014,7 +1011,8 @@ class CentreonHost
         $i = 1;
         $queryValues = array();
         foreach ($templates as $templateId) {
-            if (!isset($templateId)
+            if (
+                ! isset($templateId)
                 || !$templateId
                 || isset($stored[$templateId])
                 || !$this->hasNoInfiniteLoop($hostId, $templateId)

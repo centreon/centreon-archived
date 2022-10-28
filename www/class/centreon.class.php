@@ -33,13 +33,13 @@
  *
  */
 
-require_once dirname(__FILE__) . '/centreonUser.class.php';
-require_once dirname(__FILE__) . '/centreonGMT.class.php';
-require_once dirname(__FILE__) . '/centreonLogAction.class.php';
-require_once dirname(__FILE__) . '/centreonExternalCommand.class.php';
-require_once dirname(__FILE__) . '/centreonBroker.class.php';
-require_once dirname(__FILE__) . '/centreonHostgroups.class.php';
-require_once realpath(dirname(__FILE__) . "/centreonDBInstance.class.php");
+require_once __DIR__ . '/centreonUser.class.php';
+require_once __DIR__ . '/centreonGMT.class.php';
+require_once __DIR__ . '/centreonLogAction.class.php';
+require_once __DIR__ . '/centreonExternalCommand.class.php';
+require_once __DIR__ . '/centreonBroker.class.php';
+require_once __DIR__ . '/centreonHostgroups.class.php';
+require_once __DIR__ . '/centreonDBInstance.class.php';
 
 /**
  * Class for load application Centreon
@@ -282,10 +282,7 @@ class Centreon
     {
         $DBRESULT = CentreonDBInstance::getConfInstance()->query("SELECT illegal_object_name_chars FROM cfg_nagios");
         while ($data = $DBRESULT->fetchColumn()) {
-            $tab = str_split(html_entity_decode($data, ENT_QUOTES, "UTF-8"));
-            foreach ($tab as $char) {
-                $name = str_replace($char, "", $name);
-            }
+            $name = str_replace(str_split($data), '', $name);
         }
         $DBRESULT = null;
         return $name;

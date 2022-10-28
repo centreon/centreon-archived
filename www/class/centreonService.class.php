@@ -87,7 +87,7 @@ class CentreonService
      * @param  int[] $ids
      * @return int[] filtered
      */
-    function filteredArrayId(array $ids): array
+    public function filteredArrayId(array $ids): array
     {
         /* Slight difference here. Array parameter is made
          * of combined ids HOSTID_SERVICEID
@@ -308,10 +308,7 @@ class CentreonService
     {
         $DBRESULT = $this->db->query("SELECT illegal_object_name_chars FROM cfg_nagios");
         while ($data = $DBRESULT->fetchRow()) {
-            $tab = str_split(html_entity_decode($data['illegal_object_name_chars'], ENT_QUOTES, "UTF-8"));
-            foreach ($tab as $char) {
-                $name = str_replace($char, "", $name);
-            }
+            $name = str_replace(str_split($data['illegal_object_name_chars']), '', $name);
         }
         $DBRESULT->closeCursor();
         return $name;
@@ -454,7 +451,8 @@ class CentreonService
             $macroFrom
         );
         foreach ($macros as $key => $value) {
-            if ($value != "" &&
+            if (
+                $value != "" &&
                 !isset($stored[strtolower($value)])
             ) {
                 $this->db->query(
@@ -682,11 +680,14 @@ class CentreonService
         $aMacros = $this->getMacros($serviceId, $aListTemplate, $cmdId);
         foreach ($aMacros as $macro) {
             foreach ($macroInput as $ind => $input) {
-                if (isset($macro['macroInput_#index#']) && isset($macro["macroValue_#index#"])) {
+                if (isset($macro['macroInput_#index#'], $macro["macroValue_#index#"])) {
                     # Don't override macros on massive change if there is not direct inheritance
-                    if (($input == $macro['macroInput_#index#'] && $macroValue[$ind] == $macro["macroValue_#index#"])
-                        || ($isMassiveChange && $input == $macro['macroInput_#index#'] &&
-                            isset($macroFrom[$ind]) && $macroFrom[$ind] != 'direct')
+                    if (
+                        ($input == $macro['macroInput_#index#'] && $macroValue[$ind] == $macro["macroValue_#index#"])
+                        || ($isMassiveChange
+                            && $input == $macro['macroInput_#index#']
+                            && isset($macroFrom[$ind])
+                            && $macroFrom[$ind] != 'direct')
                     ) {
                         unset($macroInput[$ind]);
                         unset($macroValue[$ind]);

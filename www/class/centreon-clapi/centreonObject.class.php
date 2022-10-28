@@ -639,10 +639,7 @@ abstract class CentreonObject
     {
         $dbResult = $this->db->query("SELECT illegal_object_name_chars FROM cfg_nagios");
         while ($data = $dbResult->fetch()) {
-            $tab = str_split(html_entity_decode($data['illegal_object_name_chars'], ENT_QUOTES, "UTF-8"));
-            foreach ($tab as $char) {
-                $name = str_replace($char, "", $name);
-            }
+            $name = str_replace(str_split($data['illegal_object_name_chars']), '', $name);
         }
         $dbResult->closeCursor();
         return $name;

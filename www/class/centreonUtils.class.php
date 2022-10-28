@@ -42,19 +42,19 @@ class CentreonUtils
     /**
      * Remove all <script> data
      */
-    const ESCAPE_LEGACY_METHOD = 0;
+    public const ESCAPE_LEGACY_METHOD = 0;
     /**
      * Convert all html tags into HTML entities except links
      */
-    const ESCAPE_ALL_EXCEPT_LINK = 1;
+    public const ESCAPE_ALL_EXCEPT_LINK = 1;
     /**
      * Convert all html tags into HTML entities
      */
-    const ESCAPE_ALL = 2;
+    public const ESCAPE_ALL = 2;
     /**
      * Remove all specific characters defined in the configuration > pollers > engine > admin, illegal characters field
      */
-    const ESCAPE_ILLEGAL_CHARS = 4;
+    public const ESCAPE_ILLEGAL_CHARS = 4;
 
 
     /**
@@ -328,12 +328,8 @@ class CentreonUtils
             case self::ESCAPE_ALL:
                 return self::escapeAll($stringToEscape);
             case self::ESCAPE_ILLEGAL_CHARS:
-                $pattern = html_entity_decode(
-                    $_SESSION['centreon']->Nagioscfg['illegal_object_name_chars'],
-                    ENT_QUOTES,
-                    "UTF-8"
-                );
-                return str_replace(str_split($pattern), "", $stringToEscape);
+                $chars = (string) $_SESSION['centreon']->Nagioscfg['illegal_object_name_chars'];
+                return str_replace(str_split($chars), '', $stringToEscape);
         }
     }
 
@@ -376,7 +372,7 @@ class CentreonUtils
                 // The current tag is not self-closing tag allowed
                 $index = 0;
                 $tagsFound = array();
-                
+
                 // Specific process for not self-closing HTML tags
                 while ($occurence = self::getHtmlTags($currentTag, $stringToEscape)) {
                     $tagsFound[$index] = $occurence['tag'];
@@ -401,9 +397,9 @@ class CentreonUtils
             }
             $tagOccurences[$linkToken] = $tagsFound;
         }
-        
+
         $escapedString = htmlentities($stringToEscape, ENT_QUOTES, 'UTF-8');
-        
+
         /**
          * After we escaped all unauthorized HTML tags, we will search and
          * replace all previous specifics tags by their original tag
@@ -414,10 +410,10 @@ class CentreonUtils
                 $escapedString = str_replace($linkTag, $tagsFound[$indexTag], $escapedString);
             }
         }
-        
+
         return $escapedString;
     }
-    
+
     /**
      * Convert all html tags into HTML entities except links (<a>...</a>)
      *
@@ -428,7 +424,7 @@ class CentreonUtils
     {
         return self::escapeAllExceptSelectedTags($stringToEscape, ['a']);
     }
-    
+
     /**
      * Return all occurences of a html tag found in html string
      *
