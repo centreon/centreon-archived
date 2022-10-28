@@ -17113,8 +17113,5 @@ msgstr "Une configuration de vault existe déjà avec ces propriétés"
 msgid "Impossible to create vault configuration"
 msgstr "Impossible de créer la configuration de vault"
 
-msgid "Invalid vault type: %s"
-msgstr "Type de vault invalide: %s"
-
 msgid "Invalid parameter(s): %s"
 msgstr "Paramètre(s) invalide(s): %s"

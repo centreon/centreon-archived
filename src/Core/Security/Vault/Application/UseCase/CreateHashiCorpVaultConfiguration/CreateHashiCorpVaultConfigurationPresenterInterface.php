@@ -21,22 +21,10 @@
 
 declare(strict_types=1);
 
-namespace Core\Security\Vault\Application\UseCase\CreateVaultConfiguration;
+namespace Core\Security\Vault\Application\UseCase\CreateHashiCorpVaultConfiguration;
 
-final class CreateVaultConfigurationRequest
+use Core\Application\Common\UseCase\PresenterInterface;
+
+interface CreateHashiCorpVaultConfigurationPresenterInterface extends PresenterInterface
 {
-    /** @var string */
-    public string $name = '';
-
-    /** @var string */
-    public string $type = '';
-
-    /** @var string */
-    public string $address = '';
-
-    /** @var int */
-    public int $port = 8200;
-
-    /** @var string */
-    public string $storage = '';
 }

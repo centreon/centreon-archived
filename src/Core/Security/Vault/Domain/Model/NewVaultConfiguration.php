@@ -31,7 +31,6 @@ use Core\Security\Vault\Domain\Exceptions\VaultConfigurationException;
 class NewVaultConfiguration
 {
     public const TYPE_HASHICORP = 'hashicorp';
-    public const ALLOWED_TYPES = [self::TYPE_HASHICORP];
 
     /**
      * @param string $name
@@ -39,13 +38,15 @@ class NewVaultConfiguration
      * @param string $address
      * @param int $port
      * @param string $storage
+     * @param VaultCustomConfigurationInterface $customConfiguration
      */
     public function __construct(
-        private string $name,
-        private string $type,
-        private string $address,
-        private int $port,
-        private string $storage
+        protected string $name,
+        protected string $type,
+        protected string $address,
+        protected int $port,
+        protected string $storage,
+        protected VaultCustomConfigurationInterface $customConfiguration
     ) {
         $errors = [];
         if (empty($name)) {
@@ -57,13 +58,9 @@ class NewVaultConfiguration
         ) {
             $errors[] = 'address';
         }
-        if (! in_array($type, self::ALLOWED_TYPES, true)) {
-            $errors[] = 'type';
-        }
         if (empty($storage)) {
             $errors[] = 'storage';
         }
-
         if (! empty($errors)) {
             throw VaultConfigurationException::invalidParameters($errors);
         }
@@ -107,5 +104,13 @@ class NewVaultConfiguration
     public function getStorage(): string
     {
         return $this->storage;
+    }
+
+    /**
+     * @return VaultCustomConfigurationInterface
+     */
+    public function getCustomConfiguration(): VaultCustomConfigurationInterface
+    {
+        return $this->customConfiguration;
     }
 }

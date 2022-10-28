@@ -21,13 +21,25 @@
 
 declare(strict_types=1);
 
-namespace Tests\Core\Security\Vault\Application\UseCase\CreateVaultConfiguration;
+namespace Core\Security\Vault\Application\UseCase\CreateHashiCorpVaultConfiguration;
 
-use Core\Application\Common\UseCase\AbstractPresenter;
-use Core\Security\Vault\Application\UseCase\CreateVaultConfiguration\{
-    CreateVaultConfigurationPresenterInterface as PresenterInterface
-};
-
-class CreateVaultConfigurationPresenterStub extends AbstractPresenter implements PresenterInterface
+final class CreateHashiCorpVaultConfigurationRequest
 {
+    /** @var string */
+    public string $name = '';
+
+    /** @var string */
+    public string $address = '';
+
+    /** @var int */
+    public int $port = 8200;
+
+    /** @var string */
+    public string $storage = '';
+
+    /** @var string */
+    public string $roleId = '';
+
+    /** @var string */
+    public string $secretId = '';
 }

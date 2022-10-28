@@ -1,22 +1,19 @@
 {
     "$schema": "http://json-schema.org/draft-04/schema#",
-    "title": "Create Vault Configuration",
+    "title": "Create HashiCorp Vault Configuration",
     "type": "object",
     "required": [
         "name",
-        "type",
         "address",
         "port",
-        "storage"
+        "storage",
+        "role_id",
+        "secret_id"
     ],
     "additionalProperties": false,
     "properties": {
         "name": {
             "type": "string"
-        },
-        "type": {
-            "type": "string",
-            "enum": ["hashicorp"]
         },
         "address": {
             "type": "string"
@@ -25,6 +22,12 @@
             "type": "integer"
         },
         "storage": {
+            "type": "string"
+        },
+        "role_id": {
+            "type": "string"
+        },
+        "secret_id": {
             "type": "string"
         }
     }

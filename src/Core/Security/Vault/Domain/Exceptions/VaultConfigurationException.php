@@ -26,18 +26,6 @@ namespace Core\Security\Vault\Domain\Exceptions;
 class VaultConfigurationException extends \Exception
 {
     /**
-     * Exception thrown when type is not allowed.
-     *
-     * @param string $type
-     *
-     * @return self
-     */
-    public static function invalidType(string $type): self
-    {
-        return new self(_(sprintf('Invalid vault type: %s', $type)));
-    }
-
-    /**
      * Exception thrown when vault configuration already exists.
      *
      * @return self

@@ -2452,6 +2452,8 @@ CREATE TABLE `vault` (
   UNIQUE KEY `unique_name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+INSERT INTO `vault` (`name`) VALUES ('hashicorp');
+
 CREATE TABLE `vault_configuration` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(255) NOT NULL,
@@ -2459,6 +2461,7 @@ CREATE TABLE `vault_configuration` (
   `url` VARCHAR(1024) NOT NULL,
   `port` SMALLINT UNSIGNED NOT NULL,
   `storage` VARCHAR(255) NOT NULL,
+  `custom_configuration` LONGTEXT NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `unique_vault_configuration` (`url`, `port`, `storage`),
   CONSTRAINT `vault_configuration_type_id`

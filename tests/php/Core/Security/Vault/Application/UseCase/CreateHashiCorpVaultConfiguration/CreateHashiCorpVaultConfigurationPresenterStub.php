@@ -21,10 +21,13 @@
 
 declare(strict_types=1);
 
-namespace Core\Security\Vault\Application\UseCase\CreateVaultConfiguration;
+namespace Tests\Core\Security\Vault\Application\UseCase\CreateHashiCorpVaultConfiguration;
 
-use Core\Application\Common\UseCase\PresenterInterface;
+use Core\Application\Common\UseCase\AbstractPresenter;
+use Core\Security\Vault\Application\UseCase\CreateHashiCorpVaultConfiguration\{
+    CreateHashiCorpVaultConfigurationPresenterInterface as PresenterInterface
+};
 
-interface CreateVaultConfigurationPresenterInterface extends PresenterInterface
+class CreateHashiCorpVaultConfigurationPresenterStub extends AbstractPresenter implements PresenterInterface
 {
 }
