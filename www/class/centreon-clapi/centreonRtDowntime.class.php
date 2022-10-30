@@ -171,7 +171,15 @@ class CentreonRtDowntime extends CentreonObject
      */
     private function parseShowParameters($parameters)
     {
-        list($type, $resource) = explode(';', $parameters);
+        $parameters = explode(';', $parameters);
+        if (count($parameters) === 1) {
+            $resource = '';
+        } elseif (count($parameters) === 2) {
+            $resource = $parameters[1];
+        } else {
+            throw new CentreonClapiException('Bad parameters');
+        }
+        $type = $parameters[0];
 
         return array(
             'type' => $type,
