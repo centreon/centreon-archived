@@ -176,10 +176,10 @@ class CentreonRtAcknowledgement extends CentreonObject
         }
         $type = $parameters[0];
 
-        return [
+        return array(
             'type' => $type,
             'resource' => $resource,
-        ];
+        );
     }
 
     /**
