@@ -423,7 +423,7 @@ describe('Password expiration policy', () => {
       ),
     ).toHaveTextContent('1');
 
-    expect(screen.getAllByLabelText(labelExcludedUsers)).toHaveLength(1);
+    expect(screen.getByLabelText(labelExcludedUsers)).toBeInTheDocument();
   });
 
   it('does not display any error message when the password expiration time is cleared', async () => {
@@ -548,10 +548,10 @@ describe('Password expiration policy', () => {
     });
 
     await waitFor(() => {
-      expect(screen.getAllByLabelText(labelExcludedUsers)).toHaveLength(1);
+      expect(screen.getByLabelText(labelExcludedUsers)).toBeInTheDocument();
     });
 
-    userEvent.click(screen.getByLabelText(labelExcludedUsers)[0]);
+    userEvent.click(screen.getByLabelText(labelExcludedUsers));
 
     await waitFor(() => {
       expect(getFetchCall(0)).toEqual(
