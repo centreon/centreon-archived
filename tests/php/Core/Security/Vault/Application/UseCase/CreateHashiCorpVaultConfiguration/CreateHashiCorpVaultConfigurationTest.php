@@ -32,7 +32,6 @@ use Core\Security\Vault\Application\Repository\WriteVaultConfigurationRepository
 use Core\Security\Vault\Application\UseCase\CreateHashiCorpVaultConfiguration\CreateHashiCorpVaultConfiguration;
 use Core\Security\Vault\Application\UseCase\CreateHashiCorpVaultConfiguration\CreateHashiCorpVaultConfigurationRequest;
 use Core\Security\Vault\Domain\Exceptions\VaultConfigurationException;
-use Core\Security\Vault\Domain\Model\HashiCorpCustomConfiguration;
 use Core\Security\Vault\Domain\Model\NewVaultConfiguration;
 use Core\Security\Vault\Domain\Model\VaultConfiguration;
 
@@ -43,7 +42,6 @@ beforeEach(function (): void {
 });
 
 it('Should present InvalidArgumentResponse when vault configuration already exists', function (): void {
-    $customConfiguration = new HashiCorpCustomConfiguration('myRoleId', 'mySecretId');
     $vaultConfiguration = new VaultConfiguration(
         1,
         'myConf',
@@ -51,7 +49,8 @@ it('Should present InvalidArgumentResponse when vault configuration already exis
         '127.0.0.1',
         8200,
         'myStorage',
-        $customConfiguration
+        'myRoleId',
+        'mySecretId'
     );
     $this->readRepository
         ->expects($this->once())

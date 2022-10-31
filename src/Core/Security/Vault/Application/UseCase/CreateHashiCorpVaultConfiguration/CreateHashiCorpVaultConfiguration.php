@@ -30,7 +30,6 @@ use Core\Application\Common\UseCase\InvalidArgumentResponse;
 use Core\Security\Vault\Application\Repository\ReadVaultConfigurationRepositoryInterface;
 use Core\Security\Vault\Application\Repository\WriteVaultConfigurationRepositoryInterface;
 use Core\Security\Vault\Domain\Exceptions\VaultConfigurationException;
-use Core\Security\Vault\Domain\Model\HashiCorpCustomConfiguration;
 use Core\Security\Vault\Domain\Model\NewVaultConfiguration;
 
 final class CreateHashiCorpVaultConfiguration
@@ -70,18 +69,14 @@ final class CreateHashiCorpVaultConfiguration
                 return;
             }
 
-            $customConfiguration = new HashiCorpCustomConfiguration(
-                $createHashiCorpVaultConfigurationRequest->roleId,
-                $createHashiCorpVaultConfigurationRequest->secretId
-            );
-
             $newVaultConfiguration = new NewVaultConfiguration(
                 $createHashiCorpVaultConfigurationRequest->name,
                 NewVaultConfiguration::TYPE_HASHICORP,
                 $createHashiCorpVaultConfigurationRequest->address,
                 $createHashiCorpVaultConfigurationRequest->port,
                 $createHashiCorpVaultConfigurationRequest->storage,
-                $customConfiguration
+                $createHashiCorpVaultConfigurationRequest->roleId,
+                $createHashiCorpVaultConfigurationRequest->secretId
             );
 
             $this->writeRepository->createVaultConfiguration($newVaultConfiguration);

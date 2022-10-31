@@ -38,7 +38,8 @@ class NewVaultConfiguration
      * @param string $address
      * @param int $port
      * @param string $storage
-     * @param VaultCustomConfigurationInterface $customConfiguration
+     * @param string $roleId
+     * @param string $secretId
      */
     public function __construct(
         protected string $name,
@@ -46,7 +47,8 @@ class NewVaultConfiguration
         protected string $address,
         protected int $port,
         protected string $storage,
-        protected VaultCustomConfigurationInterface $customConfiguration
+        protected string $roleId,
+        protected string $secretId
     ) {
         $errors = [];
         if (empty($name)) {
@@ -60,6 +62,12 @@ class NewVaultConfiguration
         }
         if (empty($storage)) {
             $errors[] = 'storage';
+        }
+        if (empty($this->roleId)) {
+            $errors[] = 'role_id';
+        }
+        if (empty($this->secretId)) {
+            $errors[] = 'secret_id';
         }
         if (! empty($errors)) {
             throw VaultConfigurationException::invalidParameters($errors);
@@ -107,10 +115,18 @@ class NewVaultConfiguration
     }
 
     /**
-     * @return VaultCustomConfigurationInterface
+     * @return string
      */
-    public function getCustomConfiguration(): VaultCustomConfigurationInterface
+    public function getRoleId(): string
     {
-        return $this->customConfiguration;
+        return $this->roleId;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSecretId(): string
+    {
+        return $this->secretId;
     }
 }

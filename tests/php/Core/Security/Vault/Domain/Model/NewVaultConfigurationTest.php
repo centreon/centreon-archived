@@ -24,12 +24,7 @@ declare(strict_types=1);
 namespace Tests\Core\Security\Vault\Domain\Model;
 
 use Core\Security\Vault\Domain\Exceptions\VaultConfigurationException;
-use Core\Security\Vault\Domain\Model\HashiCorpCustomConfiguration;
 use Core\Security\Vault\Domain\Model\NewVaultConfiguration;
-
-beforeEach(function (): void {
-    $this->customConfiguration = new HashiCorpCustomConfiguration('myRoleId', 'mySecretId');
-});
 
 it('should throw VaultConfigurationException when vault name is empty', function (): void {
     new NewVaultConfiguration(
@@ -38,7 +33,8 @@ it('should throw VaultConfigurationException when vault name is empty', function
         '127.0.0.1',
         8200,
         'myStorage',
-        $this->customConfiguration
+        'myRoleId',
+        'mySecretId'
     );
 })->throws(VaultConfigurationException::class, VaultConfigurationException::invalidParameters(['name'])->getMessage());
 
@@ -49,7 +45,8 @@ it('should throw VaultConfigurationException when vault address is \'._@\'', fun
         '._@',
         8200,
         'myStorage',
-        $this->customConfiguration
+        'myRoleId',
+        'mySecretId'
     );
 })->throws(
     VaultConfigurationException::class,
@@ -63,11 +60,42 @@ it('should throw VaultConfigurationException when vault storage is empty', funct
         '127.0.0.1',
         8200,
         '',
-        $this->customConfiguration
+        'myRoleId',
+        'mySecretId'
     );
 })->throws(
     VaultConfigurationException::class,
     VaultConfigurationException::invalidParameters(['storage'])->getMessage()
+);
+
+it('should throw VaultConfigurationException when vault role id is empty', function (): void {
+    new NewVaultConfiguration(
+        'myVault',
+        NewVaultConfiguration::TYPE_HASHICORP,
+        '127.0.0.1',
+        8200,
+        'myStorage',
+        '',
+        'mySecretId'
+    );
+})->throws(
+    VaultConfigurationException::class,
+    VaultConfigurationException::invalidParameters(['role_id'])->getMessage()
+);
+
+it('should throw VaultConfigurationException when vault secret id is empty', function (): void {
+    new NewVaultConfiguration(
+        'myVault',
+        NewVaultConfiguration::TYPE_HASHICORP,
+        '127.0.0.1',
+        8200,
+        'myStorage',
+        'myRoleId',
+        ''
+    );
+})->throws(
+    VaultConfigurationException::class,
+    VaultConfigurationException::invalidParameters(['secret_id'])->getMessage()
 );
 
 it('should return an instance of NewVaultConfiguration when all vault parametes are valid', function (): void {
@@ -77,7 +105,8 @@ it('should return an instance of NewVaultConfiguration when all vault parametes 
         '127.0.0.1',
         8200,
         'myStorage',
-        $this->customConfiguration
+        'myRoleId',
+        'mySecretId'
     );
 
     expect($newVaultConfiguration->getName())->toBe('myVault');
@@ -85,4 +114,6 @@ it('should return an instance of NewVaultConfiguration when all vault parametes 
     expect($newVaultConfiguration->getAddress())->toBe('127.0.0.1');
     expect($newVaultConfiguration->getPort())->toBe(8200);
     expect($newVaultConfiguration->getStorage())->toBe('myStorage');
+    expect($newVaultConfiguration->getRoleId())->toBe('myRoleId');
+    expect($newVaultConfiguration->getSecretId())->toBe('mySecretId');
 });
