@@ -551,7 +551,7 @@ describe('Password expiration policy', () => {
       expect(screen.getAllByLabelText(labelExcludedUsers)).toHaveLength(2);
     });
 
-    userEvent.click(screen.getAllByLabelText(labelExcludedUsers));
+    userEvent.click(screen.getByLabelText(labelExcludedUsers));
 
     await waitFor(() => {
       expect(getFetchCall(0)).toEqual(
