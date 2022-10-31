@@ -15,11 +15,16 @@ beforeEach(() => {
     method: 'GET',
     url: '/centreon/include/common/userTimezone.php',
   }).as('getTimeZone');
+  cy.intercept({
+    method: 'GET',
+    url: '/centreon/api/latest/users/filters/events-view?page=1&limit=100',
+  }).as('getLastesUserFilters');
 });
 
 Given('an administrator is logged in the platform', () => {
   cy.loginByTypeOfUser({ jsonName: 'admin', preserveToken: true })
     .wait('@getNavigationList')
+    .wait('@getLastesUserFilters')
     .navigateTo({
       page: 'Centreon UI',
       rootItemNumber: 4,

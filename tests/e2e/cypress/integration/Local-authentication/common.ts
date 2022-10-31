@@ -35,6 +35,49 @@ const checkDefaultsValueForm: Array<DataToUseForCheckForm> = [
     value: '12',
   },
   {
+    custom: (): void => {
+      cy.get('#Passwordmustcontainlowercase').should(
+        'have.class',
+        'MuiButton-containedPrimary',
+      );
+    },
+    selector: '#Passwordmustcontainlowercase',
+    value: '',
+  },
+  {
+    custom: (): void => {
+      cy.get('#Passwordmustcontainuppercase').should(
+        'have.class',
+        'MuiButton-containedPrimary',
+      );
+    },
+
+    selector: '#Passwordmustcontainuppercase',
+    value: '',
+  },
+  {
+    custom: (): void => {
+      cy.get('#Passwordmustcontainnumbers').should(
+        'have.class',
+        'MuiButton-containedPrimary',
+      );
+    },
+
+    selector: '#Passwordmustcontainnumbers',
+    value: '',
+  },
+  {
+    custom: (): void => {
+      cy.get('#Passwordmustcontainspecialcharacters').should(
+        'have.class',
+        'MuiButton-containedPrimary',
+      );
+    },
+
+    selector: '#Passwordmustcontainspecialcharacters',
+    value: '',
+  },
+  {
     selector: '#PasswordexpiresafterpasswordExpirationexpirationDelayMonth',
     value: '6',
   },

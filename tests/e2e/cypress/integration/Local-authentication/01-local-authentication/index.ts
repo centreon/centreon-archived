@@ -17,10 +17,6 @@ beforeEach(() => {
   }).as('getNavigationList');
   cy.intercept({
     method: 'GET',
-    url: '/centreon/main.php?p=50104',
-  }).as('getIframeReload');
-  cy.intercept({
-    method: 'GET',
     url: '/centreon/include/common/userTimezone.php',
   }).as('getTimeZone');
 });
@@ -77,7 +73,7 @@ When(
       .get('div[role="tablist"] button')
       .eq(0)
       .contains('Password security policy');
-    cy.get('#Minimumpasswordlength').should('exist').and('have.value', '12');
+    cy.get('#Minimumpasswordlength').clear().type('12');
     cy.get('#Passwordmustcontainlowercase').should(
       'have.class',
       'MuiButton-containedPrimary',
@@ -116,8 +112,8 @@ Then(
       })
       .find('#validForm input[name="submitC"]')
       .click();
-    cy.wait(3000);
-    cy.getIframeBody()
+    cy.getRefreshDataOnIframe()
+      .getIframeBody()
       .find('#Form')
       .find('#tab1 #passwd1')
       .parent()

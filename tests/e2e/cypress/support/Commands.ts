@@ -112,13 +112,6 @@ Cypress.Commands.add('getIframeBody', (): Cypress.Chainable => {
 });
 
 Cypress.Commands.add(
-  'getFormFieldByIndex',
-  (rootItemNumber: number): Cypress.Chainable => {
-    return cy.getIframeBody().find('#Form').find('tr').eq(rootItemNumber);
-  },
-);
-
-Cypress.Commands.add(
   'isInProfileMenu',
   (targetedMenu: string): Cypress.Chainable => {
     return cy
@@ -168,6 +161,10 @@ Cypress.Commands.add('removeACL', (): Cypress.Chainable => {
   });
 });
 
+Cypress.Commands.add('getRefreshDataOnIframe', () => {
+  return cy.wait('@getTimeZone').wait('@getTimeZone');
+});
+
 interface GetByLabelProps {
   label: string;
   tag?: string;
@@ -189,8 +186,8 @@ declare global {
     interface Chainable {
       executeCommandsViaClapi: (fixtureFile: string) => Cypress.Chainable;
       getByLabel: ({ tag, label }: GetByLabelProps) => Cypress.Chainable;
-      getFormFieldByIndex: (rootItemNumber: number) => Cypress.Chainable;
       getIframeBody: () => Cypress.Chainable;
+      getRefreshDataOnIframe: () => Cypress.Chainable;
       hoverRootMenuItem: (rootItemNumber: number) => Cypress.Chainable;
       isInProfileMenu: (targetedMenu: string) => Cypress.Chainable;
       loginByTypeOfUser: ({
