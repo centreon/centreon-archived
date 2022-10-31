@@ -118,10 +118,8 @@ const ServiceStatusCounter = (): JSX.Element => {
     statuses: pendingCriterias.value as Array<SelectEntry>,
   });
   const pendingServicesLink = use_deprecated_pages
-    ? '/main.php?p=20201&o=svc&statusFilter=&search='
-    : getServiceResourcesUrl({
-        statusCriterias: pendingCriterias,
-      });
+    ? '/main.php?p=20201&o=svc&statusFilter=pending&search='
+    : getServiceResourcesUrl({ statusCriterias: pendingCriterias });
 
   const changeFilterAndNavigate =
     ({ link, criterias, toggle }: SelectResourceProps) =>
