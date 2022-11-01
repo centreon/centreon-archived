@@ -10,7 +10,7 @@ import makeStyles from '@mui/styles/makeStyles';
 import { labelClose } from '../../../translatedLabels';
 import TimePeriodButtonGroup from '../TimePeriods';
 
-import AnomalyDetectionExclusionPeriod from './AnomalyDetectionExclusionPeriod';
+import AnomalyDetectionExclusionPeriod from './exclusionPeriods';
 import AnomalyDetectionModalConfirmation from './AnomalyDetectionModalConfirmation';
 import { CustomFactorsData } from './models';
 import {
@@ -34,7 +34,7 @@ const useStyles = makeStyles((theme) => ({
   editEnvelopeSize: {
     display: 'flex',
     justifyContent: 'space-between',
-    width: '30%',
+    width: '90%',
   },
   envelopeSize: {
     flex: 1,
@@ -42,8 +42,6 @@ const useStyles = makeStyles((theme) => ({
   },
   exclusionPeriod: {
     flex: 2,
-    height: theme.spacing(20),
-    marginLeft: theme.spacing(1),
   },
   spacing: {
     paddingBottom: theme.spacing(1),
@@ -131,6 +129,9 @@ const EditAnomalyDetectionDataDialog = ({
               openModalConfirmation,
               setIsResizingEnvelope,
             })}
+          </Paper>
+          <Paper className={classes.exclusionPeriod}>
+            <EditAnomalyDetectionDataDialog.ExclusionPeriod />
           </Paper>
         </div>
         <EditAnomalyDetectionDataDialog.ModalConfirmation
