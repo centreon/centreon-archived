@@ -57,10 +57,27 @@ class CentreonTopologyService extends CentreonWebService
             $topologyPagesSting = $this->getTopologyStr($this->getTopologyList($accessGroupsString, $pearDB));
             $pages = $this->buildTopologyTree($topologyPagesSting, $pearDB);
         }
+        if (isset($this->arguments['q']) && $this->arguments['q'] !== '') {
+            $searchedPages = array_values(
+                array_filter($pages, fn($page) => str_contains($page['text'], $this->arguments['q']))
+            );
+            $pages = $searchedPages;
+        }
         return [
             "items" => $pages,
             "total" => count($pages)
         ];
+    }
+
+    /**
+     * Get topologies string.
+     *
+     * @param array $topology
+     * @return string
+     */
+    private function getTopologyStr(array $topology): string
+    {
+        return empty($topology) ? "''" : implode(',', array_keys($topology));
     }
 
     /**
@@ -86,14 +103,16 @@ class CentreonTopologyService extends CentreonWebService
             $topology = array();
             $tmp_topo_page = array();
             $statement = $pearDB
-                ->prepare("SELECT topology_topology_id, acl_topology_relations.access_right "
-                          . "FROM acl_topology_relations, acl_topology "
-                          . "WHERE acl_topology.acl_topo_activate = '1' "
-                          . "AND acl_topology.acl_topo_id = acl_topology_relations.acl_topo_id "
-                          . "AND acl_topology_relations.acl_topo_id = :acl_topology_id "
-                          . "AND acl_topology_relations.access_right != 0");
+                ->prepare(
+                    "SELECT topology_topology_id, acl_topology_relations.access_right "
+                    . "FROM acl_topology_relations, acl_topology "
+                    . "WHERE acl_topology.acl_topo_activate = '1' "
+                    . "AND acl_topology.acl_topo_id = acl_topology_relations.acl_topo_id "
+                    . "AND acl_topology_relations.acl_topo_id = :acl_topology_id "
+                    . "AND acl_topology_relations.access_right != 0"
+                );
             while ($topo_group = $result->fetchRow()) {
-                $statement->bindValue(':acl_topology_id', (int) $topo_group["acl_topology_id"], \PDO::PARAM_INT);
+                $statement->bindValue(':acl_topology_id', (int) $topo_group["acl_topology_id"], PDO::PARAM_INT);
                 $statement->execute();
                 while ($topo_page = $statement->fetchRow()) {
                     $topology[] = (int) $topo_page["topology_topology_id"];
@@ -131,17 +150,6 @@ class CentreonTopologyService extends CentreonWebService
     }
 
     /**
-     * Get topologies string.
-     *
-     * @param array $topology
-     * @return string
-     */
-    private function getTopologyStr(array $topology): string
-    {
-        return implode(',', array_keys($topology));
-    }
-
-    /**
      * Building topology tree.
      *
      * @param string $topologiesStr
@@ -153,7 +161,7 @@ class CentreonTopologyService extends CentreonWebService
         $acls = array_flip(explode(',', $topologiesStr));
         $pages = [];
         $createTopologyTree = function (array $topologies): array {
-            ksort($topologies, \SORT_ASC);
+            ksort($topologies, SORT_ASC);
             $parentsLvl = [];
 
             // Classify topologies by parents
@@ -213,15 +221,15 @@ class CentreonTopologyService extends CentreonWebService
         $aclResults = $pearDB->query(
             "SELECT topology_page, topology_name, topology_show "
             . "FROM topology "
-            . "WHERE topology_page IN (" .  $topologiesStr . ")"
+            . "WHERE topology_page IN (" . $topologiesStr . ")"
         );
 
         $translatedPages = [];
 
-        while ($acl = $aclResults->fetch(\PDO::FETCH_ASSOC)) {
+        while ($acl = $aclResults->fetch(PDO::FETCH_ASSOC)) {
             $translatedPages[$acl['topology_page']] = [
                 'i18n' => _($acl['topology_name']),
-                'show' => ((int)$acl['topology_show'] === 1)
+                'show' => ((int) $acl['topology_show'] === 1)
             ];
         }
 
@@ -258,7 +266,8 @@ class CentreonTopologyService extends CentreonWebService
                             } else {
                                 $pages[] = [
                                     "id" => $parentLvl3,
-                                    "text" => $parentNameLvl1 . ' > ' . $parentNameLvl2 . ' > ' . $parentNameLvl3];
+                                    "text" => $parentNameLvl1 . ' > ' . $parentNameLvl2 . ' > ' . $parentNameLvl3
+                                ];
                             }
                         }
                     }
