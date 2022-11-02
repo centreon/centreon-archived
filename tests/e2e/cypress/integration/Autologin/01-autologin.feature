@@ -22,4 +22,4 @@ Scenario: Generate autologin link
 Scenario: Connection using autologin
   Given a platform with autologin enabled and a user with both autologin key and link generated
   When the user opens the autologin link in a browser
-  Then the page is accessed without manual login
+  Then the page is reached without manual login
