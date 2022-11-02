@@ -167,7 +167,7 @@ When('the user opens the autologin link in a browser', () => {
   });
 });
 
-Then('the page is accessed without manual login', () => {
+Then('the page is reached without manual login', () => {
   cy.url()
     .should('include', '/main.php?p=60103')
     .wait('@getTimeZone')
