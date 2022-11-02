@@ -101,8 +101,9 @@ Then(
     cy.loginByTypeOfUser({ jsonName: 'user', preserveToken: false })
       .wait('@getNavigationList')
       .isInProfileMenu('Edit profile')
-      .should('be.visible')
-      .visit('/centreon/main.php?p=50104&o=c')
+      .should('be.visible');
+      
+    cy.visit('/centreon/main.php?p=50104&o=c')
       .wait('@getTimeZone')
       .getIframeBody()
       .find('form')
