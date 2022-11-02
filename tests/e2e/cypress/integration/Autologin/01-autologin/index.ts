@@ -26,7 +26,6 @@ Given('an administrator is logged in the platform', () => {
       subMenu: 'Parameters',
     })
     .wait('@getTimeZone')
-    .getIframeBody();
 });
 
 When('the administrator activates autologin on the platform', () => {
