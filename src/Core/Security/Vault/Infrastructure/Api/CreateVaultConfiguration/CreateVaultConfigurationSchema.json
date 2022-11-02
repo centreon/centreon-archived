@@ -1,9 +1,10 @@
 {
     "$schema": "http://json-schema.org/draft-04/schema#",
-    "title": "Create HashiCorp Vault Configuration",
+    "title": "Create Vault Configuration",
     "type": "object",
     "required": [
         "name",
+        "type",
         "address",
         "port",
         "storage",
@@ -13,6 +14,9 @@
     "additionalProperties": false,
     "properties": {
         "name": {
+            "type": "string"
+        },
+        "type": {
             "type": "string"
         },
         "address": {

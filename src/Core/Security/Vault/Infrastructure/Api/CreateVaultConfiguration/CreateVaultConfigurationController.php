@@ -21,31 +21,31 @@
 
 declare(strict_types=1);
 
-namespace Core\Security\Vault\Infrastructure\Api\CreateHashiCorpVaultConfiguration;
+namespace Core\Security\Vault\Infrastructure\Api\CreateVaultConfiguration;
 
 use Centreon\Application\Controller\AbstractController;
 use Centreon\Domain\Contact\Contact;
 use Core\Application\Common\UseCase\UnauthorizedResponse;
-use Core\Security\Vault\Application\UseCase\CreateHashiCorpVaultConfiguration\{
-    CreateHashiCorpVaultConfiguration,
-    CreateHashiCorpVaultConfigurationPresenterInterface,
-    CreateHashiCorpVaultConfigurationRequest
+use Core\Security\Vault\Application\UseCase\CreateVaultConfiguration\{
+    CreateVaultConfiguration,
+    CreateVaultConfigurationPresenterInterface,
+    CreateVaultConfigurationRequest
 };
 use Symfony\Component\HttpFoundation\Request;
 
-final class CreateHashiCorpVaultConfigurationController extends AbstractController
+final class CreateVaultConfigurationController extends AbstractController
 {
     /**
-     * @param CreateHashiCorpVaultConfiguration $useCase
+     * @param CreateVaultConfiguration $useCase
      * @param Request $request
-     * @param CreateHashiCorpVaultConfigurationPresenterInterface $presenter
+     * @param CreateVaultConfigurationPresenterInterface $presenter
      *
      * @return object
      */
     public function __invoke(
-        CreateHashiCorpVaultConfiguration $useCase,
+        CreateVaultConfiguration $useCase,
         Request $request,
-        CreateHashiCorpVaultConfigurationPresenterInterface $presenter
+        CreateVaultConfigurationPresenterInterface $presenter
     ): object {
         /**
          * @var Contact $user
@@ -62,6 +62,7 @@ final class CreateHashiCorpVaultConfigurationController extends AbstractControll
         /**
          * @var array{
          *  "name": string,
+         *  "type": string,
          *  "address": string,
          *  "port": integer,
          *  "storage": string,
@@ -71,14 +72,14 @@ final class CreateHashiCorpVaultConfigurationController extends AbstractControll
          */
         $decodedRequest = $this->validateAndRetrieveDataSent(
             $request,
-            __DIR__ . '/CreateHashiCorpVaultConfigurationSchema.json'
+            __DIR__ . '/CreateVaultConfigurationSchema.json'
         );
 
-        $createHashiCorpVaultConfigurationRequest = $this->createCreateHashiCorpVaultConfigurationRequest(
+        $createVaultConfigurationRequest = $this->createCreateVaultConfigurationRequest(
             $decodedRequest
         );
 
-        $useCase($presenter, $createHashiCorpVaultConfigurationRequest);
+        $useCase($presenter, $createVaultConfigurationRequest);
 
         return $presenter->show();
     }
@@ -86,6 +87,7 @@ final class CreateHashiCorpVaultConfigurationController extends AbstractControll
     /**
      * @param array{
      *  "name": string,
+     *  "type": string,
      *  "address": string,
      *  "port": integer,
      *  "storage": string,
@@ -93,19 +95,20 @@ final class CreateHashiCorpVaultConfigurationController extends AbstractControll
      *  "secret_id": string
      * } $decodedRequest
      *
-     * @return CreateHashiCorpVaultConfigurationRequest
+     * @return CreateVaultConfigurationRequest
      */
-    private function createCreateHashiCorpVaultConfigurationRequest(
+    private function createCreateVaultConfigurationRequest(
         array $decodedRequest
-    ): CreateHashiCorpVaultConfigurationRequest {
-        $createHashiCorpVaultConfigurationRequest = new CreateHashiCorpVaultConfigurationRequest();
-        $createHashiCorpVaultConfigurationRequest->name = $decodedRequest['name'];
-        $createHashiCorpVaultConfigurationRequest->address = $decodedRequest['address'];
-        $createHashiCorpVaultConfigurationRequest->port = $decodedRequest['port'];
-        $createHashiCorpVaultConfigurationRequest->storage = $decodedRequest['storage'];
-        $createHashiCorpVaultConfigurationRequest->roleId = $decodedRequest['role_id'];
-        $createHashiCorpVaultConfigurationRequest->secretId = $decodedRequest['secret_id'];
+    ): CreateVaultConfigurationRequest {
+        $createVaultConfigurationRequest = new CreateVaultConfigurationRequest();
+        $createVaultConfigurationRequest->name = $decodedRequest['name'];
+        $createVaultConfigurationRequest->type = $decodedRequest['type'];
+        $createVaultConfigurationRequest->address = $decodedRequest['address'];
+        $createVaultConfigurationRequest->port = $decodedRequest['port'];
+        $createVaultConfigurationRequest->storage = $decodedRequest['storage'];
+        $createVaultConfigurationRequest->roleId = $decodedRequest['role_id'];
+        $createVaultConfigurationRequest->secretId = $decodedRequest['secret_id'];
 
-        return $createHashiCorpVaultConfigurationRequest;
+        return $createVaultConfigurationRequest;
     }
 }

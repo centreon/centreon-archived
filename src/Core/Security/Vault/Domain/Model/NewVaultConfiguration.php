@@ -31,6 +31,7 @@ use Core\Security\Vault\Domain\Exceptions\VaultConfigurationException;
 class NewVaultConfiguration
 {
     public const TYPE_HASHICORP = 'hashicorp';
+    public const ALLOWED_TYPES = [self::TYPE_HASHICORP];
 
     /**
      * @param string $name
@@ -53,6 +54,9 @@ class NewVaultConfiguration
         $errors = [];
         if (empty($name)) {
             $errors[] = 'name';
+        }
+        if (! in_array($type, self::ALLOWED_TYPES)) {
+            $errors[] = 'type';
         }
         if (
             filter_var($address, FILTER_VALIDATE_IP) === false

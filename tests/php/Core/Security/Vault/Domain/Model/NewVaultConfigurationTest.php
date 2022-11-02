@@ -38,6 +38,18 @@ it('should throw VaultConfigurationException when vault name is empty', function
     );
 })->throws(VaultConfigurationException::class, VaultConfigurationException::invalidParameters(['name'])->getMessage());
 
+it('should throw VaultConfigurationException when vault type is invalid', function (): void {
+    new NewVaultConfiguration(
+        'myVault',
+        'myVaultType',
+        '127.0.0.1',
+        8200,
+        'myStorage',
+        'myRoleId',
+        'mySecretId'
+    );
+})->throws(VaultConfigurationException::class, VaultConfigurationException::invalidParameters(['type'])->getMessage());
+
 it('should throw VaultConfigurationException when vault address is \'._@\'', function (): void {
     new NewVaultConfiguration(
         'myVault',

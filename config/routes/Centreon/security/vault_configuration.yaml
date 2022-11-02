@@ -1,5 +1,5 @@
-centreon_security_create_hashicorp_vault_configuration:
+centreon_security_create_vault_configuration:
     methods: POST
-    path: /administration/vaults/hashicorp
-    controller: 'Core\Security\Vault\Infrastructure\Api\CreateHashiCorpVaultConfiguration\CreateHashiCorpVaultConfigurationController'
+    path: /administration/vaults
+    controller: 'Core\Security\Vault\Infrastructure\Api\CreateVaultConfiguration\CreateVaultConfigurationController'
     condition: "request.attributes.get('version') >= 22.10"

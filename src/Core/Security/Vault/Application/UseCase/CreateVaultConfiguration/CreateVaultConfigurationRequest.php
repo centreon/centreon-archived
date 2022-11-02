@@ -21,12 +21,15 @@
 
 declare(strict_types=1);
 
-namespace Core\Security\Vault\Application\UseCase\CreateHashiCorpVaultConfiguration;
+namespace Core\Security\Vault\Application\UseCase\CreateVaultConfiguration;
 
-final class CreateHashiCorpVaultConfigurationRequest
+final class CreateVaultConfigurationRequest
 {
     /** @var string */
     public string $name = '';
+
+    /** @var string */
+    public string $type = '';
 
     /** @var string */
     public string $address = '';

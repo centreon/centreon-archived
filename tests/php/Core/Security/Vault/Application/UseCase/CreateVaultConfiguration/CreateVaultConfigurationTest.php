@@ -21,7 +21,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Core\Security\Vault\Application\UseCase\CreateHashiCorpVaultConfiguration;
+namespace Tests\Core\Security\Vault\Application\UseCase\CreateVaultConfiguration;
 
 use Core\Application\Common\UseCase\CreatedResponse;
 use Core\Application\Common\UseCase\ErrorResponse;
@@ -29,8 +29,8 @@ use Core\Application\Common\UseCase\InvalidArgumentResponse;
 use Core\Infrastructure\Common\Presenter\PresenterFormatterInterface;
 use Core\Security\Vault\Application\Repository\ReadVaultConfigurationRepositoryInterface;
 use Core\Security\Vault\Application\Repository\WriteVaultConfigurationRepositoryInterface;
-use Core\Security\Vault\Application\UseCase\CreateHashiCorpVaultConfiguration\CreateHashiCorpVaultConfiguration;
-use Core\Security\Vault\Application\UseCase\CreateHashiCorpVaultConfiguration\CreateHashiCorpVaultConfigurationRequest;
+use Core\Security\Vault\Application\UseCase\CreateVaultConfiguration\CreateVaultConfiguration;
+use Core\Security\Vault\Application\UseCase\CreateVaultConfiguration\CreateVaultConfigurationRequest;
 use Core\Security\Vault\Domain\Exceptions\VaultConfigurationException;
 use Core\Security\Vault\Domain\Model\NewVaultConfiguration;
 use Core\Security\Vault\Domain\Model\VaultConfiguration;
@@ -57,12 +57,12 @@ it('Should present InvalidArgumentResponse when vault configuration already exis
         ->method('findVaultConfigurationByAddressAndPortAndStorage')
         ->willReturn($vaultConfiguration);
 
-    $presenter = new CreateHashiCorpVaultConfigurationPresenterStub($this->presenterFormatter);
-    $useCase = new CreateHashiCorpVaultConfiguration($this->readRepository, $this->writeRepository);
+    $presenter = new CreateVaultConfigurationPresenterStub($this->presenterFormatter);
+    $useCase = new CreateVaultConfiguration($this->readRepository, $this->writeRepository);
 
-    $createHashiCorpVaultConfigurationRequest = new CreateHashiCorpVaultConfigurationRequest();
+    $createVaultConfigurationRequest = new CreateVaultConfigurationRequest();
 
-    $useCase($presenter, $createHashiCorpVaultConfigurationRequest);
+    $useCase($presenter, $createVaultConfigurationRequest);
 
     expect($presenter->getResponseStatus())->toBeInstanceOf(InvalidArgumentResponse::class);
     expect($presenter->getResponseStatus()?->getMessage())->toBe(
@@ -76,11 +76,12 @@ it('Should present InvalidArgumentResponse when one parameter is not valid', fun
         ->method('findVaultConfigurationByAddressAndPortAndStorage')
         ->willReturn(null);
 
-    $presenter = new CreateHashiCorpVaultConfigurationPresenterStub($this->presenterFormatter);
-    $useCase = new CreateHashiCorpVaultConfiguration($this->readRepository, $this->writeRepository);
+    $presenter = new CreateVaultConfigurationPresenterStub($this->presenterFormatter);
+    $useCase = new CreateVaultConfiguration($this->readRepository, $this->writeRepository);
 
-    $createVaultConfigurationRequest = new CreateHashiCorpVaultConfigurationRequest();
+    $createVaultConfigurationRequest = new CreateVaultConfigurationRequest();
     $createVaultConfigurationRequest->name = 'myVault';
+    $createVaultConfigurationRequest->type = NewVaultConfiguration::TYPE_HASHICORP;
     $createVaultConfigurationRequest->address = '_.@';
     $createVaultConfigurationRequest->port = 8200;
     $createVaultConfigurationRequest->storage = 'myStorage';
@@ -101,12 +102,12 @@ it('Should present ErrorResponse when an unhandled error occurs', function (): v
         ->method('findVaultConfigurationByAddressAndPortAndStorage')
         ->willThrowException(new \Exception());
 
-    $presenter = new CreateHashiCorpVaultConfigurationPresenterStub($this->presenterFormatter);
-    $useCase = new CreateHashiCorpVaultConfiguration($this->readRepository, $this->writeRepository);
+    $presenter = new CreateVaultConfigurationPresenterStub($this->presenterFormatter);
+    $useCase = new CreateVaultConfiguration($this->readRepository, $this->writeRepository);
 
-    $createHashiCorpVaultConfigurationRequest = new CreateHashiCorpVaultConfigurationRequest();
+    $createVaultConfigurationRequest = new CreateVaultConfigurationRequest();
 
-    $useCase($presenter, $createHashiCorpVaultConfigurationRequest);
+    $useCase($presenter, $createVaultConfigurationRequest);
 
     expect($presenter->getResponseStatus())->toBeInstanceOf(ErrorResponse::class);
     expect($presenter->getResponseStatus()?->getMessage())->toBe(
@@ -120,18 +121,19 @@ it('Should present CreatedResponse when vault configuration is created with succ
         ->method('findVaultConfigurationByAddressAndPortAndStorage')
         ->willReturn(null);
 
-    $presenter = new CreateHashiCorpVaultConfigurationPresenterStub($this->presenterFormatter);
-    $useCase = new CreateHashiCorpVaultConfiguration($this->readRepository, $this->writeRepository);
+    $presenter = new CreateVaultConfigurationPresenterStub($this->presenterFormatter);
+    $useCase = new CreateVaultConfiguration($this->readRepository, $this->writeRepository);
 
-    $createHashiCorpVaultConfigurationRequest = new CreateHashiCorpVaultConfigurationRequest();
-    $createHashiCorpVaultConfigurationRequest->name = 'myVault';
-    $createHashiCorpVaultConfigurationRequest->address = '127.0.0.1';
-    $createHashiCorpVaultConfigurationRequest->port = 8200;
-    $createHashiCorpVaultConfigurationRequest->storage = 'myStorage';
-    $createHashiCorpVaultConfigurationRequest->roleId = 'myRoleId';
-    $createHashiCorpVaultConfigurationRequest->secretId = 'mySecretId';
+    $createVaultConfigurationRequest = new CreateVaultConfigurationRequest();
+    $createVaultConfigurationRequest->name = 'myVault';
+    $createVaultConfigurationRequest->type = NewVaultConfiguration::TYPE_HASHICORP;
+    $createVaultConfigurationRequest->address = '127.0.0.1';
+    $createVaultConfigurationRequest->port = 8200;
+    $createVaultConfigurationRequest->storage = 'myStorage';
+    $createVaultConfigurationRequest->roleId = 'myRoleId';
+    $createVaultConfigurationRequest->secretId = 'mySecretId';
 
-    $useCase($presenter, $createHashiCorpVaultConfigurationRequest);
+    $useCase($presenter, $createVaultConfigurationRequest);
 
     expect($presenter->getResponseStatus())->toBeInstanceOf(CreatedResponse::class);
 });

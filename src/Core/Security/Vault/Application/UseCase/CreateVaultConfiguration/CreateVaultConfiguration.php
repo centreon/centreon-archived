@@ -21,7 +21,7 @@
 
 declare(strict_types=1);
 
-namespace Core\Security\Vault\Application\UseCase\CreateHashiCorpVaultConfiguration;
+namespace Core\Security\Vault\Application\UseCase\CreateVaultConfiguration;
 
 use Centreon\Domain\Log\LoggerTrait;
 use Core\Application\Common\UseCase\CreatedResponse;
@@ -32,7 +32,7 @@ use Core\Security\Vault\Application\Repository\WriteVaultConfigurationRepository
 use Core\Security\Vault\Domain\Exceptions\VaultConfigurationException;
 use Core\Security\Vault\Domain\Model\NewVaultConfiguration;
 
-final class CreateHashiCorpVaultConfiguration
+final class CreateVaultConfiguration
 {
     use LoggerTrait;
 
@@ -47,19 +47,19 @@ final class CreateHashiCorpVaultConfiguration
     }
 
     /**
-     * @param CreateHashiCorpVaultConfigurationPresenterInterface $presenter
-     * @param CreateHashiCorpVaultConfigurationRequest $createHashiCorpVaultConfigurationRequest
+     * @param CreateVaultConfigurationPresenterInterface $presenter
+     * @param CreateVaultConfigurationRequest $createVaultConfigurationRequest
      */
     public function __invoke(
-        CreateHashiCorpVaultConfigurationPresenterInterface $presenter,
-        CreateHashiCorpVaultConfigurationRequest $createHashiCorpVaultConfigurationRequest
+        CreateVaultConfigurationPresenterInterface $presenter,
+        CreateVaultConfigurationRequest $createVaultConfigurationRequest
     ): void {
         try {
             if (
                 $this->isSameVaultConfigurationExists(
-                    $createHashiCorpVaultConfigurationRequest->address,
-                    $createHashiCorpVaultConfigurationRequest->port,
-                    $createHashiCorpVaultConfigurationRequest->storage,
+                    $createVaultConfigurationRequest->address,
+                    $createVaultConfigurationRequest->port,
+                    $createVaultConfigurationRequest->storage,
                 )
             ) {
                 $presenter->setResponseStatus(
@@ -70,13 +70,13 @@ final class CreateHashiCorpVaultConfiguration
             }
 
             $newVaultConfiguration = new NewVaultConfiguration(
-                $createHashiCorpVaultConfigurationRequest->name,
-                NewVaultConfiguration::TYPE_HASHICORP,
-                $createHashiCorpVaultConfigurationRequest->address,
-                $createHashiCorpVaultConfigurationRequest->port,
-                $createHashiCorpVaultConfigurationRequest->storage,
-                $createHashiCorpVaultConfigurationRequest->roleId,
-                $createHashiCorpVaultConfigurationRequest->secretId
+                $createVaultConfigurationRequest->name,
+                $createVaultConfigurationRequest->type,
+                $createVaultConfigurationRequest->address,
+                $createVaultConfigurationRequest->port,
+                $createVaultConfigurationRequest->storage,
+                $createVaultConfigurationRequest->roleId,
+                $createVaultConfigurationRequest->secretId
             );
 
             $this->writeRepository->createVaultConfiguration($newVaultConfiguration);

@@ -4001,17 +4001,17 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
-  /administration/vaults/hashicorp:
+  /administration/vaults:
     post:
       tags:
         - Administration
-      summary: "Create HashiCorp vault configuration"
+      summary: "Create vault configuration"
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Administration.Vault.HashiCorp'
+              $ref: '#/components/schemas/Administration.Vault'
       responses:
         '201':
           description: "OK"
@@ -7244,15 +7244,19 @@ components:
           type: string
           description: "Fix version"
           example: "0"
-    Administration.Vault.HashiCorp:
+    Administration.Vault:
       type: object
-      required: [name, address, port, storage, role_id, secret_id]
-      description: "HashiCorp vault configuration"
+      required: [name, type, address, port, storage, role_id, secret_id]
+      description: "Vault configuration"
       properties:
         name:
           type: string
           description: "Vault name"
           example: "centreon_vault"
+        type:
+          type: string
+          description: "Vault type"
+          example: "hashicorp"
         address:
           type: string
           description: "Vault URL or IP"
