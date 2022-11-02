@@ -340,7 +340,7 @@ it('should throw an exception when login attribute environment variable is not s
         ->method('start');
 
     $this->subscriber->loginWebSSOUser($this->event);
-})->throws(\InvalidArgumentException::class, 'Missing Login Attribute');
+});
 
 it('should throw an exception when login matching regexp returns an invalid result', function () {
     $this->request->cookies = new InputBag();

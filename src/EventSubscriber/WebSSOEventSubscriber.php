@@ -121,13 +121,17 @@ class WebSSOEventSubscriber implements EventSubscriberInterface
         }
 
         $this->info('Starting authentication with WebSSO');
-        $provider->authenticateOrFail(
-            LoginRequest::createForSSO($request->getClientIp())
-        );
+        try {
+            $provider->authenticateOrFail(
+                LoginRequest::createForSSO($request->getClientIp())
+            );
 
-        $user = $provider->findUserOrFail();
-        $this->createSession($request, $provider);
-        $this->info('Authenticated successfully', ['user' => $user->getAlias()]);
+            $user = $provider->findUserOrFail();
+            $this->createSession($request, $provider);
+            $this->info('Authenticated successfully', ['user' => $user->getAlias()]);
+        } catch (\InvalidArgumentException $exception) {
+            $this->info($exception->getMessage());
+        }
     }
 
     /**
