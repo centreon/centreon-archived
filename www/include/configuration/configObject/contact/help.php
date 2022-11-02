@@ -80,6 +80,11 @@ $help["centreon_login"] = dgettext("help", "Specify if the contact is allowed to
 $help["password"] = dgettext("help", "Define the password for the centreon login here.");
 $help["password2"] = dgettext("help", "Enter the password again.");
 $help["language"] = dgettext("help", "Define the default language for the user for the centreon front-end here.");
+$help["default_page"] = dgettext(
+    "help",
+    "Define the default page for the user when he logs in." .
+    "(Acls must be defined so that the pages can be shown)"
+);
 $help["admin"] = dgettext(
     "help",
     "Specify if the user has administrative permissions. Administrators are not restricted by access " .
