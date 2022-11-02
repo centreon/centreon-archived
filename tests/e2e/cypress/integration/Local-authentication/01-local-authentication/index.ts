@@ -27,7 +27,7 @@ Given('an administrator deploying a new Centreon platform', () =>
     .wait('@getNavigationList'),
 );
 
-When('the administrator first open authentication configuration menu', () => {
+When('the administrator opens the authentication configuration menu', () => {
   cy.navigateTo({
     page: 'Authentication',
     rootItemNumber: 4,
