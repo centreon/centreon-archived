@@ -7,7 +7,7 @@ Feature: Autologin
 Scenario: Enable autologin on the platform
   Given an administrator is logged in the platform 
   When the administrator activates autologin on the platform
-  Then any user of the plateform should be able to generate an autologin link 
+  Then any user of the platform should be able to generate an autologin link 
 
 Scenario: Generate autologin key
   Given an authenticated user and autologin configuration menus can be accessed
