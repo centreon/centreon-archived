@@ -50,7 +50,7 @@ Cypress.Commands.add(
   'loginByTypeOfUser',
   ({ fixtureName, preserveToken }): Cypress.Chainable => {
     if (preserveToken) {
-      cy.fixture(`users/${jsonName}.json`)
+      cy.fixture(`users/${fixtureName}.json`)
         .then((user) => {
           return cy.request({
             body: {
