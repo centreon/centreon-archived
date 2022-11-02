@@ -5,7 +5,7 @@ Feature: Local authentication
     
 Scenario: Default password policy
     Given an administrator deploying a new Centreon platform
-    When the administrator first open authentication configuration menu
+    When the administrator opens the authentication configuration menu
     Then a default password policy and default excluded users must be preset
     
 Scenario: Enforcing a password case policy
