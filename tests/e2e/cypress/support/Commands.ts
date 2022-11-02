@@ -48,7 +48,7 @@ Cypress.Commands.add('setUserTokenApiV1', (): Cypress.Chainable => {
 
 Cypress.Commands.add(
   'loginByTypeOfUser',
-  ({ jsonName, preserveToken }): Cypress.Chainable => {
+  ({ fixtureName, preserveToken }): Cypress.Chainable => {
     if (preserveToken) {
       cy.fixture(`users/${jsonName}.json`)
         .then((user) => {
