@@ -69,7 +69,7 @@ Cypress.Commands.add(
     }
 
     return cy
-      .fixture(`users/${jsonName}.json`)
+      .fixture(`users/${fixtureName}.json`)
       .then((credential) => {
         cy.getByLabel({ label: 'Alias', tag: 'input' }).type(credential.login);
         cy.getByLabel({ label: 'Password', tag: 'input' }).type(
