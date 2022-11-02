@@ -15,7 +15,7 @@ Scenario: Generate autologin key
   Then the key is properly generated and displayed 
 
 Scenario: Generate autologin link
-  Given a user with autologin key generated
+  Given a user with an autologin key generated
   When a user generates an autologin link  
   Then the autologin link is copied in the clipboard
 
