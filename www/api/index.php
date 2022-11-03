@@ -68,13 +68,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['action']) && $_GET['ac
     try {
         $authenticateApiUseCase->execute($request, $response);
     } catch (AuthenticationException $ex) {
-        CentreonWebService::sendResult('Invalid credentials', 403);
+        CentreonWebService::sendResult('Invalid credentials', 401);
     }
-
+    $userAccessesStatement = $pearDB->prepare(
+        "SELECT contact_admin, reach_api, reach_api_rt FROM contact WHERE contact_alias = :alias"
+    );
+    $userAccessesStatement->bindValue(':alias', $credentials['login'], \PDO::PARAM_STR);
+    $userAccessesStatement->execute();
+    if (($userAccess = $userAccessesStatement->fetch(\PDO::FETCH_ASSOC)) !== false) {
+        if (
+            ! (int) $userAccess['contact_admin']
+            && (int) $userAccess['reach_api'] === 0
+            && (int) $userAccess['reach_api_rt'] === 0
+        ) {
+            CentreonWebService::sendResult("Unauthorized", 403);
+        }
+    }
     if (!empty($response->getApiAuthentication()['security']['token'])) {
         CentreonWebService::sendResult(['authToken' => $response->getApiAuthentication()['security']['token']]);
     } else {
-        CentreonWebService::sendResult('Invalid credentials', 403);
+        CentreonWebService::sendResult('Invalid credentials', 401);
     }
 } else { // Purge old tokens
     $authenticationService = $kernel->getContainer()->get(
@@ -85,7 +98,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['action']) && $_GET['ac
 
 /* Test authentication */
 if (false === isset($_SERVER['HTTP_CENTREON_AUTH_TOKEN'])) {
-    CentreonWebService::sendResult("Unauthorized", 401);
+    CentreonWebService::sendResult("Unauthorized", 403);
 }
 
 /* Create the default object */
