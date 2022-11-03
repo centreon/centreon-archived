@@ -23,11 +23,11 @@ declare(strict_types=1);
 
 namespace Tests\Core\Security\Vault\Application\UseCase\CreateVaultConfiguration;
 
-use Core\Security\Vault\Domain\Model\NewVaultConfiguration;
 use Core\Security\Vault\Application\UseCase\CreateVaultConfiguration\{
-    NewVaultConfigurationFactory,
-    CreateVaultConfigurationRequest
+    CreateVaultConfigurationRequest,
+    NewVaultConfigurationFactory
 };
+use Core\Security\Vault\Domain\Model\NewVaultConfiguration;
 use Security\Encryption;
 
 it(

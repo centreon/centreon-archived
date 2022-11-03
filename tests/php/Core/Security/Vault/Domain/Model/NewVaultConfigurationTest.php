@@ -155,7 +155,7 @@ it(
     )->getMessage()
 );
 
-it('should throw InvalidArgumentException when vault port is null', function (): void {
+it('should throw InvalidArgumentException when vault port value is lower than allowed range', function (): void {
     new NewVaultConfiguration(
         'myVault',
         NewVaultConfiguration::TYPE_HASHICORP,
@@ -165,7 +165,14 @@ it('should throw InvalidArgumentException when vault port is null', function ():
         'myRoleId',
         'mySecretId'
     );
-})->throws(InvalidArgumentException::class, AssertionException::notEmpty('NewVaultConfiguration::port')->getMessage());
+})->throws(
+    InvalidArgumentException::class,
+    AssertionException::min(
+        NewVaultConfiguration::MIN_PORT_VALUE - 1,
+        NewVaultConfiguration::MIN_PORT_VALUE,
+        'NewVaultConfiguration::port'
+    )->getMessage()
+);
 
 it('should throw InvalidArgumentException when vault port exceeds allowed range', function (): void {
     new NewVaultConfiguration(

@@ -32,6 +32,7 @@ class NewVaultConfiguration
 {
     public const MAX_LENGTH = 255;
     public const MAX_ADDRESS_LENGTH = 1024;
+    public const MIN_PORT_VALUE = 1;
     public const MAX_PORT_VALUE = 65535;
     public const TYPE_HASHICORP = 'hashicorp';
     public const ALLOWED_TYPES = [self::TYPE_HASHICORP];
@@ -67,8 +68,9 @@ class NewVaultConfiguration
         ) {
             throw AssertionException::ipOrDomain($address, 'NewVaultConfiguration::address');
         }
-        Assertion::notEmpty($port, 'NewVaultConfiguration::port');
         Assertion::max($port, self::MAX_PORT_VALUE, 'NewVaultConfiguration::port');
+        Assertion::min($port, self::MIN_PORT_VALUE, 'NewVaultConfiguration::port');
+        Assertion::notEmpty($port, 'NewVaultConfiguration::port');
         Assertion::notEmpty($storage, 'NewVaultConfiguration::storage');
         Assertion::maxLength($storage, self::MAX_LENGTH, 'NewVaultConfiguration::storage');
         Assertion::notEmpty($roleId, 'NewVaultConfiguration::roleId');

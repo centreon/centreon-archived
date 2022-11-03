@@ -24,21 +24,21 @@ declare(strict_types=1);
 namespace Tests\Core\Security\Vault\Application\UseCase\CreateVaultConfiguration;
 
 use Assert\InvalidArgumentException;
-use Core\Application\Common\UseCase\{ErrorResponse, CreatedResponse};
 use Centreon\Domain\Common\Assertion\AssertionException;
-use Core\Security\Vault\Domain\Model\{VaultConfiguration, NewVaultConfiguration};
 use Core\Application\Common\UseCase\InvalidArgumentResponse;
+use Core\Application\Common\UseCase\{CreatedResponse, ErrorResponse};
 use Core\Infrastructure\Common\Presenter\PresenterFormatterInterface;
-use Core\Security\Vault\Domain\Exceptions\VaultConfigurationException;
 use Core\Security\Vault\Application\Repository\{
     ReadVaultConfigurationRepositoryInterface,
     WriteVaultConfigurationRepositoryInterface
 };
 use Core\Security\Vault\Application\UseCase\CreateVaultConfiguration\{
     CreateVaultConfiguration,
-    NewVaultConfigurationFactory,
-    CreateVaultConfigurationRequest
+    CreateVaultConfigurationRequest,
+    NewVaultConfigurationFactory
 };
+use Core\Security\Vault\Domain\Exceptions\VaultConfigurationException;
+use Core\Security\Vault\Domain\Model\{NewVaultConfiguration, VaultConfiguration};
 
 beforeEach(function (): void {
     $this->readRepository = $this->createMock(ReadVaultConfigurationRepositoryInterface::class);
