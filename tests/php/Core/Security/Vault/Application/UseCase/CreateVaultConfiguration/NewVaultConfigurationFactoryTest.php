@@ -37,16 +37,16 @@ it(
         $factory = new NewVaultConfigurationFactory(
             $encryption->setFirstKey('myFirstKey')->setSecondKey('mySecondKey')
         );
-        $createVaultConfiguraitonRequest = new CreateVaultConfigurationRequest();
-        $createVaultConfiguraitonRequest->name = 'myVault';
-        $createVaultConfiguraitonRequest->type = NewVaultConfiguration::TYPE_HASHICORP;
-        $createVaultConfiguraitonRequest->address = '127.0.0.1';
-        $createVaultConfiguraitonRequest->port = 8200;
-        $createVaultConfiguraitonRequest->storage = 'myStorage';
-        $createVaultConfiguraitonRequest->roleId = 'myRoleId';
-        $createVaultConfiguraitonRequest->secretId = 'mySecretId';
+        $createVaultConfigurationRequest = new CreateVaultConfigurationRequest();
+        $createVaultConfigurationRequest->name = 'myVault';
+        $createVaultConfigurationRequest->type = NewVaultConfiguration::TYPE_HASHICORP;
+        $createVaultConfigurationRequest->address = '127.0.0.1';
+        $createVaultConfigurationRequest->port = 8200;
+        $createVaultConfigurationRequest->storage = 'myStorage';
+        $createVaultConfigurationRequest->roleId = 'myRoleId';
+        $createVaultConfigurationRequest->secretId = 'mySecretId';
 
-        $newVaultConfiguration = $factory->create($createVaultConfiguraitonRequest);
+        $newVaultConfiguration = $factory->create($createVaultConfigurationRequest);
 
         expect($newVaultConfiguration)->toBeInstanceOf(NewVaultConfiguration::class);
     }
@@ -56,20 +56,20 @@ it('should encrypt roleId and secretId correctly', function (): void {
     $encryption = new Encryption();
     $encryption = $encryption->setFirstKey('myFirstKey')->setSecondKey('mySecondKey');
     $factory = new NewVaultConfigurationFactory($encryption);
-    $createVaultConfiguraitonRequest = new CreateVaultConfigurationRequest();
-    $createVaultConfiguraitonRequest->name = 'myVault';
-    $createVaultConfiguraitonRequest->type = NewVaultConfiguration::TYPE_HASHICORP;
-    $createVaultConfiguraitonRequest->address = '127.0.0.1';
-    $createVaultConfiguraitonRequest->port = 8200;
-    $createVaultConfiguraitonRequest->storage = 'myStorage';
-    $createVaultConfiguraitonRequest->roleId = 'myRoleId';
-    $createVaultConfiguraitonRequest->secretId = 'mySecretId';
+    $createVaultConfigurationRequest = new CreateVaultConfigurationRequest();
+    $createVaultConfigurationRequest->name = 'myVault';
+    $createVaultConfigurationRequest->type = NewVaultConfiguration::TYPE_HASHICORP;
+    $createVaultConfigurationRequest->address = '127.0.0.1';
+    $createVaultConfigurationRequest->port = 8200;
+    $createVaultConfigurationRequest->storage = 'myStorage';
+    $createVaultConfigurationRequest->roleId = 'myRoleId';
+    $createVaultConfigurationRequest->secretId = 'mySecretId';
 
-    $newVaultConfiguration = $factory->create($createVaultConfiguraitonRequest);
+    $newVaultConfiguration = $factory->create($createVaultConfigurationRequest);
 
     $roleId = $encryption->decrypt($newVaultConfiguration->getRoleId());
     $secretId = $encryption->decrypt($newVaultConfiguration->getSecretId());
 
-    expect($roleId)->toBe($createVaultConfiguraitonRequest->roleId);
-    expect($secretId)->toBe($createVaultConfiguraitonRequest->secretId);
+    expect($roleId)->toBe($createVaultConfigurationRequest->roleId);
+    expect($secretId)->toBe($createVaultConfigurationRequest->secretId);
 });
