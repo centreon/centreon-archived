@@ -49,14 +49,17 @@ class CentreonTopologyService extends CentreonWebService
      */
     public function getList(): array
     {
-        global $pearDB;
-
-        $pages = [];
+        $topologyPagesString = '';
         if (isset($this->arguments['accessGroups'])) {
             $accessGroupsString = implode(",", $this->arguments['accessGroups']);
-            $topologyPagesSting = $this->getTopologyStr($this->getTopologyList($accessGroupsString, $pearDB));
-            $pages = $this->buildTopologyTree($topologyPagesSting, $pearDB);
+            $topologyPagesString = $this->getTopologyStr(
+                $this->getTopologyListByContactGroup($accessGroupsString)
+            );
         }
+        if (isset($this->arguments['allTopologies']) && $this->arguments['allTopologies'] === 'true') {
+            $topologyPagesString = $this->getTopologyStr($this->getAllTopologyList());
+        }
+        $pages = $this->buildTopologyTree($topologyPagesString);
         if (isset($this->arguments['q']) && $this->arguments['q'] !== '') {
             $searchedPages = array_values(
                 array_filter($pages, fn($page) => str_contains($page['text'], $this->arguments['q']))
@@ -84,10 +87,9 @@ class CentreonTopologyService extends CentreonWebService
      * Getting topology list linked to contact groups.
      *
      * @param string $aclCGroupString
-     * @param CentreonDB $pearDB
      * @return array
      */
-    private function getTopologyList(string $aclCGroupString, CentreonDB $pearDB): array
+    private function getTopologyListByContactGroup(string $aclCGroupString): array
     {
         $topologyPage = [];
         $query = "SELECT DISTINCT acl_group_topology_relations.acl_topology_id "
@@ -98,11 +100,11 @@ class CentreonTopologyService extends CentreonWebService
                  . "AND acl_topology.acl_topo_activate = '1' "
                  . "AND acl_group_contactgroups_relations.cg_cg_id IN ("
                  . $aclCGroupString . ") ";
-        $result = $pearDB->query($query);
+        $result = $this->pearDB->query($query);
         if ($result->rowCount() > 0) {
             $topology = array();
             $tmp_topo_page = array();
-            $statement = $pearDB
+            $statement = $this->pearDB
                 ->prepare(
                     "SELECT topology_topology_id, acl_topology_relations.access_right "
                     . "FROM acl_topology_relations, acl_topology "
@@ -138,7 +140,7 @@ class CentreonTopologyService extends CentreonWebService
                           . "FROM topology FORCE INDEX (`PRIMARY`) "
                           . "WHERE topology_page IS NOT NULL "
                           . "AND topology_id IN (" . implode(', ', $topology) . ") ";
-                $DBRESULT3 = $pearDB->query($query3);
+                $DBRESULT3 = $this->pearDB->query($query3);
                 while ($topo_page = $DBRESULT3->fetchRow()) {
                     $topologyPage[$topo_page["topology_page"]] =
                         $tmp_topo_page[$topo_page["topology_id"]];
@@ -150,13 +152,31 @@ class CentreonTopologyService extends CentreonWebService
     }
 
     /**
+     * Get all topologies.
+     *
+     * @return array
+     */
+    private function getAllTopologyList(): array
+    {
+        $topologyPages = [];
+        $query = "SELECT topology_page "
+                 . "FROM topology "
+                 . "WHERE topology_page IS NOT NULL ";
+        $DBRES = $this->pearDB->query($query);
+        while ($row = $DBRES->fetchRow()) {
+            $topologyPages[$row['topology_page']] = self::ACL_ACCESS_READ_WRITE;
+        }
+        $DBRES->closeCursor();
+        return $topologyPages;
+    }
+
+    /**
      * Building topology tree.
      *
      * @param string $topologiesStr
-     * @param CentreonDB $pearDB
      * @return array
      */
-    private function buildTopologyTree(string $topologiesStr, CentreonDB $pearDB)
+    private function buildTopologyTree(string $topologiesStr)
     {
         $acls = array_flip(explode(',', $topologiesStr));
         $pages = [];
@@ -218,7 +238,7 @@ class CentreonTopologyService extends CentreonWebService
         /**
          * Retrieve the name of all topologies available for this user
          */
-        $aclResults = $pearDB->query(
+        $aclResults = $this->pearDB->query(
             "SELECT topology_page, topology_name, topology_show "
             . "FROM topology "
             . "WHERE topology_page IN (" . $topologiesStr . ")"

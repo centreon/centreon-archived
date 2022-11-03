@@ -128,7 +128,7 @@
         <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="password2"> {$form.contact_passwd2.label}</td><td class="FormRowValue">{$form.contact_passwd2.html}</td></tr>
         {/if}
         <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="language"> {$form.contact_lang.label}</td><td class="FormRowValue">{$form.contact_lang.html}</td></tr>
-        <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="default_page"> {t}Default page{/t}</td><td class="FormRowValue"><select id="contact_default_page" size="1"></select></td></tr>
+        <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="default_page"> {t}Default page{/t}</td><td class="FormRowValue"><select id="contact_default_page"></select></td></tr>
         <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="location"> {$form.contact_location.label}</td><td class="FormRowValue">{$form.contact_location.html}</td></tr>
         {if $o != "mc"}
         <tr class="list_two">
