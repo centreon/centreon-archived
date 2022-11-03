@@ -11,9 +11,11 @@ module.exports = (jscTransformConfiguration) =>
     getBaseConfiguration({ jscTransformConfiguration, moduleName: 'centreon' }),
     {
       entry: ['./www/front_src/src/index.tsx'],
+      experiments: {
+        outputModule: true,
+      },
       output: {
         crossOriginLoading: 'anonymous',
-        library: ['name'],
         path: path.resolve(`${__dirname}/www/static`),
         publicPath: './static/',
       },
