@@ -23,10 +23,20 @@ declare(strict_types=1);
 
 namespace Tests\Core\Security\Vault\Domain\Model;
 
-use Core\Security\Vault\Domain\Exceptions\VaultConfigurationException;
+use Assert\InvalidArgumentException;
+use Centreon\Domain\Common\Assertion\AssertionException;
 use Core\Security\Vault\Domain\Model\NewVaultConfiguration;
 
-it('should throw VaultConfigurationException when vault name is empty', function (): void {
+$invalidMaxLengthString = '';
+$invalidMaxLengthAddress = '';
+for ($index = 0; $index <= NewVaultConfiguration::MAX_LENGTH; $index++) {
+    $invalidMaxLengthString .= 'a';
+}
+for ($index = 0; $index <= NewVaultConfiguration::MAX_ADDRESS_LENGTH; $index++) {
+    $invalidMaxLengthAddress .= 'a';
+}
+
+it('should throw InvalidArgumentException when vault name is empty', function (): void {
     new NewVaultConfiguration(
         '',
         NewVaultConfiguration::TYPE_HASHICORP,
@@ -36,9 +46,44 @@ it('should throw VaultConfigurationException when vault name is empty', function
         'myRoleId',
         'mySecretId'
     );
-})->throws(VaultConfigurationException::class, VaultConfigurationException::invalidParameters(['name'])->getMessage());
+})->throws(InvalidArgumentException::class, AssertionException::notEmpty('NewVaultConfiguration::name')->getMessage());
 
-it('should throw VaultConfigurationException when vault type is invalid', function (): void {
+it(
+    'should throw InvalidArgumentException when vault name exceeds allowed max length',
+    function () use ($invalidMaxLengthString): void {
+        new NewVaultConfiguration(
+            $invalidMaxLengthString,
+            NewVaultConfiguration::TYPE_HASHICORP,
+            '127.0.0.1',
+            8200,
+            'myStorage',
+            'myRoleId',
+            'mySecretId'
+        );
+    }
+)->throws(
+    InvalidArgumentException::class,
+    AssertionException::maxLength(
+        $invalidMaxLengthString,
+        strlen($invalidMaxLengthString),
+        NewVaultConfiguration::MAX_LENGTH,
+        'NewVaultConfiguration::name'
+    )->getMessage()
+);
+
+it('should throw InvalidArgumentException when vault type is empty', function (): void {
+    new NewVaultConfiguration(
+        'myVault',
+        '',
+        '127.0.0.1',
+        8200,
+        'myStorage',
+        'myRoleId',
+        'mySecretId'
+    );
+})->throws(InvalidArgumentException::class, AssertionException::notEmpty('NewVaultConfiguration::type')->getMessage());
+
+it('should throw InvalidArgumentException when vault type is invalid', function (): void {
     new NewVaultConfiguration(
         'myVault',
         'myVaultType',
@@ -48,9 +93,31 @@ it('should throw VaultConfigurationException when vault type is invalid', functi
         'myRoleId',
         'mySecretId'
     );
-})->throws(VaultConfigurationException::class, VaultConfigurationException::invalidParameters(['type'])->getMessage());
+})->throws(
+    InvalidArgumentException::class,
+    AssertionException::inArray(
+        'myVaultType',
+        NewVaultConfiguration::ALLOWED_TYPES,
+        'NewVaultConfiguration::type'
+    )->getMessage()
+);
 
-it('should throw VaultConfigurationException when vault address is \'._@\'', function (): void {
+it('should throw InvalidArgumentException when vault address is empty', function (): void {
+    new NewVaultConfiguration(
+        'myVault',
+        NewVaultConfiguration::TYPE_HASHICORP,
+        '',
+        8200,
+        'myStorage',
+        'myRoleId',
+        'mySecretId'
+    );
+})->throws(
+    InvalidArgumentException::class,
+    AssertionException::notEmpty('NewVaultConfiguration::address')->getMessage()
+);
+
+it('should throw AssertionException when vault address is \'._@\'', function (): void {
     new NewVaultConfiguration(
         'myVault',
         NewVaultConfiguration::TYPE_HASHICORP,
@@ -61,11 +128,65 @@ it('should throw VaultConfigurationException when vault address is \'._@\'', fun
         'mySecretId'
     );
 })->throws(
-    VaultConfigurationException::class,
-    VaultConfigurationException::invalidParameters(['address'])->getMessage()
+    AssertionException::class,
+    AssertionException::ipOrDomain('._@', 'NewVaultConfiguration::address')->getMessage()
 );
 
-it('should throw VaultConfigurationException when vault storage is empty', function (): void {
+it(
+    'should throw InvalidArgumentException when vault address exceeds allowed max length',
+    function () use ($invalidMaxLengthAddress): void {
+        new NewVaultConfiguration(
+            'myVault',
+            NewVaultConfiguration::TYPE_HASHICORP,
+            $invalidMaxLengthAddress,
+            8200,
+            'myStorage',
+            'myRoleId',
+            'mySecretId'
+        );
+    }
+)->throws(
+    InvalidArgumentException::class,
+    AssertionException::maxLength(
+        $invalidMaxLengthAddress,
+        strlen($invalidMaxLengthAddress),
+        NewVaultConfiguration::MAX_ADDRESS_LENGTH,
+        'NewVaultConfiguration::address'
+    )->getMessage()
+);
+
+it('should throw InvalidArgumentException when vault port is null', function (): void {
+    new NewVaultConfiguration(
+        'myVault',
+        NewVaultConfiguration::TYPE_HASHICORP,
+        '127.0.0.1',
+        0,
+        'myStorage',
+        'myRoleId',
+        'mySecretId'
+    );
+})->throws(InvalidArgumentException::class, AssertionException::notEmpty('NewVaultConfiguration::port')->getMessage());
+
+it('should throw InvalidArgumentException when vault port exceeds allowed range', function (): void {
+    new NewVaultConfiguration(
+        'myVault',
+        NewVaultConfiguration::TYPE_HASHICORP,
+        '127.0.0.1',
+        NewVaultConfiguration::MAX_PORT_VALUE + 1,
+        'myStorage',
+        'myRoleId',
+        'mySecretId'
+    );
+})->throws(
+    InvalidArgumentException::class,
+    AssertionException::max(
+        NewVaultConfiguration::MAX_PORT_VALUE + 1,
+        NewVaultConfiguration::MAX_PORT_VALUE,
+        'NewVaultConfiguration::port'
+    )->getMessage()
+);
+
+it('should throw InvalidArgumentException when vault storage is empty', function (): void {
     new NewVaultConfiguration(
         'myVault',
         NewVaultConfiguration::TYPE_HASHICORP,
@@ -76,11 +197,34 @@ it('should throw VaultConfigurationException when vault storage is empty', funct
         'mySecretId'
     );
 })->throws(
-    VaultConfigurationException::class,
-    VaultConfigurationException::invalidParameters(['storage'])->getMessage()
+    InvalidArgumentException::class,
+    AssertionException::notEmpty('NewVaultConfiguration::storage')->getMessage()
 );
 
-it('should throw VaultConfigurationException when vault role id is empty', function (): void {
+it(
+    'should throw InvalidArgumentException when vault storage exeeds allowed max length',
+    function () use ($invalidMaxLengthString): void {
+        new NewVaultConfiguration(
+            'myVault',
+            NewVaultConfiguration::TYPE_HASHICORP,
+            '127.0.0.1',
+            8200,
+            $invalidMaxLengthString,
+            'myRoleId',
+            'mySecretId'
+        );
+    }
+)->throws(
+    InvalidArgumentException::class,
+    AssertionException::maxLength(
+        $invalidMaxLengthString,
+        strlen($invalidMaxLengthString),
+        NewVaultConfiguration::MAX_LENGTH,
+        'NewVaultConfiguration::storage'
+    )->getMessage()
+);
+
+it('should throw InvalidArgumentException when vault role id is empty', function (): void {
     new NewVaultConfiguration(
         'myVault',
         NewVaultConfiguration::TYPE_HASHICORP,
@@ -91,11 +235,34 @@ it('should throw VaultConfigurationException when vault role id is empty', funct
         'mySecretId'
     );
 })->throws(
-    VaultConfigurationException::class,
-    VaultConfigurationException::invalidParameters(['role_id'])->getMessage()
+    InvalidArgumentException::class,
+    AssertionException::notEmpty('NewVaultConfiguration::roleId')->getMessage()
 );
 
-it('should throw VaultConfigurationException when vault secret id is empty', function (): void {
+it(
+    'should throw InvalidArgumentException when vault role id exeeds allowed max length',
+    function () use ($invalidMaxLengthString): void {
+        new NewVaultConfiguration(
+            'myVault',
+            NewVaultConfiguration::TYPE_HASHICORP,
+            '127.0.0.1',
+            8200,
+            'myStorage',
+            $invalidMaxLengthString,
+            'mySecretId'
+        );
+    }
+)->throws(
+    InvalidArgumentException::class,
+    AssertionException::maxLength(
+        $invalidMaxLengthString,
+        strlen($invalidMaxLengthString),
+        NewVaultConfiguration::MAX_LENGTH,
+        'NewVaultConfiguration::roleId'
+    )->getMessage()
+);
+
+it('should throw InvalidArgumentException when vault secret id is empty', function (): void {
     new NewVaultConfiguration(
         'myVault',
         NewVaultConfiguration::TYPE_HASHICORP,
@@ -106,8 +273,31 @@ it('should throw VaultConfigurationException when vault secret id is empty', fun
         ''
     );
 })->throws(
-    VaultConfigurationException::class,
-    VaultConfigurationException::invalidParameters(['secret_id'])->getMessage()
+    InvalidArgumentException::class,
+    AssertionException::notEmpty('NewVaultConfiguration::secretId')->getMessage()
+);
+
+it(
+    'should throw InvalidArgumentException when vault secret id exeeds allowed max length',
+    function () use ($invalidMaxLengthString): void {
+        new NewVaultConfiguration(
+            'myVault',
+            NewVaultConfiguration::TYPE_HASHICORP,
+            '127.0.0.1',
+            8200,
+            'myStorage',
+            'myRoleId',
+            $invalidMaxLengthString,
+        );
+    }
+)->throws(
+    InvalidArgumentException::class,
+    AssertionException::maxLength(
+        $invalidMaxLengthString,
+        strlen($invalidMaxLengthString),
+        NewVaultConfiguration::MAX_LENGTH,
+        'NewVaultConfiguration::secretId'
+    )->getMessage()
 );
 
 it('should return an instance of NewVaultConfiguration when all vault parametes are valid', function (): void {

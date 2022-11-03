@@ -23,14 +23,14 @@ declare(strict_types=1);
 
 namespace Core\Security\Vault\Application\UseCase\CreateVaultConfiguration;
 
+use Assert\InvalidArgumentException;
 use Centreon\Domain\Log\LoggerTrait;
-use Core\Application\Common\UseCase\CreatedResponse;
-use Core\Application\Common\UseCase\ErrorResponse;
-use Core\Application\Common\UseCase\InvalidArgumentResponse;
-use Core\Security\Vault\Application\Repository\ReadVaultConfigurationRepositoryInterface;
-use Core\Security\Vault\Application\Repository\WriteVaultConfigurationRepositoryInterface;
+use Core\Application\Common\UseCase\{CreatedResponse, ErrorResponse, InvalidArgumentResponse};
+use Core\Security\Vault\Application\Repository\{
+    ReadVaultConfigurationRepositoryInterface,
+    WriteVaultConfigurationRepositoryInterface
+};
 use Core\Security\Vault\Domain\Exceptions\VaultConfigurationException;
-use Core\Security\Vault\Domain\Model\NewVaultConfiguration;
 
 final class CreateVaultConfiguration
 {
@@ -39,10 +39,12 @@ final class CreateVaultConfiguration
     /**
      * @param ReadVaultConfigurationRepositoryInterface $readRepository
      * @param WriteVaultConfigurationRepositoryInterface $writeRepository
+     * @param NewVaultConfigurationFactory $factory
      */
     public function __construct(
         private ReadVaultConfigurationRepositoryInterface $readRepository,
         private WriteVaultConfigurationRepositoryInterface $writeRepository,
+        private NewVaultConfigurationFactory $factory
     ) {
     }
 
@@ -69,19 +71,11 @@ final class CreateVaultConfiguration
                 return;
             }
 
-            $newVaultConfiguration = new NewVaultConfiguration(
-                $createVaultConfigurationRequest->name,
-                $createVaultConfigurationRequest->type,
-                $createVaultConfigurationRequest->address,
-                $createVaultConfigurationRequest->port,
-                $createVaultConfigurationRequest->storage,
-                $createVaultConfigurationRequest->roleId,
-                $createVaultConfigurationRequest->secretId
-            );
+            $newVaultConfiguration = $this->factory->create($createVaultConfigurationRequest);
 
             $this->writeRepository->createVaultConfiguration($newVaultConfiguration);
             $presenter->setResponseStatus(new CreatedResponse());
-        } catch (VaultConfigurationException $ex) {
+        } catch (InvalidArgumentException $ex) {
             $this->error('Some parameters are not valid', ['trace' => (string) $ex]);
             $presenter->setResponseStatus(
                 new InvalidArgumentResponse($ex->getMessage())

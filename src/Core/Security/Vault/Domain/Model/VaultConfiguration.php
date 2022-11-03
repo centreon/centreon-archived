@@ -46,7 +46,7 @@ class VaultConfiguration extends NewVaultConfiguration
         int $port,
         string $storage,
         string $roleId,
-        string $secretId
+        string $secretId,
     ) {
         parent::__construct($name, $type, $address, $port, $storage, $roleId, $secretId);
     }
@@ -57,5 +57,21 @@ class VaultConfiguration extends NewVaultConfiguration
     public function getId(): int
     {
         return $this->id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRoleId(): string
+    {
+        return $this->roleId;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSecretId(): string
+    {
+        return $this->secretId;
     }
 }

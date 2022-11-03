@@ -23,22 +23,28 @@ declare(strict_types=1);
 
 namespace Tests\Core\Security\Vault\Application\UseCase\CreateVaultConfiguration;
 
-use Core\Application\Common\UseCase\CreatedResponse;
-use Core\Application\Common\UseCase\ErrorResponse;
+use Assert\InvalidArgumentException;
+use Core\Application\Common\UseCase\{ErrorResponse, CreatedResponse};
+use Centreon\Domain\Common\Assertion\AssertionException;
+use Core\Security\Vault\Domain\Model\{VaultConfiguration, NewVaultConfiguration};
 use Core\Application\Common\UseCase\InvalidArgumentResponse;
 use Core\Infrastructure\Common\Presenter\PresenterFormatterInterface;
-use Core\Security\Vault\Application\Repository\ReadVaultConfigurationRepositoryInterface;
-use Core\Security\Vault\Application\Repository\WriteVaultConfigurationRepositoryInterface;
-use Core\Security\Vault\Application\UseCase\CreateVaultConfiguration\CreateVaultConfiguration;
-use Core\Security\Vault\Application\UseCase\CreateVaultConfiguration\CreateVaultConfigurationRequest;
 use Core\Security\Vault\Domain\Exceptions\VaultConfigurationException;
-use Core\Security\Vault\Domain\Model\NewVaultConfiguration;
-use Core\Security\Vault\Domain\Model\VaultConfiguration;
+use Core\Security\Vault\Application\Repository\{
+    ReadVaultConfigurationRepositoryInterface,
+    WriteVaultConfigurationRepositoryInterface
+};
+use Core\Security\Vault\Application\UseCase\CreateVaultConfiguration\{
+    CreateVaultConfiguration,
+    NewVaultConfigurationFactory,
+    CreateVaultConfigurationRequest
+};
 
 beforeEach(function (): void {
     $this->readRepository = $this->createMock(ReadVaultConfigurationRepositoryInterface::class);
     $this->writeRepository = $this->createMock(WriteVaultConfigurationRepositoryInterface::class);
     $this->presenterFormatter = $this->createMock(PresenterFormatterInterface::class);
+    $this->factory = $this->createMock(NewVaultConfigurationFactory::class);
 });
 
 it('Should present InvalidArgumentResponse when vault configuration already exists', function (): void {
@@ -58,7 +64,7 @@ it('Should present InvalidArgumentResponse when vault configuration already exis
         ->willReturn($vaultConfiguration);
 
     $presenter = new CreateVaultConfigurationPresenterStub($this->presenterFormatter);
-    $useCase = new CreateVaultConfiguration($this->readRepository, $this->writeRepository);
+    $useCase = new CreateVaultConfiguration($this->readRepository, $this->writeRepository, $this->factory);
 
     $createVaultConfigurationRequest = new CreateVaultConfigurationRequest();
 
@@ -77,22 +83,33 @@ it('Should present InvalidArgumentResponse when one parameter is not valid', fun
         ->willReturn(null);
 
     $presenter = new CreateVaultConfigurationPresenterStub($this->presenterFormatter);
-    $useCase = new CreateVaultConfiguration($this->readRepository, $this->writeRepository);
+    $useCase = new CreateVaultConfiguration($this->readRepository, $this->writeRepository, $this->factory);
 
     $createVaultConfigurationRequest = new CreateVaultConfigurationRequest();
     $createVaultConfigurationRequest->name = 'myVault';
     $createVaultConfigurationRequest->type = NewVaultConfiguration::TYPE_HASHICORP;
-    $createVaultConfigurationRequest->address = '_.@';
+    $createVaultConfigurationRequest->address = '';
     $createVaultConfigurationRequest->port = 8200;
     $createVaultConfigurationRequest->storage = 'myStorage';
     $createVaultConfigurationRequest->roleId = 'myRole';
-    $createVaultConfigurationRequest->secretId = 'myStorage';
+    $createVaultConfigurationRequest->secretId = 'mySecretId';
+
+    $this->factory
+        ->expects($this->once())
+        ->method('create')
+        ->with($createVaultConfigurationRequest)
+        ->willThrowException(
+            new InvalidArgumentException(
+                AssertionException::notEmpty('NewVaultConfiguration::address')->getMessage(),
+                1
+            )
+        );
 
     $useCase($presenter, $createVaultConfigurationRequest);
 
     expect($presenter->getResponseStatus())->toBeInstanceOf(InvalidArgumentResponse::class);
     expect($presenter->getResponseStatus()?->getMessage())->toBe(
-        VaultConfigurationException::invalidParameters(['address'])->getMessage()
+        AssertionException::notEmpty('NewVaultConfiguration::address')->getMessage()
     );
 });
 
@@ -103,7 +120,7 @@ it('Should present ErrorResponse when an unhandled error occurs', function (): v
         ->willThrowException(new \Exception());
 
     $presenter = new CreateVaultConfigurationPresenterStub($this->presenterFormatter);
-    $useCase = new CreateVaultConfiguration($this->readRepository, $this->writeRepository);
+    $useCase = new CreateVaultConfiguration($this->readRepository, $this->writeRepository, $this->factory);
 
     $createVaultConfigurationRequest = new CreateVaultConfigurationRequest();
 
@@ -122,7 +139,7 @@ it('Should present CreatedResponse when vault configuration is created with succ
         ->willReturn(null);
 
     $presenter = new CreateVaultConfigurationPresenterStub($this->presenterFormatter);
-    $useCase = new CreateVaultConfiguration($this->readRepository, $this->writeRepository);
+    $useCase = new CreateVaultConfiguration($this->readRepository, $this->writeRepository, $this->factory);
 
     $createVaultConfigurationRequest = new CreateVaultConfigurationRequest();
     $createVaultConfigurationRequest->name = 'myVault';

@@ -32,19 +32,7 @@ class VaultConfigurationException extends \Exception
      */
     public static function configurationExists(): self
     {
-        return new self(_('Vault configuration with these properties already exists'));
-    }
-
-    /**
-     * Exception thrown when parameters are not valid.
-     *
-     * @param string[] $parameters
-     *
-     * @return self
-     */
-    public static function invalidParameters(array $parameters): self
-    {
-        return new self(_(sprintf('Invalid parameter(s): %s', implode(', ', $parameters))));
+        return new self('Vault configuration with these properties already exists');
     }
 
     /**
@@ -54,6 +42,6 @@ class VaultConfigurationException extends \Exception
      */
     public static function impossibleToCreate(): self
     {
-        return new self(_('Impossible to create vault configuration'));
+        return new self('Impossible to create vault configuration');
     }
 }

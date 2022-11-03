@@ -23,15 +23,19 @@ declare(strict_types=1);
 
 namespace Core\Security\Vault\Domain\Model;
 
-use Core\Security\Vault\Domain\Exceptions\VaultConfigurationException;
+use Centreon\Domain\Common\Assertion\{Assertion, AssertionException};
 
 /**
  * This class represents vault configuration being created.
  */
 class NewVaultConfiguration
 {
+    public const MAX_LENGTH = 255;
+    public const MAX_ADDRESS_LENGTH = 1024;
+    public const MAX_PORT_VALUE = 65535;
     public const TYPE_HASHICORP = 'hashicorp';
     public const ALLOWED_TYPES = [self::TYPE_HASHICORP];
+    public const SECOND_ENCRYPTION_KEY = 'vault_configuration_credentials';
 
     /**
      * @param string $name
@@ -49,33 +53,28 @@ class NewVaultConfiguration
         protected int $port,
         protected string $storage,
         protected string $roleId,
-        protected string $secretId
+        protected string $secretId,
     ) {
-        $errors = [];
-        if (empty($name)) {
-            $errors[] = 'name';
-        }
-        if (! in_array($type, self::ALLOWED_TYPES)) {
-            $errors[] = 'type';
-        }
+        Assertion::notEmpty($name, 'NewVaultConfiguration::name');
+        Assertion::maxLength($name, self::MAX_LENGTH, 'NewVaultConfiguration::name');
+        Assertion::notEmpty($type, 'NewVaultConfiguration::type');
+        Assertion::inArray($type, self::ALLOWED_TYPES, 'NewVaultConfiguration::type');
+        Assertion::notEmpty($address, 'NewVaultConfiguration::address');
+        Assertion::maxLength($address, self::MAX_ADDRESS_LENGTH, 'NewVaultConfiguration::address');
         if (
             filter_var($address, FILTER_VALIDATE_IP) === false
             && filter_var($address, FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME) === false
         ) {
-            $errors[] = 'address';
+            throw AssertionException::ipOrDomain($address, 'NewVaultConfiguration::address');
         }
-        if (empty($storage)) {
-            $errors[] = 'storage';
-        }
-        if (empty($this->roleId)) {
-            $errors[] = 'role_id';
-        }
-        if (empty($this->secretId)) {
-            $errors[] = 'secret_id';
-        }
-        if (! empty($errors)) {
-            throw VaultConfigurationException::invalidParameters($errors);
-        }
+        Assertion::notEmpty($port, 'NewVaultConfiguration::port');
+        Assertion::max($port, self::MAX_PORT_VALUE, 'NewVaultConfiguration::port');
+        Assertion::notEmpty($storage, 'NewVaultConfiguration::storage');
+        Assertion::maxLength($storage, self::MAX_LENGTH, 'NewVaultConfiguration::storage');
+        Assertion::notEmpty($roleId, 'NewVaultConfiguration::roleId');
+        Assertion::maxLength($roleId, self::MAX_LENGTH, 'NewVaultConfiguration::roleId');
+        Assertion::notEmpty($secretId, 'NewVaultConfiguration::secretId');
+        Assertion::maxLength($secretId, self::MAX_LENGTH, 'NewVaultConfiguration::secretId');
     }
 
     /**
