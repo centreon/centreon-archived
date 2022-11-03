@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 import { useAtomValue } from 'jotai/utils';
 import { makeStyles } from 'tss-react/mui';
+import { equals, path, prop, propEq, reject, sortBy } from 'ramda';
 
 import AddIcon from '@mui/icons-material/Add';
 import {
@@ -13,9 +14,20 @@ import {
   Typography,
 } from '@mui/material';
 
-import { selectedResourcesDetailsAtom } from '../../../../Details/detailsAtoms';
+import { getData, useRequest } from '@centreon/ui';
+
+import {
+  detailsAtom,
+  selectedResourcesDetailsAtom,
+} from '../../../../Details/detailsAtoms';
 import PopoverCustomTimePeriodPickers from '../../TimePeriods/PopoverCustomTimePeriodPickers';
-import { customTimePeriodAtom } from '../../TimePeriods/timePeriodAtoms';
+import {
+  customTimePeriodAtom,
+  graphQueryParametersDerivedAtom,
+  selectedTimePeriodAtom,
+} from '../../TimePeriods/timePeriodAtoms';
+import { GraphData, Line, TimeValue } from '../../models';
+import { getTimeSeries } from '../../timeSeries';
 
 import AnomalyDetectionCommentExclusionPeriod from './AnomalyDetectionCommentExclusionPeriods';
 import AnomalyDetectionTitleExclusionPeriods from './AnomalyDetectionTitleExclusionPeriods';
@@ -52,6 +64,7 @@ const useStyles = makeStyles()((theme) => ({
   paper: {
     '& .MuiPopover-paper': {
       padding: theme.spacing(2),
+      // width: 350,
       // width: '40%',
     },
   },
@@ -68,14 +81,31 @@ const useStyles = makeStyles()((theme) => ({
   },
 }));
 
-const AnomalyDetectionExclusionPeriod = (): JSX.Element => {
+const AnomalyDetectionExclusionPeriod = ({ data }: any): JSX.Element => {
   const { classes } = useStyles();
 
   const [open, setOpen] = useState(false);
+  const [endDate, setEndDate] = useState(undefined);
+  const [startDate, setStartDate] = useState(undefined);
+  const [newEndpoint, setNewEndPoint] = useState(undefined);
+  const [lines, setLines] = useState(null);
+  const [timeSeries, setTimeSeries] = useState<Array<TimeValue>>([]);
+  const [lineData, setLineData] = useState<Array<Line>>();
+
+  const {
+    sendRequest: sendGetGraphDataRequest,
+    sending: sendingGetGraphDataRequest,
+  } = useRequest<GraphData>({
+    request: getData,
+  });
 
   const customTimePeriod = useAtomValue(customTimePeriodAtom);
-  const selectedResource = useAtomValue(selectedResourcesDetailsAtom);
-  console.log({ selectedResource });
+  const selectedTimePeriod = useAtomValue(selectedTimePeriodAtom);
+  const getGraphQueryParameters = useAtomValue(graphQueryParametersDerivedAtom);
+  const details = useAtomValue(detailsAtom);
+  const exclusionTimePeriods = { ...customTimePeriod };
+
+  const endpoint = path(['links', 'endpoints', 'performance_graph'], details);
 
   const exclude = (): void => {
     setOpen(true);
@@ -83,7 +113,7 @@ const AnomalyDetectionExclusionPeriod = (): JSX.Element => {
 
   const anchorPosition = {
     left: window.innerWidth / 2,
-    top: window.innerHeight / 4,
+    top: window.innerHeight / 3,
   };
 
   const close = (): void => {
@@ -91,8 +121,99 @@ const AnomalyDetectionExclusionPeriod = (): JSX.Element => {
   };
 
   const changeDate = ({ property, date }): void => {
-    console.log({ date, property });
+    if (equals(property, 'end')) {
+      setEndDate(date);
+
+      return;
+    }
+    setStartDate(date);
   };
+
+  const graphEndpoint = (): string | undefined => {
+    const graphQuerParameters = getGraphQueryParameters({
+      endDate,
+      startDate,
+      // timePeriod: null,
+    });
+
+    return `${endpoint}${graphQuerParameters}`;
+  };
+
+  const sortedLines = sortBy(prop('name'), lineData);
+
+  const displayedLines = reject(propEq('display', false), sortedLines);
+
+  useEffect(() => {
+    if (!startDate || !endDate) {
+      return;
+    }
+    setNewEndPoint(graphEndpoint() as any);
+  }, [startDate, endDate]);
+
+  useEffect(() => {
+    if (!newEndpoint) {
+      return;
+    }
+    console.log({ newEndpoint });
+
+    sendGetGraphDataRequest({
+      endpoint: newEndpoint,
+    })
+      .then((graphData) => {
+        console.log({ endpoint });
+        setTimeSeries(getTimeSeries(graphData));
+        // const newLineData = getLineData(graphData);
+
+        // if (lineData) {
+        //   setLineData(
+        //     newLineData.map((line) => ({
+        //       ...line,
+        //       display:
+        //         find(propEq('name', line.name), lineData)?.display ?? true,
+        //     })),
+        //   );
+
+        //   return;
+        // }
+
+        // setLineData(newLineData);
+      })
+      .catch(() => undefined);
+  }, [newEndpoint]);
+
+  // lines timeseries base
+
+  // useEffect(() => {
+  //   if (isNil(endpoint)) {
+  //     return;
+  //   }
+
+  //   sendGetGraphDataRequest({
+  //     endpoint,
+  //   })
+  //     .then((graphData) => {
+  //       console.log({ endpoint });
+  //       setTimeSeries(getTimeSeries(graphData));
+  //       setBase(graphData.global.base);
+  //       setTitle(graphData.global.title);
+  //       const newLineData = getLineData(graphData);
+
+  //       if (lineData) {
+  //         setLineData(
+  //           newLineData.map((line) => ({
+  //             ...line,
+  //             display:
+  //               find(propEq('name', line.name), lineData)?.display ?? true,
+  //           })),
+  //         );
+
+  //         return;
+  //       }
+
+  //       setLineData(newLineData);
+  //     })
+  //     .catch(() => undefined);
+  // }, [endpoint]);
 
   return (
     <div className={classes.container}>
@@ -130,11 +251,13 @@ const AnomalyDetectionExclusionPeriod = (): JSX.Element => {
         anchorReference="anchorPosition"
         classNamePaper={classes.paper}
         classNamePicker={classes.picker}
-        customTimePeriod={customTimePeriod}
+        customTimePeriod={exclusionTimePeriods}
         open={open}
         reference={{ anchorPosition }}
         renderBody={<AnomalyDetectionCommentExclusionPeriod />}
-        renderFooter={<AnomalyDetectionFooterExclusionPeriods />}
+        renderFooter={
+          <AnomalyDetectionFooterExclusionPeriods setOpen={setOpen} />
+        }
         renderTitle={<AnomalyDetectionTitleExclusionPeriods />}
         onClose={close}
       />

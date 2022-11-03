@@ -1,12 +1,12 @@
 import { ReactNode } from 'react';
 
-import { ResourceDetails } from '../../../Details/models';
-import ExportablePerformanceGraphWithTimeline from '../ExportableGraphWithTimeline/index';
+import { ResourceDetails } from '../../../../../Details/models';
+import ExportablePerformanceGraphWithTimeline from '../../../ExportableGraphWithTimeline/index';
+import AnomalyDetectionSlider from '../AnomalyDetectionSlider';
+import EditAnomalyDetectionDataDialog from '../..';
+import { CustomFactorsData } from '../../models';
 
 import { getDisplayAdditionalLinesConditionForGraphActions } from './AnomalyDetectionAdditionalLines';
-import AnomalyDetectionSlider from './AnomalyDetectionSlider';
-import EditAnomalyDetectionDataDialog from './EditAnomalyDetectionDataDialog';
-import { CustomFactorsData } from './models';
 
 interface AdditionalGraphActionsProps {
   details: ResourceDetails | undefined;

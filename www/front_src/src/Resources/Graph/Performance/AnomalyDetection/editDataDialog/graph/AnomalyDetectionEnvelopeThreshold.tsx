@@ -1,42 +1,62 @@
 import { curveBasis } from '@visx/curve';
 import { Threshold } from '@visx/threshold';
 import { ScaleLinear, ScaleTime } from 'd3-scale';
-import { equals, isNil, prop } from 'ramda';
+import { equals, isNil, prop, difference } from 'ramda';
 
-import { Line, TimeValue } from '../models';
-import { getTime, getYScale } from '../timeSeries';
+import { Line, TimeValue } from '../../../models';
+import {
+  getSortedStackedLines,
+  getTime,
+  getUnits,
+  getYScale,
+  getLeftScale,
+  getRightScale,
+  getXScale,
+} from '../../../timeSeries';
+import { CustomFactorsData } from '../../models';
 
 import AnomalyDetectionEstimatedEnvelopeThreshold from './AnomalyDetectionEstimatedEnvelopeThreshold';
-import { CustomFactorsData } from './models';
+import AnomalyDetectionExclusionPeriodsThreshold from './AnomalyDetectionExclusionPeriodsThreshold';
 
 interface Props {
   data?: CustomFactorsData | null;
   displayAdditionalLines: boolean;
   graphHeight: number;
+  graphWidth: number;
   leftScale: ScaleLinear<number, number>;
-  regularLines: Array<Line>;
+  lines: Array<Line>;
+  // regularLines: Array<Line>;
   rightScale: ScaleLinear<number, number>;
-  secondUnit: string;
-  thirdUnit: string;
+  // secondUnit: string;
+  // thirdUnit: string;
   timeSeries: Array<TimeValue>;
   xScale: ScaleTime<number, number>;
 }
 
 const AnomalyDetectionEnvelopeThreshold = ({
-  secondUnit,
-  regularLines,
+  // secondUnit,
+  // regularLines,
   xScale,
   leftScale,
   rightScale,
-  thirdUnit,
+  // thirdUnit,
+  graphWidth,
   timeSeries,
   graphHeight,
   data,
+  lines,
   displayAdditionalLines,
 }: Props): JSX.Element | null => {
+  console.log({ displayAdditionalLines });
   if (!displayAdditionalLines) {
     return null;
   }
+
+  const [firstUnit, secondUnit, thirdUnit] = getUnits(lines);
+
+  const stackedLines = getSortedStackedLines(lines);
+
+  const regularLines = difference(lines, stackedLines);
 
   const [
     {
@@ -80,6 +100,11 @@ const AnomalyDetectionEnvelopeThreshold = ({
   const getY0Point = (timeValue): number =>
     y0Scale(prop(metricY0, timeValue)) ?? null;
 
+  const propsExclusionPeriods = {
+    graphHeight,
+    graphWidth,
+  };
+
   const props = {
     getXPoint,
     graphHeight,
@@ -95,6 +120,8 @@ const AnomalyDetectionEnvelopeThreshold = ({
     y1Scale,
   };
 
+  console.log({ lines });
+
   if (data && data?.isResizing) {
     return (
       <AnomalyDetectionEstimatedEnvelopeThreshold {...props} data={data} />
@@ -102,24 +129,53 @@ const AnomalyDetectionEnvelopeThreshold = ({
   }
 
   return (
-    <Threshold
-      aboveAreaProps={{
-        fill: lineColorY1,
-        fillOpacity: 0.1,
-      }}
-      belowAreaProps={{
-        fill: lineColorY0,
-        fillOpacity: 0.1,
-      }}
-      clipAboveTo={0}
-      clipBelowTo={graphHeight}
-      curve={curveBasis}
-      data={timeSeries}
-      id={`${getY0Point.toString()}${getY1Point.toString()}`}
-      x={getXPoint}
-      y0={getY0Point}
-      y1={getY1Point}
-    />
+    <>
+      <Threshold
+        aboveAreaProps={{
+          fill: lineColorY1,
+          fillOpacity: 0.1,
+        }}
+        belowAreaProps={{
+          fill: lineColorY0,
+          fillOpacity: 0.1,
+        }}
+        clipAboveTo={0}
+        clipBelowTo={graphHeight}
+        curve={curveBasis}
+        data={timeSeries}
+        // fill="url('#lines')"
+        id={`${getY0Point.toString()}${getY1Point.toString()}`}
+        x={getXPoint}
+        y0={getY0Point}
+        y1={getY1Point}
+      />
+
+      <AnomalyDetectionExclusionPeriodsThreshold
+        linesExclusionPeriods={[]}
+        timeSeriesExlusionPeriods={[]}
+        {...propsExclusionPeriods}
+      />
+
+      <Threshold
+        aboveAreaProps={{
+          fill: "url('#lines')",
+          fillOpacity: 0.1,
+        }}
+        belowAreaProps={{
+          fill: "url('#lines')",
+          fillOpacity: 0.1,
+        }}
+        clipAboveTo={0}
+        clipBelowTo={graphHeight}
+        curve={curveBasis}
+        data={timeSeries}
+        // fill="url('#lines')"
+        id={`${getY0Point.toString()}${getY1Point.toString()}`}
+        x={getXPoint}
+        y0={getY0Point}
+        y1={getY1Point}
+      />
+    </>
   );
 };
 

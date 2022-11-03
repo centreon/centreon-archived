@@ -1,8 +1,8 @@
 import { Dispatch, ReactNode, SetStateAction, useState } from 'react';
 
-import { useTranslation } from 'react-i18next';
-import { useUpdateAtom } from 'jotai/utils';
 import { useAtom } from 'jotai';
+import { useUpdateAtom } from 'jotai/utils';
+import { useTranslation } from 'react-i18next';
 
 import { Button, Dialog, Paper } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
@@ -10,13 +10,13 @@ import makeStyles from '@mui/styles/makeStyles';
 import { labelClose } from '../../../translatedLabels';
 import TimePeriodButtonGroup from '../TimePeriods';
 
-import AnomalyDetectionExclusionPeriod from './exclusionPeriods';
-import AnomalyDetectionModalConfirmation from './AnomalyDetectionModalConfirmation';
-import { CustomFactorsData } from './models';
 import {
   countedRedCirclesAtom,
   showModalAnomalyDetectionAtom,
 } from './anomalyDetectionAtom';
+import AnomalyDetectionModalConfirmation from './editDataDialog/AnomalyDetectionModalConfirmation';
+import AnomalyDetectionExclusionPeriod from './exclusionPeriods';
+import { CustomFactorsData } from './models';
 
 const useStyles = makeStyles((theme) => ({
   close: {
@@ -82,6 +82,7 @@ const EditAnomalyDetectionDataDialog = ({
     useState(false);
 
   const [isResizingEnvelope, setIsResizingEnvelope] = useState(false);
+
   const [showModalAnomalyDetection, setShowModalAnomalyDetection] = useAtom(
     showModalAnomalyDetectionAtom,
   );
@@ -109,6 +110,10 @@ const EditAnomalyDetectionDataDialog = ({
     setIsModalConfirmationOpened(false);
   };
 
+  const dataExcludedPeriods = (data: any): void => {
+    console.log(data);
+  };
+
   return (
     <Dialog
       className={classes.container}
@@ -131,7 +136,9 @@ const EditAnomalyDetectionDataDialog = ({
             })}
           </Paper>
           <Paper className={classes.exclusionPeriod}>
-            <EditAnomalyDetectionDataDialog.ExclusionPeriod />
+            <EditAnomalyDetectionDataDialog.ExclusionPeriod
+              data={dataExcludedPeriods}
+            />
           </Paper>
         </div>
         <EditAnomalyDetectionDataDialog.ModalConfirmation

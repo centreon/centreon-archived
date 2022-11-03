@@ -10,7 +10,7 @@ import {
   Tooltip as VisxTooltip,
 } from '@visx/visx';
 import { bisector } from 'd3-array';
-import { ScaleLinear } from 'd3-scale';
+import { ScaleLinear, ScaleTime } from 'd3-scale';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 import {
   difference,
@@ -77,6 +77,10 @@ import {
   getTime,
   getUnits,
   hasUnitStackedLines,
+  getScale,
+  getLeftScale,
+  getXScale,
+  getRightScale,
 } from '../timeSeries';
 
 import AddCommentForm from './AddCommentForm';
@@ -235,22 +239,22 @@ interface GraphContentProps {
   xAxisTickFormat: string;
 }
 
-const getScale = ({
-  graphValues,
-  height,
-  stackedValues,
-}): ScaleLinear<number, number> => {
-  const minValue = min(getMin(graphValues), getMin(stackedValues));
-  const maxValue = max(getMax(graphValues), getMax(stackedValues));
+// const getScale = ({
+//   graphValues,
+//   height,
+//   stackedValues,
+// }): ScaleLinear<number, number> => {
+//   const minValue = min(getMin(graphValues), getMin(stackedValues));
+//   const maxValue = max(getMax(graphValues), getMax(stackedValues));
 
-  const upperRangeValue = minValue === maxValue && maxValue === 0 ? height : 0;
+//   const upperRangeValue = minValue === maxValue && maxValue === 0 ? height : 0;
 
-  return Scale.scaleLinear<number>({
-    domain: [minValue, maxValue],
-    nice: true,
-    range: [height, upperRangeValue],
-  });
-};
+//   return Scale.scaleLinear<number>({
+//     domain: [minValue, maxValue],
+//     nice: true,
+//     range: [height, upperRangeValue],
+//   });
+// };
 
 export const bisectDate = bisector(identity).center;
 
@@ -333,7 +337,7 @@ const GraphContent = <T,>({
     };
   }, []);
 
-  const xScale = useMemo(
+  const xScaleO = useMemo(
     () =>
       Scale.scaleTime<number>({
         domain: [
@@ -345,48 +349,77 @@ const GraphContent = <T,>({
     [graphWidth, timeSeries],
   );
 
-  const [firstUnit, secondUnit, thirdUnit] = getUnits(lines);
+  const xScale = useMemo(
+    () =>
+      getXScale({
+        dataTime: timeSeries,
+        valueWidth: graphWidth,
+      }),
+    [timeSeries, graphWidth],
+  );
 
-  const leftScale = useMemo(() => {
-    const graphValues = isNil(thirdUnit)
-      ? getMetricValuesForUnit({ lines, timeSeries, unit: firstUnit })
-      : getMetricValuesForLines({ lines, timeSeries });
+  const leftScale = useMemo(
+    () =>
+      getLeftScale({
+        dataLines: lines,
+        dataTimeSeries: timeSeries,
+        valueGraphHeight: graphHeight,
+      }),
+    [timeSeries, lines, graphHeight],
+  );
 
-    const firstUnitHasStackedLines =
-      isNil(thirdUnit) && not(isNil(firstUnit))
-        ? hasUnitStackedLines({ lines, unit: firstUnit })
-        : false;
+  const rightScale = useMemo(
+    () =>
+      getRightScale({
+        dataLines: lines,
+        dataTimeSeries: timeSeries,
+        valueGraphHeight: graphHeight,
+      }),
+    [timeSeries, lines, graphHeight],
+  );
 
-    const stackedValues = firstUnitHasStackedLines
-      ? getStackedMetricValues({
-          lines: getSortedStackedLines(lines),
-          timeSeries,
-        })
-      : [0];
+  // const [firstUnit, secondUnit, thirdUnit] = getUnits(lines);
 
-    return getScale({ graphValues, height: graphHeight, stackedValues });
-  }, [timeSeries, lines, firstUnit, graphHeight]);
+  // const leftScaleo = useMemo(() => {
+  //   const graphValues = isNil(thirdUnit)
+  //     ? getMetricValuesForUnit({ lines, timeSeries, unit: firstUnit })
+  //     : getMetricValuesForLines({ lines, timeSeries });
 
-  const rightScale = useMemo(() => {
-    const graphValues = getMetricValuesForUnit({
-      lines,
-      timeSeries,
-      unit: secondUnit,
-    });
+  //   const firstUnitHasStackedLines =
+  //     isNil(thirdUnit) && not(isNil(firstUnit))
+  //       ? hasUnitStackedLines({ lines, unit: firstUnit })
+  //       : false;
 
-    const secondUnitHasStackedLines = isNil(secondUnit)
-      ? false
-      : hasUnitStackedLines({ lines, unit: secondUnit });
+  //   const stackedValues = firstUnitHasStackedLines
+  //     ? getStackedMetricValues({
+  //         lines: getSortedStackedLines(lines),
+  //         timeSeries,
+  //       })
+  //     : [0];
 
-    const stackedValues = secondUnitHasStackedLines
-      ? getStackedMetricValues({
-          lines: getSortedStackedLines(lines),
-          timeSeries,
-        })
-      : [0];
+  //   return getScale({ graphValues, height: graphHeight, stackedValues });
+  // }, [timeSeries, lines, firstUnit, graphHeight]);
 
-    return getScale({ graphValues, height: graphHeight, stackedValues });
-  }, [timeSeries, lines, secondUnit, graphHeight]);
+  // const rightScaleo = useMemo(() => {
+  //   const graphValues = getMetricValuesForUnit({
+  //     lines,
+  //     timeSeries,
+  //     unit: secondUnit,
+  //   });
+
+  //   const secondUnitHasStackedLines = isNil(secondUnit)
+  //     ? false
+  //     : hasUnitStackedLines({ lines, unit: secondUnit });
+
+  //   const stackedValues = secondUnitHasStackedLines
+  //     ? getStackedMetricValues({
+  //         lines: getSortedStackedLines(lines),
+  //         timeSeries,
+  //       })
+  //     : [0];
+
+  //   return getScale({ graphValues, height: graphHeight, stackedValues });
+  // }, [timeSeries, lines, secondUnit, graphHeight]);
 
   const getTimeValue = (x: number): TimeValue => {
     const date = xScale.invert(x - margin.left);
@@ -547,12 +580,13 @@ const GraphContent = <T,>({
     displayAdditionalLines,
     getTime,
     graphHeight,
+    graphWidth,
     leftScale,
     lines,
-    regularLines,
+    // regularLines,
     rightScale,
-    secondUnit,
-    thirdUnit,
+    // secondUnit,
+    // thirdUnit,
     timeSeries,
     xScale,
   };

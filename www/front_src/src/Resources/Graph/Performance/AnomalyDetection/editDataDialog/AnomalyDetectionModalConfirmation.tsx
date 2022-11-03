@@ -9,7 +9,7 @@ import {
   labelMenageEnvelope,
   labelSave,
   labelCancel,
-} from '../../../translatedLabels';
+} from '../../../../translatedLabels';
 
 interface Props {
   dataTestid: string;

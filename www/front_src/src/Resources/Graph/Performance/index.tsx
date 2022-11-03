@@ -204,6 +204,7 @@ const PerformanceGraph = <T,>({
       endpoint,
     })
       .then((graphData) => {
+        // console.log('d', endpoint, graphData);
         setTimeSeries(getTimeSeries(graphData));
         setBase(graphData.global.base);
         setTitle(graphData.global.title);

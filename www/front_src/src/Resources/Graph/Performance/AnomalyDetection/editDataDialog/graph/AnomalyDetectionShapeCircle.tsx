@@ -3,9 +3,8 @@ import { NumberValue, ScaleLinear } from 'd3-scale';
 import { useUpdateAtom } from 'jotai/utils';
 import { isNil, prop } from 'ramda';
 
-import { TimeValue } from '../models';
-
-import { countedRedCirclesAtom } from './anomalyDetectionAtom';
+import { TimeValue } from '../../../models';
+import { countedRedCirclesAtom } from '../../anomalyDetectionAtom';
 
 interface AnomalyDetectionShapeCircleProps {
   originMetric: string;

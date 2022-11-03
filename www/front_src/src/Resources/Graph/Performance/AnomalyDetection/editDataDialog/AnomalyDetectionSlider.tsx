@@ -23,11 +23,10 @@ import {
   labelSave,
   labelUseDefaultValue,
   labelPointsOutsideOfEnvelopeCount,
-} from '../../../translatedLabels';
-import { ResourceDetails, Sensitivity } from '../../../Details/models';
-
-import { countedRedCirclesAtom } from './anomalyDetectionAtom';
-import { CustomFactorsData } from './models';
+} from '../../../../translatedLabels';
+import { ResourceDetails, Sensitivity } from '../../../../Details/models';
+import { countedRedCirclesAtom } from '../anomalyDetectionAtom';
+import { CustomFactorsData } from '../models';
 
 const useStyles = makeStyles((theme) => ({
   body: {

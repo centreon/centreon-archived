@@ -13,7 +13,9 @@ const useStyles = makeStyles()((theme) => ({
   },
 }));
 
-const AnomalyDetectionFooterExclusionPeriods = (): JSX.Element => {
+const AnomalyDetectionFooterExclusionPeriods = ({
+  setOpen,
+}: any): JSX.Element => {
   const { classes } = useStyles();
 
   const cancel = (): void => {
@@ -26,7 +28,12 @@ const AnomalyDetectionFooterExclusionPeriods = (): JSX.Element => {
 
   return (
     <div className={classes.footer}>
-      <Button data-testid="cancel" size="small" variant="text" onClick={cancel}>
+      <Button
+        data-testid="cancel"
+        size="small"
+        variant="text"
+        onClick={(): void => setOpen(false)}
+      >
         Cancel
       </Button>
       <Button
