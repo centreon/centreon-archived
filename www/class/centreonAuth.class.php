@@ -233,6 +233,7 @@ class CentreonAuth
         ) {
             if (
                 array_key_exists('contact_oreon', $this->userInfos)
+                && $this->autologin === "1"
                 && $this->userInfos['contact_oreon'] !== '1'
             ) {
                 $this->passwdOk = 0;
