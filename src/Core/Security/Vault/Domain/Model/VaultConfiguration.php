@@ -58,20 +58,4 @@ class VaultConfiguration extends NewVaultConfiguration
     {
         return $this->id;
     }
-
-    /**
-     * @return string
-     */
-    public function getRoleId(): string
-    {
-        return $this->roleId;
-    }
-
-    /**
-     * @return string
-     */
-    public function getSecretId(): string
-    {
-        return $this->secretId;
-    }
 }
