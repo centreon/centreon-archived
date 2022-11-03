@@ -1,4 +1,6 @@
 <?php
+
+use Centreon\Domain\Authentication\Exception\AuthenticationException;
 /*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -63,7 +65,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['action']) && $_GET['ac
         $credentials['password']
     );
     $response = new \Centreon\Domain\Authentication\UseCase\AuthenticateApiResponse();
-    $authenticateApiUseCase->execute($request, $response);
+    try {
+        $authenticateApiUseCase->execute($request, $response);
+    } catch (AuthenticationException $ex) {
+        CentreonWebService::sendResult('Invalid credentials', 403);
+    }
 
     if (!empty($response->getApiAuthentication()['security']['token'])) {
         CentreonWebService::sendResult(['authToken' => $response->getApiAuthentication()['security']['token']]);
