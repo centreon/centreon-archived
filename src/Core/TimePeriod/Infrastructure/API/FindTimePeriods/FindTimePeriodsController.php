@@ -21,28 +21,18 @@
 
 declare(strict_types=1);
 
-namespace Core\TimePeriod\Infrastructure\API\FindTimePeriod;
+namespace Core\TimePeriod\Infrastructure\API\FindTimePeriods;
 
-use Core\Application\Common\UseCase\AbstractPresenter;
+use Centreon\Application\Controller\AbstractController;
+use Core\TimePeriod\Application\UseCase\FindTimePeriods\FindTimePeriods;
 use Core\TimePeriod\Application\UseCase\FindTimePeriods\FindTimePeriodsPresenterInterface;
-use Core\TimePeriod\Application\UseCase\FindTimePeriods\FindTimePeriodsResponse;
 
-class FindTimePeriodsPresenter extends AbstractPresenter implements FindTimePeriodsPresenterInterface
+class FindTimePeriodsController extends AbstractController
 {
-    /**
-     * {@inheritDoc}
-     * @param FindTimePeriodsResponse $presentedData
-     */
-    public function present(mixed $presentedData): void
+    public function __invoke(FindTimePeriods $useCase, FindTimePeriodsPresenterInterface $presenter): object
     {
-        $response = [];
-        foreach ($presentedData->timePeriods as $timePeriod) {
-            $response[] = [
-                'id' => $timePeriod['id'],
-                'name' => $timePeriod['name'],
-                'alias' => $timePeriod['alias']
-            ];
-        }
-        parent::present($response);
+        $this->denyAccessUnlessGrantedForApiConfiguration();
+        $useCase($presenter);
+        return $presenter->show();
     }
 }

@@ -49,10 +49,10 @@ abstract class AbstractPresenter implements PresenterInterface
     /**
      * @inheritDoc
      */
-    public function present(mixed $presentedData): void
+    public function present(mixed $data): void
     {
-        $this->presentedData = $presentedData;
-        $this->presenterFormatter->present($presentedData);
+        $this->presentedData = $data;
+        $this->presenterFormatter->present($data);
     }
 
     /**

@@ -38,8 +38,7 @@ class TimePeriod extends NewTimePeriod
         string $alias
     ) {
         $this->id = $id;
-        $this->name = $name;
-        $this->alias = $alias;
+        parent::__construct($name, $alias);
     }
 
     /**

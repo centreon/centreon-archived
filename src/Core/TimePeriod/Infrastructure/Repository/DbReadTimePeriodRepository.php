@@ -23,15 +23,78 @@ declare(strict_types=1);
 
 namespace Core\TimePeriod\Infrastructure\Repository;
 
+use Centreon\Domain\RequestParameters\RequestParameters;
+use Centreon\Infrastructure\DatabaseConnection;
+use Centreon\Infrastructure\RequestParameters\SqlRequestParametersTranslator;
+use Core\Common\Infrastructure\Repository\AbstractRepositoryRDB;
 use Core\TimePeriod\Application\Repository\ReadTimePeriodRepositoryInterface;
+use Core\TimePeriod\Domain\Model\TimePeriod;
 
-class DbReadTimePeriodRepository implements ReadTimePeriodRepositoryInterface
+class DbReadTimePeriodRepository extends AbstractRepositoryRDB implements ReadTimePeriodRepositoryInterface
 {
+    /**
+     * @var SqlRequestParametersTranslator
+     */
+    private $sqlRequestTranslator;
+
+    /**
+     * @param DatabaseConnection $db
+     * @param SqlRequestParametersTranslator $sqlRequestTranslator
+     */
+    public function __construct(DatabaseConnection $db, SqlRequestParametersTranslator $sqlRequestTranslator)
+    {
+        $this->db = $db;
+        $this->sqlRequestTranslator = $sqlRequestTranslator;
+        $this->sqlRequestTranslator
+            ->getRequestParameters()
+            ->setConcordanceStrictMode(RequestParameters::CONCORDANCE_MODE_STRICT);
+    }
+
     /**
      * @inheritDoc
      */
     public function findAll(): array
     {
-        return [];
+        $this->sqlRequestTranslator->setConcordanceArray([
+            'id' => 'tp_id',
+            'name' => 'tp_name',
+            'alias' => 'tp_alias',
+        ]);
+        $request = $this->translateDbName('SELECT SQL_CALC_FOUND_ROWS tp_id, tp_name, tp_alias FROM `:db`.timeperiod');
+
+        // Search
+        $request .= $this->sqlRequestTranslator->translateSearchParameterToSql();
+
+        // Sort
+        $sortRequest = $this->sqlRequestTranslator->translateSortParameterToSql();
+        $request .= !is_null($sortRequest)
+            ? $sortRequest
+            : ' ORDER BY tp_id ASC';
+
+        // Pagination
+        $request .= $this->sqlRequestTranslator->translatePaginationToSql();
+
+        $statement = $this->db->prepare($request);
+        foreach ($this->sqlRequestTranslator->getSearchValues() as $key => $data) {
+            $type = key($data);
+            $value = $data[$type];
+            $statement->bindValue($key, $value, $type);
+        }
+        $statement->execute();
+        $result = $this->db->query('SELECT FOUND_ROWS()');
+        if ($result !== false && ($total = $result->fetchColumn()) !== false) {
+            $this->sqlRequestTranslator->getRequestParameters()->setTotal((int) $total);
+        }
+
+        $timePeriods = [];
+
+        /**
+         * @var $result array{tp_id: int, tp_name: string, tp_alias: string}
+         */
+        while (($result = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
+            $timePeriods[] = new TimePeriod($result["tp_id"], $result["tp_name"], $result["tp_alias"]);
+        }
+
+        return $timePeriods;
     }
 }
