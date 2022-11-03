@@ -7251,7 +7251,7 @@ components:
       properties:
         name:
           type: string
-          description: "Vault name"
+          description: "Vault configuration name"
           example: "centreon_vault"
         type:
           type: string
