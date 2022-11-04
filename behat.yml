@@ -366,6 +366,5 @@ default:
         - "%paths.base%/features/APIv1/EscalationsApi.feature"
         - "%paths.base%/features/APIv1/ImagesApi.feature"
         - "%paths.base%/features/APIv1/TimeperiodsApi.feature"
-        - "%paths.base%/features/APIv1/Authentication.feature"
       contexts:
         - \Centreon\Test\Behat\CentreonAPIContext
