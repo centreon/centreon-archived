@@ -62,12 +62,7 @@ class NewVaultConfiguration
         Assertion::inArray($type, self::ALLOWED_TYPES, 'NewVaultConfiguration::type');
         Assertion::notEmpty($address, 'NewVaultConfiguration::address');
         Assertion::maxLength($address, self::MAX_ADDRESS_LENGTH, 'NewVaultConfiguration::address');
-        if (
-            filter_var($address, FILTER_VALIDATE_IP) === false
-            && filter_var($address, FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME) === false
-        ) {
-            throw AssertionException::ipOrDomain($address, 'NewVaultConfiguration::address');
-        }
+        Assertion::ipOrDomain($address, 'NewVaultConfiguration::address');
         Assertion::max($port, self::MAX_PORT_VALUE, 'NewVaultConfiguration::port');
         Assertion::min($port, self::MIN_PORT_VALUE, 'NewVaultConfiguration::port');
         Assertion::notEmpty($port, 'NewVaultConfiguration::port');

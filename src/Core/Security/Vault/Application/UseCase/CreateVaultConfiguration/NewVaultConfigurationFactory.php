@@ -29,6 +29,9 @@ use Security\Interfaces\EncryptionInterface;
 
 class NewVaultConfigurationFactory
 {
+    /**
+     * @param EncryptionInterface $encryption
+     */
     public function __construct(private EncryptionInterface $encryption)
     {
     }
