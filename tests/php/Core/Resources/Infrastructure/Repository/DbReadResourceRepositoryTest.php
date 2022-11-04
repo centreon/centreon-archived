@@ -110,12 +110,13 @@ function generateExpectedSQLQuery(string $accessGroupRequest): string
         FROM `centreon-monitoring`.`resources`
         LEFT JOIN `centreon-monitoring`.`resources` parent_resource
             ON parent_resource.id = resources.parent_id
-        LEFT JOIN `centreon-monitoring`.`severities`
+            AND parent_resource.type = 1' .
+        " LEFT JOIN `centreon-monitoring`.`severities`
             ON `severities`.severity_id = `resources`.severity_id
         LEFT JOIN `centreon-monitoring`.`resources_tags` AS rtags
             ON `rtags`.resource_id = `resources`.resource_id
         INNER JOIN `centreon-monitoring`.`instances`
-            ON `instances`.instance_id = `resources`.poller_id WHERE ' .
+            ON `instances`.instance_id = `resources`.poller_id WHERE " .
         " resources.name NOT LIKE '\_Module\_%'
             AND resources.parent_name NOT LIKE '\_Module\_BAM%'
             AND resources.enabled = 1 AND resources.type != 3 " .
