@@ -152,11 +152,13 @@ class ResourceService extends AbstractCentreonService implements ResourceService
      */
     public function enrichHostWithDetails(ResourceEntity $resource): void
     {
-        $downtimes = $this->monitoringRepository->findDowntimes(
-            $resource->getId(),
-            0
-        );
-        $resource->setDowntimes($downtimes);
+        if ($resource->getInDowntime() === true) {
+            $downtimes = $this->monitoringRepository->findDowntimes(
+                $resource->getId(),
+                0
+            );
+            $resource->setDowntimes($downtimes);
+        }
 
         if ($resource->getAcknowledged()) {
             $acknowledgements = $this->monitoringRepository->findAcknowledgements(
@@ -196,11 +198,13 @@ class ResourceService extends AbstractCentreonService implements ResourceService
             throw new ResourceException(_('Parent of resource type service cannot be null'));
         }
 
-        $downtimes = $this->monitoringRepository->findDowntimes(
-            $resource->getParent()->getId(),
-            $resource->getId()
-        );
-        $resource->setDowntimes($downtimes);
+        if ($resource->getInDowntime() === true) {
+            $downtimes = $this->monitoringRepository->findDowntimes(
+                $resource->getParent()->getId(),
+                $resource->getId()
+            );
+            $resource->setDowntimes($downtimes);
+        }
 
         if ($resource->getAcknowledged()) {
             $acknowledgements = $this->monitoringRepository->findAcknowledgements(
@@ -236,11 +240,13 @@ class ResourceService extends AbstractCentreonService implements ResourceService
      */
     public function enrichMetaServiceWithDetails(ResourceEntity $resource): void
     {
-        $downtimes = $this->monitoringRepository->findDowntimes(
-            $resource->getHostId(),
-            $resource->getServiceId()
-        );
-        $resource->setDowntimes($downtimes);
+        if ($resource->getInDowntime() === true) {
+            $downtimes = $this->monitoringRepository->findDowntimes(
+                $resource->getHostId(),
+                $resource->getServiceId()
+            );
+            $resource->setDowntimes($downtimes);
+        }
 
         if ($resource->getAcknowledged()) {
             $acknowledgements = $this->monitoringRepository->findAcknowledgements(
