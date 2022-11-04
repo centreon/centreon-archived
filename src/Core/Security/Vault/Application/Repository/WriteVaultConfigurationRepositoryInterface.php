@@ -32,5 +32,5 @@ interface WriteVaultConfigurationRepositoryInterface
      *
      * @throws \Throwable
      */
-    public function createVaultConfiguration(NewVaultConfiguration $vaultConfiguration): void;
+    public function create(NewVaultConfiguration $vaultConfiguration): void;
 }
