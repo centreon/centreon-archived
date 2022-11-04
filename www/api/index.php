@@ -1,7 +1,5 @@
 <?php
 
-use Centreon\Domain\Authentication\Exception\AuthenticationException;
-
 /*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -40,6 +38,8 @@ require_once dirname(__FILE__) . '/../../bootstrap.php';
 require_once _CENTREON_PATH_ . 'www/class/centreon.class.php';
 require_once dirname(__FILE__) . '/class/webService.class.php';
 require_once dirname(__FILE__) . '/interface/di.interface.php';
+
+use Centreon\Domain\Authentication\Exception\AuthenticationException;
 
 error_reporting(-1);
 ini_set('display_errors', 0);
