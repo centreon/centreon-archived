@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 
-import { useAtomValue } from 'jotai/utils';
+import { useAtom } from 'jotai';
+import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 import { makeStyles } from 'tss-react/mui';
-import { equals, path, prop, propEq, reject, sortBy } from 'ramda';
+import { equals, find, path, prop, propEq, reject, sortBy } from 'ramda';
 
 import AddIcon from '@mui/icons-material/Add';
 import {
@@ -27,7 +28,8 @@ import {
   selectedTimePeriodAtom,
 } from '../../TimePeriods/timePeriodAtoms';
 import { GraphData, Line, TimeValue } from '../../models';
-import { getTimeSeries } from '../../timeSeries';
+import { getLineData, getTimeSeries } from '../../timeSeries';
+import { thresholdsAnomalyDetectionDataAtom } from '../anomalyDetectionAtom';
 
 import AnomalyDetectionCommentExclusionPeriod from './AnomalyDetectionCommentExclusionPeriods';
 import AnomalyDetectionTitleExclusionPeriods from './AnomalyDetectionTitleExclusionPeriods';
@@ -81,14 +83,16 @@ const useStyles = makeStyles()((theme) => ({
   },
 }));
 
-const AnomalyDetectionExclusionPeriod = ({ data }: any): JSX.Element => {
+const AnomalyDetectionExclusionPeriod = ({
+  data,
+  display,
+}: any): JSX.Element => {
   const { classes } = useStyles();
 
   const [open, setOpen] = useState(false);
   const [endDate, setEndDate] = useState(undefined);
   const [startDate, setStartDate] = useState(undefined);
   const [newEndpoint, setNewEndPoint] = useState(undefined);
-  const [lines, setLines] = useState(null);
   const [timeSeries, setTimeSeries] = useState<Array<TimeValue>>([]);
   const [lineData, setLineData] = useState<Array<Line>>();
 
@@ -99,6 +103,8 @@ const AnomalyDetectionExclusionPeriod = ({ data }: any): JSX.Element => {
     request: getData,
   });
 
+  const [thresholdsAnomalyDetectionData, setThresholdAnomalyDetectionData] =
+    useAtom(thresholdsAnomalyDetectionDataAtom);
   const customTimePeriod = useAtomValue(customTimePeriodAtom);
   const selectedTimePeriod = useAtomValue(selectedTimePeriodAtom);
   const getGraphQueryParameters = useAtomValue(graphQueryParametersDerivedAtom);
@@ -113,7 +119,7 @@ const AnomalyDetectionExclusionPeriod = ({ data }: any): JSX.Element => {
 
   const anchorPosition = {
     left: window.innerWidth / 2,
-    top: window.innerHeight / 3,
+    top: window.innerHeight / 2,
   };
 
   const close = (): void => {
@@ -133,20 +139,16 @@ const AnomalyDetectionExclusionPeriod = ({ data }: any): JSX.Element => {
     const graphQuerParameters = getGraphQueryParameters({
       endDate,
       startDate,
-      // timePeriod: null,
     });
 
     return `${endpoint}${graphQuerParameters}`;
   };
 
-  const sortedLines = sortBy(prop('name'), lineData);
-
-  const displayedLines = reject(propEq('display', false), sortedLines);
-
   useEffect(() => {
     if (!startDate || !endDate) {
       return;
     }
+    console.log('call');
     setNewEndPoint(graphEndpoint() as any);
   }, [startDate, endDate]);
 
@@ -154,66 +156,45 @@ const AnomalyDetectionExclusionPeriod = ({ data }: any): JSX.Element => {
     if (!newEndpoint) {
       return;
     }
-    console.log({ newEndpoint });
+    console.log('app');
 
     sendGetGraphDataRequest({
       endpoint: newEndpoint,
     })
       .then((graphData) => {
-        console.log({ endpoint });
+        console.log({ graphData });
         setTimeSeries(getTimeSeries(graphData));
-        // const newLineData = getLineData(graphData);
+        const newLineData = getLineData(graphData);
 
-        // if (lineData) {
-        //   setLineData(
-        //     newLineData.map((line) => ({
-        //       ...line,
-        //       display:
-        //         find(propEq('name', line.name), lineData)?.display ?? true,
-        //     })),
-        //   );
+        if (lineData) {
+          setLineData(
+            newLineData.map((line) => ({
+              ...line,
+              display:
+                find(propEq('name', line.name), lineData)?.display ?? true,
+            })),
+          );
 
-        //   return;
-        // }
+          return;
+        }
 
-        // setLineData(newLineData);
+        setLineData(newLineData);
       })
-      .catch(() => undefined);
+      .catch((err) => console.log('err', err));
   }, [newEndpoint]);
 
-  // lines timeseries base
+  useEffect(() => {
+    if (!lineData || !timeSeries) {
+      return;
+    }
 
-  // useEffect(() => {
-  //   if (isNil(endpoint)) {
-  //     return;
-  //   }
-
-  //   sendGetGraphDataRequest({
-  //     endpoint,
-  //   })
-  //     .then((graphData) => {
-  //       console.log({ endpoint });
-  //       setTimeSeries(getTimeSeries(graphData));
-  //       setBase(graphData.global.base);
-  //       setTitle(graphData.global.title);
-  //       const newLineData = getLineData(graphData);
-
-  //       if (lineData) {
-  //         setLineData(
-  //           newLineData.map((line) => ({
-  //             ...line,
-  //             display:
-  //               find(propEq('name', line.name), lineData)?.display ?? true,
-  //           })),
-  //         );
-
-  //         return;
-  //       }
-
-  //       setLineData(newLineData);
-  //     })
-  //     .catch(() => undefined);
-  // }, [endpoint]);
+    setThresholdAnomalyDetectionData({
+      ...thresholdsAnomalyDetectionData,
+      exclusionPeriodsThreshold: {
+        data: { lines: lineData, timeSeries },
+      },
+    });
+  }, [timeSeries, lineData]);
 
   return (
     <div className={classes.container}>

@@ -47,11 +47,6 @@ const AnomalyDetectionEnvelopeThreshold = ({
   lines,
   displayAdditionalLines,
 }: Props): JSX.Element | null => {
-  console.log({ displayAdditionalLines });
-  if (!displayAdditionalLines) {
-    return null;
-  }
-
   const [firstUnit, secondUnit, thirdUnit] = getUnits(lines);
 
   const stackedLines = getSortedStackedLines(lines);
@@ -100,11 +95,6 @@ const AnomalyDetectionEnvelopeThreshold = ({
   const getY0Point = (timeValue): number =>
     y0Scale(prop(metricY0, timeValue)) ?? null;
 
-  const propsExclusionPeriods = {
-    graphHeight,
-    graphWidth,
-  };
-
   const props = {
     getXPoint,
     graphHeight,
@@ -120,8 +110,6 @@ const AnomalyDetectionEnvelopeThreshold = ({
     y1Scale,
   };
 
-  console.log({ lines });
-
   if (data && data?.isResizing) {
     return (
       <AnomalyDetectionEstimatedEnvelopeThreshold {...props} data={data} />
@@ -129,53 +117,24 @@ const AnomalyDetectionEnvelopeThreshold = ({
   }
 
   return (
-    <>
-      <Threshold
-        aboveAreaProps={{
-          fill: lineColorY1,
-          fillOpacity: 0.1,
-        }}
-        belowAreaProps={{
-          fill: lineColorY0,
-          fillOpacity: 0.1,
-        }}
-        clipAboveTo={0}
-        clipBelowTo={graphHeight}
-        curve={curveBasis}
-        data={timeSeries}
-        // fill="url('#lines')"
-        id={`${getY0Point.toString()}${getY1Point.toString()}`}
-        x={getXPoint}
-        y0={getY0Point}
-        y1={getY1Point}
-      />
-
-      <AnomalyDetectionExclusionPeriodsThreshold
-        linesExclusionPeriods={[]}
-        timeSeriesExlusionPeriods={[]}
-        {...propsExclusionPeriods}
-      />
-
-      <Threshold
-        aboveAreaProps={{
-          fill: "url('#lines')",
-          fillOpacity: 0.1,
-        }}
-        belowAreaProps={{
-          fill: "url('#lines')",
-          fillOpacity: 0.1,
-        }}
-        clipAboveTo={0}
-        clipBelowTo={graphHeight}
-        curve={curveBasis}
-        data={timeSeries}
-        // fill="url('#lines')"
-        id={`${getY0Point.toString()}${getY1Point.toString()}`}
-        x={getXPoint}
-        y0={getY0Point}
-        y1={getY1Point}
-      />
-    </>
+    <Threshold
+      aboveAreaProps={{
+        fill: lineColorY1,
+        fillOpacity: 0.1,
+      }}
+      belowAreaProps={{
+        fill: lineColorY0,
+        fillOpacity: 0.1,
+      }}
+      clipAboveTo={0}
+      clipBelowTo={graphHeight}
+      curve={curveBasis}
+      data={timeSeries}
+      id={`${getY0Point.toString()}${getY1Point.toString()}`}
+      x={getXPoint}
+      y0={getY0Point}
+      y1={getY1Point}
+    />
   );
 };
 

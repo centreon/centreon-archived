@@ -322,12 +322,18 @@ const getScale = ({
   });
 };
 
+interface LeftScale {
+  dataLines: Array<Line>;
+  dataTimeSeries: any;
+  valueGraphHeight: number;
+}
+
 const getLeftScale = ({
   dataLines,
   dataTimeSeries,
   valueGraphHeight,
-}: any): any => {
-  const [firstUnit, secondUnit, thirdUnit] = getUnits(dataLines);
+}: LeftScale): any => {
+  const [firstUnit, thirdUnit] = getUnits(dataLines);
 
   const graphValues = isNil(thirdUnit)
     ? getMetricValuesForUnit({

@@ -31,6 +31,8 @@ import {
   labelPerformancePage,
   labelSmallSize,
 } from '../../translatedLabels';
+import { ResourceDetails } from '../../Details/models';
+import { Resource } from '../../models';
 
 import { showModalAnomalyDetectionAtom } from './AnomalyDetection/anomalyDetectionAtom';
 import exportToPng from './ExportableGraphWithTimeline/exportToPng';
@@ -38,15 +40,17 @@ import {
   getDatesDerivedAtom,
   selectedTimePeriodAtom,
 } from './TimePeriods/timePeriodAtoms';
+import { GetDisplayAdditionalLinesConditionProps } from './models';
 
 interface Props {
   customTimePeriod?: CustomTimePeriod;
-  isRenderAdditionalGraphActions: boolean;
+  getDisplayAdditionalLinesCondition:
+    | GetDisplayAdditionalLinesConditionProps
+    | undefined;
   open: boolean;
   performanceGraphRef: MutableRefObject<HTMLDivElement | null>;
   renderAdditionalGraphActions?: ReactNode;
-  resourceName: string;
-  resourceParentName?: string;
+  resource?: Resource | ResourceDetails;
   timeline?: Array<TimelineEvent>;
 }
 
@@ -61,13 +65,12 @@ const useStyles = makeStyles((theme) => ({
 
 const GraphActions = ({
   customTimePeriod,
-  resourceParentName,
-  resourceName,
+  resource,
   timeline,
   performanceGraphRef,
   open,
   renderAdditionalGraphActions,
-  isRenderAdditionalGraphActions,
+  getDisplayAdditionalLinesCondition,
 }: Props): JSX.Element | null => {
   const classes = useStyles();
   const theme = useTheme();
@@ -112,7 +115,7 @@ const GraphActions = ({
         end: endTimestamp,
         mode: '0',
         start: startTimestamp,
-        svc_id: `${resourceParentName};${resourceName}`,
+        svc_id: `${resource?.parent?.name};${resource?.name}`,
       });
 
       return params.toString();
@@ -128,7 +131,7 @@ const GraphActions = ({
       backgroundColor: theme.palette.background.paper,
       element: performanceGraphRef.current as HTMLElement,
       ratio,
-      title: `${resourceName}-performance`,
+      title: `${resource?.name}-performance`,
     }).finally(() => {
       setExporting(false);
     });
@@ -168,7 +171,9 @@ const GraphActions = ({
           >
             <SaveAsImageIcon fontSize="inherit" />
           </IconButton>
-          {isRenderAdditionalGraphActions && (
+          {getDisplayAdditionalLinesCondition?.condition(
+            resource as ResourceDetails,
+          ) && (
             <>
               <IconButton
                 disableTouchRipple

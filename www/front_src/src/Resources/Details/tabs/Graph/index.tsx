@@ -70,7 +70,6 @@ const GraphTabContent = ({ details }: TabProps): JSX.Element => {
               getDisplayAdditionalLinesCondition
             }
             graphHeight={280}
-            isRenderAdditionalGraphActions={equalsAnomalyDetection(type)}
             renderAdditionalGraphAction={
               <AnomalyDetectionGraphActions
                 details={details}

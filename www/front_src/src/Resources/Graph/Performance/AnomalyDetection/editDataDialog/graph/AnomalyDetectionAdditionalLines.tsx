@@ -1,6 +1,8 @@
 import { ScaleLinear, ScaleTime } from 'd3-scale';
-import { equals } from 'ramda';
+import { useAtomValue } from 'jotai/utils';
+import { equals, isNil } from 'ramda';
 
+import { detailsAtom } from '../../../../../Details/detailsAtoms';
 import { ResourceDetails } from '../../../../../Details/models';
 import { Resource, ResourceType } from '../../../../../models';
 import {
@@ -8,10 +10,12 @@ import {
   Line,
   TimeValue,
 } from '../../../models';
-import AnomalyDetectionExclusionPeriod from '../../exclusionPeriods';
+import { thresholdsAnomalyDetectionDataAtom } from '../../anomalyDetectionAtom';
 import { CustomFactorsData } from '../../models';
 
 import AnomalyDetectionEnvelopeThreshold from './AnomalyDetectionEnvelopeThreshold';
+import AnomalyDetectionExclusionPeriodsThreshold from './AnomalyDetectionExclusionPeriodsThreshold';
+import { displayAdditionalLines } from './helpers';
 
 interface LinesProps {
   displayAdditionalLines: boolean;
@@ -32,8 +36,9 @@ interface AdditionalLinesProps {
   additionalLinesProps: LinesProps;
   data: CustomFactorsData | null | undefined;
   dataTest?: {
-    estimatedEnvelopeSize?: { data: CustomFactorsData | null | undefined };
-    exclusionPeriods?: { data: { lines: any; timeSeries: any } };
+    envelopeSizeThreshold?: { data: { lines: any } };
+    estimatedEnvelopeThreshold?: { data: CustomFactorsData | null | undefined };
+    exclusionPeriodsThreshold?: { data: { lines: any; timeSeries: any } };
   };
 }
 const AdditionalLines = ({
@@ -41,14 +46,49 @@ const AdditionalLines = ({
   data,
   dataTest,
 }: AdditionalLinesProps): JSX.Element => {
+  // conditions estimated threshold, threshold , exclusion threshold
+
+  const details = useAtomValue(detailsAtom);
+
+  const {
+    exclusionPeriodsThreshold,
+    estimatedEnvelopeThreshold,
+    envelopeSizeThreshold,
+  } = useAtomValue(thresholdsAnomalyDetectionDataAtom);
+
+  const linesExclusionPeriods = exclusionPeriodsThreshold?.data?.lines;
+  const timeSeriesExclusionPeriods =
+    exclusionPeriodsThreshold?.data?.timeSeries;
+
+  const isDisplayedExclusionPeriodsThreshold =
+    !isNil(linesExclusionPeriods) && !isNil(timeSeriesExclusionPeriods);
+
+  const { graphHeight, graphWidth, lines } = additionalLinesProps;
+
+  const isDisplayedThresholds = displayAdditionalLines({
+    lines,
+    resource: details as ResourceDetails,
+  });
+
   return (
     <>
-      <AnomalyDetectionEnvelopeThreshold {...additionalLinesProps} />
-      <AnomalyDetectionEnvelopeThreshold
-        {...additionalLinesProps}
-        data={data}
-      />
-      <AnomalyDetectionExclusionPeriod data={dataTest} />
+      {isDisplayedThresholds && (
+        <>
+          <AnomalyDetectionEnvelopeThreshold {...additionalLinesProps} />
+          <AnomalyDetectionEnvelopeThreshold
+            {...additionalLinesProps}
+            data={data}
+          />
+        </>
+      )}
+      {isDisplayedExclusionPeriodsThreshold && (
+        <AnomalyDetectionExclusionPeriodsThreshold
+          data={exclusionPeriodsThreshold}
+          graphHeight={graphHeight}
+          graphWidth={graphWidth}
+          resource={details}
+        />
+      )}
     </>
   );
 };

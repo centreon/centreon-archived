@@ -66,6 +66,7 @@ import {
   TimeValue,
 } from './models';
 import { getLineData, getMetrics, getTimeSeries } from './timeSeries';
+import { getNewLinesAnomalyDetection } from './AnomalyDetection/editDataDialog/graph/helpers';
 
 interface Props {
   adjustTimePeriod?: (props: AdjustTimePeriodProps) => void;
@@ -204,7 +205,6 @@ const PerformanceGraph = <T,>({
       endpoint,
     })
       .then((graphData) => {
-        // console.log('d', endpoint, graphData);
         setTimeSeries(getTimeSeries(graphData));
         setBase(graphData.global.base);
         setTitle(graphData.global.title);
@@ -277,29 +277,11 @@ const PerformanceGraph = <T,>({
     );
   }
 
-  const sortedLines = sortBy(prop('name'), lineData);
-
-  const originMetric = sortedLines.map(({ metric }) =>
-    metric.includes('_upper_thresholds')
-      ? metric.replace('_upper_thresholds', '')
-      : null,
-  );
-
-  const lineOriginMetric = sortedLines.filter((item) => {
-    const name = originMetric.filter((element) => element);
-
-    return equals(item.metric, name[0]);
-  });
-
-  const linesThreshold = sortedLines.filter(({ metric }) =>
-    metric.includes('thresholds'),
-  );
-
-  const newSortedLines = getDisplayAdditionalLinesCondition?.condition(resource)
-    ? [...linesThreshold, ...lineOriginMetric]
-    : sortedLines;
-
-  const displayedLines = reject(propEq('display', false), newSortedLines);
+  const { newLines: displayedLines, newSortedLines } =
+    getNewLinesAnomalyDetection({
+      lines: lineData,
+      resource,
+    });
 
   const getLineByMetric = (metric): LineModel => {
     return find(propEq('metric', metric), lineData) as LineModel;

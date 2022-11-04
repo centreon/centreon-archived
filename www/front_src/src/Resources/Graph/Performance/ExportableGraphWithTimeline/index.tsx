@@ -59,7 +59,6 @@ interface Props {
   getDisplayAdditionalLinesCondition?: GetDisplayAdditionalLinesConditionProps;
   graphHeight: number;
   interactWithGraph: boolean;
-  isRenderAdditionalGraphActions: boolean;
   limitLegendRows?: boolean;
   renderAdditionalGraphAction?: ReactNode;
   resource?: Resource | ResourceDetails;
@@ -72,7 +71,6 @@ const ExportablePerformanceGraphWithTimeline = <T,>({
   interactWithGraph,
   additionalData,
   renderAdditionalGraphAction,
-  isRenderAdditionalGraphActions,
   getDisplayAdditionalLinesCondition,
 }: Props & AdditionalDataProps<T>): JSX.Element => {
   const classes = useStyles();
@@ -213,14 +211,15 @@ const ExportablePerformanceGraphWithTimeline = <T,>({
           graphActions={
             <MemoizedGraphActions
               customTimePeriod={customTimePeriod}
-              isRenderAdditionalGraphActions={isRenderAdditionalGraphActions}
+              getDisplayAdditionalLinesCondition={
+                getDisplayAdditionalLinesCondition
+              }
               open={interactWithGraph}
               performanceGraphRef={
                 performanceGraphRef as unknown as MutableRefObject<HTMLDivElement | null>
               }
               renderAdditionalGraphActions={renderAdditionalGraphAction}
-              resourceName={resource?.name as string}
-              resourceParentName={resource?.parent?.name}
+              resource={resource}
               timeline={timeline}
             />
           }

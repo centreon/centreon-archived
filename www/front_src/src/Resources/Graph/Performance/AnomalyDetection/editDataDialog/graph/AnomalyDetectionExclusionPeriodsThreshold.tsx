@@ -16,6 +16,8 @@ import {
   getYScale,
 } from '../../../timeSeries';
 
+import { getNewLinesAnomalyDetection } from './helpers';
+
 interface Props {
   graphHeight: number;
   graphWidth: number;
@@ -25,20 +27,23 @@ interface Props {
 }
 
 const AnomalyDetectionExclusionPeriodsThreshold = ({
-  timeSeriesExlusionPeriods,
+  data,
   graphHeight,
   graphWidth,
-  linesExclusionPeriods,
-}: Props): JSX.Element | null => {
-  const [firstUnit, secondUnit, thirdUnit] = getUnits(linesExclusionPeriods);
+  resource,
+}: any): JSX.Element | null => {
+  const timeSeries = data?.data?.timeSeries;
 
-  const stackedLines = getSortedStackedLines(linesExclusionPeriods);
+  const { newLines: lines } = getNewLinesAnomalyDetection({
+    lines: data?.data?.lines,
+    resource,
+  });
 
-  const regularLines = difference(linesExclusionPeriods, stackedLines);
+  const [firstUnit, secondUnit, thirdUnit] = getUnits(lines);
 
-  if (regularLines?.length <= 0) {
-    return null;
-  }
+  const stackedLines = getSortedStackedLines(lines);
+
+  const regularLines = difference(lines, stackedLines);
 
   const [{ metric: metricY1, unit: unitY1, invert: invertY1 }] =
     regularLines.filter((item) => equals(item.name, 'Upper Threshold'));
@@ -49,18 +54,18 @@ const AnomalyDetectionExclusionPeriodsThreshold = ({
   const leftScale = useMemo(
     () =>
       getLeftScale({
-        dataLine: linesExclusionPeriods,
-        dataTimeSeries: timeSeriesExlusionPeriods,
+        dataLines: lines,
+        dataTimeSeries: timeSeries,
         valueGraphHeight: graphHeight,
       }),
-    [linesExclusionPeriods, graphHeight, timeSeriesExlusionPeriods],
+    [lines, graphHeight, timeSeries],
   );
 
   const rightScale = useMemo(
     () =>
       getRightScale({
-        dataLine: linesExclusionPeriods,
-        dataTimeSeries: timeSeriesExlusionPeriods,
+        dataLines: lines,
+        dataTimeSeries: timeSeries,
         valueGraphHeight: graphHeight,
       }),
     [],
@@ -69,10 +74,10 @@ const AnomalyDetectionExclusionPeriodsThreshold = ({
   const xScale = useMemo(
     () =>
       getXScale({
-        dataTime: timeSeriesExlusionPeriods,
+        dataTime: timeSeries,
         valueWidth: graphWidth,
       }),
-    [timeSeriesExlusionPeriods, graphWidth],
+    [timeSeries, graphWidth],
   );
 
   const y1Scale = getYScale({
@@ -103,19 +108,20 @@ const AnomalyDetectionExclusionPeriodsThreshold = ({
 
   return (
     <>
+      <div />
       <Threshold
         aboveAreaProps={{
           fill: "url('#lines')",
-          fillOpacity: 0.1,
+          fillOpacity: 0.8,
         }}
         belowAreaProps={{
           fill: "url('#lines')",
-          fillOpacity: 0.1,
+          fillOpacity: 0.8,
         }}
         clipAboveTo={0}
         clipBelowTo={graphHeight}
         curve={curveBasis}
-        data={timeSeriesExlusionPeriods}
+        data={timeSeries}
         id={`${getY0Point.toString()}${getY1Point.toString()}`}
         x={getXPoint}
         y0={getY0Point}

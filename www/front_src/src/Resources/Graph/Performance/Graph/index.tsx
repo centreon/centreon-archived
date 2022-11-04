@@ -239,23 +239,6 @@ interface GraphContentProps {
   xAxisTickFormat: string;
 }
 
-// const getScale = ({
-//   graphValues,
-//   height,
-//   stackedValues,
-// }): ScaleLinear<number, number> => {
-//   const minValue = min(getMin(graphValues), getMin(stackedValues));
-//   const maxValue = max(getMax(graphValues), getMax(stackedValues));
-
-//   const upperRangeValue = minValue === maxValue && maxValue === 0 ? height : 0;
-
-//   return Scale.scaleLinear<number>({
-//     domain: [minValue, maxValue],
-//     nice: true,
-//     range: [height, upperRangeValue],
-//   });
-// };
-
 export const bisectDate = bisector(identity).center;
 
 const GraphContent = <T,>({
@@ -377,49 +360,6 @@ const GraphContent = <T,>({
       }),
     [timeSeries, lines, graphHeight],
   );
-
-  // const [firstUnit, secondUnit, thirdUnit] = getUnits(lines);
-
-  // const leftScaleo = useMemo(() => {
-  //   const graphValues = isNil(thirdUnit)
-  //     ? getMetricValuesForUnit({ lines, timeSeries, unit: firstUnit })
-  //     : getMetricValuesForLines({ lines, timeSeries });
-
-  //   const firstUnitHasStackedLines =
-  //     isNil(thirdUnit) && not(isNil(firstUnit))
-  //       ? hasUnitStackedLines({ lines, unit: firstUnit })
-  //       : false;
-
-  //   const stackedValues = firstUnitHasStackedLines
-  //     ? getStackedMetricValues({
-  //         lines: getSortedStackedLines(lines),
-  //         timeSeries,
-  //       })
-  //     : [0];
-
-  //   return getScale({ graphValues, height: graphHeight, stackedValues });
-  // }, [timeSeries, lines, firstUnit, graphHeight]);
-
-  // const rightScaleo = useMemo(() => {
-  //   const graphValues = getMetricValuesForUnit({
-  //     lines,
-  //     timeSeries,
-  //     unit: secondUnit,
-  //   });
-
-  //   const secondUnitHasStackedLines = isNil(secondUnit)
-  //     ? false
-  //     : hasUnitStackedLines({ lines, unit: secondUnit });
-
-  //   const stackedValues = secondUnitHasStackedLines
-  //     ? getStackedMetricValues({
-  //         lines: getSortedStackedLines(lines),
-  //         timeSeries,
-  //       })
-  //     : [0];
-
-  //   return getScale({ graphValues, height: graphHeight, stackedValues });
-  // }, [timeSeries, lines, secondUnit, graphHeight]);
 
   const getTimeValue = (x: number): TimeValue => {
     const date = xScale.invert(x - margin.left);
@@ -564,29 +504,13 @@ const GraphContent = <T,>({
 
   const commentTitle = isCommentPermitted ? '' : t(labelActionNotPermitted);
 
-  const stackedLines = getSortedStackedLines(lines);
-
-  const regularLines = difference(lines, stackedLines);
-
-  const isLegendClicked = lte(length(lines), 1);
-
-  const displayAdditionalLinesCondition =
-    getDisplayAdditionalLinesCondition?.condition(resource) || false;
-
-  const displayAdditionalLines =
-    displayAdditionalLinesCondition || !isLegendClicked;
-
   const additionalLinesProps = {
-    displayAdditionalLines,
     getTime,
     graphHeight,
     graphWidth,
     leftScale,
     lines,
-    // regularLines,
     rightScale,
-    // secondUnit,
-    // thirdUnit,
     timeSeries,
     xScale,
   };
