@@ -28,12 +28,8 @@ use Centreon\Domain\Common\Assertion\AssertionException;
 use Core\Security\Vault\Domain\Model\NewVaultConfiguration;
 
 $invalidMaxLengthString = '';
-$invalidMaxLengthAddress = '';
 for ($index = 0; $index <= NewVaultConfiguration::MAX_LENGTH; $index++) {
     $invalidMaxLengthString .= 'a';
-}
-for ($index = 0; $index <= NewVaultConfiguration::MAX_ADDRESS_LENGTH; $index++) {
-    $invalidMaxLengthAddress .= 'a';
 }
 
 it('should throw InvalidArgumentException when vault name is empty', function (): void {
@@ -130,29 +126,6 @@ it('should throw AssertionException when vault address is \'._@\'', function ():
 })->throws(
     AssertionException::class,
     AssertionException::ipOrDomain('._@', 'NewVaultConfiguration::address')->getMessage()
-);
-
-it(
-    'should throw InvalidArgumentException when vault address exceeds allowed max length',
-    function () use ($invalidMaxLengthAddress): void {
-        new NewVaultConfiguration(
-            'myVault',
-            NewVaultConfiguration::TYPE_HASHICORP,
-            $invalidMaxLengthAddress,
-            8200,
-            'myStorage',
-            'myRoleId',
-            'mySecretId'
-        );
-    }
-)->throws(
-    InvalidArgumentException::class,
-    AssertionException::maxLength(
-        $invalidMaxLengthAddress,
-        strlen($invalidMaxLengthAddress),
-        NewVaultConfiguration::MAX_ADDRESS_LENGTH,
-        'NewVaultConfiguration::address'
-    )->getMessage()
 );
 
 it('should throw InvalidArgumentException when vault port value is lower than allowed range', function (): void {

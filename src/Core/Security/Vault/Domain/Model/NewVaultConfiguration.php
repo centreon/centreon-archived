@@ -31,7 +31,6 @@ use Centreon\Domain\Common\Assertion\{Assertion, AssertionException};
 class NewVaultConfiguration
 {
     public const MAX_LENGTH = 255;
-    public const MAX_ADDRESS_LENGTH = 1024;
     public const MIN_PORT_VALUE = 1;
     public const MAX_PORT_VALUE = 65535;
     public const TYPE_HASHICORP = 'hashicorp';
@@ -61,7 +60,6 @@ class NewVaultConfiguration
         Assertion::notEmpty($type, 'NewVaultConfiguration::type');
         Assertion::inArray($type, self::ALLOWED_TYPES, 'NewVaultConfiguration::type');
         Assertion::notEmpty($address, 'NewVaultConfiguration::address');
-        Assertion::maxLength($address, self::MAX_ADDRESS_LENGTH, 'NewVaultConfiguration::address');
         Assertion::ipOrDomain($address, 'NewVaultConfiguration::address');
         Assertion::max($port, self::MAX_PORT_VALUE, 'NewVaultConfiguration::port');
         Assertion::min($port, self::MIN_PORT_VALUE, 'NewVaultConfiguration::port');
