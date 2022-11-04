@@ -47,11 +47,12 @@ class NewVaultConfigurationFactory
      */
     public function create(CreateVaultConfigurationRequest $request): NewVaultConfiguration
     {
+        $salt = base64_encode(openssl_random_pseudo_bytes(NewVaultConfiguration::SALT_LENGTH));
         $roleId = $this->encryption
-            ->setSecondKey(NewVaultConfiguration::SECOND_ENCRYPTION_KEY)
+            ->setSecondKey($salt)
             ->crypt($request->roleId);
         $secretId = $this->encryption
-            ->setSecondKey(NewVaultConfiguration::SECOND_ENCRYPTION_KEY)
+            ->setSecondKey($salt)
             ->crypt($request->secretId);
 
         return new NewVaultConfiguration(
@@ -61,7 +62,8 @@ class NewVaultConfigurationFactory
             $request->port,
             $request->storage,
             $roleId,
-            $secretId
+            $secretId,
+            $salt
         );
     }
 }

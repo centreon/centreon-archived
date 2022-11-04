@@ -17,6 +17,7 @@ CREATE TABLE IF NOT EXISTS `vault_configuration` (
   `storage` VARCHAR(255) NOT NULL,
   `role_id` VARCHAR(255) NOT NULL,
   `secret_id` VARCHAR(255) NOT NULL,
+  `salt` CHAR(80) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `unique_vault_configuration` (`url`, `port`, `storage`),
   CONSTRAINT `vault_configuration_type_id`

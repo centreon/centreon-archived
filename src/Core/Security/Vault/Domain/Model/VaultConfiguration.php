@@ -37,6 +37,7 @@ class VaultConfiguration extends NewVaultConfiguration
      * @param string $storage
      * @param string $roleId
      * @param string $secretId
+     * @param string $salt
      */
     public function __construct(
         private int $id,
@@ -47,8 +48,9 @@ class VaultConfiguration extends NewVaultConfiguration
         string $storage,
         string $roleId,
         string $secretId,
+        string $salt
     ) {
-        parent::__construct($name, $type, $address, $port, $storage, $roleId, $secretId);
+        parent::__construct($name, $type, $address, $port, $storage, $roleId, $secretId, $salt);
     }
 
     /**

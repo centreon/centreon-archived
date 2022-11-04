@@ -35,7 +35,7 @@ it(
     function (): void {
         $encryption = new Encryption();
         $factory = new NewVaultConfigurationFactory(
-            $encryption->setFirstKey('myFirstKey')->setSecondKey('mySecondKey')
+            $encryption->setFirstKey('myFirstKey')
         );
         $createVaultConfigurationRequest = new CreateVaultConfigurationRequest();
         $createVaultConfigurationRequest->name = 'myVault';
@@ -54,7 +54,7 @@ it(
 
 it('should encrypt roleId and secretId correctly', function (): void {
     $encryption = new Encryption();
-    $encryption = $encryption->setFirstKey('myFirstKey')->setSecondKey('mySecondKey');
+    $encryption = $encryption->setFirstKey('myFirstKey');
     $factory = new NewVaultConfigurationFactory($encryption);
     $createVaultConfigurationRequest = new CreateVaultConfigurationRequest();
     $createVaultConfigurationRequest->name = 'myVault';
@@ -66,6 +66,8 @@ it('should encrypt roleId and secretId correctly', function (): void {
     $createVaultConfigurationRequest->secretId = 'mySecretId';
 
     $newVaultConfiguration = $factory->create($createVaultConfigurationRequest);
+
+    $encryption = $encryption->setSecondKey($newVaultConfiguration->getSalt());
 
     $roleId = $encryption->decrypt($newVaultConfiguration->getRoleId());
     $secretId = $encryption->decrypt($newVaultConfiguration->getSecretId());

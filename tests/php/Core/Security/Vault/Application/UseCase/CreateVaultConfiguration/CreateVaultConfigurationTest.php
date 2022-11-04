@@ -56,7 +56,8 @@ it('Should present InvalidArgumentResponse when vault configuration already exis
         8200,
         'myStorage',
         'myRoleId',
-        'mySecretId'
+        'mySecretId',
+        'mySalt'
     );
     $this->readRepository
         ->expects($this->once())

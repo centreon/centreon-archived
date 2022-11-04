@@ -40,7 +40,8 @@ it('should throw InvalidArgumentException when vault name is empty', function ()
         8200,
         'myStorage',
         'myRoleId',
-        'mySecretId'
+        'mySecretId',
+        'mySalt'
     );
 })->throws(InvalidArgumentException::class, AssertionException::notEmpty('NewVaultConfiguration::name')->getMessage());
 
@@ -54,7 +55,8 @@ it(
             8200,
             'myStorage',
             'myRoleId',
-            'mySecretId'
+            'mySecretId',
+            'mySalt'
         );
     }
 )->throws(
@@ -75,7 +77,8 @@ it('should throw InvalidArgumentException when vault type is empty', function ()
         8200,
         'myStorage',
         'myRoleId',
-        'mySecretId'
+        'mySecretId',
+        'mySalt'
     );
 })->throws(InvalidArgumentException::class, AssertionException::notEmpty('NewVaultConfiguration::type')->getMessage());
 
@@ -87,7 +90,8 @@ it('should throw InvalidArgumentException when vault type is invalid', function 
         8200,
         'myStorage',
         'myRoleId',
-        'mySecretId'
+        'mySecretId',
+        'mySalt'
     );
 })->throws(
     InvalidArgumentException::class,
@@ -106,7 +110,9 @@ it('should throw InvalidArgumentException when vault address is empty', function
         8200,
         'myStorage',
         'myRoleId',
-        'mySecretId'
+        'mySecretId',
+        'mySalt'
+
     );
 })->throws(
     InvalidArgumentException::class,
@@ -121,7 +127,8 @@ it('should throw AssertionException when vault address is \'._@\'', function ():
         8200,
         'myStorage',
         'myRoleId',
-        'mySecretId'
+        'mySecretId',
+        'mySalt'
     );
 })->throws(
     AssertionException::class,
@@ -136,7 +143,8 @@ it('should throw InvalidArgumentException when vault port value is lower than al
         0,
         'myStorage',
         'myRoleId',
-        'mySecretId'
+        'mySecretId',
+        'mySalt'
     );
 })->throws(
     InvalidArgumentException::class,
@@ -155,7 +163,8 @@ it('should throw InvalidArgumentException when vault port exceeds allowed range'
         NewVaultConfiguration::MAX_PORT_VALUE + 1,
         'myStorage',
         'myRoleId',
-        'mySecretId'
+        'mySecretId',
+        'mySalt'
     );
 })->throws(
     InvalidArgumentException::class,
@@ -174,7 +183,8 @@ it('should throw InvalidArgumentException when vault storage is empty', function
         8200,
         '',
         'myRoleId',
-        'mySecretId'
+        'mySecretId',
+        'mySalt'
     );
 })->throws(
     InvalidArgumentException::class,
@@ -191,7 +201,8 @@ it(
             8200,
             $invalidMaxLengthString,
             'myRoleId',
-            'mySecretId'
+            'mySecretId',
+            'mySalt'
         );
     }
 )->throws(
@@ -212,7 +223,8 @@ it('should throw InvalidArgumentException when vault role id is empty', function
         8200,
         'myStorage',
         '',
-        'mySecretId'
+        'mySecretId',
+        'mySalt'
     );
 })->throws(
     InvalidArgumentException::class,
@@ -229,7 +241,8 @@ it(
             8200,
             'myStorage',
             $invalidMaxLengthString,
-            'mySecretId'
+            'mySecretId',
+            'mySalt'
         );
     }
 )->throws(
@@ -250,7 +263,8 @@ it('should throw InvalidArgumentException when vault secret id is empty', functi
         8200,
         'myStorage',
         'myRoleId',
-        ''
+        '',
+        'mySalt'
     );
 })->throws(
     InvalidArgumentException::class,
@@ -268,6 +282,7 @@ it(
             'myStorage',
             'myRoleId',
             $invalidMaxLengthString,
+            'mySalt'
         );
     }
 )->throws(
@@ -288,7 +303,8 @@ it('should return an instance of NewVaultConfiguration when all vault parametes 
         8200,
         'myStorage',
         'myRoleId',
-        'mySecretId'
+        'mySecretId',
+        'mySalt'
     );
 
     expect($newVaultConfiguration->getName())->toBe('myVault');

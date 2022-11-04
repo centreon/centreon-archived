@@ -35,7 +35,7 @@ class NewVaultConfiguration
     public const MAX_PORT_VALUE = 65535;
     public const TYPE_HASHICORP = 'hashicorp';
     public const ALLOWED_TYPES = [self::TYPE_HASHICORP];
-    public const SECOND_ENCRYPTION_KEY = 'vault_configuration_credentials';
+    public const SALT_LENGTH = 60;
 
     /**
      * @param string $name
@@ -45,6 +45,7 @@ class NewVaultConfiguration
      * @param string $storage
      * @param string $roleId
      * @param string $secretId
+     * @param string $salt
      */
     public function __construct(
         protected string $name,
@@ -54,6 +55,7 @@ class NewVaultConfiguration
         protected string $storage,
         protected string $roleId,
         protected string $secretId,
+        protected string $salt
     ) {
         Assertion::notEmpty($name, 'NewVaultConfiguration::name');
         Assertion::maxLength($name, self::MAX_LENGTH, 'NewVaultConfiguration::name');
@@ -126,5 +128,13 @@ class NewVaultConfiguration
     public function getSecretId(): string
     {
         return $this->secretId;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSalt(): string
+    {
+        return $this->salt;
     }
 }
