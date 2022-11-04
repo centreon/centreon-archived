@@ -36,6 +36,9 @@
 
 class Broker extends AbstractObjectJSON
 {
+    private const STREAM_BBDO_SERVER = 'bbdo_server';
+    private const STREAM_BBDO_CLIENT = 'bbdo_client';
+
     protected $engine = null;
     protected $broker = null;
     protected $generate_filename = null;
@@ -197,8 +200,8 @@ class Broker extends AbstractObjectJSON
             $resultParameters = $this->stmt_broker_parameters->fetchAll(PDO::FETCH_GROUP | PDO::FETCH_ASSOC);
 
             //logger
-            $object['log']['directory'] = filter_var($row['log_directory'], FILTER_SANITIZE_STRING);
-            $object['log']['filename'] = filter_var($row['log_filename'], FILTER_SANITIZE_STRING);
+            $object['log']['directory'] = \HtmlAnalyzer::sanitizeAndRemoveTags($row['log_directory']);
+            $object['log']['filename'] = \HtmlAnalyzer::sanitizeAndRemoveTags($row['log_filename']);
             $object['log']['max_size'] = filter_var($row['log_max_size'], FILTER_VALIDATE_INT);
             $this->getLogsValues();
             $logs = $this->cacheLogValue[$object['broker_id']];
@@ -217,7 +220,8 @@ class Broker extends AbstractObjectJSON
                 }
 
                 $subValuesToCastInArray = [];
-                $rrdCacheOption = 'disable';
+                $rrdCacheOption = null;
+                $rrdCached = null;
                 foreach ($value as $subvalue) {
                     if (
                         !isset($subvalue['fieldIndex'])
@@ -236,21 +240,20 @@ class Broker extends AbstractObjectJSON
                         } elseif ($subvalue['config_key'] === 'category') {
                             $object[$key][$subvalue['config_group_id']]['filters'][$subvalue['config_key']][] =
                                 $subvalue['config_value'];
-                        } else {
+                        } elseif (in_array($subvalue['config_key'], ['rrd_cached_option', 'rrd_cached'])) {
                             if ($subvalue['config_key'] === 'rrd_cached_option') {
                                 $rrdCacheOption = $subvalue['config_value'];
-                                continue;
+                            } elseif ($subvalue['config_key'] === 'rrd_cached') {
+                                $rrdCached = $subvalue['config_value'];
                             }
-
-                            if ($subvalue['config_key'] === 'rrd_cached') {
+                            if ($rrdCached && $rrdCacheOption) {
                                 if ($rrdCacheOption === 'tcp') {
-                                    $object[$key][$subvalue['config_group_id']]['port'] = $subvalue['config_value'];
+                                    $object[$key][$subvalue['config_group_id']]['port'] = $rrdCached;
                                 } elseif ($rrdCacheOption === 'unix') {
-                                    $object[$key][$subvalue['config_group_id']]['path'] = $subvalue['config_value'];
+                                    $object[$key][$subvalue['config_group_id']]['path'] = $rrdCached;
                                 }
-                                continue;
                             }
-
+                        } else {
                             $object[$key][$subvalue['config_group_id']][$subvalue['config_key']] =
                                 $subvalue['config_value'];
 
@@ -337,6 +340,7 @@ class Broker extends AbstractObjectJSON
                 'port' => 51000 + (int) $row['config_id']
             ];
 
+            $object = $this->cleanBbdoStreams($object);
 
             // Generate file
             $this->generateFile($object);
@@ -344,14 +348,59 @@ class Broker extends AbstractObjectJSON
         }
 
         // Manage path of cbd watchdog log
-        $watchdogLogsPath = trim($this->engine['broker_logs_path']) === '' ?
-            '/var/log/centreon-broker/watchdog.log' :
-            trim($this->engine['broker_logs_path']) . '/watchdog.log';
+        $watchdogLogsPath = $this->engine['broker_logs_path'] === null || empty(trim($this->engine['broker_logs_path']))
+            ? '/var/log/centreon-broker/watchdog.log'
+            : trim($this->engine['broker_logs_path']) . '/watchdog.log';
         $watchdog['log'] = $watchdogLogsPath;
 
         $this->generate_filename = 'watchdog.json';
         $this->generateFile($watchdog);
         $this->writeFile($this->backend_instance->getPath());
+    }
+
+    /**
+     * Remove unnecessary element form inputs and output for stream types bbdo
+     *
+     * @param array<string,mixed> $config
+     * @return array<string,mixed>
+     */
+    private function cleanBbdoStreams(array $config): array
+    {
+        if (isset($config['input'])) {
+            foreach ($config['input'] as $key => $inputCfg) {
+                if ($inputCfg['type'] === self::STREAM_BBDO_SERVER) {
+                    unset($config['input'][$key]['compression']);
+                    unset($config['input'][$key]['retention']);
+
+                    if ($config['input']['encrypt'] === 'no') {
+                        unset($config['input'][$key]['private_key']);
+                        unset($config['input'][$key]['certificate']);
+                    }
+                }
+                if ($inputCfg['type'] === self::STREAM_BBDO_CLIENT) {
+                    unset($config['input'][$key]['compression']);
+
+                    if ($config['input'][$key]['encrypt'] === 'no') {
+                        unset($config['input'][$key]['ca_certificate']);
+                        unset($config['input'][$key]['ca_name']);
+                    }
+                }
+            }
+        }
+        if (isset($config['output'])) {
+            foreach ($config['output'] as $key => $inputCfg) {
+                if ($inputCfg['type'] === self::STREAM_BBDO_SERVER && $config['output'][$key]['encrypt'] === 'no') {
+                    unset($config['output'][$key]['private_key']);
+                    unset($config['output'][$key]['certificate']);
+                }
+                if ($inputCfg['type'] === self::STREAM_BBDO_CLIENT && $config['output'][$key]['encrypt'] === 'no') {
+                    unset($config['output'][$key]['ca_certificate']);
+                    unset($config['output'][$key]['ca_name']);
+                }
+            }
+        }
+
+        return $config;
     }
 
     private function getEngineParameters($poller_id)
@@ -499,6 +548,23 @@ class Broker extends AbstractObjectJSON
     }
 
     /**
+     * Method retrieving the Centreon Platform UUID generated during web installation
+     *
+     * @return string|null
+     */
+    private function getCentreonPlatformUuid(): ?string
+    {
+        global $pearDB;
+        $result = $pearDB->query("SELECT `value` FROM informations WHERE `key` = 'uuid'");
+
+        if (! $record = $result->fetch(\PDO::FETCH_ASSOC)) {
+            return null;
+        };
+
+        return $record['value'];
+    }
+
+    /**
      * Generate complete proxy url
      *
      * @return array with lua parameters
@@ -562,6 +628,14 @@ class Broker extends AbstractObjectJSON
                 ];
             }
         }
+
+        $uuid = $this->getCentreonPlatformUuid();
+
+        $luaParameters[] = [
+            'type' => 'string',
+            'name' => 'centreon_platform_uuid',
+            'value' => $uuid
+        ];
 
         return $luaParameters;
     }

@@ -27,6 +27,11 @@ use Centreon\Domain\Menu\Model\Page;
 interface ContactInterface
 {
     /**
+     * @return int Returns the timezone id
+     */
+    public function getTimezoneId(): int;
+
+    /**
      * @return int Returns the contact id
      */
     public function getId(): int;
@@ -202,4 +207,9 @@ interface ContactInterface
      * @return static
      */
     public function setAccessToApiRealTime(bool $hasAccessToApiRealTime): static;
+
+    /**
+     * @return string|null
+     */
+    public function getTheme(): ?string;
 }

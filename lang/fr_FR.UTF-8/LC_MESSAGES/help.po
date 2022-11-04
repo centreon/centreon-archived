@@ -7215,18 +7215,6 @@ msgstr ""
 msgid "Expected TLS certificate common name (CN) - leave blank if unsure."
 msgstr "Champ common name (CN) attendu dans le certificat TLS - laisser vide en cas de doute"
 
-msgid "Poller Configuration Actions / Poller Management"
-msgstr "Actions de configuration du collecteur / Gestion du collecteur"
-
-msgid "Create and edit pollers"
-msgstr "Créer et modifier des collecteurs"
-
-msgid "Delete pollers"
-msgstr "Supprimer des collecteurs"
-
-msgid "Deploy configuration"
-msgstr "Déployer la configuration"
-
 msgid "Allows user to perform “Add”, “Add (advanced)” and “Duplicate” actions on pollers."
 msgstr "Permet à l'utilisateur de créer des collecteurs (boutons Ajouter, Ajouter (avancé) et Dupliquer)."
 
@@ -7235,3 +7223,126 @@ msgstr "Permet à l'utilisateur de supprimer des collecteurs."
 
 msgid "Allows user to deploy configuration."
 msgstr "Permet à l'utilisateur de déployer la configuration."
+
+
+msgid "Fill in this field only if you want to specify the address on which Broker should listen"
+msgstr "Ne remplir ce champ que si vous souhaitez spécifier l’adresse sur laquelle Broker doit écouter"
+
+msgid "TCP port on which Broker should listen"
+msgstr "Port TCP sur lequel Broker doit écouter"
+
+msgid "The transport protocol can be either TCP (binary flow over TCP) or gRPC (HTTP2)"
+msgstr "Le protocole de transport peut être soit TCP (flux binaire sur TCP) soit gRPC (HTTP2)"
+
+msgid "Authorization token to be requested from the client (must be the same for both client and server)"
+msgstr "Jeton d’autorisation à exiger du client (doit être identique entre le client et le serveur)"
+
+msgid "Enable TLS 1.3 encryption"
+msgstr "Activer le chiffrement TLS 1.3"
+
+msgid "Full path to the file containing the private key in PEM format (required for encryption)"
+msgstr "Chemin complet du fichier contenant la clé privée au format PEM (nécessaire pour le chiffrement)"
+
+msgid "Full path to the file containing the certificate in PEM format (required for encryption)"
+msgstr "Chemin complet du fichier contenant le certificat au format PEM (nécessaire pour le chiffrement)"
+
+msgid "Enable data compression"
+msgstr "Activer la compression des données"
+
+msgid "Enable data retention until the client is connected"
+msgstr "Activer la rétention des données jusqu'à connexion du client"
+
+msgid "Broker event categories to filter. If none is selected, all categories of events will be processed"
+msgstr "Catégories d'évènements à filtrer. Si aucune n’est sélectionnée, toutes les catégories seront traitées"
+
+msgid "Address of the server to which the client should connect"
+msgstr "Adresse du serveur auquel le client doit se connecter"
+
+msgid "TCP port of the server to which the client should connect"
+msgstr "Port TCP du serveur auquel le client doit se connecter"
+
+msgid "Number of seconds between a lost or failed connection and the next try"
+msgstr "Nombre de secondes entre une perte ou un échec de connexion et la tentative suivante"
+
+msgid "Authorization token expected by the server (must be the same for both client and server)"
+msgstr "Jeton d’autorisation attendu par le serveur (doit être identique entre le client et le serveur)"
+
+msgid ""
+"If the server's certificate is signed by an untrusted Certification Authority (CA), then specify the certificate's path."
+"If the server's certificate is self-signed, then specify its path."
+"You can also add the certificate to the store of certificates trusted by the operating system."
+"The file must be in PEM format."
+msgstr ""
+"Si le certificat du serveur est signé par une autorité de certification (CA) non reconnue, spécifiez le chemin du certificat de la CA."
+"Si le certificat du serveur est autosigné, spécifiez son chemin."
+"Il est également possible d’ajouter le certificat au magasin des certificats reconnnus par le système d’exploitation."
+"Le fichier doit être au format PEM."
+
+msgid "If the Common Name (CN) of the certificate is different from the value in the \"Server address\" field, the CN must be provided here"
+msgstr "Si le \"Common Name\" (CN) du certificat est différent de la valeur du champ \"Adresse du serveur\", alors saisissez le CN du certificat"
+
+msgid "Enable compression"
+msgstr "Activer la compression des données"
+
+msgid "Network address. Can be either IP or FQDN. If no DNS service is available, using a FQDN could raise false alarms."
+msgstr "Adresse réseau TCP/IPv4 ou FQDN. Si un FQDN est utilisé, cela peut aboutir à de fausses alertes en cas de panne DNS."
+
+msgid "This setting determines whether the host and its services must be monitored or not."
+msgstr "Ce paramètre permet de désactiver la supervision de l’hôte et de tous ses services."
+
+msgid "Central, remote server or poller that will monitor the host."
+msgstr "Central, serveur distant, ou collecteur chargé de superviser l’hôte."
+
+msgid "Timezone corresponding to the host's location. This will impact how the check period is applied to it."
+msgstr "Fuseau horaire où est situé l’hôte. Cela influera sur l’application de la période de supervision."
+
+msgid "Host groups linked to the host."
+msgstr "Groupes d’hôtes auxquels rattacher l’hôte."
+
+msgid "Host categories linked to the host."
+msgstr "Catégories d’hôtes auxquelles rattacher l’hôte."
+
+msgid "Host severity level. Can be used to sort alerts in the monitoring menus, including the Resources Status page."
+msgstr "Niveau de sévérité de l’hôte. Permet de trier les alertes dans les menus de supervision, notamment dans la page Statut des Ressources."
+
+msgid "Clickable URL displayed in the Notes column of the Resources Status page."
+msgstr "Lien cliquable affiché dans la colonne Notes de la page Statut des Ressources."
+
+msgid "Clickable URL displayed in the Action column of the Resources Status page. Intended as a shortcut for an action on the resource, such as opening a management console."
+msgstr "Lien cliquable affiché dans la colonne Action de la page Statut des Ressources. Ce lien est prévu pour permettre des actions sur l'équipement, comme l’ouverture d’une console de gestion."
+
+msgid "Geographic coordinates to allow Centreon MAP to plot the resource on a geographic view. Format: Latitude,Longitude. For example, Paris' coordinates are 48.51,2.20"
+msgstr "Coordonnées géographiques permettant à Centreon MAP de positionner les ressources sur une vue géographique. Format : Latitude,Longitude. Par exemple pour Paris, saisir : 48.51,2.20"
+
+msgid "Host(s) to which the service is attached"
+msgstr "Hôte(s) au(x)quel(s) le service est rattaché"
+
+msgid "Name of the service or template. It cannot contain white spaces, or special characters like ~!$%^&*\"|'<>?,()=. Each service of an host must have a unique name. The name of a service template must be unique."
+msgstr "Nom du service ou du modèle. Il ne peut pas contenir de caractères spéciaux tels que ~!$%^&*\"|'<>?,()=. Le nom du service doit être unique au sein d’un même hôte. Le nom d’un modèle doit être unique."
+
+msgid "When one of these host template is applied to a host, a service will be created based on the current template."
+msgstr "Lorsqu'un de ces modèles d'hôtes sera appliqué à un hôte, alors un service sera créé à partir du modèle courant."
+
+msgid "Service groups linked to the service."
+msgstr "Groupes de services auxquels rattacher le service."
+
+msgid "Host categories linked to the service."
+msgstr "Catégories de services auxquelles rattacher le services."
+
+msgid "Information note displayed as a tooltip in the Notes column of the Resources Status page."
+msgstr "Note d'information affichée dans une infobulle dans la colonne Notes de la page Statut des Ressources."
+
+msgid "This setting determines whether the service must be monitored or not."
+msgstr "Ce paramètre permet de désactiver la supervision du service."
+
+msgid "Service severity level. Can be used to sort alerts in the monitoring menus, including the Resources Status page."
+msgstr "Niveau de sévérité du service. Permet de trier les alertes dans les menus de supervision, notamment dans la page Statut des Ressources."
+
+msgid "Name of the host group. It must be unique and cannot contain white spaces, or special characters like ~!$%^&*\"|'<>?,()=."
+msgstr "Nom du groupe d’hôtes. Il doit être unique et ne peut pas contenir de caractères spéciaux tels que ~!$%^&*\"|'<>?,()=."
+
+msgid "Hosts belonging to the group"
+msgstr "Hôtes faisant partie de ce groupe"
+
+msgid "Geographic coordinates to allow Centreon MAP to plot the host group on a geographic view. Format: Latitude,Longitude. For example, Paris' coordinates are 48.51,2.20"
+msgstr "Coordonnées géographiques permettant à Centreon MAP de positionner le groupe d’hôtes sur une vue géographique. Format : Latitude,Longitude. Par exemple pour Paris, saisir : 48.51,2.20"

@@ -30,15 +30,21 @@ class DbDowntimeFactory
     use DbFactoryUtilitiesTrait;
 
     /**
-     * @param array<string, mixed> $data
+     * @param array<string,int|string|null> $data
      * @return Downtime
      */
     public static function createFromRecord(array $data): Downtime
     {
+        /** @var string|null */
+        $authorName = $data['author'];
+
+        /** @var string|null */
+        $comment = $data['comment_data'];
+
         return (new Downtime((int) $data['downtime_id'], (int) $data['host_id'], (int) $data['service_id']))
             ->setAuthorId((int) $data['author_id'])
-            ->setAuthorName($data['author'])
-            ->setComment($data['comment_data'])
+            ->setAuthorName($authorName)
+            ->setComment($comment)
             ->setCancelled((int) $data['cancelled'] === 1)
             ->setFixed((int) $data['fixed'] === 1)
             ->setStarted((int) $data['started'] === 1)

@@ -146,6 +146,7 @@ class DbReadHostRepository extends AbstractRepositoryDRB implements ReadHostRepo
         $statement->execute();
 
         if (($row = $statement->fetch(\PDO::FETCH_ASSOC))) {
+            /** @var array<string,int|string|null> $row */
             return DbHostFactory::createFromRecord($row);
         }
 

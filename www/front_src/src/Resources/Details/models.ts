@@ -20,6 +20,13 @@ export interface Category extends NamedEntity {
   configuration_uri: string | null;
 }
 
+export interface Sensitivity {
+  current_value: number;
+  default_value: number;
+  maximum_value: number;
+  minimum_value: number;
+}
+
 export interface ResourceDetails extends NamedEntity {
   acknowledged: boolean;
   acknowledgement?: Acknowledgement;
@@ -48,6 +55,7 @@ export interface ResourceDetails extends NamedEntity {
   passive_checks?: boolean;
   percent_state_change: number;
   performance_data?: string;
+  sensitivity?: Sensitivity;
   severity: Severity;
   severity_level: number;
   status: Status;
@@ -55,6 +63,13 @@ export interface ResourceDetails extends NamedEntity {
   tries: string;
   type: ResourceType;
   uuid: string;
+}
+
+export interface ResourceDetailsAtom {
+  parentResourceId?: number;
+  parentResourceType?: string;
+  resourceId?: number;
+  resourcesDetailsEndpoint?: string;
 }
 
 export interface GraphOption {
@@ -85,9 +100,10 @@ export interface DetailsUrlQueryParameters {
   id: number;
   parentId?: number;
   parentType?: string;
+  resourcesDetailsEndpoint?: string;
   selectedTimePeriodId?: TimePeriodId;
   tab?: string;
   tabParameters?: TabParameters;
-  type: string;
+  type?: string;
   uuid: string;
 }

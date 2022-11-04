@@ -74,8 +74,11 @@ class Router implements RouterInterface, RequestMatcherInterface, WarmableInterf
      * @param string $name
      * @param array<string,mixed> $parameters
      * @param int $referenceType
+     * @return string
+     *
+     * @throws \Exception
      */
-    public function generate(string $name, array $parameters = [], int $referenceType = self::ABSOLUTE_PATH)
+    public function generate(string $name, array $parameters = [], int $referenceType = self::ABSOLUTE_PATH): string
     {
         $parameters['base_uri'] = $this->getBaseUri();
         if (!empty($parameters['base_uri'])) {
@@ -85,7 +88,13 @@ class Router implements RouterInterface, RequestMatcherInterface, WarmableInterf
         $generatedRoute = $this->router->generate($name, $parameters, $referenceType);
 
         // remove double slashes
-        return preg_replace('/(?<!:)(\/{2,})/', '$2/', $generatedRoute);
+        $generatedRoute = preg_replace('/(?<!:)(\/{2,})/', '$2/', $generatedRoute);
+
+        if ($generatedRoute === null) {
+            throw new \Exception('Error occured during regular expression search and replace.');
+        }
+
+        return $generatedRoute;
     }
 
     /**
@@ -102,7 +111,7 @@ class Router implements RouterInterface, RequestMatcherInterface, WarmableInterf
     /**
      * @inheritDoc
      */
-    public function getContext()
+    public function getContext(): RequestContext
     {
         return $this->router->getContext();
     }
@@ -120,7 +129,7 @@ class Router implements RouterInterface, RequestMatcherInterface, WarmableInterf
      *
      * @return array<string,mixed>
      */
-    public function match(string $pathinfo)
+    public function match(string $pathinfo): array
     {
         return $this->router->match($pathinfo);
     }
@@ -130,7 +139,7 @@ class Router implements RouterInterface, RequestMatcherInterface, WarmableInterf
      *
      * @return array<string,mixed>
      */
-    public function matchRequest(Request $request)
+    public function matchRequest(Request $request): array
     {
         return $this->requestMatcher->matchRequest($request);
     }

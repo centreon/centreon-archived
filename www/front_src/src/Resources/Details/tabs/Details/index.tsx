@@ -1,31 +1,26 @@
 import { equals, isNil } from 'ramda';
-import { Responsive } from '@visx/visx';
 import { useAtomValue } from 'jotai/utils';
 
-import { detailsAtom } from '../../detailsAtoms';
+import { useTheme } from '@mui/material';
+
+import { detailsAtom, panelWidthStorageAtom } from '../../detailsAtoms';
 import DetailsLoadingSkeleton from '../../LoadingSkeleton';
 
 import SortableCards from './SortableCards';
 
 const DetailsTab = (): JSX.Element => {
+  const theme = useTheme();
   const details = useAtomValue(detailsAtom);
+  const panelWidth = useAtomValue(panelWidthStorageAtom);
+  const loading = isNil(details) || equals(panelWidth, 0);
+  const panelPadding = parseInt(theme.spacing(4), 10);
 
-  return (
-    <Responsive.ParentSize>
-      {({ width }): JSX.Element => {
-        const loading = isNil(details) || equals(width, 0);
-
-        if (loading) {
-          return <DetailsLoadingSkeleton />;
-        }
-
-        return (
-          <div>
-            <SortableCards details={details} panelWidth={width} />
-          </div>
-        );
-      }}
-    </Responsive.ParentSize>
+  return loading ? (
+    <DetailsLoadingSkeleton />
+  ) : (
+    <div>
+      <SortableCards details={details} panelWidth={panelWidth - panelPadding} />
+    </div>
   );
 };
 

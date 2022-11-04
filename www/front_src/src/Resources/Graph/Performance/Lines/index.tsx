@@ -1,28 +1,33 @@
-import { difference, min, max, isNil } from 'ramda';
+import { ReactNode } from 'react';
+
 import { Scale } from '@visx/visx';
 import { ScaleLinear, ScaleTime } from 'd3-scale';
+import { difference, isNil, max, min } from 'ramda';
 
 import { alpha } from '@mui/material';
 
 import { Line, TimeValue } from '../models';
 import {
-  getUnits,
+  getInvertedStackedLines,
+  getMax,
+  getMin,
+  getNotInvertedStackedLines,
   getSortedStackedLines,
   getTimeSeriesForLines,
-  getMin,
-  getMax,
-  getNotInvertedStackedLines,
-  getInvertedStackedLines,
+  getUnits,
   getYScale,
 } from '../timeSeries';
 
-import RegularLine from './RegularLine';
 import RegularAnchorPoint from './AnchorPoint/RegularAnchorPoint';
+import RegularLine from './RegularLine';
 import StackedLines from './StackedLines';
 
 interface Props {
+  anomalyDetectionEnvelope?: ReactNode;
+  anomalyDetectionResizeEnvelope: ReactNode;
   displayTimeValues: boolean;
   graphHeight: number;
+  isEditAnomalyDetectionDataDialogOpen?: boolean;
   leftScale: ScaleLinear<number, number>;
   lines: Array<Line>;
   rightScale: ScaleLinear<number, number>;
@@ -79,6 +84,9 @@ const Lines = ({
   graphHeight,
   timeTick,
   displayTimeValues,
+  isEditAnomalyDetectionDataDialogOpen,
+  anomalyDetectionEnvelope,
+  anomalyDetectionResizeEnvelope,
 }: Props): JSX.Element => {
   const [, secondUnit, thirdUnit] = getUnits(lines);
 
@@ -119,6 +127,8 @@ const Lines = ({
         yScale={stackedYScale}
       />
       <g>
+        {anomalyDetectionEnvelope}
+        {anomalyDetectionResizeEnvelope}
         {regularLines.map(
           ({
             metric,
@@ -141,23 +151,26 @@ const Lines = ({
 
             return (
               <g key={metric}>
-                <RegularAnchorPoint
-                  areaColor={areaColor}
-                  displayTimeValues={displayTimeValues}
-                  lineColor={lineColor}
-                  metric={metric}
-                  timeSeries={timeSeries}
-                  timeTick={timeTick}
-                  transparency={transparency}
-                  xScale={xScale}
-                  yScale={yScale}
-                />
+                {!isEditAnomalyDetectionDataDialogOpen && (
+                  <RegularAnchorPoint
+                    areaColor={areaColor}
+                    displayTimeValues={displayTimeValues}
+                    lineColor={lineColor}
+                    metric={metric}
+                    timeSeries={timeSeries}
+                    timeTick={timeTick}
+                    transparency={transparency}
+                    xScale={xScale}
+                    yScale={yScale}
+                  />
+                )}
                 <RegularLine
                   areaColor={areaColor}
                   filled={filled}
                   graphHeight={graphHeight}
                   highlight={highlight}
                   lineColor={lineColor}
+                  lines={lines}
                   metric={metric}
                   timeSeries={timeSeries}
                   transparency={transparency}

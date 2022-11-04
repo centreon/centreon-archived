@@ -3,7 +3,8 @@ $help = array();
 
 $help["hostgroup_name"] = dgettext(
     "help",
-    "This directive is used to define a short name used to identify the host group."
+    "Name of the host group. It must be unique and cannot contain white spaces,"
+    . " or special characters like ~!$%^&*\"|'<>?,()=."
 );
 $help["alias"] = dgettext(
     "help",
@@ -18,8 +19,7 @@ $help["snmp_options"] = dgettext(
 
 $help["members"] = dgettext(
     "help",
-    "This is a list of hosts that should be included in this group. This directive may be used as an alternative " .
-    "to (or in addition to) the hostgroups directive in host definitions."
+    "Hosts belonging to the group"
 );
 $help["hostgroup_members"] = dgettext(
     "help",
@@ -56,8 +56,8 @@ $help["statusmap_image"] = dgettext(
 
 $help["geo_coords"] = dgettext(
     "help",
-    "Geographical coordinates use by Centreon Map module to position element on map. Define \"Latitude,Longitude\", " .
-    "for example for Paris coordinates set \"48.51,2.20\""
+    "Geographic coordinates to allow Centreon MAP to plot the host group on a geographic view."
+    . " Format: Latitude,Longitude. For example, Paris' coordinates are 48.51,2.20"
 );
 
 $help['hg_rrd_retention'] = dgettext(

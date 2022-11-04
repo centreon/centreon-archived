@@ -43,9 +43,8 @@ if (!isset($oreon)) {
 
 include "./include/common/autoNumLimit.php";
 
-$search = filter_var(
-    $_POST['searchSC'] ?? $_GET['searchSC'] ?? null,
-    FILTER_SANITIZE_STRING
+$search = \HtmlAnalyzer::sanitizeAndRemoveTags(
+    $_POST['searchSC'] ?? $_GET['searchSC'] ?? null
 );
 
 if (isset($_POST['searchSC']) || isset($_GET['searchSC'])) {
@@ -119,12 +118,12 @@ $form->addElement('submit', 'Search', _("Search"), $attrBtnSuccess);
 $elemArr = array();
 $centreonToken = createCSRFToken();
 
+$statement = $pearDB->prepare("SELECT COUNT(*) FROM `service_categories_relation` WHERE `sc_id` = :sc_id");
 for ($i = 0; $sc = $dbResult->fetch(); $i++) {
     $moptions = "";
-    $dbResult2 = $pearDB->query(
-        "SELECT COUNT(*) FROM `service_categories_relation` WHERE `sc_id` = '" . $sc['sc_id'] . "'"
-    );
-    $nb_svc = $dbResult2->fetch();
+    $statement->bindValue(':sc_id', (int) $sc['sc_id'], \PDO::PARAM_INT);
+    $statement->execute();
+    $nb_svc = $statement->fetch();
 
     $selectedElements = $form->addElement('checkbox', "select[" . $sc['sc_id'] . "]");
 

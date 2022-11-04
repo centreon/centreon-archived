@@ -22,18 +22,14 @@ declare(strict_types=1);
 
 namespace Centreon\Application\Controller\Monitoring;
 
-use JsonSchema\Validator;
 use FOS\RestBundle\View\View;
 use Centreon\Domain\Contact\Contact;
-use JsonSchema\Constraints\Constraint;
 use Symfony\Component\HttpFoundation\Request;
-use Centreon\Domain\Monitoring\ResourceStatus;
 use Symfony\Component\HttpFoundation\Response;
 use Centreon\Domain\Exception\EntityNotFoundException;
 use Centreon\Application\Controller\AbstractController;
 use Centreon\Domain\Monitoring\SubmitResult\SubmitResult;
 use Centreon\Domain\Monitoring\Resource as ResourceEntity;
-use Centreon\Domain\Monitoring\SubmitResult\SubmitResultException;
 use Centreon\Domain\Monitoring\SubmitResult\Interfaces\SubmitResultServiceInterface;
 use Exception;
 
@@ -46,49 +42,18 @@ class SubmitResultController extends AbstractController
      */
     private $submitResultService;
 
+    private const SUBMIT_RESULT_RESOURCES_PAYLOAD_VALIDATION_FILE =
+        __DIR__ . '/../../../../../config/json_validator/latest/Centreon/SubmitResult/SubmitResultResources.json';
+
+    private const SUBMIT_SINGLE_RESULT_PAYLOAD_VALIDATION_FILE =
+        __DIR__ . '/../../../../../config/json_validator/latest/Centreon/SubmitResult/SubmitResult.json';
+
+    /**
+     * @param SubmitResultServiceInterface $submitResultService
+     */
     public function __construct(SubmitResultServiceInterface $submitResultService)
     {
         $this->submitResultService = $submitResultService;
-    }
-
-    /**
-     * This function will ensure that the POST data is valid
-     * regarding validation constraints defined and will return
-     * the decoded JSON content
-     *
-     * @param Request $request
-     * @param string $jsonValidatorFile
-     * @return array<string,mixed> $results
-     * @throws \InvalidArgumentException
-     */
-    private function validateAndRetrievePostData(Request $request, string $jsonValidatorFile): array
-    {
-        $results = json_decode((string) $request->getContent(), true);
-        if (!is_array($results)) {
-            throw new \InvalidArgumentException(_('Error when decoding sent data'));
-        }
-
-        /*
-        * Validate the content of the POST request against the JSON schema validator
-        */
-        $validator = new Validator();
-        $bodyContent = json_decode((string) $request->getContent());
-        $file = 'file://' . __DIR__ . '/../../../../../' . $jsonValidatorFile;
-        $validator->validate(
-            $bodyContent,
-            (object) ['$ref' => $file],
-            Constraint::CHECK_MODE_VALIDATE_SCHEMA
-        );
-
-        if (!$validator->isValid()) {
-            $message = '';
-            foreach ($validator->getErrors() as $error) {
-                $message .= sprintf("[%s] %s\n", $error['property'], $error['message']);
-            }
-            throw new \InvalidArgumentException($message);
-        }
-
-        return $results;
     }
 
     /**
@@ -146,32 +111,29 @@ class SubmitResultController extends AbstractController
        /*
         * Validate the content of the POST request against the JSON schema validator
         */
-        $results = $this->validateAndRetrievePostData(
-            $request,
-            'config/json_validator/latest/Centreon/SubmitResult/SubmitResultResources.json'
-        );
+        $payload = $this->validateAndRetrieveDataSent($request, self::SUBMIT_RESULT_RESOURCES_PAYLOAD_VALIDATION_FILE);
 
         /**
          * If user has no rights to submit result for host and/or service
          * return view with unauthorized HTTP header response
          */
-        if (!$this->hasSubmitResultRightsForResources($contact, $results['resources'])) {
+        if (!$this->hasSubmitResultRightsForResources($contact, $payload['resources'])) {
             return $this->view(null, Response::HTTP_UNAUTHORIZED);
         }
 
-        foreach ($results['resources'] as $submitResource) {
-            $result = (new SubmitResult($submitResource['id'], $submitResource['status']))
-                ->setOutput($submitResource['output'])
-                ->setPerformanceData($submitResource['performance_data']);
+        foreach ($payload['resources'] as $resource) {
+            $result = (new SubmitResult($resource['id'], $resource['status']))
+                ->setOutput($resource['output'])
+                ->setPerformanceData($resource['performance_data']);
             try {
-                if ($submitResource['type'] === ResourceEntity::TYPE_SERVICE) {
-                    $result->setParentResourceId($submitResource['parent']['id']);
+                if ($resource['type'] === ResourceEntity::TYPE_SERVICE) {
+                    $result->setParentResourceId($resource['parent']['id']);
                     $this->submitResultService
                         ->submitServiceResult($result);
-                } elseif ($submitResource['type'] === ResourceEntity::TYPE_HOST) {
+                } elseif ($resource['type'] === ResourceEntity::TYPE_HOST) {
                     $this->submitResultService
                         ->submitHostResult($result);
-                } elseif ($submitResource['type'] === ResourceEntity::TYPE_META) {
+                } elseif ($resource['type'] === ResourceEntity::TYPE_META) {
                     $this->submitResultService
                         ->submitMetaServiceResult($result);
                 }
@@ -206,19 +168,19 @@ class SubmitResultController extends AbstractController
             return $this->view(null, Response::HTTP_UNAUTHORIZED);
         }
 
-        $results = $this->validateAndRetrievePostData(
-            $request,
-            'config/json_validator/latest/Centreon/SubmitResult/SubmitResult.json'
-        );
+       /*
+        * Validate the content of the POST request against the JSON schema validator
+        */
+        $payload = $this->validateAndRetrieveDataSent($request, self::SUBMIT_SINGLE_RESULT_PAYLOAD_VALIDATION_FILE);
 
-        if (!empty($results)) {
+        if (!empty($payload)) {
             /**
              * At this point we made sure that the mapping will work since we validate
              * the JSON sent with the JSON validator.
              */
-            $result = (new SubmitResult($hostId, $results['status']))
-                ->setOutput($results['output'])
-                ->setPerformanceData($results['performance_data']);
+            $result = (new SubmitResult($hostId, $payload['status']))
+                ->setOutput($payload['output'])
+                ->setPerformanceData($payload['performance_data']);
 
             $this->submitResultService
                 ->filterByContact($contact)
@@ -253,15 +215,15 @@ class SubmitResultController extends AbstractController
             return $this->view(null, Response::HTTP_UNAUTHORIZED);
         }
 
-        $results = $this->validateAndRetrievePostData(
-            $request,
-            'config/json_validator/latest/Centreon/SubmitResult/SubmitResult.json'
-        );
+       /*
+        * Validate the content of the POST request against the JSON schema validator
+        */
+        $payload = $this->validateAndRetrieveDataSent($request, self::SUBMIT_SINGLE_RESULT_PAYLOAD_VALIDATION_FILE);
 
-        if (!empty($results)) {
-            $result = (new SubmitResult($serviceId, $results['status']))
-                ->setOutput($results['output'])
-                ->setPerformanceData($results['performance_data'])
+        if (!empty($payload)) {
+            $result = (new SubmitResult($serviceId, $payload['status']))
+                ->setOutput($payload['output'])
+                ->setPerformanceData($payload['performance_data'])
                 ->setParentResourceId($hostId);
 
             $this->submitResultService

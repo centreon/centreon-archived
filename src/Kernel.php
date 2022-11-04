@@ -148,7 +148,7 @@ class Kernel extends BaseKernel
     }
 
     /**
-     * @param \Symfony\Component\Routing\RouteCollectionBuilder $routes
+     * @param RouteCollectionBuilder $routes
      *
      * @throws \Symfony\Component\Config\Exception\LoaderLoadException
      */

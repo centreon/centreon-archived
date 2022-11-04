@@ -64,7 +64,7 @@ if (!isset($obj->session_id) || !CentreonSession::checkSession($obj->session_id,
 $obj->getDefaultFilters();
 
 // Check Arguments From GET tab
-$o = filter_input(INPUT_GET, 'o', FILTER_SANITIZE_STRING, ['options' => ['default' => 'h']]);
+$o = isset($_GET['o']) ? \HtmlAnalyzer::sanitizeAndRemoveTags($_GET['o']) : 'h';
 $p = filter_input(INPUT_GET, 'p', FILTER_VALIDATE_INT, ['options' => ['default' => 2]]);
 $num = filter_input(INPUT_GET, 'num', FILTER_VALIDATE_INT, ['options' => ['default' => 0]]);
 $limit = filter_input(INPUT_GET, 'limit', FILTER_VALIDATE_INT, ['options' => ['default' => 20]]);
@@ -78,9 +78,9 @@ $criticalityId = filter_input(
 $instance = filter_var($obj->defaultPoller ?? -1, FILTER_VALIDATE_INT);
 $hostgroups = filter_var($obj->defaultHostgroups ?? 0, FILTER_VALIDATE_INT);
 
-$search = filter_input(INPUT_GET, 'search', FILTER_SANITIZE_STRING, ['options' => ['default' => '']]);
-$statusHost = filter_input(INPUT_GET, 'statusHost', FILTER_SANITIZE_STRING, ['options' => ['default' => '']]);
-$statusFilter = filter_input(INPUT_GET, 'statusFilter', FILTER_SANITIZE_STRING, ['options' => ['default' => '']]);
+$search = isset($_GET['search']) ? \HtmlAnalyzer::sanitizeAndRemoveTags($_GET['search']) : '';
+$statusHost = isset($_GET['statusHost']) ? \HtmlAnalyzer::sanitizeAndRemoveTags($_GET['statusHost']) : '';
+$statusFilter = isset($_GET['statusFilter']) ? \HtmlAnalyzer::sanitizeAndRemoveTags($_GET['statusFilter']) : '';
 $order = isset($_GET['order']) && $_GET['order'] === "DESC" ? "DESC" : "ASC";
 
 if (isset($_GET['sort_type']) && $_GET['sort_type'] == "host_name") {

@@ -1,11 +1,10 @@
 import 'cypress-wait-until';
-
-import { setUserTokenApiV1 } from './centreonData';
+import './Commands';
 
 before(() => {
   return cy
     .exec(`npx wait-on ${Cypress.config().baseUrl}`)
-    .then(setUserTokenApiV1);
+    .then(cy.setUserTokenApiV1);
 });
 
 Cypress.on('uncaught:exception', (err) => {

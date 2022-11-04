@@ -53,13 +53,10 @@ $mySessionId = session_id();
 
 // checks for token
 if (!empty($_GET['username'])) {
-    $userName = filter_var($_GET['username'] ?? null, FILTER_SANITIZE_STRING);
+    $userName = \HtmlAnalyzer::sanitizeAndRemoveTags($_GET['username'] ?? null);
 }
 
-$token = filter_var(
-    $_GET['token'] ?? $_GET['akey'] ?? null,
-    FILTER_SANITIZE_STRING
-);
+$token = \HtmlAnalyzer::sanitizeAndRemoveTags($_GET['token'] ?? $_GET['akey'] ?? null);
 
 if (!empty($userName) && !empty($token)) {
     $query = "SELECT contact_id FROM `contact`
@@ -104,11 +101,11 @@ $index = filter_var(
 
 // Checking hostName and service
 if (!empty($_GET['hostname'])) {
-    $hostName = filter_var($_GET['hostname'], FILTER_SANITIZE_STRING);
+    $hostName = \HtmlAnalyzer::sanitizeAndRemoveTags($_GET['hostname']);
 }
 
 if (!empty($_GET['service'])) {
-    $serviceDescription = filter_var($_GET['service'], FILTER_SANITIZE_STRING);
+    $serviceDescription = \HtmlAnalyzer::sanitizeAndRemoveTags($_GET['service']);
 }
 
 $pearDBO = new CentreonDB("centstorage");
@@ -134,7 +131,7 @@ if (!empty($hostName) && !empty($serviceDescription)) {
 $chartId = null;
 
 if (!empty($_GET['chartId'])) {
-    $chartId = filter_var($_GET['chartId'], FILTER_SANITIZE_STRING);
+    $chartId = \HtmlAnalyzer::sanitizeAndRemoveTags($_GET['chartId']);
 }
 
 if (!empty($chartId)) {
@@ -182,19 +179,37 @@ if (!$isAdmin) {
     $dbstorage = new CentreonDB('centstorage');
 
     $aclGroups = $acl->getAccessGroupsString();
-    $sql = "SELECT host_id, service_id FROM index_data WHERE id = " .$pearDB->escape($index);
-    $res = $dbstorage->query($sql);
-    if (!$res->rowCount()) {
+    $sql = "SELECT host_id, service_id FROM index_data WHERE id = :index_data_id";
+    $statement = $dbstorage->prepare($sql);
+    $statement->bindValue(':index_data_id', (int) $index, \PDO::PARAM_INT);
+    $statement->execute();
+    if (!$statement->rowCount()) {
         die('Graph not found');
     }
-    $row = $res->fetch();
-    unset($res);
+    $row = $statement->fetch(\PDO::FETCH_ASSOC);
+    unset($statement);
     $hostId = $row['host_id'];
     $serviceId = $row['service_id'];
-    $sql = "SELECT service_id FROM centreon_acl WHERE host_id = $hostId AND service_id = $serviceId
-        AND group_id IN ($aclGroups)";
-    $res = $pearDBO->query($sql);
-    if (!$res->rowCount()) {
+    $aclGroupsExploded = explode(',', $aclGroups);
+    if (empty($aclGroupsExploded)) {
+        throw new \Exception('Access denied');
+    }
+
+    $aclGroupsQueryBinds = [];
+    foreach ($aclGroupsExploded as $key => $value) {
+        $aclGroupsQueryBinds[':acl_group_' . $key] = $value;
+    }
+    $aclGroupBinds = implode(',', array_keys($aclGroupsQueryBinds));
+    $sql = "SELECT service_id FROM centreon_acl WHERE host_id = :host_id AND service_id = :service_id
+        AND group_id IN ($aclGroupBinds)";
+    $statement = $pearDBO->prepare($sql);
+    $statement->bindValue(':host_id', (int) $hostId, \PDO::PARAM_INT);
+    $statement->bindValue(':service_id', (int) $serviceId, \PDO::PARAM_INT);
+    foreach ($aclGroupsQueryBinds as $key => $value) {
+        $statement->bindValue($key, (int) $value, \PDO::PARAM_INT);
+    }
+    $statement->execute();
+    if (!$statement->rowCount()) {
         die('Access denied');
     }
 }

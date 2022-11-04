@@ -30,7 +30,7 @@ use Tests\Core\Domain\RealTime\Model\MetaServiceTest;
 use Core\Infrastructure\RealTime\Hypermedia\HypermediaCreator;
 use Core\Infrastructure\Common\Presenter\PresenterFormatterInterface;
 use Core\Application\RealTime\UseCase\FindMetaService\FindMetaService;
-use Core\Security\Application\Repository\ReadAccessGroupRepositoryInterface;
+use Core\Security\AccessGroup\Application\Repository\ReadAccessGroupRepositoryInterface;
 use Core\Application\RealTime\Repository\ReadDowntimeRepositoryInterface;
 use Core\Application\RealTime\Repository\ReadMetaServiceRepositoryInterface;
 use Core\Infrastructure\RealTime\Api\FindMetaService\FindMetaServicePresenter;
@@ -181,7 +181,9 @@ it('should present a NotFoundResponse if metaservice requested is not found as n
 
 it('should find the metaservice as non-admin', function () {
     $metaServiceConfiguration = MetaServiceConfigurationTest::createMetaServiceModel();
-    $metaService = MetaServiceTest::createMetaServiceModel();
+    $metaService = (MetaServiceTest::createMetaServiceModel())
+        ->setIsInDowntime(true)
+        ->setIsAcknowledged(true);
 
     $downtimes[] = (new Downtime(1, 1, 10))
         ->setCancelled(false);
@@ -226,7 +228,7 @@ it('should find the metaservice as non-admin', function () {
     $findMetaService(1, $presenter);
 
     expect($presenter->response->name)->toBe($metaService->getName());
-    expect($presenter->response->id)->toBe($metaService->getId());
+    expect($presenter->response->metaId)->toBe($metaService->getId());
     expect($presenter->response->isFlapping)->toBe($metaService->isFlapping());
     expect($presenter->response->isAcknowledged)->toBe($metaService->isAcknowledged());
     expect($presenter->response->isInDowntime)->toBe($metaService->isInDowntime());

@@ -93,6 +93,7 @@ $release = $dbResult->fetchRow();
                     <p>Tamaz Cheishvili</p>
                     <p>Tom Darneix</p>
                     <p>Thomas Arnaud</p>
+                    <p>Walid Termellil</p>
                 </td>
                 <td></td>
             </tr>

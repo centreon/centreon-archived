@@ -1,14 +1,14 @@
 import { useState, useEffect } from 'react';
 
 import { useTranslation } from 'react-i18next';
-import { not } from 'ramda';
+import { equals, not } from 'ramda';
 import { useAtomValue } from 'jotai/utils';
 
-import { Button, Paper, Typography } from '@mui/material';
+import { Button, Typography } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 
 import { getData, useRequest, useSnackbar, Dialog } from '@centreon/ui';
-import { userAtom } from '@centreon/ui-context';
+import { userAtom, ThemeMode } from '@centreon/ui-context';
 
 import {
   labelCancel,
@@ -30,7 +30,16 @@ interface Props {
 
 const useStyles = makeStyles((theme) => ({
   exportButton: {
+    '&:hover': {
+      background: theme.palette.grey[500],
+    },
+    backgroundColor: equals(theme.palette.mode, ThemeMode.dark)
+      ? theme.palette.background.default
+      : theme.palette.primary.main,
+    border: '1px solid white',
+    color: theme.palette.common.white,
     display: 'flex',
+    fontSize: theme.typography.body2.fontSize,
     marginTop: theme.spacing(1),
   },
   pollerText: {
@@ -88,16 +97,15 @@ const ExportConfiguration = ({
 
   return (
     <>
-      <Paper className={classes.exportButton}>
-        <Button
-          data-testid={labelExportConfiguration}
-          disabled={disableButton}
-          size="small"
-          onClick={askBeforeExportConfiguration}
-        >
-          {t(labelExportConfiguration)}
-        </Button>
-      </Paper>
+      <Button
+        className={classes.exportButton}
+        data-testid={labelExportConfiguration}
+        disabled={disableButton}
+        size="small"
+        onClick={askBeforeExportConfiguration}
+      >
+        {t(labelExportConfiguration)}
+      </Button>
       <Dialog
         labelCancel={t(labelCancel)}
         labelConfirm={t(labelExportAndReload)}

@@ -83,6 +83,9 @@ class DbReadContactGroupRepository extends AbstractRepositoryDRB implements Read
         $statement = $this->db->prepare($request);
 
         foreach ($this->sqlRequestTranslator->getSearchValues() as $key => $data) {
+            /**
+             * @var int
+             */
             $type = key($data);
             $value = $data[$type];
             $statement->bindValue($key, $value, $type);
@@ -131,6 +134,9 @@ class DbReadContactGroupRepository extends AbstractRepositoryDRB implements Read
         $statement = $this->db->prepare($request);
 
         foreach ($this->sqlRequestTranslator->getSearchValues() as $key => $data) {
+            /**
+             * @var int
+             */
             $type = key($data);
             $value = $data[$type];
             $statement->bindValue($key, $value, $type);
@@ -165,6 +171,9 @@ class DbReadContactGroupRepository extends AbstractRepositoryDRB implements Read
         $statement->execute();
         $contactGroup = null;
         if ($statement !== false && $result = $statement->fetch(\PDO::FETCH_ASSOC)) {
+            /**
+             * @var array<string, string> $result
+             */
             $contactGroup = DbContactGroupFactory::createFromRecord($result);
         }
         $this->debug(
@@ -174,5 +183,39 @@ class DbReadContactGroupRepository extends AbstractRepositoryDRB implements Read
             ]
         );
         return $contactGroup;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findByIds(array $contactGroupIds): array
+    {
+        $this->debug('Getting Contact Group by Ids', [
+            "ids" => implode(", ", $contactGroupIds)
+        ]);
+        $queryBindValues = [];
+        foreach ($contactGroupIds as $contactGroupId) {
+            $queryBindValues[':contact_group_' . $contactGroupId] = $contactGroupId;
+        }
+
+        if (empty($queryBindValues)) {
+            return [];
+        }
+        $contactGroups = [];
+        $boundIds = implode(', ', array_keys($queryBindValues));
+        $statement = $this->db->prepare(
+            "SELECT cg_id,cg_name FROM contactgroup WHERE cg_id IN ($boundIds)"
+        );
+        foreach ($queryBindValues as $bindKey => $contactGroupId) {
+            $statement->bindValue($bindKey, $contactGroupId, \PDO::PARAM_INT);
+        }
+        $statement->execute();
+
+        while ($statement !== false && is_array($result = $statement->fetch(\PDO::FETCH_ASSOC))) {
+            $contactGroups[] = DbContactGroupFactory::createFromRecord($result);
+        }
+        $this->debug('Contact Group found: ' . count($contactGroups));
+
+        return $contactGroups;
     }
 }

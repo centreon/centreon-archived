@@ -420,8 +420,6 @@ if (!is_null($host_id)) {
             str_replace(' \'', "\n'", $service_status['performance_data'])
         );
         if ($service_status['current_state'] !== "") {
-            $service_status["status_color"] =
-                $centreon->optGen["color_" . strtolower($service_status["current_state"])];
             $service_status["status_class"] = $tab_class_service[strtolower($service_status["current_state"])];
         }
         !$service_status["check_latency"]
@@ -621,18 +619,17 @@ if (!is_null($host_id)) {
             $status .= "&value[" . $key . "]=" . $value;
         }
 
-        $optionsURL = "host_name=" . urlencode($host_name) . "&service_description=" . urlencode($svc_description);
-
-        $query = "SELECT id FROM `index_data`, `metrics` WHERE host_name = '" . $pearDBO->escape($host_name) .
-            "' AND service_description = '" . $pearDBO->escape($svc_description) . "' AND id = index_id LIMIT 1";
-        $DBRES = $pearDBO->query($query);
+        $query = "SELECT id FROM `index_data`, `metrics` WHERE host_name = :host_name" .
+            " AND service_description = :svc_description AND id = index_id LIMIT 1";
+        $statement = $pearDBO->prepare($query);
+        $statement->bindValue(':host_name', $host_name, \PDO::PARAM_STR);
+        $statement->bindValue(':svc_description', $svc_description, \PDO::PARAM_STR);
+        $statement->execute();
         $index_data = 0;
-        if ($DBRES->rowCount()) {
-            $row = $DBRES->fetchRow();
+        if ($statement->rowCount()) {
+            $row = $statement->fetchRow();
             $index_data = $row['id'];
         }
-        $optionsURL2 = "index=" . $index_data;
-
         /*
          * Assign translations
          */
@@ -875,38 +872,7 @@ if (!is_null($host_id)) {
         $tpl->assign("sv_ext_action_url_lang", _("Action URL"));
         $tpl->assign("sv_ext_action_url", CentreonUtils::escapeSecure($actionurl));
         $tpl->assign("sv_ext_icon_image_alt", getMyServiceExtendedInfoField($service_id, "esi_icon_image_alt"));
-        $tpl->assign("options", $optionsURL);
         $tpl->assign("index_data", $index_data);
-        $tpl->assign("options2", CentreonUtils::escapeSecure($optionsURL2));
-
-        /*
-         * Dynamics tools
-         */
-        $tools = array();
-        $DBRESULT = $pearDB->query("SELECT * FROM modules_informations");
-        while ($module = $DBRESULT->fetchrow()) {
-            if (
-                isset($module['svc_tools'])
-                && $module['svc_tools'] == 1
-                && file_exists('modules/' . $module['name'] . '/svc_tools.php')
-            ) {
-                include('modules/' . $module['name'] . '/svc_tools.php');
-            }
-        }
-        $DBRESULT->closeCursor();
-
-        foreach ($tools as $key => $tab) {
-            $tools[$key]['url'] = str_replace("@host_id@", $host_id, $tools[$key]['url']);
-            $tools[$key]['url'] = str_replace("@host_name@", $host_name, $tools[$key]['url']);
-            $tools[$key]['url'] = str_replace("@svc_description@", $svc_description, $tools[$key]['url']);
-            $tools[$key]['url'] = str_replace("@svc_id@", $service_id, $tools[$key]['url']);
-            $tools[$key]['url'] = str_replace("@current_state@", $service_status["current_state"], $tools[$key]['url']);
-            $tools[$key]['url'] = str_replace("@plugin_output@", $service_status["plugin_output"], $tools[$key]['url']);
-        }
-
-        if (count($tools) > 0) {
-            $tpl->assign("tools", CentreonUtils::escapeSecure($tools));
-        }
 
         /**
          * Build the service detail URI that will be used in the

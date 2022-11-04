@@ -3400,7 +3400,7 @@ paths:
           $ref: '#/components/responses/NotFoundHostOrService'
         '500':
           $ref: '#/components/responses/InternalServerError'
-  /monitoring/hosts/{host_id}/services/{service_id}/metrics/download:
+  /monitoring/hosts/{host_id}/services/{service_id}/metrics/performance/download:
     get:
       tags:
         - Metrics
@@ -3707,7 +3707,7 @@ paths:
             application/json:
               schema:
                 type: object
-                required: ["installed_version", "has_upgrade_available"]
+                required: ["is_installed", "has_upgrade_available"]
                 properties:
                   is_installed:
                     type: boolean
@@ -4649,8 +4649,6 @@ components:
       required:
         - is_active
         - is_forced
-        - trusted_client_addresses
-        - blacklist_client_addresses
         - base_url
         - authorization_endpoint
         - token_endpoint
@@ -4679,20 +4677,6 @@ components:
           type: boolean
           description: "Indicates whether the provider is forced or not"
           example: false
-        trusted_client_addresses:
-          type: array
-          description: "List of trusted client addresses"
-          items:
-            type: string
-            description: "IP address"
-            example: "127.0.0.1"
-        blacklist_client_addresses:
-          type: array
-          description: "List of blacklisted client addresses"
-          items:
-            type: string
-            description: "IP address"
-            example: "127.0.0.1"
         base_url:
           type: string
           description: "Base URL of the provider"
@@ -4783,68 +4767,210 @@ components:
           description: "Fullname bind attribute"
           example: "name"
           nullable: true
-        claim_name:
-          type: string
-          description: "Authorization claim"
-          example: "groups"
-          nullable: true
-    ReadAuthenticationOpenIdProvider:
-      $ref: '#/components/schemas/AuthenticationOpenIdProvider'
-      properties:
-        contact_group:
+        authentication_conditions:
           type: object
-          nullable: true
+          required:
+            - trusted_client_addresses
+            - blacklist_client_addresses
+            - is_enabled
+            - attribute_path
+            - endpoint
+            - authorized_values
           properties:
-            id:
-              type: integer
-              description: "Contact group ID"
-              example: 1
-            name:
+            trusted_client_addresses:
+              type: array
+              description: "List of trusted client addresses"
+              items:
+                type: string
+                description: "IP address"
+                example: "127.0.0.1"
+            blacklist_client_addresses:
+              type: array
+              description: "List of blacklisted client addresses"
+              items:
+                type: string
+                description: "IP address"
+                example: "127.0.0.1"
+            is_enabled:
+              type: boolean
+            attribute_path:
               type: string
-              description: "Contact group name"
-              example: "Default"
-        authorization_rules:
-          type: array
-          items:
-            type: object
-            properties:
-              claim_value:
+              example: info.items.prop1
+            endpoint:
+              type: object
+              properties:
+                type:
+                  type: string
+                  enum: [introspection_endpoint, user_information_endpoint, custom_endpoint]
+                custom_endpoint:
+                  type: string
+                  nullable: true
+            authorized_values:
+              type: array
+              items:
                 type: string
-                description: "Authorization claim value"
-                example: "scope"
-              access_group:
+        groups_mapping:
+          type: object
+          required:
+            - is_enabled
+            - attribute_path
+            - endpoint
+            - relations
+          properties:
+            is_enabled:
+              type: boolean
+            attribute_path:
+              type: string
+              nullable: false
+              example: info.items.groups
+            endpoint:
+              type: object
+              properties:
+                type:
+                  type: string
+                  enum: [introspection_endpoint, user_information_endpoint, custom_endpoint]
+                custom_endpoint:
+                  type: string
+                  nullable: true
+            relations:
+              type: array
+              items:
                 type: object
-                description: "Access group"
                 properties:
-                  id:
-                    type: integer
-                    description: "Access group ID"
-                    example: 1
-                  name:
+                  group_value:
                     type: string
-                    description: "Access group name"
-                    example: "Default"
+                    description: "Attribute group value"
+                    example: "group1"
+        roles_mapping:
+          type: object
+          required:
+            - is_enabled
+            - apply_only_first_role
+            - attribute_path
+            - endpoint
+            - relations
+          properties:
+            is_enabled:
+              type: boolean
+            apply_only_first_role:
+              type: boolean
+            attribute_path:
+              type: string
+              example: info.items.role
+            endpoint:
+              type: object
+              properties:
+                type:
+                  type: string
+                  enum: [introspection_endpoint, user_information_endpoint, custom_endpoint]
+                custom_endpoint:
+                  type: string
+                  nullable: true
+            relations:
+              type: array
+              items:
+                type: object
+                properties:
+                  claim_value:
+                    type: string
+                    description: "Authorization claim value"
+                    example: "scope"
+    ReadAuthenticationOpenIdProvider:
+      allOf:
+        - $ref: '#/components/schemas/AuthenticationOpenIdProvider'
+        - properties:
+            contact_group:
+              type: object
+              nullable: true
+              properties:
+                id:
+                  type: integer
+                  description: "Contact group ID"
+                  example: 1
+                name:
+                  type: string
+                  description: "Contact group name"
+                  example: "Default"
+            groups_mapping:
+              type: object
+              properties:
+                relations:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      group_value:
+                        type: string
+                        description: "Attribute group value"
+                        example: "group1"
+                      contact_group:
+                        type: object
+                        description: "Contact group"
+                        properties:
+                          id:
+                            type: integer
+                            description: "Contact group ID"
+                            example: 1
+                          name:
+                            type: string
+                            description: "Contact group name"
+                            example: "cg1"
+            roles_mapping:
+              type: object
+              properties:
+                relations:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      claim_value:
+                        type: string
+                        description: "Authorization claim value"
+                        example: "scope"
+                      access_group:
+                        type: object
+                        description: "Access group"
+                        properties:
+                          id:
+                            type: integer
+                            description: "Access group ID"
+                            example: 1
+                          name:
+                            type: string
+                            description: "Access group name"
+                            example: "Default"
     WriteAuthenticationOpenIdProvider:
-      $ref: '#/components/schemas/AuthenticationOpenIdProvider'
-      properties:
-        contact_group_id:
-          type: integer
-          description: "Contact group ID"
-          example: 1
-          nullable: true
-        authorization_rules:
-          type: array
-          items:
-            type: object
-            properties:
-              claim_value:
-                type: string
-                description: "Authorization claim value"
-                example: "scope"
-              access_group_id:
-                type: integer
-                description: "Access group ID"
-                example: 1
+      allOf:
+        - $ref: '#/components/schemas/AuthenticationOpenIdProvider'
+        - properties:
+            groups_mapping:
+              type: object
+              properties:
+                relations:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      group_value:
+                        type: string
+                        description: "Attribute group value"
+                        example: "group1"
+                      contact_group_id:
+                        type: integer
+                        description: "Contact group id"
+                        example: 1
+            roles_mapping:
+              type: object
+              properties:
+                relations:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      access_group_id:
+                        type: integer
+                        description: "Access group id"
+                        example: 1
     Comment.Resources:
       type: object
       required: [ resources ]
@@ -5569,6 +5695,11 @@ components:
           description: "Indicates if the acknowledgment will be maintained in case of non-OK status change."
           example: false
           default: true
+        force_active_checks:
+          type: boolean
+          description: "Indicates if after acknowledgement resource should be forced check"
+          example: false
+          default: true
     Disacknowledgement.Resource:
       type: object
       properties:
@@ -5584,9 +5715,7 @@ components:
         resources:
           type: array
           items:
-            allOf:
-              - $ref: '#/components/schemas/Monitoring.Resource.Disacknowledge.Host'
-              - $ref: '#/components/schemas/Monitoring.Resource.Disacknowledge.Service'
+            $ref: '#/components/schemas/Monitoring.Resource.Action'
     Acknowledgement.Disacknowledge.Bulk:
       type: object
       properties:
@@ -5595,9 +5724,7 @@ components:
         resources:
           type: array
           items:
-            allOf:
-              - $ref: '#/components/schemas/Monitoring.Resource.Disacknowledge.Host'
-              - $ref: '#/components/schemas/Monitoring.Resource.Disacknowledge.Service'
+            $ref: '#/components/schemas/Monitoring.Resource.Action'
     Acknowledgement.Host:
       type: object
       nullable: true
@@ -5869,9 +5996,7 @@ components:
         resources:
           type: array
           items:
-            allOf:
-              - $ref: '#/components/schemas/Monitoring.Resource.Disacknowledge.Host'
-              - $ref: '#/components/schemas/Monitoring.Resource.Disacknowledge.Service'
+            $ref: '#/components/schemas/Monitoring.Resource.Action'
     Check.Host:
       type: object
       properties:
@@ -6013,19 +6138,7 @@ components:
                 nullable: true
                 description: "Performance data result of the check sent"
                 example: "'used'=453849088B;;;0;1927262208"
-    Monitoring.Resource.Disacknowledge.Host:
-      type: object
-      properties:
-        type:
-          type: string
-          description: "Type of the resource"
-          example: "service|host"
-        id:
-          type: integer
-          format: int32
-          description: "ID of the resource"
-          example: 12
-    Monitoring.Resource.Disacknowledge.Service:
+    Monitoring.Resource.Action:
       type: object
       properties:
         type:
@@ -6038,6 +6151,7 @@ components:
           description: "ID of the resource"
           example: 12
         parent:
+          nullable: true
           type: object
           properties:
             id:
@@ -6993,6 +7107,10 @@ components:
           type: boolean
           example: true
           description: "Platform is a remote server"
+        address:
+          type: string
+          example: "10.0.0.1"
+          description: "The address of the platform"
         centralServerAddress:
           type: string
           example: "192.168.0.1"

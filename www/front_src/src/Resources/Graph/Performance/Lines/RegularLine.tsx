@@ -1,11 +1,11 @@
-import { memo } from 'react';
+import { memo, ReactNode } from 'react';
 
-import { Shape, Curve } from '@visx/visx';
-import { equals, isNil, prop } from 'ramda';
+import { Curve, Shape } from '@visx/visx';
 import { ScaleLinear, ScaleTime } from 'd3-scale';
+import { equals, isNil, prop } from 'ramda';
 
+import { Line, TimeValue } from '../models';
 import { getTime } from '../timeSeries';
-import { TimeValue } from '../models';
 
 import { getFillColor } from '.';
 
@@ -14,8 +14,11 @@ interface Props {
   filled: boolean;
   graphHeight: number;
   highlight?: boolean;
+  isEditAnomalyDetectionDataDialogOpen?: boolean;
   lineColor: string;
+  lines: Array<Line>;
   metric: string;
+  shapeCircleAnomalyDetection?: ReactNode;
   timeSeries: Array<TimeValue>;
   transparency: number;
   unit: string;
@@ -30,19 +33,30 @@ const RegularLine = ({
   metric,
   lineColor,
   unit,
+  lines,
   yScale,
   xScale,
   areaColor,
   transparency,
   graphHeight,
+  shapeCircleAnomalyDetection,
 }: Props): JSX.Element => {
+  const strokeWidth =
+    equals(metric, 'connection_lower_thresholds') ||
+    equals(metric, 'connection_upper_thresholds')
+      ? 0.1
+      : 0.8;
+
+  const isLegendClicked = lines?.length <= 1;
+  const isHighlighted = highlight || isLegendClicked ? 2 : strokeWidth;
+
   const props = {
     curve: Curve.curveLinear,
     data: timeSeries,
     defined: (value): boolean => !isNil(value[metric]),
     opacity: highlight === false ? 0.3 : 1,
     stroke: lineColor,
-    strokeWidth: highlight ? 2 : 1,
+    strokeWidth: isHighlighted,
     unit,
     x: (timeValue): number => xScale(getTime(timeValue)) as number,
     y: (timeValue): number => yScale(prop(metric, timeValue)) ?? null,
@@ -61,7 +75,12 @@ const RegularLine = ({
     );
   }
 
-  return <Shape.LinePath<TimeValue> {...props} />;
+  return (
+    <>
+      {shapeCircleAnomalyDetection}
+      <Shape.LinePath<TimeValue> {...props} />;
+    </>
+  );
 };
 
 export default memo(RegularLine, (prevProps, nextProps) => {

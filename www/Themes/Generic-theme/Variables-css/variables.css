@@ -12,7 +12,7 @@
     /*****************/
 
     /** Body color **/
-    --body-background: var(--color-gallery-2);
+    --body-background: var(--color-primary-body-background-light);
     --body-color:var(--color-martar);
     /*****************/
 
@@ -39,12 +39,12 @@
     --md-checkbox--disabled-border-color-before : var(--color-black-rgba-1);
     --md-checkbox--disabled-checked-background-color-before  : var(--color-black-rgba-26);
     --md-check-input-disabled-checked-before:  var(--color-success);
-    --md-checkbox-checked-label-before-background-color: var(--color-primary-dark);
+    --md-checkbox-checked-label-before-background-color: var(--color-primary-light);
     --md-checkbox-border-color-after: var(--color-white);
     /*********************/
 
     /** Radio button **/
-    --md-radio-checked-backgroud-color:  var(--color-primary-dark);
+    --md-radio-checked-backgroud-color:  var(--color-primary-light);
     --md-radio-kabel-color:  var(--color-astral-rgb);
     --md-radio-input-checked-label-before-border-color: var(--color-curious-blue);
     --md-radio-label-before-border-color : var(--color-black-rgba-54);
@@ -172,14 +172,14 @@
     /********************/
 
     /** Badge **/
-    --badge-color: var(--color-white);
-    --badge-a-color : var(--color-white);
+    --badge-color: var(--color-black);
+    --badge-a-color : var(--color-black);
     /***********/
 
     /** States **/
-    --default-badge-background-color: var(--color-primary-dark);
-    --host-down-danger-service-critical-background-color : var(--color-torch-red);
-    --host-unreachable-unknown-background-color: var(--color-aluminium);
+    --default-badge-background-color: var(--color-primary-light);
+    --host-down-danger-service-critical-background-color : var(--color-danger);
+    --host-unreachable-unknown-background-color: var(--color-unknown);
     --host-downtime-background-color : var(--color-mauve);
     --service-ok-host-up-success-background-color: var(--color-success);
     --service-warning-background-color: var(--color-warning);
@@ -193,25 +193,34 @@
     --badge-downtime-background-color : var(--color-mauve);
     --badge-undetermined :var(--color-iron);
     --status-success-color:var(--color-white);
+    --status-ok-color : var(--color-black) ;
     /***********/
 
     /** START : Buttons **/
     --btc-color: var(--color-white);
     --a-btc-color : var(--color-white);
-    --bt-default-background-color : var(--color-primary-dark);
-    --bt-success-background-color : var(--color-primary-dark);
-    --bt-danger-background-color: var(--color-primary-dark);
-    --bt-info-background-color : var(--color-primary-dark);
-    --bt-warning-background-color :var(--color-primary-dark);
-    --bt-action-color-background-color : var(--color-primary-dark);
+    --bt-default-background-color : var(--color-primary-light);
+    --bt-default-hover-background-color: var(--color-primary-hover);
+    --bt-default-hover-font-color: var(--color-white);
+    --btc-hover-color: var(--color-white);
+    --bt-success-background-color : var(--color-primary-light);
+    --bt-danger-background-color: var(--color-primary-light);
+    --bt-info-background-color : var(--color-primary-light);
+    --bt-info-hover-background-color: var(--color-primary-hover);
+    --bt-info-hover-font-color: var(--color-white);
+    --bt-warning-background-color :var(--color-primary-light);
+    --bt-action-color-background-color : var(--color-primary-light);
     --bt-action-color :var(--color-white);
-    --bt-action-border-color: var(--color-primary-dark);
-    --bt-action-hover-background-color: var(--color-primary-dark);
-    --bt-action-hover-border-color: var(--color-primary-dark);
+    --bt-action-border-color: var(--color-primary-light);
+    --bt-action-hover-background-color: var(--color-primary-hover);
+    --bt-action-hover-border-color: var(--color-primary-light);
+    --bt-danger-hover-background-color: var(--color-primary-hover);
     --bt-default-ui-state-hover-background-color : var(--color-oslo-gray);
     --bt-default-ui-state-hover-color : var(--color-white);
     --bt-success-ui-state-hover-background-color: var(--color-christi);
     --bt-success-ui-state-hover-color:var(--color-white);
+    --bt-success-hover-font-color: var(--color-white);
+    --bt-danger-hover-font-color: var(--color-white);
 
     --bt-danger-ui-state-hover-background-color: var(--color-shiraz);
     --bt-danger-ui-state-hover-color:var(--color-white);
@@ -237,6 +246,9 @@
     --list-table-small-border-color : var(--color-white-lilac);
     /*******************/
 
+    /** table font color **/
+    --table-font-color : var(--color-secondary);
+
     /** START : Indicators **/
     --resume-light : var(--color-athens-gray);
     --resume-light-table-th-border-right : var(--color-white-lilac);
@@ -245,7 +257,7 @@
     /************************/
 
     /** START : Menu **/
-    --main-nav-li-a-border-bottom: var(--color-primary-dark);
+    --main-nav-li-a-border-bottom: var(--color-primary-light);
     --a-background-color: transparent;
 
     /** Menu 1 **/
@@ -266,7 +278,6 @@
     --div-menu-left-background-color :  var(--color-white);
     /************/
     --list-table-anchors-font-color: var(--color-dove-gray);
-    --list-table-border-color: var(--color-periwinkle);
     --list-lvl-1-background-color: var(--color-botticeli);
     --list-lvl-2-background-color: var(--color-periwinkle-gray);
     --list-lvl-2-font-color: var(--color-black);
@@ -276,7 +287,9 @@
     --list-one-background-color: var(--color-twilight-blue);
     --list-one-font-color: none;
     --list-one-fix-background-color: var(--list-one-background-color);
-    --list-one-hover-background-color: var(--list-header-background);
+    --list-hover-background-color: var(--color-listing-hover);
+    --listing-border-botom-color : var(--color-divider);
+    --list-table-border-color: var(--color-divider);
     --list-one-hover-font-color: none;
     --list-two-background-color: var(--color-twilight-blue-2);
     --list-two-font-color: none;
@@ -290,13 +303,13 @@
     --list-up-background-color: var(--color-success);
     --list-up-hover-background-color: var(--color-gimblet);
     --list-down-background-color: var(--color-carnation-pink);
-    --list-down-hover-background-color: var(--list-one-hover-background-color);
+    --list-down-hover-background-color: none;
     --list-unreachable-background-color: var(--color-aluminium);
-    --list-unreachable-hover-background-color: var(--list-one-hover-background-color);
+    --list-unreachable-hover-background-color: none;
     --list-downtime-background-color: var(--color-blue-chalk);
-    --list-downtime-hover-background-color: var(--list-one-hover-background-color);
+    --list-downtime-hover-background-color: none;
     --list-ack-background-color: var(--color-dolly);
-    --list-ack-hover-background-color: var(--list-one-hover-background-color);
+    --list-ack-hover-background-color: none;
     --list-lvls-td-top-border-color: var(--color-silver-chalice);
     --list-lvls-td-left-border-color: var(--list-lvls-td-top-border-color);
     --list-lvls-td-bottom-border-color: var(--list-lvls-td-top-border-color);
@@ -305,17 +318,17 @@
     --tab-list-lvls-td-left-border-color: var(--list-lvls-td-top-border-color);
     --tab-list-lvls-td-bottom-border-color: var(--list-lvls-td-top-border-color);
     --tab-list-lvls-td-right-border-color: var(--list-lvls-td-top-border-color);
-    --lists-td-top-border-color: var(--color-periwinkle-gray-2);
+    --lists-td-top-border-color: var(--color-divider-dark);
     --lists-td-left-border-color: var(--lists-td-top-border-color);
     --lists-td-bottom-border-color: var(--lists-td-top-border-color);
     --lists-td-right-border-color: var(--lists-td-top-border-color);
     --tab-lists-td-top-border-color: var(--lists-td-top-border-color);
     --tab-lists-td-left-border-color: var(--lists-td-top-border-color);
-    --tab-lists-td-bottom-border-color: var(--lists-td-top-border-color);
     --tab-lists-td-right-border-color: var(--lists-td-top-border-color);
     --list-header-border-top-color: var(--body-background);
     --list-header-border-left-color: var(--list-header-border-top-color);
-    --list-header-font-color: var(--body-color);
+    --list-header-font-color: var(--color-primary-body-background-dark);
+    --list-header-border-bottom-color: var(--color-divider);
     --list-footer-border-color: var(--color-biloba-flower);
     --input-button-hover-font-color: #fff;
     --input-button-hover-background-color: var(--color-primary-dark);
@@ -332,13 +345,14 @@
     --header-tab-container-bottom-border-color: var(--color-iron);
     --main-nav-list-background-color: transparent;
     --main-nav-list-border-color: var(--main-nav-list-background-color);
-    --main-nav-list-a-anchor-font-color: var(--color-primary-dark);
+    --main-nav-list-a-anchor-font-color: var(--color-primary-light);
     --main-nav-list-b-anchor-font-color: var(--body-color);
     --menu3-anchor-hover-font-color: var(--color-porsche);
     --menu3-background-color: var(--color-white);
     --date-font-color: var(--color-ghost);
     --detail-chart-title-background-color:var(--color-periwinkle-gray);
     --header-text-font-color: var(--body-color);
+    --chart-legend-color: var(--color-black);
 
     /* ------ START : info box variables -----*/
     --info-box-border-color: var(--color-iron);
@@ -367,10 +381,10 @@
     --ui-background-color: none;
     --ui-state-active-border-color: var(--ui-background-color);
     --ui-anchor-state-default-font-color: var(--color-black-rgba-54);
-    --ui-anchor-state-active-visited-font-color: var(--color-primary-dark);
+    --ui-anchor-state-active-visited-font-color: var(--color-primary-light);
     --global-view-ui-active-tabs-border-color: none;
     --global-view-ui-active-tabs-border-bottom-color: var(--ui-anchor-state-active-visited-font-color);
-    --view-body-portlet-border-color: var(--color-iron);
+    --view-body-portlet-border-color: var(--color-divider);
     --view-body-ui-widget-header-font-color: var(--color-black);
     --view-body-ui-widget-header-background-color: var(--color-white-lilac);
     /* ------ END : Tabs variables -----*/
@@ -382,7 +396,7 @@
     --form-table-list-header-h4-font-color: var(--color-pasific-bleu);
     --form-table-list-lvl-1-background-color: var(--color-white);
     --form-table-list-lvl-1-col-name-background-color: var(--color-wild-sand);
-    --form-table-list-lvl-1-col-name-border-bottom-color: var(--color-white-lilac);
+    --form-table-list-lvl-1-col-name-border-bottom-color: var(--color-divider);
     --form-table-list-lvl-1-col-name-border-top-color: var(--form-table-list-lvl-1-col-name-border-bottom-color);
     /* ------ END : Forms variables -----*/
 
@@ -457,7 +471,7 @@
     /* ------ START : Log options variables -----*/
     --ajax-option-background-color: var(--color-alabaster);
     --ajax-option-font-color: var(--color-dove-gray);
-    --ajax-option-border-bottom-color: var(--color-white-lilac);
+    --ajax-option-border-bottom-color: var(--color-divider);
     --ajax-option-border-top-color: var(--ajax-option-border-bottom-color);
     --ajax-option-tr-first-child-background-color: var(--color-white);
     --ajax-option-tr-first-child-font-color: var(--color-grey-chateau);
@@ -478,7 +492,7 @@
     /* ------ END : Tactical overview variables -----*/
 
     /* ------ START : Line alternate variables -----*/
-    --row-disabled-background-color: var(--color-athens-gray-4);
+    --row-disabled-background-color: var(--color-alto-5);
     --list-table-small-arg-anchor-font-color: var(--color-dove-gray);
     --list-lvl-3-border-bottom-color: var(--color-white);
     --list-lvl-3-th-font-color: var(--color-aluminium);
@@ -524,8 +538,8 @@
     /* ------ END : Reporting 2015 variables -----*/
 
     /* ------ START : popin variables -----*/
-    --centreon-popin-background-color: var(--color-gallery-2);
-    --centreon-popin-border-color: var(--color-aluminium-2);
+    --centreon-popin-background-color: var(--body-background);
+    --centreon-popin-border-color: var(--body-background);
     --centreon-popin-overlay-background-color: var(--color-black);
     --popin-wrapper-font-color: var(--color-martar);
     --cbox-content-border-color: var(--color-aluminium-2);
@@ -770,7 +784,7 @@
     /* ------ END : JQuery UI variables -----*/
     /* ------ START : New Icons variables -----*/
     --help-tool-tip-icon-fill-color: var(--color-primary-dark);
-    --icons-fill-color: var(--color-primary-dark);
+    --icons-fill-color: var(--color-primary-light);
     --icons-disabled-fill-color: var(--color-teal-blue);
     --button-icons-fill-color: var(--color-white);
     /* ------ END : New Icons variables -----*/

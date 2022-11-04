@@ -6,7 +6,14 @@ import { TabProps } from '.';
 
 export type TabEndpoints = Omit<ResourceEndpoints, 'details'>;
 
-export type TabId = 0 | 1 | 2 | 3 | 4 | 5;
+export enum TabId {
+  detailsTabId = 0,
+  servicesTabId = 1,
+  timelineTabId = 2,
+  graphTabId = 3,
+  metricsTabId = 4,
+  notificationsTabId = 5,
+}
 
 export interface Tab {
   Component: LazyExoticComponent<(props: TabProps) => JSX.Element>;

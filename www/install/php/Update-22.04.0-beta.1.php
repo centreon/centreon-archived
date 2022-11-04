@@ -515,7 +515,7 @@ function migrateBrokerConfigOutputsToUnifiedSql(CentreonDB $pearDB): void
     if (empty($unifiedSqlType)) {
         throw new \Exception("Cannot find 'unified_sql' in cb_type table");
     }
-    $unifiedSqlTypeId = (int) $unifiedSqlType['cb_type_id'];
+    $unifiedSqlTypeId = (int) $unifiedSqlType;
 
     foreach ($configIds as $configId) {
         // Find next config group id
@@ -527,27 +527,35 @@ function migrateBrokerConfigOutputsToUnifiedSql(CentreonDB $pearDB): void
         if (empty($maxConfigGroupId)) {
             throw new \Exception("Cannot find max config group id in cfg_centreonbroker_info table");
         }
-        $nextConfigGroupId = (int) $maxConfigGroupId['max_config_group_id'] + 1;
-
+        $nextConfigGroupId = (int) $maxConfigGroupId + 1;
+        $blockIdsQueryBinds = [];
+        foreach ($blockIds as $key => $value) {
+            $blockIdsQueryBinds[':block_id_' . $key] = $value;
+        }
+        $blockIdBinds = implode(',', array_keys($blockIdsQueryBinds));
         // Find config group ids of outputs to replace
-        $dbResult = $pearDB->query(
-            "SELECT config_group_id FROM cfg_centreonbroker_info
-            WHERE config_id = $configId AND config_key = 'blockId'
-            AND config_value IN ('" . implode('\', \'', $blockIds) . "')"
-        );
-        $configGroupIds = $dbResult->fetchAll(\PDO::FETCH_COLUMN, 0);
+        $grpIdStatement = $pearDB->prepare("SELECT config_group_id FROM cfg_centreonbroker_info
+            WHERE config_id = :configId AND config_key = 'blockId'
+            AND config_value IN ($blockIdBinds)");
+        $grpIdStatement->bindValue(':configId', (int) $configId, PDO::PARAM_INT);
+        foreach ($blockIdsQueryBinds as $key => $value) {
+            $grpIdStatement->bindValue($key, (int) $value, PDO::PARAM_INT);
+        }
+        $grpIdStatement->execute();
+        $configGroupIds = $grpIdStatement->fetchAll(\PDO::FETCH_COLUMN, 0);
         if (empty($configGroupIds)) {
             throw new \Exception("Cannot find config group ids in cfg_centreonbroker_info table");
         }
 
         // Build unified sql output config from outputs to replace
         $unifiedSqlOutput = [];
+        $statement = $pearDB->prepare("SELECT * FROM cfg_centreonbroker_info
+                WHERE config_id = :configId AND config_group = 'output' AND config_group_id = :configGroupId");
         foreach ($configGroupIds as $configGroupId) {
-            $dbResult = $pearDB->query(
-                "SELECT * FROM cfg_centreonbroker_info
-                WHERE config_id = $configId AND config_group = 'output' AND config_group_id = $configGroupId"
-            );
-            while ($row = $dbResult->fetch()) {
+            $statement->bindValue(':configId', (int) $configId, PDO::PARAM_INT);
+            $statement->bindValue(':configGroupId', (int) $configGroupId, PDO::PARAM_INT);
+            $statement->execute();
+            while ($row = $statement->fetch()) {
                 $unifiedSqlOutput[$row['config_key']] = array_merge($unifiedSqlOutput[$row['config_key']] ?? [], $row);
                 $unifiedSqlOutput[$row['config_key']]['config_group_id'] = $nextConfigGroupId;
             }

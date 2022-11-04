@@ -25,26 +25,26 @@ namespace Core\Infrastructure\RealTime\Hypermedia;
 interface HypermediaProviderInterface
 {
     /**
-     * @param mixed $data
-     * @return bool
+     * @param string $resourceType
+     * @return boolean
      */
-    public function isValidFor(mixed $data): bool;
+    public function isValidFor(string $resourceType): bool;
 
     /**
      * Create endpoints for the Resource provided
      *
-     * @param mixed $response
+     * @param array<string, mixed> $parameters
      * @return array<string, string|null>
      */
-    public function createEndpoints(mixed $response): array;
+    public function createEndpoints(array $parameters): array;
 
     /**
      * Create internal redirection uris for the Resource provided
      *
-     * @param mixed $response
+     * @param array<string, mixed> $parameters
      * @return array<string, string|null>
      */
-    public function createInternalUris(mixed $response): array;
+    public function createInternalUris(array $parameters): array;
 
     /**
      * Create internal redirection uris for the Resource group(s)
@@ -61,4 +61,10 @@ interface HypermediaProviderInterface
      * @return array<int, array<string, string|int|null>>
      */
     public function convertCategoriesForPresenter(array $categories): array;
+
+    /**
+     * @param array<string, int> $parameters
+     * @return string
+     */
+    public function generateResourceDetailsUri(array $parameters): string;
 }

@@ -24,8 +24,8 @@ declare(strict_types=1);
 namespace Core\Infrastructure\RealTime\Hypermedia;
 
 use Centreon\Domain\Contact\Contact;
-use Centreon\Domain\Contact\Interfaces\ContactInterface;
-use Core\Application\RealTime\UseCase\FindHost\FindHostResponse;
+use Core\Domain\RealTime\Model\ResourceTypes\HostResourceType;
+use Core\Infrastructure\Common\Api\HttpUrlTrait;
 
 class HostHypermediaProvider extends AbstractHypermediaProvider implements HypermediaProviderInterface
 {
@@ -34,62 +34,57 @@ class HostHypermediaProvider extends AbstractHypermediaProvider implements Hyper
                  URI_REPORTING = '/main.php?p=307&host={hostId}',
                  URI_HOSTGROUP_CONFIGURATION = '/main.php?p=60102&o=c&hg_id={hostgroupId}',
                  URI_HOST_CATEGORY_CONFIGURATION = '/main.php?p=60104&o=c&hc_id={hostCategoryId}',
+                 ENDPOINT_HOST_ACKNOWLEDGEMENT = 'centreon_application_acknowledgement_addhostacknowledgement',
+                 ENDPOINT_DETAILS = 'centreon_application_monitoring_resource_details_host',
+                 ENDPOINT_SERVICE_DOWNTIME = 'monitoring.downtime.addHostDowntime',
+                 ENDPOINT_HOST_NOTIFICATION_POLICY = 'configuration.host.notification-policy',
                  ENDPOINT_HOST_TIMELINE = 'centreon_application_monitoring_gettimelinebyhost',
-                 ENDPOINT_HOST_NOTIFICATION_POLICY = 'configuration.host.notification-policy';
+                 ENDPOINT_HOST_TIMELINE_DOWNLOAD = 'centreon_application_monitoring_download_timeline_by_host';
 
     /**
-     * @param ContactInterface $contact
-     * @param UriGenerator $uriGenerator
+     * @inheritDoc
      */
-    public function __construct(
-        private ContactInterface $contact,
-        private UriGenerator $uriGenerator
-    ) {
+    public function isValidFor(string $resourceType): bool
+    {
+        return $resourceType === HostResourceType::TYPE_NAME;
+    }
+
+    /**
+     * @param array<string, int> $parameters
+     * @return string
+     */
+    private function generateAcknowledgementEndpoint(array $parameters): string
+    {
+        $acknowledgementFilter = ['limit' => 1];
+
+        return $this->generateEndpoint(
+            self::ENDPOINT_HOST_ACKNOWLEDGEMENT,
+            array_merge($parameters, $acknowledgementFilter)
+        );
     }
 
     /**
      * @inheritDoc
      */
-    public function isValidFor(mixed $data): bool
+    public function createEndpoints(array $parameters): array
     {
-        return ($data instanceof FindHostResponse);
-    }
+        $urlParams = ['hostId' => $parameters['hostId']];
 
-    /**
-     * @inheritDoc
-     */
-    public function createEndpoints(mixed $response): array
-    {
         return [
-            'timeline' => $this->uriGenerator->generateEndpoint(
-                self::ENDPOINT_HOST_TIMELINE,
-                ['hostId' => $response->id]
-            ),
-            'notification_policy' => $this->uriGenerator->generateEndpoint(
+            'timeline' => $this->generateEndpoint(self::ENDPOINT_HOST_TIMELINE, $urlParams),
+            'timeline_download' => $this->generateEndpoint(self::ENDPOINT_HOST_TIMELINE_DOWNLOAD, $urlParams),
+            'notification_policy' => $this->generateEndpoint(
                 self::ENDPOINT_HOST_NOTIFICATION_POLICY,
-                ['hostId' => $response->id]
+                $urlParams
             ),
+            'details' => $this->generateEndpoint(self::ENDPOINT_DETAILS, $urlParams),
+            'downtime' => $this->generateDowntimeEndpoint($urlParams),
+            'acknowledgement' => $this->generateAcknowledgementEndpoint($urlParams)
         ];
     }
 
     /**
      * @inheritDoc
-     */
-    public function createInternalUris(mixed $response): array
-    {
-        $parameters = ['hostId' => $response->id];
-        return [
-            'configuration' => $this->createForConfiguration($parameters),
-            'logs' => $this->createForEventLog($parameters),
-            'reporting' => $this->createForReporting($parameters),
-        ];
-    }
-
-    /**
-     * Create configuration redirection uri
-     *
-     * @param array<string, mixed> $parameters
-     * @return string|null
      */
     public function createForConfiguration(array $parameters): ?string
     {
@@ -102,17 +97,11 @@ class HostHypermediaProvider extends AbstractHypermediaProvider implements Hyper
             return null;
         }
 
-        return $this->uriGenerator->generateUri(
-            self::URI_CONFIGURATION,
-            ['{hostId}' => $parameters['hostId']]
-        );
+        return $this->generateUri(self::URI_CONFIGURATION, ['{hostId}' => $parameters['hostId']]);
     }
 
     /**
-     * Create reporting redirection uri
-     *
-     * @param array<string, int> $parameters
-     * @return string|null
+     * @inheritDoc
      */
     public function createForReporting(array $parameters): ?string
     {
@@ -120,28 +109,17 @@ class HostHypermediaProvider extends AbstractHypermediaProvider implements Hyper
             return null;
         }
 
-        return $this->uriGenerator->generateUri(
-            self::URI_REPORTING,
-            ['{hostId}' => $parameters['hostId']]
-        );
+        return $this->generateUri(self::URI_REPORTING, ['{hostId}' => $parameters['hostId']]);
     }
 
     /**
-     * Create event logs redirection uri
-     *
-     * @param array<string, int> $parameters
-     * @return string|null
+     * @inheritDoc
      */
     public function createForEventLog(array $parameters): ?string
     {
-        if (! $this->canContactAccessPages($this->contact, [Contact::ROLE_MONITORING_EVENT_LOGS])) {
-            return null;
-        }
+        $urlParams = ['{hostId}' => $parameters['hostId']];
 
-        return $this->uriGenerator->generateUri(
-            self::URI_EVENT_LOGS,
-            ['{hostId}' => $parameters['hostId']]
-        );
+        return $this->createUrlForEventLog($urlParams);
     }
 
     /**
@@ -161,7 +139,7 @@ class HostHypermediaProvider extends AbstractHypermediaProvider implements Hyper
             return null;
         }
 
-        return $this->uriGenerator->generateUri(
+        return $this->generateUri(
             self::URI_HOSTGROUP_CONFIGURATION,
             ['{hostgroupId}' => $parameters['hostgroupId']]
         );
@@ -184,7 +162,7 @@ class HostHypermediaProvider extends AbstractHypermediaProvider implements Hyper
             return null;
         }
 
-        return $this->uriGenerator->generateUri(
+        return $this->generateUri(
             self::URI_HOST_CATEGORY_CONFIGURATION,
             ['{hostCategoryId}' => $parameters['categoryId']]
         );

@@ -214,7 +214,6 @@ export const labelCalculationType = 'Calculation type';
 export const labelSelectAtLeastOneColumn =
   'At least one column must be selected';
 export const labelMaxDuration1Year = 'The duration must be less than a year';
-export const labelAsDisplayed = 'As displayed';
 export const labelMediumSize = 'Medium size';
 export const labelSmallSize = 'Small size';
 export const labelSearchOptions = 'Filter options';
@@ -253,7 +252,24 @@ export const labelParentAlias = 'Parent alias';
 export const labelCategories = 'Categories';
 export const labelHostCategory = 'Host category';
 export const labelServiceCategory = 'Service category';
+export const labelExportToCSV = 'Export to CSV';
 export const labelServiceSeverity = 'Service severity';
 export const labelHostSeverity = 'Host severity';
 export const labelHostSeverityLevel = 'Host severity level';
 export const labelServiceSeverityLevel = 'Service severity level';
+export const labelCSV = 'CSV';
+export const labelExport = 'Export';
+export const labelAsDisplayed = 'As displayed';
+export const labelAsMediumSize = 'Medium size';
+export const labelAsSmallSize = 'Small size';
+export const labelEditAnomalyDetectionData = 'Edit anomaly detection data';
+export const labelAnomalyDetection = 'Anomaly detection';
+export const labelPerformanceGraphAD = 'Edit anomaly detection data';
+export const labelEditAnomalyDetectionConfirmation =
+  'Are you sure you want to change the size of the envelope? The new envelope size will be applied immediately.';
+export const labelMenageEnvelope = 'Manage envelope size';
+export const labelMenageEnvelopeSubTitle =
+  'Changes to the envelope size will be applied immediately';
+export const labelUseDefaultValue = 'use default value';
+export const labelPointsOutsideOfEnvelopeCount = 'points out of envelope';
+export const labelClose = 'Close';

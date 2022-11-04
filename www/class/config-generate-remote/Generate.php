@@ -20,8 +20,8 @@
 
 namespace ConfigGenerateRemote;
 
-use \PDO;
-use \Exception;
+use PDO;
+use Exception;
 
 // file centreon.config.php may not exist in test environment
 $configFile = realpath(__DIR__ . "/../../../config/centreon.config.php");

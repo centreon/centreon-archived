@@ -7,12 +7,8 @@ import {
   submitResultsViaClapi,
   versionApi,
   logout,
+  insertFixture,
 } from '../../commons';
-import {
-  initializeResourceData,
-  removeResourceData,
-  setUserTokenApiV1,
-} from '../../support/centreonData';
 
 interface Criteria {
   name: string;
@@ -33,11 +29,33 @@ const resourceMonitoringApi = /.+api\/beta\/monitoring\/resources.?page.+/;
 
 const apiFilterResources = `${apiBase}/${versionApi}/users/filters/events-view`;
 
+const initializeResourceData = (): Cypress.Chainable => {
+  const files = [
+    'resources/clapi/host1/01-add.json',
+    'resources/clapi/service1/01-add.json',
+    'resources/clapi/service1/02-set-max-check.json',
+    'resources/clapi/service1/03-disable-active-check.json',
+    'resources/clapi/service1/04-enable-passive-check.json',
+    'resources/clapi/service2/01-add.json',
+    'resources/clapi/service2/02-set-max-check.json',
+    'resources/clapi/service2/03-disable-active-check.json',
+    'resources/clapi/service2/04-enable-passive-check.json',
+    'resources/clapi/service3/01-add.json',
+    'resources/clapi/service3/02-set-max-check.json',
+    'resources/clapi/service3/03-disable-active-check.json',
+    'resources/clapi/service3/04-enable-passive-check.json',
+  ];
+
+  return cy.wrap(Promise.all(files.map(insertFixture)));
+};
+
 const insertResourceFixtures = (): Cypress.Chainable => {
+  const dateBeforeLogin = new Date();
+
   return loginAsAdminViaApiV2()
     .then(initializeResourceData)
     .then(applyConfigurationViaClapi)
-    .then(checkThatConfigurationIsExported)
+    .then(() => checkThatConfigurationIsExported({ dateBeforeLogin }))
     .then(submitResultsViaClapi)
     .then(checkThatFixtureServicesExistInDatabase)
     .then(() => cy.visit(`${Cypress.config().baseUrl}`))
@@ -74,15 +92,16 @@ const deleteUserFilter = (): Cypress.Chainable => {
 };
 
 const tearDownResource = (): Cypress.Chainable => {
-  return setUserTokenApiV1()
-    .then(removeResourceData)
+  return cy
+    .setUserTokenApiV1()
+    .then(() => cy.removeResourceData())
     .then(applyConfigurationViaClapi)
     .then(logout);
 };
 
 const actionBackgroundColors = {
-  acknowledge: 'rgb(247, 244, 229)',
-  inDowntime: 'rgb(249, 231, 255)',
+  acknowledge: 'rgb(245, 241, 233)',
+  inDowntime: 'rgb(240, 233, 248)',
 };
 const actions = {
   acknowledge: 'Acknowledge',

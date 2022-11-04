@@ -4,13 +4,10 @@ import clsx from 'clsx';
 import { useTranslation, withTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { useUpdateAtom } from 'jotai/utils';
-import { gt, isNil, not, __ } from 'ramda';
+import { equals, gt, isNil, not, __ } from 'ramda';
 
-import { grey } from '@mui/material/colors';
-import Divider from '@mui/material/Divider';
 import {
-  Typography,
-  Paper,
+  Box,
   Badge,
   Tooltip,
   List,
@@ -18,15 +15,14 @@ import {
   ListItemText,
   Popper,
   ListItemButton,
-  ListItemIcon as MUIListItemIcon,
   Fade,
 } from '@mui/material';
-import UserIcon from '@mui/icons-material/AccountCircle';
+import UserIcon from '@mui/icons-material/Person';
 import FileCopyIcon from '@mui/icons-material/FileCopy';
 import CheckIcon from '@mui/icons-material/Check';
 import LogoutIcon from '@mui/icons-material/Logout';
 import SettingsIcon from '@mui/icons-material/Settings';
-import { makeStyles, styled } from '@mui/styles';
+import { makeStyles } from '@mui/styles';
 
 import {
   MenuSkeleton,
@@ -36,6 +32,7 @@ import {
   useSnackbar,
   useLocaleDateTimeFormat,
 } from '@centreon/ui';
+import { ThemeMode } from '@centreon/ui-context';
 
 import SwitchMode from '../SwitchThemeMode/index';
 import Clock from '../Clock';
@@ -75,33 +72,25 @@ interface UserData {
   username: string | null;
 }
 
-const ListItemIcon = styled(MUIListItemIcon)(({ theme }) => ({
-  '& .MuiSvgIcon-root': {
-    color: theme.palette.common.white,
-  },
-}));
-
 const useStyles = makeStyles((theme) => ({
-  button: {
-    '&:hover': {
-      '&:after': {
-        backgroundColor: theme.palette.common.white,
-        content: '""',
-        height: '100%',
-        left: 0,
-        opacity: 0.08,
-        position: 'absolute',
-        right: 0,
-        top: 0,
-      },
+  badge: {
+    alignItems: 'center',
+    borderRadius: theme.spacing(1.25),
+    display: 'flex',
+    fontSize: theme.typography.body1.fontSize,
+    height: theme.spacing(2.5),
+    justifyContent: 'spaceBetween',
+    minWidth: theme.spacing(2.5),
+  },
+  clock: {
+    display: 'none',
+    [theme.breakpoints.up(648)]: {
+      display: 'block',
     },
   },
   containerList: {
-    padding: theme.spacing(0.5, 0, 0.5, 0),
-  },
-  divider: {
-    borderColor: grey[600],
-    margin: theme.spacing(0, 1.25, 0, 1.25),
+    color: theme.palette.text.primary,
+    padding: 0,
   },
   fullname: {
     overflow: 'hidden',
@@ -116,34 +105,54 @@ const useStyles = makeStyles((theme) => ({
     width: theme.spacing(0),
   },
   icon: {
-    minWidth: theme.spacing(3.75),
+    marginRight: theme.spacing(1),
   },
-  loaderUserMenu: {
-    marginRight: theme.spacing(22 / 8),
+  icons: {
+    borderLeft: `1px solid ${theme.palette.common.white}`,
+    paddingLeft: theme.spacing(3),
+  },
+  listItem: {
+    '&:first-child': {
+      borderBottom: `1px solid ${theme.palette.divider}`,
+    },
+    '&:hover': {
+      background: equals(theme.palette.mode, ThemeMode.dark)
+        ? theme.palette.primary.main
+        : theme.palette.primary.light,
+      color: equals(theme.palette.mode, ThemeMode.dark)
+        ? theme.palette.common.white
+        : theme.palette.primary.main,
+    },
+    '&:last-child': {
+      borderTop: `1px solid ${theme.palette.divider}`,
+    },
+    padding: theme.spacing(1),
+  },
+  listItemButton: {
+    '&:hover': {
+      background: 'none',
+    },
+    padding: 0,
   },
   menu: {
-    backgroundColor: theme.palette.common.black,
+    backgroundColor: theme.palette.background.default,
+    border: 'none',
     borderRadius: 0,
-    color: theme.palette.common.white,
+    boxShadow: theme.shadows[3],
+    fontSize: theme.typography.body2.fontSize,
     minWidth: 190,
-  },
-  menuItem: {
-    padding: theme.spacing(0, 2, 0.25, 2),
-  },
-  nameContainer: {
-    padding: theme.spacing(0, 2, 0.25, 2.25),
   },
   passwordExpiration: {
     color: theme.palette.warning.main,
   },
   popper: {
-    overflow: 'hidden',
     zIndex: theme.zIndex.tooltip,
   },
   switchItem: {
     padding: theme.spacing(0, 2, 0.25, 11 / 8),
   },
   text: {
+    margin: 0,
     overflow: 'hidden',
     textOverflow: 'ellipsis',
     whiteSpace: 'nowrap',
@@ -151,20 +160,13 @@ const useStyles = makeStyles((theme) => ({
   userIcon: {
     color: theme.palette.common.white,
     cursor: 'pointer',
-    marginLeft: theme.spacing(1),
+    fontSize: theme.spacing(4),
   },
-  wrapRightUser: {
+  wrapper: {
     alignItems: 'center',
-    background: theme.palette.common.black,
     display: 'flex',
-    flexWrap: 'wrap',
-    marginLeft: theme.spacing(0.5),
-    padding: theme.spacing(1, 2.75, 1, 1.5),
-    position: 'relative',
-  },
-  wrapRightUserItems: {
-    display: 'flex',
-    flex: '1 0 76%',
+    gap: theme.spacing(3),
+    height: '100%',
     justifyContent: 'flex-end',
   },
 }));
@@ -319,7 +321,7 @@ const UserMenu = ({ headerRef }: Props): JSX.Element => {
   }, []);
 
   if (!data) {
-    return <MenuSkeleton className={classes.loaderUserMenu} width={14} />;
+    return <MenuSkeleton width={24} />;
   }
 
   const allowEditProfile = allowedPages?.includes(editProfileTopologyPage);
@@ -341,142 +343,150 @@ const UserMenu = ({ headerRef }: Props): JSX.Element => {
   };
 
   return (
-    <div className={classes.wrapRightUser}>
-      <div
-        className={classes.wrapRightUserItems}
-        ref={profile as RefObject<HTMLDivElement>}
-      >
+    <div className={classes.wrapper} ref={profile as RefObject<HTMLDivElement>}>
+      <div className={classes.clock}>
         <Clock />
-        <div>
-          <Tooltip
-            title={
-              passwordIsNotYetAboutToExpire
-                ? ''
-                : `${t(
-                    labelPasswordWillExpireIn,
-                  )}: ${formattedPasswordRemainingTime}`
-            }
+      </div>
+      <div className={classes.icons}>
+        <Tooltip
+          placement="bottom-end"
+          title={
+            passwordIsNotYetAboutToExpire
+              ? ''
+              : `${t(
+                  labelPasswordWillExpireIn,
+                )}: ${formattedPasswordRemainingTime}`
+          }
+        >
+          <Badge
+            color="warning"
+            invisible={passwordIsNotYetAboutToExpire}
+            variant="dot"
           >
-            <Badge
-              color="warning"
-              invisible={passwordIsNotYetAboutToExpire}
-              variant="dot"
-            >
-              <UserIcon
-                aria-label={t(labelProfile)}
-                className={classes.userIcon}
-                data-cy="userIcon"
-                fontSize="large"
-                ref={userIconRef}
-                onClick={toggle}
-              />
-            </Badge>
-          </Tooltip>
-          <Popper
-            transition
-            anchorEl={anchorEl}
-            className={classes.popper}
-            data-cy="popper"
-            modifiers={[
-              {
-                name: 'offset',
-                options: {
-                  offset: [22, anchorHeight],
-                },
+            <UserIcon
+              aria-label={t(labelProfile)}
+              className={classes.userIcon}
+              data-cy="userIcon"
+              fontSize="large"
+              ref={userIconRef}
+              onClick={toggle}
+            />
+          </Badge>
+        </Tooltip>
+        <Popper
+          transition
+          anchorEl={anchorEl}
+          className={classes.popper}
+          data-cy="popper"
+          modifiers={[
+            {
+              name: 'offset',
+              options: {
+                offset: [0, anchorHeight],
               },
-            ]}
-            open={not(isNil(anchorEl))}
-          >
-            {({ TransitionProps }): JSX.Element => (
-              <Fade {...TransitionProps} timeout={350}>
-                <Paper
-                  className={classes.menu}
-                  ref={userMenu as RefObject<HTMLDivElement>}
-                  sx={{
-                    display: isNil(anchorEl) ? 'none' : 'block',
-                  }}
-                >
-                  <List dense className={classes.containerList}>
-                    <ListItem className={classes.nameContainer}>
+            },
+          ]}
+          open={not(isNil(anchorEl))}
+          placement="bottom-end"
+        >
+          {({ TransitionProps }): JSX.Element => (
+            <Fade {...TransitionProps} timeout={350}>
+              <Box
+                className={classes.menu}
+                ref={userMenu as RefObject<HTMLDivElement>}
+                sx={{
+                  display: isNil(anchorEl) ? 'none' : 'block',
+                }}
+              >
+                <List dense className={classes.containerList}>
+                  <ListItem className={classes.listItem}>
+                    <ListItemText
+                      primaryTypographyProps={primaryTypographyProps}
+                    >
+                      {data.username}
+                    </ListItemText>
+                  </ListItem>
+
+                  {not(passwordIsNotYetAboutToExpire) && (
+                    <ListItem
+                      className={`${classes.listItem} ${classes.passwordExpiration}`}
+                    >
+                      {`${t(labelPasswordWillExpireIn)}: `}
+                      {formattedPasswordRemainingTime}
+                    </ListItem>
+                  )}
+                  {allowEditProfile && (
+                    <ListItem className={classes.listItem}>
+                      <ListItemButton
+                        className={classes.listItemButton}
+                        onClick={navigateToUserSettingsAndCloseUserMenu}
+                      >
+                        <SettingsIcon
+                          className={classes.icon}
+                          fontSize="small"
+                        />
+                        <ListItemText
+                          primaryTypographyProps={primaryTypographyProps}
+                        >
+                          {t(labelEditProfile)}
+                        </ListItemText>
+                      </ListItemButton>
+                    </ListItem>
+                  )}
+                  {data.autologinkey && (
+                    <ListItem className={classes.listItem}>
+                      <ListItemButton
+                        className={classes.listItemButton}
+                        onClick={onCopy}
+                      >
+                        {copied ? (
+                          <CheckIcon
+                            className={classes.icon}
+                            fontSize="small"
+                          />
+                        ) : (
+                          <FileCopyIcon
+                            className={classes.icon}
+                            fontSize="small"
+                          />
+                        )}
+                        <ListItemText
+                          primaryTypographyProps={primaryTypographyProps}
+                        >
+                          {t(labelCopyAutologinLink)}
+                        </ListItemText>
+                      </ListItemButton>
+                      <textarea
+                        readOnly
+                        className={clsx(classes.hiddenInput)}
+                        id="autologin-input"
+                        ref={autologinNode as RefObject<HTMLTextAreaElement>}
+                        value={autolink}
+                      />
+                    </ListItem>
+                  )}
+                  <ListItem className={classes.listItem}>
+                    <SwitchMode />
+                  </ListItem>
+
+                  <ListItem className={classes.listItem}>
+                    <ListItemButton
+                      className={classes.listItemButton}
+                      onClick={logoutFromSession}
+                    >
+                      <LogoutIcon className={classes.icon} fontSize="small" />
                       <ListItemText
                         primaryTypographyProps={primaryTypographyProps}
                       >
-                        {data.username}
+                        {t(labelLogout)}
                       </ListItemText>
-                    </ListItem>
-                    <Divider className={classes.divider} />
-
-                    {not(passwordIsNotYetAboutToExpire) && (
-                      <ListItem className={classes.menuItem}>
-                        <div className={classes.passwordExpiration}>
-                          <Typography variant="body2">
-                            {t(labelPasswordWillExpireIn)}:
-                          </Typography>
-                          <Typography variant="body2">
-                            {formattedPasswordRemainingTime}
-                          </Typography>
-                        </div>
-                      </ListItem>
-                    )}
-                    {allowEditProfile && (
-                      <ListItem disableGutters disablePadding>
-                        <ListItemButton
-                          className={classes.button}
-                          onClick={navigateToUserSettingsAndCloseUserMenu}
-                        >
-                          <ListItemIcon className={classes.icon}>
-                            <SettingsIcon fontSize="small" />
-                          </ListItemIcon>
-                          <ListItemText>{t(labelEditProfile)}</ListItemText>
-                        </ListItemButton>
-                      </ListItem>
-                    )}
-                    {data.autologinkey && (
-                      <ListItem disableGutters disablePadding>
-                        <ListItemButton onClick={onCopy}>
-                          <ListItemIcon className={classes.icon}>
-                            {copied ? (
-                              <CheckIcon fontSize="small" />
-                            ) : (
-                              <FileCopyIcon fontSize="small" />
-                            )}
-                          </ListItemIcon>
-                          <ListItemText>
-                            {t(labelCopyAutologinLink)}
-                          </ListItemText>
-                        </ListItemButton>
-                        <textarea
-                          readOnly
-                          className={clsx(classes.hiddenInput)}
-                          id="autologin-input"
-                          ref={autologinNode as RefObject<HTMLTextAreaElement>}
-                          value={autolink}
-                        />
-                      </ListItem>
-                    )}
-                    <div className={classes.switchItem}>
-                      <SwitchMode />
-                    </div>
-
-                    <Divider className={classes.divider} />
-
-                    <ListItem disableGutters disablePadding>
-                      <ListItemButton
-                        className={classes.button}
-                        onClick={logoutFromSession}
-                      >
-                        <ListItemIcon className={classes.icon}>
-                          <LogoutIcon fontSize="small" />
-                        </ListItemIcon>
-                        <ListItemText>{t(labelLogout)}</ListItemText>
-                      </ListItemButton>
-                    </ListItem>
-                  </List>
-                </Paper>
-              </Fade>
-            )}
-          </Popper>
-        </div>
+                    </ListItemButton>
+                  </ListItem>
+                </List>
+              </Box>
+            </Fade>
+          )}
+        </Popper>
       </div>
     </div>
   );

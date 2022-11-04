@@ -47,6 +47,10 @@ class UpdateEventSubscriber implements EventSubscriberInterface
      */
     public static function getSubscribedEvents(): array
     {
+        if (! file_exists(_CENTREON_ETC_ . DIRECTORY_SEPARATOR . 'centreon.conf.php')) {
+            return [];
+        }
+
         return [
             KernelEvents::REQUEST => [
                 ['validateCentreonWebVersionOrFail', 35],
@@ -55,7 +59,7 @@ class UpdateEventSubscriber implements EventSubscriberInterface
     }
 
     /**
-     * validation centreon web installed version
+     * validate centreon web installed version when update endpoint is called
      *
      * @param RequestEvent $event
      * @throws \Exception

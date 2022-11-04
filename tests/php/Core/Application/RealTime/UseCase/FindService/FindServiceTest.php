@@ -41,7 +41,7 @@ use Core\Infrastructure\RealTime\Api\FindService\FindServicePresenter;
 use Core\Application\RealTime\Repository\ReadServiceRepositoryInterface;
 use Core\Tag\RealTime\Application\Repository\ReadTagRepositoryInterface;
 use Core\Application\RealTime\Repository\ReadDowntimeRepositoryInterface;
-use Core\Security\Application\Repository\ReadAccessGroupRepositoryInterface;
+use Core\Security\AccessGroup\Application\Repository\ReadAccessGroupRepositoryInterface;
 use Core\Application\RealTime\Repository\ReadServicegroupRepositoryInterface;
 use Core\Application\RealTime\Repository\ReadAcknowledgementRepositoryInterface;
 use Tests\Core\Application\RealTime\UseCase\FindService\FindServicePresenterStub;
@@ -67,8 +67,14 @@ beforeEach(function () {
 
     $this->contact = $this->createMock(ContactInterface::class);
 
-    $this->host = HostTest::createHostModel();
-    $this->service = ServiceTest::createServiceModel();
+    $this->host = (HostTest::createHostModel())
+        ->setIsInDowntime(true)
+        ->setIsAcknowledged(true);
+
+    $this->service = (ServiceTest::createServiceModel())
+        ->setIsInDowntime(true)
+        ->setIsAcknowledged(true);
+
     $this->servicegroup = new Servicegroup(1, 'ALL');
     $this->category = new Tag(1, 'service-category-name', Tag::SERVICE_CATEGORY_TYPE_ID);
     $icon = (new Icon())->setId(1)->setName('centreon')->setUrl('ppm/centreon.png');
@@ -290,7 +296,7 @@ it('should find service as admin', function () {
     $findService(1, 10, $presenter);
 
     expect($presenter->response->name)->toBe($this->service->getName());
-    expect($presenter->response->id)->toBe($this->service->getId());
+    expect($presenter->response->serviceId)->toBe($this->service->getId());
     expect($presenter->response->host['monitoring_server_name'])
         ->toBe($this->host->getMonitoringServerName());
     expect($presenter->response->isFlapping)->toBe($this->service->isFlapping());
@@ -397,7 +403,7 @@ it('FindService service found as non admin', function () {
     $findService(1, 10, $presenter);
 
     expect($presenter->response->name)->toBe($this->service->getName());
-    expect($presenter->response->id)->toBe($this->service->getId());
+    expect($presenter->response->serviceId)->toBe($this->service->getId());
     expect($presenter->response->host['monitoring_server_name'])
         ->toBe($this->host->getMonitoringServerName());
     expect($presenter->response->isFlapping)->toBe($this->service->isFlapping());

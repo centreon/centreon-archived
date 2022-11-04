@@ -63,14 +63,12 @@ $template = filter_var(
     FILTER_VALIDATE_INT
 );
 
-$searchH = filter_var(
-    $_POST['searchH'] ?? $_GET['search'] ?? null,
-    FILTER_SANITIZE_STRING
+$searchH = \HtmlAnalyzer::sanitizeAndRemoveTags(
+    $_POST['searchH'] ?? $_GET['search'] ?? null
 );
 
-$searchS = filter_var(
-    $_POST['searchS'] ?? $_GET['searchS'] ?? null,
-    FILTER_SANITIZE_STRING
+$searchS = \HtmlAnalyzer::sanitizeAndRemoveTags(
+    $_POST['searchS'] ?? $_GET['searchS'] ?? null
 );
 
 $status = filter_var(
@@ -245,14 +243,16 @@ $interval_length = $centreon->optGen['interval_length'];
 
 $centreonToken = createCSRFToken();
 
+$statement = $pearDB->prepare(
+    "SELECT COUNT(*) FROM host_service_relation WHERE service_service_id = :service_id"
+);
 for ($i = 0; $service = $dbResult->fetch(); $i++) {
     //Get Number of Hosts linked to this one.
-    $dbResult2 = $pearDB->query(
-        "SELECT COUNT(*) FROM host_service_relation WHERE service_service_id = '" . $service["service_id"] . "'"
-    );
-    $data = $dbResult2->fetch();
+    $statement->bindValue(':service_id', $service["service_id"], \PDO::PARAM_INT);
+    $statement->execute();
+    $data = $statement->fetch(\PDO::FETCH_ASSOC);
     $service["nbr"] = $data["COUNT(*)"];
-    $dbResult2->closeCursor();
+    $statement->closeCursor();
     unset($data);
 
     /**

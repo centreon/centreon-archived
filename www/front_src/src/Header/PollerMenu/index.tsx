@@ -1,13 +1,13 @@
 import { useState, useRef, useEffect } from 'react';
 
 import { useTranslation } from 'react-i18next';
-import { isEmpty, isNil } from 'ramda';
+import { equals, isEmpty, isNil } from 'ramda';
 import clsx from 'clsx';
 import { useAtomValue } from 'jotai/utils';
 import { useNavigate } from 'react-router-dom';
 
 import PollerIcon from '@mui/icons-material/DeviceHub';
-import { Button, ClickAwayListener, Paper, Typography } from '@mui/material';
+import { Button, ClickAwayListener, Typography } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 
 import {
@@ -15,10 +15,9 @@ import {
   getData,
   useRequest,
   IconHeader,
-  SubmenuHeader,
   IconToggleSubmenu,
 } from '@centreon/ui';
-import { refreshIntervalAtom } from '@centreon/ui-context';
+import { refreshIntervalAtom, ThemeMode } from '@centreon/ui-context';
 
 import useNavigation from '../../Navigation/useNavigation';
 
@@ -49,23 +48,51 @@ interface PollerData {
 
 const useStyles = makeStyles((theme) => ({
   confButton: {
+    '&:hover': {
+      background: theme.palette.grey[500],
+    },
+    backgroundColor: equals(theme.palette.mode, ThemeMode.dark)
+      ? theme.palette.background.default
+      : theme.palette.primary.main,
+    border: '1px solid white',
+    color: theme.palette.common.white,
     display: 'flex',
+    fontSize: theme.typography.body2.fontSize,
     marginTop: theme.spacing(1),
   },
   container: {
+    borderRight: '1px solid white',
     display: 'flex',
-    flex: 0.4,
+    paddingRight: theme.spacing(3),
+    [theme.breakpoints.down(768)]: {
+      paddingRight: theme.spacing(1),
+    },
+    position: 'relative',
   },
-  label: {
-    color: theme.palette.common.white,
+  iconToggleMenu: {
+    alignItems: 'flex-end',
+    display: 'flex',
+    [theme.breakpoints.down(768)]: {
+      alignItems: 'center',
+      justifyContent: 'center',
+      position: 'relative',
+      right: theme.spacing(0.5),
+    },
   },
   link: {
     textDecoration: 'none',
   },
+  pollarHeaderRight: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    [theme.breakpoints.down(768)]: {
+      flexDirection: 'row',
+      gap: theme.spacing(0.5),
+    },
+  },
   pollerDetailRow: {
-    borderBottomStyle: 'solid',
-    borderWidth: '1px',
-    color: theme.palette.common.white,
+    borderBottom: '1px solid',
     display: 'flex',
     justifyContent: 'space-between',
   },
@@ -73,15 +100,17 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
   },
   subMenuToggle: {
-    backgroundColor: theme.palette.common.black,
+    backgroundColor: theme.palette.background.default,
+    boxShadow: theme.shadows[3],
     boxSizing: 'border-box',
+    color: theme.palette.text.primary,
     display: 'none',
-    left: theme.spacing(0),
+    left: 0,
     padding: theme.spacing(1),
     position: 'absolute',
     textAlign: 'left',
-    top: '100%',
-    width: '100%',
+    top: `calc(100% + ${theme.spacing(1.25)})`,
+    width: theme.spacing(20),
     zIndex: theme.zIndex.mobileStepper,
   },
   subMenuToggleActive: {
@@ -130,7 +159,6 @@ const PollerMenu = (): JSX.Element | null => {
       clearInterval(interval.current);
     };
   }, []);
-  const loaderWidth = 19;
   const pollerListIssues =
     'internal.php?object=centreon_topcounter&action=pollersListIssues';
 
@@ -161,7 +189,7 @@ const PollerMenu = (): JSX.Element | null => {
   }
 
   if (isNil(issues)) {
-    return <MenuSkeleton width={loaderWidth} />;
+    return <MenuSkeleton />;
   }
 
   const redirectToPollerConfiguration = (): void => {
@@ -179,73 +207,66 @@ const PollerMenu = (): JSX.Element | null => {
       }}
     >
       <div className={classes.container}>
-        <SubmenuHeader active={toggled}>
-          <IconHeader
-            Icon={PollerIcon}
-            iconName={t(labelPoller)}
-            onClick={toggleDetailedView}
-          />
-          <PollerStatusIcon issues={issues} />
+        <IconHeader
+          Icon={PollerIcon}
+          iconName={t(labelPoller)}
+          onClick={toggleDetailedView}
+        />
 
-          <IconToggleSubmenu
-            cursor="pointer"
-            data-testid="submenu-poller"
-            iconType="arrow"
-            rotate={toggled}
-            onClick={toggleDetailedView}
-          />
-          <div
-            className={clsx(classes.subMenuToggle, {
-              [classes.subMenuToggleActive]: toggled,
-            })}
-          >
-            {!isEmpty(issues) ? (
-              Object.entries(issues).map(([key, issue]) => {
-                return (
-                  <div className={classes.pollerDetailRow} key={key}>
-                    <Typography
-                      className={clsx([
-                        classes.label,
-                        classes.pollerDetailTitle,
-                      ])}
-                      variant="body2"
-                    >
-                      <li>{t(pollerIssueKeyToMessage[key])}</li>
-                    </Typography>
-                    <Typography className={classes.label} variant="body2">
-                      {issue.total ? issue.total : ''}
-                    </Typography>
-                  </div>
-                );
-              })
-            ) : (
-              <div className={classes.pollerDetailRow}>
-                <Typography className={classes.label} variant="body2">
-                  {t(labelAllPollers)}
-                </Typography>
-                <Typography className={classes.label} variant="body2">
-                  {pollerCount as number}
-                </Typography>
-              </div>
-            )}
-            {allowPollerConfiguration && (
-              <Paper className={classes.confButton}>
-                <Button
-                  fullWidth
-                  data-testid={labelConfigurePollers}
-                  size="small"
-                  onClick={redirectToPollerConfiguration}
-                >
-                  {t(labelConfigurePollers)}
-                </Button>
-              </Paper>
-            )}
-            <ExportConfiguration
-              setIsExportingConfiguration={newExporting}
-              toggleDetailedView={toggleDetailedView}
+        <div className={classes.pollarHeaderRight}>
+          <PollerStatusIcon issues={issues} />
+          <div className={classes.iconToggleMenu}>
+            <IconToggleSubmenu
+              data-testid="submenu-poller"
+              rotate={toggled}
+              onClick={toggleDetailedView}
             />
           </div>
-        </SubmenuHeader>
+        </div>
+
+        <div
+          className={clsx(classes.subMenuToggle, {
+            [classes.subMenuToggleActive]: toggled,
+          })}
+        >
+          {!isEmpty(issues) ? (
+            Object.entries(issues).map(([key, issue]) => {
+              return (
+                <div className={classes.pollerDetailRow} key={key}>
+                  <Typography
+                    className={classes.pollerDetailTitle}
+                    variant="body2"
+                  >
+                    <li>{t(pollerIssueKeyToMessage[key])}</li>
+                  </Typography>
+                  <Typography variant="body2">
+                    {issue.total ? issue.total : ''}
+                  </Typography>
+                </div>
+              );
+            })
+          ) : (
+            <div className={classes.pollerDetailRow}>
+              <Typography variant="body2">{t(labelAllPollers)}</Typography>
+              <Typography variant="body2">{pollerCount as number}</Typography>
+            </div>
+          )}
+          {allowPollerConfiguration && (
+            <Button
+              fullWidth
+              className={classes.confButton}
+              data-testid={labelConfigurePollers}
+              size="small"
+              onClick={redirectToPollerConfiguration}
+            >
+              {t(labelConfigurePollers)}
+            </Button>
+          )}
+          <ExportConfiguration
+            setIsExportingConfiguration={newExporting}
+            toggleDetailedView={toggleDetailedView}
+          />
+        </div>
       </div>
     </ClickAwayListener>
   );

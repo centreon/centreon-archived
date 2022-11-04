@@ -44,10 +44,10 @@ $SearchStr = '';
 $search = null;
 
 if (isset($_POST['searchACLA'])) {
-    $search = filter_var($_POST['searchACLA'], FILTER_SANITIZE_STRING);
+    $search = \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['searchACLA']);
     $centreon->historySearch[$url] = $search;
 } elseif (isset($_GET['searchACLA'])) {
-    $search = filter_var($_GET['searchACLA'], FILTER_SANITIZE_STRING);
+    $search = \HtmlAnalyzer::sanitizeAndRemoveTags($_GET['searchACLA']);
     $centreon->historySearch[$url] = $search;
 } elseif (isset($centreon->historySearch[$url])) {
     $search = $centreon->historySearch[$url];
@@ -118,11 +118,6 @@ for ($i = 0; $topo = $statement->fetchRow(); $i++) {
         "return false;\" maxlength=\"3\" size=\"3\" value='1' style=\"margin-bottom:0px;\" name='dupNbr[" .
         $topo['acl_action_id'] . "]' />";
     /* Contacts */
-    $ctNbr = array();
-    $rq = "SELECT COUNT(*) AS nbr FROM acl_group_actions_relations " .
-        "WHERE acl_action_id = '" . $topo['acl_action_id'] . "'";
-    $DBRESULT2 = $pearDB->query($rq);
-    $ctNbr = $DBRESULT2->fetchRow();
     $elemArr[$i] = array(
         "MenuClass" => "list_" . $style,
         "RowMenu_select" => $selectedElements->toHtml(),

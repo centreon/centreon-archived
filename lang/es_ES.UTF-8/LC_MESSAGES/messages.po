@@ -13121,11 +13121,11 @@ msgstr "cubo de basura"
 #~ msgid "No downtime scheduled for services"
 #~ msgstr "No hay tiempo de inactividad planificado para los servicios"
 
-#~ msgid "Host category"
-#~ msgstr "Categoría de anfitriones"
+msgid "Host category"
+msgstr "Categoría de anfitriones"
 
-#~ msgid "Service category"
-#~ msgstr "Categorias de servicio"
+msgid "Service category"
+msgstr "Categoria de servicio"
 
 #~ msgid "Inclusion"
 #~ msgstr "Inclusión"
@@ -15168,6 +15168,9 @@ msgstr "Se ha producido un error al recuperar los categorías de hosts"
 #  msgid "Warning, maximum size exceeded for input '%s' (max: %d), it will be truncated upon saving"
 #  msgstr ""
 
+# msgid "Export to CSV"
+# msgstr ""
+
 msgid "Service severity"
 msgstr "Criticidad del servicio"
 
@@ -15179,3 +15182,108 @@ msgstr "Criticidad del host"
 
 msgid "Host severity level"
 msgstr "Nivel de criticidad del host"
+
+#  msgid "Listening address (optional)"
+#  msgstr ""
+
+#  msgid "Listening port"
+#  msgstr ""
+
+#  msgid "Transport protocol"
+#  msgstr ""
+
+#  msgid "Authorization token (optional)"
+#  msgstr ""
+
+#  msgid "Private key path"
+#  msgstr ""
+
+#  msgid "Certificate path"
+#  msgstr ""
+
+#  msgid "Compression"
+#  msgstr ""
+
+#  msgid "Enable retention"
+#  msgstr ""
+
+#  msgid "Filter on event categories"
+#  msgstr ""
+
+#  msgid "Server address"
+#  msgstr ""
+
+#  msgid "Server port"
+#  msgstr ""
+
+#  msgid "Retry interval (in seconds)"
+#  msgstr ""
+
+#  msgid "Trusted CA's certificate path (optional)"
+#  msgstr ""
+
+#  msgid "Certificate Common Name (optional)"
+#  msgstr ""
+
+# msgid "CSV"
+# msgstr ""
+
+#  msgid "Poller Configuration Actions / Poller Management"
+#  msgstr ""
+
+#  msgid "Create and edit pollers"
+#  msgstr ""
+
+#  msgid "Delete pollers"
+#  msgstr ""
+
+#  msgid "Deploy configuration"
+#  msgstr ""
+
+msgid "Are you sure you want to change the size of the envelope? The new envelope size will be applied immediately."
+msgstr "¿Está seguro de que desea cambiar el tamaño del sobre? El nuevo tamaño de sobre se aplicará inmediatamente."
+
+msgid "Changes to the envelope size will be applied immediately"
+msgstr "Los cambios en el tamaño del sobre se aplicarán inmediatamente."
+
+msgid "Manage envelope size"
+msgstr "Administrar el tamaño del sobre"
+
+msgid "use default value"
+msgstr "usar el valor predeterminado"
+
+msgid "points out of envelope"
+msgstr "puntos fuera del sobre"
+
+msgid "Edit anomaly detection data"
+msgstr "Editar datos de detección de anomalías"
+
+#  msgid "Enable/disable resource"
+#  msgstr ""
+
+#  msgid "Note"
+#  msgstr ""
+
+#  msgid "Note URL"
+#  msgstr ""
+
+#  msgid "Geographic coordinates"
+#  msgstr ""
+
+#  msgid "Members"
+#  msgstr ""
+
+#  msgid "Monitoring settings"
+#  msgstr ""
+
+#  msgid "Classification"
+#  msgstr ""
+
+#  msgid "Hosts (simplified)"
+#  msgstr ""
+
+#  msgid "Templates (simplified)"
+#  msgstr ""
+
+#  msgid "Host Groups (simplified)"
+#  msgstr ""

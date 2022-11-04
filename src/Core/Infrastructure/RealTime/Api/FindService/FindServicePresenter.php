@@ -22,14 +22,15 @@ declare(strict_types=1);
 
 namespace Core\Infrastructure\RealTime\Api\FindService;
 
-use Core\Infrastructure\RealTime\Hypermedia\HypermediaCreator;
 use Symfony\Component\HttpFoundation\Response;
-use Core\Application\Common\UseCase\ResponseStatusInterface;
-use Core\Application\Common\UseCase\AbstractPresenter;
-use Core\Application\RealTime\UseCase\FindService\FindServicePresenterInterface;
 use Core\Infrastructure\Common\Api\HttpUrlTrait;
-use Core\Infrastructure\Common\Presenter\PresenterFormatterInterface;
+use Core\Application\Common\UseCase\AbstractPresenter;
 use Core\Infrastructure\Common\Presenter\PresenterTrait;
+use Core\Application\Common\UseCase\ResponseStatusInterface;
+use Core\Infrastructure\RealTime\Hypermedia\HypermediaCreator;
+use Core\Infrastructure\Common\Presenter\PresenterFormatterInterface;
+use Core\Application\RealTime\UseCase\FindService\FindServiceResponse;
+use Core\Application\RealTime\UseCase\FindService\FindServicePresenterInterface;
 
 class FindServicePresenter extends AbstractPresenter implements FindServicePresenterInterface
 {
@@ -52,13 +53,14 @@ class FindServicePresenter extends AbstractPresenter implements FindServicePrese
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
+     * @param FindServiceResponse $response
      */
     public function present(mixed $response): void
     {
         $presenterResponse = [
-            'uuid' => 'h' . $response->hostId . '-s' . $response->id,
-            'id' => $response->id,
+            'uuid' => 'h' . $response->hostId . '-s' . $response->serviceId,
+            'id' => $response->serviceId,
             'name' => $response->name,
             'type' => 'service',
             'short_type' => 's',
@@ -149,10 +151,26 @@ class FindServicePresenter extends AbstractPresenter implements FindServicePrese
         /**
          * Creating Hypermedias
          */
-        $presenterResponse['links'] = [
-            'uris' => $this->hypermediaCreator->createInternalUris($response),
-            'endpoints' => $this->hypermediaCreator->createEndpoints($response)
+        $parameters = [
+            'type' => $response->type,
+            'hostId' => $response->hostId,
+            'serviceId' => $response->serviceId,
+            'hasGraphData' => $response->hasGraphData
         ];
+
+        $endpoints = $this->hypermediaCreator->createEndpoints($parameters);
+
+        $presenterResponse['links']['endpoints'] = [
+            'notification_policy' => $endpoints['notification_policy'],
+            'timeline' => $endpoints['timeline'],
+            'timeline_download' => $endpoints['timeline_download'],
+            'status_graph' => $endpoints['status_graph'],
+            'performance_graph' => $endpoints['performance_graph'],
+            'details' => $endpoints['details']
+        ];
+
+        $presenterResponse['links']['uris'] = $this->hypermediaCreator->createInternalUris($parameters);
+
         $this->presenterFormatter->present($presenterResponse);
     }
 

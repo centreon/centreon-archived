@@ -2178,7 +2178,7 @@ msgstr "Groupe de contacts"
 
 #: centreon-web/www/install/smarty_translate.php:714
 msgid "Previous"
-msgstr "Précédant"
+msgstr "Précédent"
 
 #: centreon-web/www/install/smarty_translate.php:717
 msgid "Next"
@@ -4408,7 +4408,7 @@ msgstr "Sauvegarde du mot de passe LDAP"
 
 #: centreon-web/www/include/Administration/parameters/ldap/form.php:78
 msgid "Auto import users"
-msgstr "Import automatiques des utilisateurs"
+msgstr "Import automatique des utilisateurs"
 
 #: centreon-web/www/include/Administration/parameters/ldap/form.php:96
 msgid "Use service DNS"
@@ -5973,7 +5973,7 @@ msgstr "Première page"
 #: centreon-web/www/include/common/pagination.php:166
 #: centreon-web/www/include/configuration/configKnowledge/pagination.php:150
 msgid "Previous page"
-msgstr "Page précédante"
+msgstr "Page précédente"
 
 #: centreon-web/www/include/common/pagination.php:167
 #: centreon-web/www/include/configuration/configKnowledge/pagination.php:151
@@ -13645,11 +13645,11 @@ msgstr "Configurer une plage de maintenance pour les services des hôtes"
 #~ msgid "No downtime scheduled for services"
 #~ msgstr "Aucune plage de maintenance planifiée pour les services"
 
-#~ msgid "Host category"
-#~ msgstr "Catégorie d'hôtes"
+ msgid "Host category"
+ msgstr "Catégorie d'hôtes"
 
-#~ msgid "Service category"
-#~ msgstr "Catégories de service"
+ msgid "Service category"
+ msgstr "Catégorie de service"
 
 #~ msgid "Inclusion"
 #~ msgstr "Inclusion"
@@ -16174,17 +16174,8 @@ msgstr "Erreur lors de la recherche des configurations de fournisseurs d'identif
 msgid "Unable to start Centreon legacy session"
 msgstr "Impossible de démarrer la session Centreon legacy"
 
-msgid "As displayed"
-msgstr "Comme affiché"
-
-msgid "Medium size"
-msgstr "Taille moyenne"
-
 msgid "Display the complete graph"
 msgstr "Afficher le graphe complet"
-
-msgid "Small size"
-msgstr "Petite Taille"
 
 msgid "Action not permitted"
 msgstr "Action non autorisée"
@@ -16897,6 +16888,9 @@ msgstr "Une erreur s'est produite lors de la récupération des catégories d'h�
 msgid "Warning, maximum size exceeded for input '%s' (max: %d), it will be truncated upon saving"
 msgstr "Attention, taille maximale dépassée pour le champ '%s' (max: %d), il sera tronqué à l'enregistrement"
 
+msgid "Export to CSV"
+msgstr "Exporter en CSV"
+
 msgid "Update already in progress"
 msgstr "Une mise à jour est déjà en cours"
 
@@ -16949,7 +16943,10 @@ msgid "Host severity"
 msgstr "Criticité d'hôte"
 
 msgid "Host severity level"
-msgstr "Niveau de criticité d'hôte"
+msgstr "Niveau de criticité de l'hôte"
+
+msgid "Resource type \"%s\" is not supported"
+msgstr "Type de ressource \"%s\" non supporté"
 
 msgid "Following modules need to be removed first: %s"
 msgstr "Les modules suivants doivent être supprimés : %s"
@@ -16971,3 +16968,141 @@ msgstr "Veuillez utiliser l'interface Web pour installer Centreon."
 
 msgid "Please use Web UI to update Centreon."
 msgstr "Veuillez utiliser l'interface Web pour mettre à jour Centreon."
+
+msgid "Listening address (optional)"
+msgstr "Adresse d'écoute (optionnel)"
+
+msgid "Listening port"
+msgstr "Port d'écoute"
+
+msgid "Transport protocol"
+msgstr "Protocole de transport"
+
+msgid "Authorization token (optional)"
+msgstr "Jeton d’autorisation (optionnel)"
+
+msgid "Private key path"
+msgstr "Chemin de la clé privée"
+
+msgid "Certificate path"
+msgstr "Chemin du certificat serveur"
+
+msgid "Compression"
+msgstr "Compression"
+
+msgid "Enable retention"
+msgstr "Activer la rétention"
+
+msgid "Filter on event categories"
+msgstr "Filtrage des évènements par catégories"
+
+msgid "Server address"
+msgstr "Adresse du serveur"
+
+msgid "Server port"
+msgstr "Port de connexion"
+
+msgid "Retry interval (in seconds)"
+msgstr "Intervalle entre deux tentatives (en secondes)"
+
+msgid "Trusted CA's certificate path (optional)"
+msgstr "Chemin du certificat de l’autorité de certification (optionnel)"
+
+msgid "Certificate Common Name (optional)"
+msgstr "\"Common Name\" du certificat du serveur (optionnel)"
+
+msgid "As displayed"
+msgstr "Image affichée"
+
+msgid "Medium size"
+msgstr "Taille moyenne"
+
+msgid "Small size"
+msgstr "Petite taille"
+
+msgid "CSV"
+msgstr "CSV"
+
+msgid "User information cannot be updated"
+msgstr "Les informations de l'utilisateur ne peuvent pas être mises à jour"
+
+msgid "Poller Configuration Actions / Poller Management"
+msgstr "Actions de configuration des collecteurs / Gestion des collecteurs"
+
+msgid "Create and edit pollers"
+msgstr "Créer et modifier des collecteurs"
+
+msgid "Delete pollers"
+msgstr "Supprimer des collecteurs"
+
+msgid "Deploy configuration"
+msgstr "Déployer la configuration"
+
+msgid "Invalid endpoint type specified"
+msgstr "Type d'endpoint spécifié invalide"
+
+msgid "Invalid endpoint URL specified"
+msgstr "URL d'endpoint spécifiée invalide"
+
+msgid "Request for authentication conditions custom endpoint has failed"
+msgstr "La demande d'endpoint personnalisé  de conditions d'authentification a échoué"
+
+msgid "Authorized conditions not found in provider conditions"
+msgstr "Les conditions autorisées ne figurent pas dans les conditions du provider"
+
+msgid "The request for roles mapping on custom endpoint has failed"
+msgstr "La demande d'association de rôles a échoué en interrogeant l'URL personnalisée"
+
+msgid "Invalid roles mapping fetched from provider"
+msgstr "Les roles récupérés depuis le serveur d'identité sont incorrects"
+
+msgid "Role mapping conditions do not match"
+msgstr "Aucune correspondance trouvée pour le couple rôles/groupe d'accès"
+
+msgid "Are you sure you want to change the size of the envelope? The new envelope size will be applied immediately."
+msgstr "Voulez-vous vraiment modifier la taille de l'enveloppe ? Le nouveau format d'enveloppe sera appliqué immédiatement."
+
+msgid "Changes to the envelope size will be applied immediately"
+msgstr "Les modifications apportées à la taille de l'enveloppe seront appliquées immédiatement"
+
+msgid "Manage envelope size"
+msgstr "Gérer la taille de l'enveloppe"
+
+msgid "use default value"
+msgstr "utiliser la valeur par défaut"
+
+msgid "points out of envelope"
+msgstr "points hors enveloppe"
+
+msgid "Edit anomaly detection data"
+msgstr "Modifier les données de détection d'anomalie"
+
+msgid "Enable/disable resource"
+msgstr "Activer/désactiver la ressource"
+
+msgid "Note"
+msgstr "Note"
+
+msgid "Note URL"
+msgstr "URL de la note"
+
+msgid "Geographic coordinates"
+msgstr "Coordonnées géographiques"
+
+msgid "Members"
+msgstr "Membres"
+
+msgid "Monitoring settings"
+msgstr "Paramètres de supervision"
+
+msgid "Classification"
+msgstr "Classification"
+
+msgid "Hosts (simplified)"
+msgstr "Hôtes (simplifiés)"
+
+msgid "Templates (simplified)"
+msgstr "Modèles (simplifiés)"
+
+msgid "Host Groups (simplified)"
+msgstr "Groupes d'hôtes (simplifiés)"

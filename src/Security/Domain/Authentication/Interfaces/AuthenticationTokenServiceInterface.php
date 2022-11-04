@@ -23,7 +23,7 @@ declare(strict_types=1);
 namespace Security\Domain\Authentication\Interfaces;
 
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
-use Security\Domain\Authentication\Model\AuthenticationTokens;
+use Core\Security\Authentication\Domain\Model\AuthenticationTokens;
 
 /**
  * @package Security\Domain\Authentication\Interfaces
