@@ -361,7 +361,6 @@ default:
     api_v1:
       paths:
         - "%paths.base%/features/APIv1/AclGroupsApi.feature"
-        - "%paths.base%/features/APIv1/Authentication.feature"
         - "%paths.base%/features/APIv1/CommandsApi.feature"
         - "%paths.base%/features/APIv1/ContactGroupsApi.feature"
         - "%paths.base%/features/APIv1/EscalationsApi.feature"
@@ -369,3 +368,8 @@ default:
         - "%paths.base%/features/APIv1/TimeperiodsApi.feature"
       contexts:
         - \Centreon\Test\Behat\CentreonAPIContext
+
+    api_v1_authentication:
+      paths:
+        - "%paths.base%/features/APIv1/Authentication.feature"
+      contexts: [\Centreon\Test\Behat\CentreonAPIContext, \Centreon\Test\Behat\Api\Context\ApiContext]
