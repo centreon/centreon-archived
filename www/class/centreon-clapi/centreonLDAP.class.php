@@ -79,6 +79,7 @@ class CentreonLDAP extends CentreonObject
             'ldap_contact_tmpl' => '',
             'ldap_default_cg' => '',
             'ldap_dns_use_domain' => '',
+            'ldap_connection_timeout' => '',
             'ldap_search_limit' => '',
             'ldap_search_timeout' => '',
             'ldap_srv_dns' => '',

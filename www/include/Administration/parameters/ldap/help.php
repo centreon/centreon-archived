@@ -23,6 +23,7 @@ $help['ldap_srv_dns'] = dgettext('help', 'Use the DNS service for get LDAP host'
 $help['ldap_srv_dns_ssl'] = dgettext('help', 'Enable SSL connection');
 $help['ldap_srv_dns_tls'] = dgettext('help', 'Enable TLS connection');
 $help['ldap_dns_use_domain'] = dgettext('help', 'Set the domain for search the service');
+$help['ldap_connection_timeout'] = dgettext('help', 'Connection timeout');
 $help['ldap_search_limit'] = dgettext('help', 'Search size limit');
 $help['ldap_search_timeout'] = dgettext('help', 'Search timeout');
 $help['ldapConf'] = dgettext(

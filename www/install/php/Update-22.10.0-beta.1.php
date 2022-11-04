@@ -46,6 +46,13 @@ try {
 
     $pearDB->beginTransaction();
 
+
+    $errorMessage = "Unable to add default ldap connection timeout";
+    $pearDB->query(
+        "INSERT INTO auth_ressource_info (ar_id, ari_name, ari_value)
+        (SELECT ar_id, 'ldap_connection_timeout', '' FROM auth_ressource)"
+    );
+
     $errorMessage = "Unable to delete 'oreon_web_path' and color options from database";
     $pearDB->query("DELETE FROM `options` WHERE `key` = 'oreon_web_path' OR `key` LIKE 'color_%'");
 

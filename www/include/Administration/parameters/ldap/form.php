@@ -98,6 +98,7 @@ $form->addGroup($ldapUseDns, 'ldap_srv_dns', _("Use service DNS"), '&nbsp;');
 
 $form->addElement('text', 'ldap_dns_use_domain', _("Alternative domain for ldap"), $attrsText);
 
+$form->addElement('text', 'ldap_connection_timeout', _('LDAP connection timeout'), $attrsText2);
 $form->addElement('text', 'ldap_search_limit', _('LDAP search size limit'), $attrsText2);
 $form->addElement('text', 'ldap_search_timeout', _('LDAP search timeout'), $attrsText2);
 
@@ -177,9 +178,11 @@ $form->addElement(
     array('0' => "", 'Active Directory' => _("Active Directory"), 'Okta' => _("Okta"), 'Posix' => _("Posix")),
     array('id' => 'ldap_template', 'onchange' => 'applyTemplate(this.value);')
 );
+$form->registerRule('checkLdapFilter', 'callback', 'checkLdapFilterSyntax');
 $form->addElement('text', 'user_base_search', _("Search user base DN"), $attrsText);
 $form->addElement('text', 'group_base_search', _("Search group base DN"), $attrsText);
 $form->addElement('text', 'user_filter', _("User filter"), $attrsText);
+$form->addRule('user_filter', _("Bad LDAP filter syntax"), 'checkLdapFilter');
 $form->addElement('text', 'alias', _("Login attribute"), $attrsText);
 $form->addElement('text', 'user_group', _("User group attribute"), $attrsText);
 $form->addElement('text', 'user_name', _("User displayname attribute"), $attrsText);
@@ -188,6 +191,7 @@ $form->addElement('text', 'user_lastname', _("User lastname attribute"), $attrsT
 $form->addElement('text', 'user_email', _("User email attribute"), $attrsText);
 $form->addElement('text', 'user_pager', _("User pager attribute"), $attrsText);
 $form->addElement('text', 'group_filter', _("Group filter"), $attrsText);
+$form->addRule('group_filter', _("Bad LDAP filter syntax"), 'checkLdapFilter');
 $form->addElement('text', 'group_name', _("Group attribute"), $attrsText);
 $form->addElement('text', 'group_member', _("Group member attribute"), $attrsText);
 
@@ -217,6 +221,7 @@ $defaultOpt = array(
     'ldap_dns_use_tls' => '0',
     'ldap_contact_tmpl' => '0',
     'ldap_default_cg' => '0',
+    'ldap_connection_timeout' => '5',
     'ldap_search_limit' => '60',
     'ldap_auto_sync' => '1', // synchronization on user's login is enabled by default
     'ldap_sync_interval' => '1', // minimal value of the interval between two LDAP synchronizations
