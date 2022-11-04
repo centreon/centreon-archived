@@ -343,23 +343,23 @@ try {
   //   }
   // }
   
-  // stage("$DOCKER_STAGE") {
-  //   def parallelSteps = [:]
-  //   def osBuilds = isStableBuild() ? ['centos7', 'alma8'] : ['centos7']
-  //   for (x in osBuilds) {
-  //     def osBuild = x
-  //     parallelSteps[osBuild] = {
-  //       node {
-  //         checkoutCentreonBuild()
-  //         sh "./centreon-build/jobs/web/${serie}/mon-web-bundle.sh ${osBuild}"
-  //       }
-  //     }
-  //   }
-  //   parallel parallelSteps
-  //   if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
-  //     error('Bundle stage failure.');
-  //   }
-  // }
+  stage("$DOCKER_STAGE") {
+    def parallelSteps = [:]
+    def osBuilds = isStableBuild() ? ['centos7', 'alma8'] : ['centos7']
+    for (x in osBuilds) {
+      def osBuild = x
+      parallelSteps[osBuild] = {
+        node {
+          checkoutCentreonBuild()
+          sh "./centreon-build/jobs/web/${serie}/mon-web-bundle.sh ${osBuild}"
+        }
+      }
+    }
+    parallel parallelSteps
+    if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
+      error('Bundle stage failure.');
+    }
+  }
 
   // stage('API // E2E // Lighthouse CI') {
   //   parallel 'API Tests': {
