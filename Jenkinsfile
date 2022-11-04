@@ -129,60 +129,60 @@ def checkoutCentreonBuild() {
 /*
 ** Pipeline code.
 */
-// stage('Deliver sources') {
-//   node {
-//     dir('centreon-web') {
-//       checkout scm
-//       if (!isStableBuild()) {
-//         hasFrontendChanges = hasChanges(frontendFiles)
-//         hasBackendChanges = hasChanges(backendFiles)
-//       }
-//     }
+stage('Deliver sources') {
+  node {
+    dir('centreon-web') {
+      checkout scm
+      if (!isStableBuild()) {
+        hasFrontendChanges = hasChanges(frontendFiles)
+        hasBackendChanges = hasChanges(backendFiles)
+      }
+    }
 
-//     checkoutCentreonBuild()
+    checkoutCentreonBuild()
 
-//     // git repository is stored for the Sonar analysis below.
-//     sh 'tar czf centreon-web-git.tar.gz centreon-web'
-//     stash name: 'git-sources', includes: 'centreon-web-git.tar.gz'
+    // git repository is stored for the Sonar analysis below.
+    sh 'tar czf centreon-web-git.tar.gz centreon-web'
+    stash name: 'git-sources', includes: 'centreon-web-git.tar.gz'
 
-//     // resuming process
-//     sh "./centreon-build/jobs/web/${serie}/mon-web-source.sh"
-//     source = readProperties file: 'source.properties'
-//     env.VERSION = "${source.VERSION}"
-//     env.RELEASE = "${source.RELEASE}"
-//     stash name: 'tar-sources', includes: "centreon-web-${env.VERSION}.tar.gz"
-//     stash name: 'cypress-node-modules', includes: "cypress-node-modules.tar.gz"
-//     stash name: 'vendor', includes: 'vendor.tar.gz'
-//     stash name: 'node_modules', includes: 'node_modules.tar.gz'
-//     stash name: 'api-doc', includes: 'centreon-api-v21.10.html'
-//     publishHTML([
-//       allowMissing: false,
-//       keepAll: true,
-//       reportDir: 'summary',
-//       reportFiles: 'index.html',
-//       reportName: 'Centreon Build Artifacts',
-//       reportTitles: ''
-//     ])
+    // resuming process
+    sh "./centreon-build/jobs/web/${serie}/mon-web-source.sh"
+    source = readProperties file: 'source.properties'
+    env.VERSION = "${source.VERSION}"
+    env.RELEASE = "${source.RELEASE}"
+    stash name: 'tar-sources', includes: "centreon-web-${env.VERSION}.tar.gz"
+    stash name: 'cypress-node-modules', includes: "cypress-node-modules.tar.gz"
+    stash name: 'vendor', includes: 'vendor.tar.gz'
+    stash name: 'node_modules', includes: 'node_modules.tar.gz'
+    stash name: 'api-doc', includes: 'centreon-api-v21.10.html'
+    publishHTML([
+      allowMissing: false,
+      keepAll: true,
+      reportDir: 'summary',
+      reportFiles: 'index.html',
+      reportName: 'Centreon Build Artifacts',
+      reportTitles: ''
+    ])
 
-//     // get api feature files
-//     apiFeatureFiles = sh(
-//       script: 'find centreon-web/tests/api/features -type f -name "*.feature" -printf "%P\n" | sort',
-//       returnStdout: true
-//     ).split()
+    // get api feature files
+    apiFeatureFiles = sh(
+      script: 'find centreon-web/tests/api/features -type f -name "*.feature" -printf "%P\n" | sort',
+      returnStdout: true
+    ).split()
 
-//     // get tests E2E feature files
-//     e2eFeatureFiles = sh(
-//       script: 'find centreon-web/tests/e2e/cypress/integration -type f -name "*.feature" -printf "%P\n" | sort',
-//       returnStdout: true
-//     ).split()
+    // get tests E2E feature files
+    e2eFeatureFiles = sh(
+      script: 'find centreon-web/tests/e2e/cypress/integration -type f -name "*.feature" -printf "%P\n" | sort',
+      returnStdout: true
+    ).split()
 
-//     //FIXME : reintegrate ldap features after fixing them
-//     featureFiles = sh(
-//       script: "rm centreon-web/features/Ldap*.feature && find centreon-web/features -type f -name '*.feature' | sed -e 's#centreon-web/features/##g' | sort",
-//       returnStdout: true
-//     ).split()
-//   }
-// }
+    //FIXME : reintegrate ldap features after fixing them
+    featureFiles = sh(
+      script: "rm centreon-web/features/Ldap*.feature && find centreon-web/features -type f -name '*.feature' | sed -e 's#centreon-web/features/##g' | sort",
+      returnStdout: true
+    ).split()
+  }
+}
 
 try {
   // stage('Unit tests // Sonar analysis // RPMs Packaging') {
