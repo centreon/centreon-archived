@@ -1253,6 +1253,13 @@ function sanitizeFormContactParameters(array $ret): array
                     }
                 }
                 break;
+            case 'default_page':
+                $bindParams[':' . $inputName] = [
+                    \PDO::PARAM_INT => (filter_var($inputValue, FILTER_VALIDATE_INT) === false)
+                        ? null
+                        : (int) $inputValue
+                ];
+                break;
             case 'contact_auth_type':
                 if (!empty($inputValue)) {
                     $inputValue = \HtmlAnalyzer::sanitizeAndRemoveTags($inputValue);

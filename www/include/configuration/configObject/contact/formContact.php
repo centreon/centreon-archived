@@ -112,6 +112,18 @@ if (($o == MODIFY_CONTACT || $o == WATCH_CONTACT) && $contactId) {
     $dbResult->closeCursor();
 
     /**
+     * Set default page value
+     */
+    $topology = new CentreonTopology($pearDB);
+    $defaultPage = $topology->getTopology('page', $cct["default_page"]);
+    $breadCrumbs = [
+        $cct["default_page"] => $topology->getBreadCrumbFromTopology(
+            $defaultPage['topology_page'],
+            $defaultPage['topology_name']
+        )
+    ];
+
+    /**
      * Set Host Notification Options
      */
     $tmp = explode(',', $cct["contact_host_notification_options"]);
@@ -406,6 +418,7 @@ if ($o !== MASSIVE_CHANGE) {
 }
 
 $form->addElement('select', 'contact_lang', _("Default Language"), $langs);
+$form->addElement('select', 'default_page', _("Default page"), $breadCrumbs, ["id" => "default_page"]);
 $form->addElement(
     'select',
     'contact_type_msg',

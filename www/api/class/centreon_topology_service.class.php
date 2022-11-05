@@ -50,6 +50,7 @@ class CentreonTopologyService extends CentreonWebService
     public function getList(): array
     {
         $topologyPagesString = '';
+        $pages = [];
         if (isset($this->arguments['accessGroups'])) {
             $accessGroupsString = implode(",", $this->arguments['accessGroups']);
             $topologyPagesString = $this->getTopologyStr(
@@ -59,7 +60,9 @@ class CentreonTopologyService extends CentreonWebService
         if (isset($this->arguments['allTopologies']) && $this->arguments['allTopologies'] === 'true') {
             $topologyPagesString = $this->getTopologyStr($this->getAllTopologyList());
         }
-        $pages = $this->buildTopologyTree($topologyPagesString);
+        if ($topologyPagesString !== '') {
+            $pages = $this->buildTopologyTree($topologyPagesString);
+        }
         if (isset($this->arguments['q']) && $this->arguments['q'] !== '') {
             $searchedPages = array_values(
                 array_filter($pages, fn($page) => str_contains($page['text'], $this->arguments['q']))
@@ -176,7 +179,7 @@ class CentreonTopologyService extends CentreonWebService
      * @param string $topologiesStr
      * @return array
      */
-    private function buildTopologyTree(string $topologiesStr)
+    private function buildTopologyTree(string $topologiesStr): array
     {
         $acls = array_flip(explode(',', $topologiesStr));
         $pages = [];
