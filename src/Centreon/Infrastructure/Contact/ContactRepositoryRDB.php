@@ -428,14 +428,14 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
                         \PDO::PARAM_INT
                     );
                     $statement->execute();
-                    $data = $statement->fetch(\PDO::FETCH_ASSOC);
+                    $topology = $statement->fetch(\PDO::FETCH_ASSOC);
                     $page = new Page(
-                        $data['topology_id'],
-                        $data['topology_url'],
+                        $topology['topology_id'],
+                        $topology['topology_url'],
                         $contactTemplate['default_page'],
-                        (bool) $data['is_react']
+                        (bool) $topology['is_react']
                     );
-                    if (!empty($data['topology_url_opt'])) {
+                    if (!empty($topology['topology_url_opt'])) {
                         $page->setUrlOptions($data['topology_url_opt']);
                     }
                 }
