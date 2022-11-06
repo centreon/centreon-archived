@@ -228,22 +228,3 @@
     {$form.hidden}
 </form>
 {$helptext}
-<script src="./include/common/javascript/centreon/centreon-select2.js"></script>
-<script>
-    {literal}
-    jQuery(function () {
-        let contactDefaultPageOptions = {
-            select2: {
-                ajax: {
-                    url: './include/common/webServices/rest/internal.php?object=centreon_topology_service&action=list'
-                },
-            },
-            allowClear: true,
-            additionnalFilters: {
-                accessGroups: '#contact_cgNotif'
-            }
-        };
-        jQuery('#default_page').centreonSelect2(contactDefaultPageOptions).trigger('change.select2');
-    })
-</script>
-{/literal}

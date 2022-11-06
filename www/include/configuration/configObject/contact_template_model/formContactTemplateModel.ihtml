@@ -39,7 +39,7 @@
             <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="contact_name"> {$form.contact_name.label}</td><td class="FormRowValue">{$form.contact_name.html}</td></tr>
         {/if}
         <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="pager"> {$form.contact_template_id.label}</td><td class="FormRowValue">{$form.contact_template_id.html}</td></tr>
-        <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="default_page"> {t}Default page{/t}</td><td class="FormRowValue"><select id="contact_template_default_page"></select></td></tr>
+        <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="default_page"> {$form.default_page.label}</td><td class="FormRowValue">{$form.default_page.html}</td></tr>
         <tr class="list_lvl_1">
             <td class="ListColLvl1_name" colspan="2">
                 <h4>{$form.header.notification}</h4>
@@ -134,18 +134,3 @@
     {$form.hidden}
 </form>
 {$helptext}
-<script src="./include/common/javascript/centreon/centreon-select2.js"></script>
-<script>
-    {literal}
-    jQuery(function () {
-        let contactTemplateDefaultPageOptions = {
-            select2: {
-                ajax: {
-                    url: './include/common/webServices/rest/internal.php?object=centreon_topology_service&action=list&allTopologies=true'
-                },
-            },
-        };
-        jQuery('#contact_template_default_page').centreonSelect2(contactTemplateDefaultPageOptions);
-    })
-</script>
-{/literal}
