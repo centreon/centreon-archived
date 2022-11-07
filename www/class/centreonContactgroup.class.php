@@ -117,7 +117,11 @@ class CentreonContactgroup
             $ldapRes = $this->db->query($query);
             while ($ldapRow = $ldapRes->fetch()) {
                 $ldap = new CentreonLDAP($this->db, null, $ldapRow['ar_id']);
-                $ldap->connect(null, $ldapRow['ar_id']);
+                $isConnectedToLdap = $ldap->connect();
+                if ($isConnectedToLdap === false) {
+                    continue;
+                }
+
                 $ldapGroups = $ldap->listOfGroups();
 
                 foreach ($ldapGroups as $ldapGroup) {
@@ -253,12 +257,16 @@ class CentreonContactgroup
             return $ldapGroupId;
         }
 
-        $ldap = new CentreonLDAP($this->db, null, $arId);
-        $ldap->connect();
-        $ldapDn = $ldap->findGroupDn($cgName);
-
         // Reset ldap build cache time
         $this->db->query('UPDATE options SET `value` = 0 WHERE `key` = "ldap_last_acl_update"');
+
+        $ldap = new CentreonLDAP($this->db, null, $arId);
+        $isConnectedToLdap = $ldap->connect();
+        if ($isConnectedToLdap === false) {
+            return null;
+        }
+
+        $ldapDn = $ldap->findGroupDn($cgName);
 
         if ($ldapDn !== false) {
             $this->insertLdapGroupByNameAndDn($arId, $cgName, $ldapDn);
@@ -382,133 +390,136 @@ class CentreonContactgroup
         while ($ldapRow = $ldapRes->fetch()) {
             $ldapConn = new CentreonLDAP($this->db, null, $ldapRow['ar_id']);
             $connectionResult = $ldapConn->connect();
-            if (false != $connectionResult) {
-                $res = $this->db->prepare(
-                    "SELECT cg_id, cg_name, cg_ldap_dn FROM contactgroup " .
-                    "WHERE cg_type = 'ldap' AND ar_id = :arId"
-                );
-                $res->bindValue(':arId', $ldapRow['ar_id'], \PDO::PARAM_INT);
-                $res->execute();
-
-                // insert groups from ldap into centreon
-                $registeredGroupsFromDB = $res->fetchAll();
-                $registeredGroups = [];
-                foreach ($registeredGroupsFromDB as $registeredGroupFromDB) {
-                    $registeredGroups[] = $registeredGroupFromDB['cg_name'];
-                }
-
-                $ldapGroups = $ldapConn->listOfGroups();
-
-                foreach ($ldapGroups as $ldapGroup) {
-                    if (!in_array($ldapGroup['name'], $registeredGroups)) {
-                        $this->insertLdapGroupByNameAndDn(
-                            (int) $ldapRow['ar_id'],
-                            $ldapGroup['name'],
-                            $ldapGroup['dn']
-                        );
-                    }
-                }
-
-                $res = $this->db->prepare(
-                    "SELECT cg_id, cg_name, cg_ldap_dn FROM contactgroup " .
-                    "WHERE cg_type = 'ldap' AND ar_id = :arId"
-                );
-                $res->bindValue(':arId', $ldapRow['ar_id'], \PDO::PARAM_INT);
-                $res->execute();
-
-                $this->db->beginTransaction();
-                try {
-                    while ($row = $res->fetch()) {
-                        // Test is the group has not been moved or deleted in ldap
-                        if ((empty($row['cg_ldap_dn']) || false === $ldapConn->getEntry($row['cg_ldap_dn']))
-                            && ldap_errno($ldapConn->getDs()) != 3
-                        ) {
-                            $dn = $ldapConn->findGroupDn($row['cg_name']);
-                            if (false === $dn && ldap_errno($ldapConn->getDs()) != 3) {
-                                // Delete the ldap group in contactgroup
-                                try {
-                                    $stmt = $this->db->prepare(
-                                        "DELETE FROM contactgroup WHERE cg_id = :cgId"
-                                    );
-                                    $stmt->bindValue('cgId', $row['cg_id'], \PDO::PARAM_INT);
-                                    $stmt->execute();
-                                } catch (\PDOException $e) {
-                                    $msg[] = "Error processing delete contactgroup request of ldap group : " .
-                                        $row['cg_name'];
-                                    throw $e;
-                                }
-                                continue;
-                            } else { // Update the ldap group dn in contactgroup
-                                try {
-                                    $updateDnStatement = $this->db->prepare(
-                                        "UPDATE contactgroup SET cg_ldap_dn = :cg_dn WHERE cg_id = :cg_id"
-                                    );
-                                    $updateDnStatement->bindValue(':cg_dn', $dn, \PDO::PARAM_STR);
-                                    $updateDnStatement->bindValue(':cg_id', $row['cg_id'], \PDO::PARAM_INT);
-                                    $updateDnStatement->execute();
-                                    $row['cg_ldap_dn'] = $dn;
-                                } catch (\PDOException $e) {
-                                    $msg[] = "Error processing update contactgroup request of ldap group : " .
-                                        $row['cg_name'];
-                                    throw $e;
-                                }
-                            }
-                        }
-                        $members = $ldapConn->listUserForGroup($row['cg_ldap_dn']);
-
-                        // Refresh Users Groups.
-                        $deleteStmt = $this->db->prepare(
-                            "DELETE FROM contactgroup_contact_relation
-                            WHERE contactgroup_cg_id = :cgId"
-                        );
-                        $deleteStmt->bindValue(':cgId', $row['cg_id'], \PDO::PARAM_INT);
-                        $deleteStmt->execute();
-                        $contactDns = '';
-                        foreach ($members as $member) {
-                            $contactDns .= $this->db->quote($member) . ',';
-                        }
-                        $contactDns = rtrim($contactDns, ",");
-
-                        if ($contactDns !== '') {
-                            try {
-                                $resContact = $this->db->query(
-                                    "SELECT contact_id FROM contact WHERE contact_ldap_dn IN (" . $contactDns . ")"
-                                );
-                            } catch (\PDOException $e) {
-                                $msg[] = "Error in getting contact id from members.";
-                                throw $e;
-                                continue;
-                            }
-                            while ($rowContact = $resContact->fetch()) {
-                                try {
-                                    $insertStmt = $this->db->prepare(
-                                        "INSERT INTO contactgroup_contact_relation
-                                        (contactgroup_cg_id, contact_contact_id)
-                                        VALUES (:cgId, :contactId)"
-                                    );
-                                    $insertStmt->bindValue(':cgId', $row['cg_id'], \PDO::PARAM_INT);
-                                    $insertStmt->bindValue(':contactId', $rowContact['contact_id'], \PDO::PARAM_INT);
-                                    $insertStmt->execute();
-                                } catch (\PDOException $e) {
-                                    $msg[] = "Error insert relation between contactgroup " . $row['cg_id'] .
-                                        " and contact " . $rowContact['contact_id'];
-                                    throw $e;
-                                }
-                            }
-                        }
-                    }
-                    $updateTime = $this->db->prepare(
-                        "UPDATE `options` SET `value` = :currentTime
-                        WHERE `key` = 'ldap_last_acl_update'"
-                    );
-                    $updateTime->bindValue(':currentTime', time(), \PDO::PARAM_INT);
-                    $updateTime->execute();
-                    $this->db->commit();
-                } catch (\PDOException $e) {
-                    $this->db->rollBack();
-                }
-            } else {
+            if ($connectionResult === false) {
                 $msg[] = "Unable to connect to LDAP server.";
+                continue;
+            }
+
+            $res = $this->db->prepare(
+                "SELECT cg_id, cg_name, cg_ldap_dn FROM contactgroup " .
+                "WHERE cg_type = 'ldap' AND ar_id = :arId"
+            );
+            $res->bindValue(':arId', $ldapRow['ar_id'], \PDO::PARAM_INT);
+            $res->execute();
+
+            // insert groups from ldap into centreon
+            $registeredGroupsFromDB = $res->fetchAll();
+            $registeredGroups = [];
+            foreach ($registeredGroupsFromDB as $registeredGroupFromDB) {
+                $registeredGroups[] = $registeredGroupFromDB['cg_name'];
+            }
+
+            $ldapGroups = $ldapConn->listOfGroups();
+
+            foreach ($ldapGroups as $ldapGroup) {
+                if (!in_array($ldapGroup['name'], $registeredGroups)) {
+                    $this->insertLdapGroupByNameAndDn(
+                        (int) $ldapRow['ar_id'],
+                        $ldapGroup['name'],
+                        $ldapGroup['dn']
+                    );
+                }
+            }
+
+            $res = $this->db->prepare(
+                "SELECT cg_id, cg_name, cg_ldap_dn FROM contactgroup " .
+                "WHERE cg_type = 'ldap' AND ar_id = :arId"
+            );
+            $res->bindValue(':arId', $ldapRow['ar_id'], \PDO::PARAM_INT);
+            $res->execute();
+
+            $this->db->beginTransaction();
+            try {
+                while ($row = $res->fetch()) {
+                    // Test is the group has not been moved or deleted in ldap
+                    if (
+                        (empty($row['cg_ldap_dn']) || false === $ldapConn->getEntry($row['cg_ldap_dn']))
+                        && is_resource($ldapConn->getDs())
+                        && ldap_errno($ldapConn->getDs()) != 3
+                    ) {
+                        $dn = $ldapConn->findGroupDn($row['cg_name']);
+                        if (false === $dn && ldap_errno($ldapConn->getDs()) != 3) {
+                            // Delete the ldap group in contactgroup
+                            try {
+                                $stmt = $this->db->prepare(
+                                    "DELETE FROM contactgroup WHERE cg_id = :cgId"
+                                );
+                                $stmt->bindValue('cgId', $row['cg_id'], \PDO::PARAM_INT);
+                                $stmt->execute();
+                            } catch (\PDOException $e) {
+                                $msg[] = "Error processing delete contactgroup request of ldap group : " .
+                                    $row['cg_name'];
+                                throw $e;
+                            }
+                            continue;
+                        } else { // Update the ldap group dn in contactgroup
+                            try {
+                                $updateDnStatement = $this->db->prepare(
+                                    "UPDATE contactgroup SET cg_ldap_dn = :cg_dn WHERE cg_id = :cg_id"
+                                );
+                                $updateDnStatement->bindValue(':cg_dn', $dn, \PDO::PARAM_STR);
+                                $updateDnStatement->bindValue(':cg_id', $row['cg_id'], \PDO::PARAM_INT);
+                                $updateDnStatement->execute();
+                                $row['cg_ldap_dn'] = $dn;
+                            } catch (\PDOException $e) {
+                                $msg[] = "Error processing update contactgroup request of ldap group : " .
+                                    $row['cg_name'];
+                                throw $e;
+                            }
+                        }
+                    }
+                    $members = $ldapConn->listUserForGroup($row['cg_ldap_dn']);
+
+                    // Refresh Users Groups.
+                    $deleteStmt = $this->db->prepare(
+                        "DELETE FROM contactgroup_contact_relation
+                        WHERE contactgroup_cg_id = :cgId"
+                    );
+                    $deleteStmt->bindValue(':cgId', $row['cg_id'], \PDO::PARAM_INT);
+                    $deleteStmt->execute();
+                    $contactDns = '';
+                    foreach ($members as $member) {
+                        $contactDns .= $this->db->quote($member) . ',';
+                    }
+                    $contactDns = rtrim($contactDns, ",");
+
+                    if ($contactDns !== '') {
+                        try {
+                            $resContact = $this->db->query(
+                                "SELECT contact_id FROM contact WHERE contact_ldap_dn IN (" . $contactDns . ")"
+                            );
+                        } catch (\PDOException $e) {
+                            $msg[] = "Error in getting contact id from members.";
+                            throw $e;
+                            continue;
+                        }
+                        while ($rowContact = $resContact->fetch()) {
+                            try {
+                                $insertStmt = $this->db->prepare(
+                                    "INSERT INTO contactgroup_contact_relation
+                                    (contactgroup_cg_id, contact_contact_id)
+                                    VALUES (:cgId, :contactId)"
+                                );
+                                $insertStmt->bindValue(':cgId', $row['cg_id'], \PDO::PARAM_INT);
+                                $insertStmt->bindValue(':contactId', $rowContact['contact_id'], \PDO::PARAM_INT);
+                                $insertStmt->execute();
+                            } catch (\PDOException $e) {
+                                $msg[] = "Error insert relation between contactgroup " . $row['cg_id'] .
+                                    " and contact " . $rowContact['contact_id'];
+                                throw $e;
+                            }
+                        }
+                    }
+                }
+                $updateTime = $this->db->prepare(
+                    "UPDATE `options` SET `value` = :currentTime
+                    WHERE `key` = 'ldap_last_acl_update'"
+                );
+                $updateTime->bindValue(':currentTime', time(), \PDO::PARAM_INT);
+                $updateTime->execute();
+                $this->db->commit();
+            } catch (\PDOException $e) {
+                $this->db->rollBack();
             }
         }
         return $msg;

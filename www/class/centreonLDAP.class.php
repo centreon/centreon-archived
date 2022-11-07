@@ -198,6 +198,10 @@ class CentreonLDAP
             $this->debug('LDAP Connect : trying url : ' . $url);
             $this->setErrorHandler();
             $this->ds = ldap_connect($url);
+            if (!is_resource($this->ds)) {
+                $this->debug('LDAP Connection failed to : ' . $url);
+                continue;
+            }
             ldap_set_option($this->ds, LDAP_OPT_REFERRALS, 0);
             $protocol_version = 3;
             if (isset($ldap['info']['protocol_version'])) {
@@ -263,7 +267,7 @@ class CentreonLDAP
     /**
      * Send back the ldap resource
      *
-     * @return \LDAP\Connection|resource
+     * @return resource
      */
     public function getDs()
     {
@@ -323,6 +327,10 @@ class CentreonLDAP
         $this->setErrorHandler();
         $filter = preg_replace('/%s/', $this->replaceFilter($group), $this->groupSearchInfo['filter']);
         $result = ldap_search($this->ds, $this->groupSearchInfo['base_search'], $filter);
+        if ($result === false) {
+            $this->debug("LDAP Search : cannot retrieve group DN of " . $group);
+            return false;
+        }
         $entries = ldap_get_entries($this->ds, $result);
         restore_error_handler();
         if ($entries['count'] === 0) {
@@ -346,6 +354,9 @@ class CentreonLDAP
         $filter = preg_replace('/%s/', $pattern, $this->groupSearchInfo['filter']);
         $result = @ldap_search($this->ds, $this->groupSearchInfo['base_search'], $filter);
         if (false === $result) {
+            $this->debug(
+                "LDAP Search : cannot retrieve list of groups using filter " . $this->groupSearchInfo['filter']
+            );
             restore_error_handler();
             return [];
         }
@@ -379,6 +390,12 @@ class CentreonLDAP
         $this->setErrorHandler();
         $filter = preg_replace('/%s/', $pattern, $this->userSearchInfo['filter']);
         $result = ldap_search($this->ds, $this->userSearchInfo['base_search'], $filter);
+        if ($result === false) {
+            $this->debug(
+                "LDAP Search : cannot retrieve list of users using filter " . $this->groupSearchInfo['filter']
+            );
+            return [];
+        }
         $entries = ldap_get_entries($this->ds, $result);
         $nbEntries = $entries['count'];
         $list = array();
@@ -404,6 +421,9 @@ class CentreonLDAP
         }
         $result = ldap_read($this->ds, $dn, '(objectClass=*)', $attr);
         if ($result === false) {
+            $this->debug(
+                "LDAP Search : cannot retrieve entry with DN " . $dn
+            );
             restore_error_handler();
             return false;
         }
@@ -447,6 +467,9 @@ class CentreonLDAP
             '(' . $this->groupSearchInfo['member'] . '=' . $this->replaceFilter($userdn) . '))';
         $result = @ldap_search($this->ds, $this->groupSearchInfo['base_search'], $filter);
         if (false === $result) {
+            $this->debug(
+                "LDAP Search : cannot list groups of user " . $userdn
+            );
             restore_error_handler();
             return array();
         }
@@ -484,6 +507,9 @@ class CentreonLDAP
             $result = @ldap_search($this->ds, $this->userSearchInfo['base_search'], $filter);
 
             if (false === $result) {
+                $this->debug(
+                    "LDAP Search : cannot list users of group " . $groupdn
+                );
                 restore_error_handler();
                 return array();
             }
@@ -501,6 +527,9 @@ class CentreonLDAP
             $result = @ldap_search($this->ds, $this->groupSearchInfo['base_search'], $filter);
 
             if (false === $result) {
+                $this->debug(
+                    "LDAP Search : cannot list users of group " . $groupdn
+                );
                 restore_error_handler();
                 return array();
             }
@@ -794,21 +823,24 @@ class CentreonLDAP
      */
     private function errorLdapHandler($errno, $errstr, $errfile, $errline): bool
     {
-        if ($errno === 2 && ldap_errno($this->ds) === 4) {
-            /*
-            Silencing : 'size limit exceeded' warnings in the logs
-            As the $searchLimit value needs to be consistent with the ldap server's configuration and
-            as the size limit error thrown is not related with the results.
-                ldap_errno : 4 = LDAP_SIZELIMIT_EXCEEDED
-                $errno     : 2 = PHP_WARNING
-            */
-            $this->debug("LDAP Error : Size limit exceeded error. This error was not added to php log. "
-                . "Kindly, check your LDAP server's configuration and your Centreon's LDAP parameters.");
-            return true;
+        if (is_resource($this->ds)) {
+            if ($errno === 2 && ldap_errno($this->ds) === 4) {
+                /*
+                Silencing : 'size limit exceeded' warnings in the logs
+                As the $searchLimit value needs to be consistent with the ldap server's configuration and
+                as the size limit error thrown is not related with the results.
+                    ldap_errno : 4 = LDAP_SIZELIMIT_EXCEEDED
+                    $errno     : 2 = PHP_WARNING
+                */
+                $this->debug("LDAP Error : Size limit exceeded error. This error was not added to php log. "
+                    . "Kindly, check your LDAP server's configuration and your Centreon's LDAP parameters.");
+                return true;
+            }
+
+            // throwing all errors
+            $this->debug("LDAP Error : " . ldap_error($this->ds));
         }
 
-        // throwing all errors
-        $this->debug("LDAP Error : " . ldap_error($this->ds));
         return false;
     }
 
