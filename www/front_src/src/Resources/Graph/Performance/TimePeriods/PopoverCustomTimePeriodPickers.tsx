@@ -62,8 +62,13 @@ interface Props {
   classNamePaper?: string;
   classNamePicker?: string;
   customTimePeriod: CustomTimePeriod;
+  maxDatePickerEndInput?: Date | dayjs.Dayjs;
+  maxDatePickerStartInput?: Date;
+  minDatePickerEndInput?: Date;
+  minDatePickerStartInput?: Date;
   onClose?: () => void;
   open: boolean;
+  pickerWithoutInitialValue?: boolean;
   reference?: AnchorReference;
   renderBody?: JSX.Element;
   renderFooter?: JSX.Element;
@@ -91,6 +96,11 @@ const PopoverCustomTimePeriodPickers = ({
   renderTitle,
   renderBody,
   renderFooter,
+  pickerWithoutInitialValue,
+  maxDatePickerStartInput = customTimePeriod?.end,
+  minDatePickerStartInput,
+  minDatePickerEndInput = customTimePeriod?.start,
+  maxDatePickerEndInput,
 }: Props): JSX.Element => {
   const { classes, cx } = useStyles();
   const { t } = useTranslation();
@@ -169,9 +179,11 @@ const PopoverCustomTimePeriodPickers = ({
                 <DateTimePickerInput
                   changeDate={changeDate}
                   date={start}
-                  maxDate={customTimePeriod.end}
+                  maxDate={maxDatePickerStartInput}
+                  minDate={minDatePickerStartInput}
                   property={CustomTimePeriodProperty.start}
                   setDate={setStart}
+                  withoutInitialValue={pickerWithoutInitialValue}
                 />
               </div>
             </div>
@@ -181,9 +193,11 @@ const PopoverCustomTimePeriodPickers = ({
                 <DateTimePickerInput
                   changeDate={changeDate}
                   date={end}
-                  minDate={customTimePeriod.start}
+                  maxDate={maxDatePickerEndInput}
+                  minDate={minDatePickerEndInput}
                   property={CustomTimePeriodProperty.end}
                   setDate={setEnd}
+                  withoutInitialValue={pickerWithoutInitialValue}
                 />
               </div>
             </div>

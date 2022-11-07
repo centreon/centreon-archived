@@ -1,5 +1,7 @@
+/* eslint-disable hooks/sort */
 import { useState, useEffect } from 'react';
 
+import dayjs from 'dayjs';
 import { useAtom } from 'jotai';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 import { makeStyles } from 'tss-react/mui';
@@ -109,12 +111,18 @@ const AnomalyDetectionExclusionPeriod = ({
   const selectedTimePeriod = useAtomValue(selectedTimePeriodAtom);
   const getGraphQueryParameters = useAtomValue(graphQueryParametersDerivedAtom);
   const details = useAtomValue(detailsAtom);
-  const exclusionTimePeriods = { ...customTimePeriod };
+  // const exclusionTimePeriods = { ...customTimePeriod };
+
+  const [exclusionTimePeriods, setExclusionTimePeriods] =
+    useState(customTimePeriod);
 
   const endpoint = path(['links', 'endpoints', 'performance_graph'], details);
 
+  const maxDateEndInputPicker = dayjs(exclusionTimePeriods?.end).add(1, 'day');
+
   const exclude = (): void => {
     setOpen(true);
+    setExclusionTimePeriods(customTimePeriod);
   };
 
   const anchorPosition = {
@@ -228,11 +236,14 @@ const AnomalyDetectionExclusionPeriod = ({
         </List>
       </div>
       <PopoverCustomTimePeriodPickers
+        pickerWithoutInitialValue
         acceptDate={changeDate}
         anchorReference="anchorPosition"
         classNamePaper={classes.paper}
         classNamePicker={classes.picker}
         customTimePeriod={exclusionTimePeriods}
+        maxDatePickerEndInput={maxDateEndInputPicker}
+        minDatePickerStartInput={exclusionTimePeriods?.start}
         open={open}
         reference={{ anchorPosition }}
         renderBody={<AnomalyDetectionCommentExclusionPeriod />}

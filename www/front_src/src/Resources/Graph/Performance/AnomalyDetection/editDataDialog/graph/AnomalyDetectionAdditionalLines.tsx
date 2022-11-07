@@ -63,7 +63,8 @@ const AdditionalLines = ({
   const isDisplayedExclusionPeriodsThreshold =
     !isNil(linesExclusionPeriods) && !isNil(timeSeriesExclusionPeriods);
 
-  const { graphHeight, graphWidth, lines } = additionalLinesProps;
+  const { graphHeight, graphWidth, lines, xScale, leftScale, rightScale } =
+    additionalLinesProps;
 
   const isDisplayedThresholds = displayAdditionalLines({
     lines,
@@ -86,7 +87,10 @@ const AdditionalLines = ({
           data={exclusionPeriodsThreshold}
           graphHeight={graphHeight}
           graphWidth={graphWidth}
+          leftScale={leftScale}
           resource={details}
+          rightScale={rightScale}
+          xScale={xScale}
         />
       )}
     </>

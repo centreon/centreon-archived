@@ -31,6 +31,9 @@ const AnomalyDetectionExclusionPeriodsThreshold = ({
   graphHeight,
   graphWidth,
   resource,
+  xScale,
+  rightScale,
+  leftScale,
 }: any): JSX.Element | null => {
   const timeSeries = data?.data?.timeSeries;
 
@@ -51,34 +54,34 @@ const AnomalyDetectionExclusionPeriodsThreshold = ({
   const [{ metric: metricY0, unit: unitY0, invert: invertY0 }] =
     regularLines.filter((item) => equals(item.name, 'Lower Threshold'));
 
-  const leftScale = useMemo(
-    () =>
-      getLeftScale({
-        dataLines: lines,
-        dataTimeSeries: timeSeries,
-        valueGraphHeight: graphHeight,
-      }),
-    [lines, graphHeight, timeSeries],
-  );
+  // const leftScale = useMemo(
+  //   () =>
+  //     getLeftScale({
+  //       dataLines: lines,
+  //       dataTimeSeries: timeSeries,
+  //       valueGraphHeight: graphHeight,
+  //     }),
+  //   [lines, graphHeight, timeSeries],
+  // );
 
-  const rightScale = useMemo(
-    () =>
-      getRightScale({
-        dataLines: lines,
-        dataTimeSeries: timeSeries,
-        valueGraphHeight: graphHeight,
-      }),
-    [],
-  );
+  // const rightScale = useMemo(
+  //   () =>
+  //     getRightScale({
+  //       dataLines: lines,
+  //       dataTimeSeries: timeSeries,
+  //       valueGraphHeight: graphHeight,
+  //     }),
+  //   [],
+  // );
 
-  const xScale = useMemo(
-    () =>
-      getXScale({
-        dataTime: timeSeries,
-        valueWidth: graphWidth,
-      }),
-    [timeSeries, graphWidth],
-  );
+  // const xScale = useMemo(
+  //   () =>
+  //     getXScale({
+  //       dataTime: timeSeries,
+  //       valueWidth: graphWidth,
+  //     }),
+  //   [timeSeries, graphWidth],
+  // );
 
   const y1Scale = getYScale({
     hasMoreThanTwoUnits: !isNil(thirdUnit),

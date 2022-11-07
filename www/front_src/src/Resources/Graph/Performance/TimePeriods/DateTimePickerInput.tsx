@@ -13,10 +13,11 @@ import useDateTimePickerAdapter from '../../../useDateTimePickerAdapter';
 interface Props {
   changeDate: (props) => void;
   date: Date;
-  maxDate?: Date;
-  minDate?: Date;
+  maxDate?: Date | dayjs.Dayjs;
+  minDate?: Date | dayjs.Dayjs;
   property: CustomTimePeriodProperty;
   setDate: Dispatch<SetStateAction<Date>>;
+  withoutInitialValue?: boolean;
 }
 
 const renderDateTimePickerTextField =
@@ -43,8 +44,11 @@ const DateTimePickerInput = ({
   property,
   changeDate,
   setDate,
+  withoutInitialValue = false,
 }: Props): JSX.Element => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isWithoutInitialValue, setWithoutInitialValue] =
+    useState(withoutInitialValue);
   const { getDestinationAndConfiguredTimezoneOffset, formatKeyboardValue } =
     useDateTimePickerAdapter();
 
@@ -52,6 +56,8 @@ const DateTimePickerInput = ({
     newValue: dayjs.Dayjs | null,
     keyBoardValue: string | undefined,
   ): void => {
+    setWithoutInitialValue(false);
+
     if (isOpen) {
       changeDate({ date: dayjs(newValue).toDate(), property });
 
@@ -80,7 +86,7 @@ const DateTimePickerInput = ({
       minDate={minDate && dayjs(minDate)}
       open={isOpen}
       renderInput={renderDateTimePickerTextField(blur)}
-      value={date}
+      value={isWithoutInitialValue ? null : date}
       onChange={changeTime}
       onClose={(): void => setIsOpen(false)}
       onOpen={(): void => setIsOpen(true)}

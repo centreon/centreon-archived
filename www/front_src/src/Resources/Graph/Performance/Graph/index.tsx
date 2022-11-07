@@ -320,18 +320,6 @@ const GraphContent = <T,>({
     };
   }, []);
 
-  const xScaleO = useMemo(
-    () =>
-      Scale.scaleTime<number>({
-        domain: [
-          getMin(timeSeries.map(getTime)),
-          getMax(timeSeries.map(getTime)),
-        ],
-        range: [0, graphWidth],
-      }),
-    [graphWidth, timeSeries],
-  );
-
   const xScale = useMemo(
     () =>
       getXScale({
