@@ -19,6 +19,7 @@ import {
 
 import { getData, useRequest } from '@centreon/ui';
 
+import { centreonUi } from '../../../../../Header/helpers';
 import {
   detailsAtom,
   selectedResourcesDetailsAtom,
@@ -108,17 +109,20 @@ const AnomalyDetectionExclusionPeriod = ({
   const [thresholdsAnomalyDetectionData, setThresholdAnomalyDetectionData] =
     useAtom(thresholdsAnomalyDetectionDataAtom);
   const customTimePeriod = useAtomValue(customTimePeriodAtom);
-  const selectedTimePeriod = useAtomValue(selectedTimePeriodAtom);
   const getGraphQueryParameters = useAtomValue(graphQueryParametersDerivedAtom);
   const details = useAtomValue(detailsAtom);
-  // const exclusionTimePeriods = { ...customTimePeriod };
 
   const [exclusionTimePeriods, setExclusionTimePeriods] =
     useState(customTimePeriod);
 
   const endpoint = path(['links', 'endpoints', 'performance_graph'], details);
+  const { format, toTime, toDate } = centreonUi.useLocaleDateTimeFormat();
 
   const maxDateEndInputPicker = dayjs(exclusionTimePeriods?.end).add(1, 'day');
+
+  const listExcludedDates =
+    thresholdsAnomalyDetectionData?.exclusionPeriodsThreshold
+      ?.selectedDateToDelete;
 
   const exclude = (): void => {
     setOpen(true);
@@ -158,6 +162,17 @@ const AnomalyDetectionExclusionPeriod = ({
     }
     console.log('call');
     setNewEndPoint(graphEndpoint() as any);
+    // setThresholdAnomalyDetectionData({
+    //   ...thresholdsAnomalyDetectionData,
+    //   exclusionPeriodsThreshold: {
+    //     ...thresholdsAnomalyDetectionData.exclusionPeriodsThreshold,
+    //     selectedDateToDelete: [
+    //       ...thresholdsAnomalyDetectionData.exclusionPeriodsThreshold
+    //         .selectedDateToDelete,
+    //       { end: endDate, start: startDate },
+    //     ],
+    //   },
+    // });
   }, [startDate, endDate]);
 
   useEffect(() => {
@@ -199,10 +214,28 @@ const AnomalyDetectionExclusionPeriod = ({
     setThresholdAnomalyDetectionData({
       ...thresholdsAnomalyDetectionData,
       exclusionPeriodsThreshold: {
+        ...thresholdsAnomalyDetectionData.exclusionPeriodsThreshold,
         data: { lines: lineData, timeSeries },
       },
     });
   }, [timeSeries, lineData]);
+
+  console.log({ thresholdsAnomalyDetectionData });
+
+  const confirmExcluderPeriods = (): void => {
+    setThresholdAnomalyDetectionData({
+      ...thresholdsAnomalyDetectionData,
+      exclusionPeriodsThreshold: {
+        ...thresholdsAnomalyDetectionData.exclusionPeriodsThreshold,
+        selectedDateToDelete: [
+          ...thresholdsAnomalyDetectionData.exclusionPeriodsThreshold
+            .selectedDateToDelete,
+          { end: endDate, start: startDate },
+        ],
+      },
+    });
+    setOpen(false);
+  };
 
   return (
     <div className={classes.container}>
@@ -230,9 +263,13 @@ const AnomalyDetectionExclusionPeriod = ({
           Excluded periods
         </Typography>
         <List className={classes.list}>
-          <ListItem>
-            <ListItemText primary="test" />
-          </ListItem>
+          {listExcludedDates.map((item, index) => (
+            <ListItem key={index}>
+              <ListItemText
+                primary={`From ${toDate(item?.start)} To ${toDate(item?.end)}`}
+              />
+            </ListItem>
+          ))}
         </List>
       </div>
       <PopoverCustomTimePeriodPickers
@@ -248,7 +285,10 @@ const AnomalyDetectionExclusionPeriod = ({
         reference={{ anchorPosition }}
         renderBody={<AnomalyDetectionCommentExclusionPeriod />}
         renderFooter={
-          <AnomalyDetectionFooterExclusionPeriods setOpen={setOpen} />
+          <AnomalyDetectionFooterExclusionPeriods
+            confirmExcluderPeriods={confirmExcluderPeriods}
+            setOpen={setOpen}
+          />
         }
         renderTitle={<AnomalyDetectionTitleExclusionPeriods />}
         onClose={close}

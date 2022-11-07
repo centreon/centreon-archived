@@ -7,7 +7,10 @@ interface ThresholdsAnomalyDetectionDataAtom {
   estimatedEnvelopeThreshold?: {
     data: CustomFactorsData | null | undefined;
   } | null;
-  exclusionPeriodsThreshold?: { data: { lines: any; timeSeries: any } } | null;
+  exclusionPeriodsThreshold: {
+    data?: { lines: any; timeSeries: any };
+    selectedDateToDelete: Array<{ end: undefined; start: undefined }>;
+  };
 }
 
 export const countedRedCirclesAtom = atom<number | null>(null);
@@ -18,5 +21,5 @@ export const thresholdsAnomalyDetectionDataAtom =
   atom<ThresholdsAnomalyDetectionDataAtom>({
     envelopeSizeThreshold: null,
     estimatedEnvelopeThreshold: null,
-    exclusionPeriodsThreshold: null,
+    exclusionPeriodsThreshold: { data: undefined, selectedDateToDelete: [] },
   });
