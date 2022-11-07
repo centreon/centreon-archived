@@ -112,7 +112,6 @@ it('should throw InvalidArgumentException when vault address is empty', function
         'myRoleId',
         'mySecretId',
         'mySalt'
-
     );
 })->throws(
     InvalidArgumentException::class,
