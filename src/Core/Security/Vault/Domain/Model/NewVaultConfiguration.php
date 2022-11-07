@@ -33,6 +33,7 @@ class NewVaultConfiguration
     public const MAX_LENGTH = 255;
     public const MIN_PORT_VALUE = 1;
     public const MAX_PORT_VALUE = 65535;
+    public const MIN_TYPE_ID = 1;
     public const SALT_LENGTH = 128;
 
     /**
@@ -57,6 +58,7 @@ class NewVaultConfiguration
     ) {
         Assertion::notEmpty($name, 'NewVaultConfiguration::name');
         Assertion::maxLength($name, self::MAX_LENGTH, 'NewVaultConfiguration::name');
+        Assertion::min($typeId, self::MIN_TYPE_ID, 'NewVaultConfiguration::typeId');
         Assertion::notEmpty($address, 'NewVaultConfiguration::address');
         Assertion::ipOrDomain($address, 'NewVaultConfiguration::address');
         Assertion::max($port, self::MAX_PORT_VALUE, 'NewVaultConfiguration::port');
