@@ -62,7 +62,7 @@ final class CreateVaultConfigurationController extends AbstractController
         /**
          * @var array{
          *  "name": string,
-         *  "type": string,
+         *  "type_id": integer,
          *  "address": string,
          *  "port": integer,
          *  "storage": string,
@@ -87,7 +87,7 @@ final class CreateVaultConfigurationController extends AbstractController
     /**
      * @param array{
      *  "name": string,
-     *  "type": string,
+     *  "type_id": integer,
      *  "address": string,
      *  "port": integer,
      *  "storage": string,
@@ -102,7 +102,7 @@ final class CreateVaultConfigurationController extends AbstractController
     ): CreateVaultConfigurationRequest {
         $createVaultConfigurationRequest = new CreateVaultConfigurationRequest();
         $createVaultConfigurationRequest->name = $decodedRequest['name'];
-        $createVaultConfigurationRequest->type = $decodedRequest['type'];
+        $createVaultConfigurationRequest->typeId = $decodedRequest['type_id'];
         $createVaultConfigurationRequest->address = $decodedRequest['address'];
         $createVaultConfigurationRequest->port = $decodedRequest['port'];
         $createVaultConfigurationRequest->storage = $decodedRequest['storage'];

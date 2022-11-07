@@ -39,7 +39,7 @@ it(
         );
         $createVaultConfigurationRequest = new CreateVaultConfigurationRequest();
         $createVaultConfigurationRequest->name = 'myVault';
-        $createVaultConfigurationRequest->type = NewVaultConfiguration::TYPE_HASHICORP;
+        $createVaultConfigurationRequest->typeId = 1;
         $createVaultConfigurationRequest->address = '127.0.0.1';
         $createVaultConfigurationRequest->port = 8200;
         $createVaultConfigurationRequest->storage = 'myStorage';
@@ -58,7 +58,7 @@ it('should encrypt roleId and secretId correctly', function (): void {
     $factory = new NewVaultConfigurationFactory($encryption);
     $createVaultConfigurationRequest = new CreateVaultConfigurationRequest();
     $createVaultConfigurationRequest->name = 'myVault';
-    $createVaultConfigurationRequest->type = NewVaultConfiguration::TYPE_HASHICORP;
+    $createVaultConfigurationRequest->typeId = 1;
     $createVaultConfigurationRequest->address = '127.0.0.1';
     $createVaultConfigurationRequest->port = 8200;
     $createVaultConfigurationRequest->storage = 'myStorage';

@@ -33,13 +33,11 @@ class NewVaultConfiguration
     public const MAX_LENGTH = 255;
     public const MIN_PORT_VALUE = 1;
     public const MAX_PORT_VALUE = 65535;
-    public const TYPE_HASHICORP = 'hashicorp';
-    public const ALLOWED_TYPES = [self::TYPE_HASHICORP];
     public const SALT_LENGTH = 128;
 
     /**
      * @param string $name
-     * @param string $type
+     * @param int $typeId
      * @param string $address
      * @param int $port
      * @param string $storage
@@ -49,7 +47,7 @@ class NewVaultConfiguration
      */
     public function __construct(
         protected string $name,
-        protected string $type,
+        protected int $typeId,
         protected string $address,
         protected int $port,
         protected string $storage,
@@ -59,8 +57,7 @@ class NewVaultConfiguration
     ) {
         Assertion::notEmpty($name, 'NewVaultConfiguration::name');
         Assertion::maxLength($name, self::MAX_LENGTH, 'NewVaultConfiguration::name');
-        Assertion::notEmpty($type, 'NewVaultConfiguration::type');
-        Assertion::inArray($type, self::ALLOWED_TYPES, 'NewVaultConfiguration::type');
+        Assertion::notNull($typeId, 'NewVaultConfiguration::typeId');
         Assertion::notEmpty($address, 'NewVaultConfiguration::address');
         Assertion::ipOrDomain($address, 'NewVaultConfiguration::address');
         Assertion::max($port, self::MAX_PORT_VALUE, 'NewVaultConfiguration::port');
@@ -83,11 +80,11 @@ class NewVaultConfiguration
     }
 
     /**
-     * @return string
+     * @return int
      */
-    public function getType(): string
+    public function getTypeId(): int
     {
-        return $this->type;
+        return $this->typeId;
     }
 
     /**

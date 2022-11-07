@@ -7246,17 +7246,17 @@ components:
           example: "0"
     Administration.Vault:
       type: object
-      required: [name, type, address, port, storage, role_id, secret_id]
+      required: [name, type_id, address, port, storage, role_id, secret_id]
       description: "Vault configuration"
       properties:
         name:
           type: string
           description: "Vault configuration name"
           example: "centreon_vault"
-        type:
-          type: string
-          description: "Vault type"
-          example: "hashicorp"
+        type_id:
+          type: integer
+          description: "Vault type id"
+          example: 1
         address:
           type: string
           description: "Vault URL or IP"

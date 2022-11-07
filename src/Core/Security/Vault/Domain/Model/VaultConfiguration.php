@@ -31,7 +31,7 @@ class VaultConfiguration extends NewVaultConfiguration
     /**
      * @param int $id
      * @param string $name
-     * @param string $type
+     * @param int $typeId
      * @param string $address
      * @param int $port
      * @param string $storage
@@ -42,7 +42,7 @@ class VaultConfiguration extends NewVaultConfiguration
     public function __construct(
         private int $id,
         string $name,
-        string $type,
+        int $typeId,
         string $address,
         int $port,
         string $storage,
@@ -50,7 +50,7 @@ class VaultConfiguration extends NewVaultConfiguration
         string $secretId,
         string $salt
     ) {
-        parent::__construct($name, $type, $address, $port, $storage, $roleId, $secretId, $salt);
+        parent::__construct($name, $typeId, $address, $port, $storage, $roleId, $secretId, $salt);
     }
 
     /**

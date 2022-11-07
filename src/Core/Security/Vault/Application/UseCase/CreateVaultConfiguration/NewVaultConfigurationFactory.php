@@ -57,7 +57,7 @@ class NewVaultConfigurationFactory
 
         return new NewVaultConfiguration(
             $request->name,
-            $request->type,
+            $request->typeId,
             $request->address,
             $request->port,
             $request->storage,

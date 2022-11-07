@@ -51,7 +51,7 @@ it('Should present InvalidArgumentResponse when vault configuration already exis
     $vaultConfiguration = new VaultConfiguration(
         1,
         'myConf',
-        NewVaultConfiguration::TYPE_HASHICORP,
+        1,
         '127.0.0.1',
         8200,
         'myStorage',
@@ -88,7 +88,7 @@ it('Should present InvalidArgumentResponse when one parameter is not valid', fun
 
     $createVaultConfigurationRequest = new CreateVaultConfigurationRequest();
     $createVaultConfigurationRequest->name = 'myVault';
-    $createVaultConfigurationRequest->type = NewVaultConfiguration::TYPE_HASHICORP;
+    $createVaultConfigurationRequest->typeId = 1;
     $createVaultConfigurationRequest->address = '';
     $createVaultConfigurationRequest->port = 8200;
     $createVaultConfigurationRequest->storage = 'myStorage';
@@ -144,7 +144,7 @@ it('Should present CreatedResponse when vault configuration is created with succ
 
     $createVaultConfigurationRequest = new CreateVaultConfigurationRequest();
     $createVaultConfigurationRequest->name = 'myVault';
-    $createVaultConfigurationRequest->type = NewVaultConfiguration::TYPE_HASHICORP;
+    $createVaultConfigurationRequest->typeId = 1;
     $createVaultConfigurationRequest->address = '127.0.0.1';
     $createVaultConfigurationRequest->port = 8200;
     $createVaultConfigurationRequest->storage = 'myStorage';
