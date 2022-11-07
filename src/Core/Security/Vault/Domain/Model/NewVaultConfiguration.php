@@ -57,7 +57,6 @@ class NewVaultConfiguration
     ) {
         Assertion::notEmpty($name, 'NewVaultConfiguration::name');
         Assertion::maxLength($name, self::MAX_LENGTH, 'NewVaultConfiguration::name');
-        Assertion::notNull($typeId, 'NewVaultConfiguration::typeId');
         Assertion::notEmpty($address, 'NewVaultConfiguration::address');
         Assertion::ipOrDomain($address, 'NewVaultConfiguration::address');
         Assertion::max($port, self::MAX_PORT_VALUE, 'NewVaultConfiguration::port');
