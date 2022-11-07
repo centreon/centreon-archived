@@ -47,7 +47,7 @@ class NewVaultConfigurationFactory
      */
     public function create(CreateVaultConfigurationRequest $request): NewVaultConfiguration
     {
-        $salt = EncryptionInterface::generateRandomString(NewVaultConfiguration::SALT_LENGTH);
+        $salt = $this->encryption->generateRandomString(NewVaultConfiguration::SALT_LENGTH);
         $roleId = $this->encryption
             ->setSecondKey($salt)
             ->crypt($request->roleId);
