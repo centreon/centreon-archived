@@ -176,7 +176,7 @@ class CentreonHostGroup extends CentreonObject
             $resultString = "";
             $paramString = "";
             foreach ($listParam as $paramSearch) {
-                if (!$paramString) {
+                if (!isset($paramString)) {
                     $paramString = $paramSearch;
                 } else {
                     $paramString = $paramString . $this->delim . $paramSearch;
