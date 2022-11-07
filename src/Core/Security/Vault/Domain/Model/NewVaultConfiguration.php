@@ -35,7 +35,7 @@ class NewVaultConfiguration
     public const MAX_PORT_VALUE = 65535;
     public const TYPE_HASHICORP = 'hashicorp';
     public const ALLOWED_TYPES = [self::TYPE_HASHICORP];
-    public const SALT_LENGTH = 60;
+    public const SALT_LENGTH = 128;
 
     /**
      * @param string $name
