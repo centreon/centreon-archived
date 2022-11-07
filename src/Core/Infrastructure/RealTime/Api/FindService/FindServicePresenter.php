@@ -38,11 +38,6 @@ class FindServicePresenter extends AbstractPresenter implements FindServicePrese
     use HttpUrlTrait;
 
     /**
-     * @var ResponseStatusInterface|null
-     */
-    protected $responseStatus;
-
-    /**
      * @param HypermediaCreator $hypermediaCreator
      * @param PresenterFormatterInterface $presenterFormatter
      */
@@ -50,39 +45,40 @@ class FindServicePresenter extends AbstractPresenter implements FindServicePrese
         private HypermediaCreator $hypermediaCreator,
         protected PresenterFormatterInterface $presenterFormatter
     ) {
+        parent::__construct($presenterFormatter);
     }
 
     /**
      * {@inheritDoc}
-     * @param FindServiceResponse $response
+     * @param FindServiceResponse $data
      */
-    public function present(mixed $response): void
+    public function present(mixed $data): void
     {
         $presenterResponse = [
-            'uuid' => 'h' . $response->hostId . '-s' . $response->serviceId,
-            'id' => $response->serviceId,
-            'name' => $response->name,
+            'uuid' => 'h' . $data->hostId . '-s' . $data->serviceId,
+            'id' => $data->serviceId,
+            'name' => $data->name,
             'type' => 'service',
             'short_type' => 's',
-            'status' => $response->status,
-            'in_downtime' => $response->isInDowntime,
-            'acknowledged' => $response->isAcknowledged,
-            'flapping' => $response->isFlapping,
-            'performance_data' => $response->performanceData,
-            'information' => $response->output,
-            'command_line' => $response->commandLine,
-            'notification_number' => $response->notificationNumber,
-            'latency' => $response->latency,
-            'percent_state_change' => $response->statusChangePercentage,
-            'passive_checks' => $response->hasPassiveChecks,
-            'execution_time' => $response->executionTime,
-            'active_checks' => $response->hasActiveChecks,
-            'icon' => $response->icon,
-            'groups' => $this->hypermediaCreator->convertGroupsForPresenter($response),
-            'parent' => $response->host,
-            'monitoring_server_name' => $response->host['monitoring_server_name'],
-            'categories' => $this->hypermediaCreator->convertCategoriesForPresenter($response),
-            'severity' => $response->severity,
+            'status' => $data->status,
+            'in_downtime' => $data->isInDowntime,
+            'acknowledged' => $data->isAcknowledged,
+            'flapping' => $data->isFlapping,
+            'performance_data' => $data->performanceData,
+            'information' => $data->output,
+            'command_line' => $data->commandLine,
+            'notification_number' => $data->notificationNumber,
+            'latency' => $data->latency,
+            'percent_state_change' => $data->statusChangePercentage,
+            'passive_checks' => $data->hasPassiveChecks,
+            'execution_time' => $data->executionTime,
+            'active_checks' => $data->hasActiveChecks,
+            'icon' => $data->icon,
+            'groups' => $this->hypermediaCreator->convertGroupsForPresenter($data),
+            'parent' => $data->host,
+            'monitoring_server_name' => $data->host['monitoring_server_name'],
+            'categories' => $this->hypermediaCreator->convertCategoriesForPresenter($data),
+            'severity' => $data->severity,
         ];
 
         if ($presenterResponse['severity'] !== null) {
@@ -90,18 +86,18 @@ class FindServicePresenter extends AbstractPresenter implements FindServicePrese
              * normalize the URL to the severity icon
              */
             $presenterResponse['severity']['icon']['url'] = $this->getBaseUri()
-            . '/img/media/' . $response->severity['icon']['url'];
+            . '/img/media/' . $data->severity['icon']['url'];
         }
 
         $acknowledgement = null;
 
-        if (!empty($response->acknowledgement)) {
+        if (!empty($data->acknowledgement)) {
             /**
              * Convert Acknowledgement dates into ISO 8601 format
              */
-            $acknowledgement = $response->acknowledgement;
-            $acknowledgement['entry_time'] = $this->formatDateToIso8601($response->acknowledgement['entry_time']);
-            $acknowledgement['deletion_time'] = $this->formatDateToIso8601($response->acknowledgement['deletion_time']);
+            $acknowledgement = $data->acknowledgement;
+            $acknowledgement['entry_time'] = $this->formatDateToIso8601($data->acknowledgement['entry_time']);
+            $acknowledgement['deletion_time'] = $this->formatDateToIso8601($data->acknowledgement['deletion_time']);
         }
 
         $presenterResponse['acknowledgement'] = $acknowledgement;
@@ -111,7 +107,7 @@ class FindServicePresenter extends AbstractPresenter implements FindServicePrese
          */
         $formattedDatesDowntimes = [];
 
-        foreach ($response->downtimes as $key => $downtime) {
+        foreach ($data->downtimes as $key => $downtime) {
             $formattedDatesDowntimes[$key] = $downtime;
             $formattedDatesDowntimes[$key]['start_time'] = $this->formatDateToIso8601($downtime['start_time']);
             $formattedDatesDowntimes[$key]['end_time'] = $this->formatDateToIso8601($downtime['end_time']);
@@ -128,34 +124,34 @@ class FindServicePresenter extends AbstractPresenter implements FindServicePrese
         /**
          * Calculate the duration
          */
-        $presenterResponse['duration'] = $response->lastStatusChange !== null
-            ? \CentreonDuration::toString(time() - $response->lastStatusChange->getTimestamp())
+        $presenterResponse['duration'] = $data->lastStatusChange !== null
+            ? \CentreonDuration::toString(time() - $data->lastStatusChange->getTimestamp())
             : null;
 
         /**
          * Convert dates to ISO 8601 format
          */
-        $presenterResponse['next_check'] = $this->formatDateToIso8601($response->nextCheck);
-        $presenterResponse['last_check'] = $this->formatDateToIso8601($response->lastCheck);
-        $presenterResponse['last_time_with_no_issue'] = $this->formatDateToIso8601($response->lastTimeOk);
-        $presenterResponse['last_status_change'] = $this->formatDateToIso8601($response->lastStatusChange);
-        $presenterResponse['last_notification'] = $this->formatDateToIso8601($response->lastNotification);
+        $presenterResponse['next_check'] = $this->formatDateToIso8601($data->nextCheck);
+        $presenterResponse['last_check'] = $this->formatDateToIso8601($data->lastCheck);
+        $presenterResponse['last_time_with_no_issue'] = $this->formatDateToIso8601($data->lastTimeOk);
+        $presenterResponse['last_status_change'] = $this->formatDateToIso8601($data->lastStatusChange);
+        $presenterResponse['last_notification'] = $this->formatDateToIso8601($data->lastNotification);
 
         /**
          * Creating the 'tries' entry
          */
-        $tries = $response->checkAttempts . '/' . $response->maxCheckAttempts;
-        $statusType = $response->status['type'] === 0 ? 'S' : 'H';
+        $tries = $data->checkAttempts . '/' . $data->maxCheckAttempts;
+        $statusType = $data->status['type'] === 0 ? 'S' : 'H';
         $presenterResponse['tries'] = $tries . '(' . $statusType . ')';
 
         /**
          * Creating Hypermedias
          */
         $parameters = [
-            'type' => $response->type,
-            'hostId' => $response->hostId,
-            'serviceId' => $response->serviceId,
-            'hasGraphData' => $response->hasGraphData
+            'type' => $data->type,
+            'hostId' => $data->hostId,
+            'serviceId' => $data->serviceId,
+            'hasGraphData' => $data->hasGraphData
         ];
 
         $endpoints = $this->hypermediaCreator->createEndpoints($parameters);
@@ -171,33 +167,6 @@ class FindServicePresenter extends AbstractPresenter implements FindServicePrese
 
         $presenterResponse['links']['uris'] = $this->hypermediaCreator->createInternalUris($parameters);
 
-        $this->presenterFormatter->present($presenterResponse);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function show(): Response
-    {
-        if ($this->getResponseStatus() !== null) {
-            $this->presenterFormatter->present($this->getResponseStatus());
-        }
-        return $this->presenterFormatter->show();
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function setResponseStatus(?ResponseStatusInterface $responseStatus): void
-    {
-        $this->responseStatus = $responseStatus;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getResponseStatus(): ?ResponseStatusInterface
-    {
-        return $this->responseStatus;
+        parent::present($presenterResponse);
     }
 }

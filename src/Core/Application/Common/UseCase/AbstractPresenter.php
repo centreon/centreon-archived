@@ -23,8 +23,6 @@ declare(strict_types=1);
 namespace Core\Application\Common\UseCase;
 
 use Symfony\Component\HttpFoundation\Response;
-use Core\Application\Common\UseCase\PresenterInterface;
-use Core\Application\Common\UseCase\ResponseStatusInterface;
 use Core\Infrastructure\Common\Presenter\PresenterFormatterInterface;
 
 abstract class AbstractPresenter implements PresenterInterface
@@ -32,7 +30,7 @@ abstract class AbstractPresenter implements PresenterInterface
     /**
      * @var ResponseStatusInterface|null
      */
-    protected $responseStatus;
+    protected ?ResponseStatusInterface $responseStatus = null;
 
     /**
      * @var mixed
@@ -49,10 +47,9 @@ abstract class AbstractPresenter implements PresenterInterface
     /**
      * @inheritDoc
      */
-    public function present(mixed $presentedData): void
+    public function present(mixed $data): void
     {
-        $this->presentedData = $presentedData;
-        $this->presenterFormatter->present($presentedData);
+        $this->presentedData = $data;
     }
 
     /**
@@ -68,7 +65,9 @@ abstract class AbstractPresenter implements PresenterInterface
      */
     public function show(): Response
     {
-        return $this->presenterFormatter->show();
+        return ($this->responseStatus !== null)
+            ? $this->presenterFormatter->format($this->responseStatus)
+            : $this->presenterFormatter->format($this->presentedData);
     }
 
     /**
@@ -77,7 +76,6 @@ abstract class AbstractPresenter implements PresenterInterface
     public function setResponseStatus(?ResponseStatusInterface $responseStatus): void
     {
         $this->responseStatus = $responseStatus;
-        $this->presenterFormatter->present($responseStatus);
     }
 
     /**

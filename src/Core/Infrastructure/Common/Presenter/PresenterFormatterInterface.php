@@ -27,22 +27,18 @@ use Symfony\Component\HttpFoundation\Response;
 interface PresenterFormatterInterface
 {
     /**
-     * @param mixed[] $responseHeaders
+     * @param array<string, string> $responseHeaders
      */
     public function setResponseHeaders(array $responseHeaders): void;
 
     /**
-     * @return mixed[]
+     * @return array<string, string>
      */
     public function getResponseHeaders(): array;
 
     /**
      * @param mixed $data
-     */
-    public function present(mixed $data): void;
-
-    /**
      * @return Response
      */
-    public function show(): Response;
+    public function format(mixed $data): Response;
 }

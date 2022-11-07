@@ -39,11 +39,6 @@ class FindHostPresenter extends AbstractPresenter implements FindHostPresenterIn
     use HttpUrlTrait;
 
     /**
-     * @var ResponseStatusInterface|null
-     */
-    protected $responseStatus;
-
-    /**
      * @param HypermediaCreator $hypermediaCreator
      * @param PresenterFormatterInterface $presenterFormatter
      */
@@ -51,6 +46,7 @@ class FindHostPresenter extends AbstractPresenter implements FindHostPresenterIn
         private HypermediaCreator $hypermediaCreator,
         protected PresenterFormatterInterface $presenterFormatter
     ) {
+        parent::__construct($presenterFormatter);
     }
 
     /**
@@ -172,33 +168,6 @@ class FindHostPresenter extends AbstractPresenter implements FindHostPresenterIn
 
         $presenterResponse['links']['uris'] = $this->hypermediaCreator->createInternalUris($parameters);
 
-        $this->presenterFormatter->present($presenterResponse);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function show(): Response
-    {
-        if ($this->getResponseStatus() !== null) {
-            $this->presenterFormatter->present($this->getResponseStatus());
-        }
-        return $this->presenterFormatter->show();
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function setResponseStatus(?ResponseStatusInterface $responseStatus): void
-    {
-        $this->responseStatus = $responseStatus;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getResponseStatus(): ?ResponseStatusInterface
-    {
-        return $this->responseStatus;
+        parent::present($presenterResponse);
     }
 }

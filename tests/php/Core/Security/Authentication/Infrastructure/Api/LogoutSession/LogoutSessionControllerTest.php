@@ -30,7 +30,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Core\Security\Authentication\Application\UseCase\LogoutSession\LogoutSession;
 use Core\Security\Authentication\Infrastructure\Api\LogoutSession\LogoutSessionController;
 use Core\Security\Authentication\Infrastructure\Api\LogoutSession\LogoutSessionPresenter;
-use Core\Infrastructure\Common\Presenter\JsonPresenter;
+use Core\Infrastructure\Common\Presenter\JsonFormatter;
 use Core\Application\Common\UseCase\NoContentResponse;
 use Core\Application\Common\UseCase\ErrorResponse;
 
@@ -55,7 +55,7 @@ class LogoutSessionControllerTest extends TestCase
     {
         $this->request = $this->createMock(Request::class);
         $this->useCase = $this->createMock(LogoutSession::class);
-        $this->logoutSessionPresenter = new LogoutSessionPresenter(new JsonPresenter());
+        $this->logoutSessionPresenter = new LogoutSessionPresenter(new JsonFormatter());
     }
 
     /**
