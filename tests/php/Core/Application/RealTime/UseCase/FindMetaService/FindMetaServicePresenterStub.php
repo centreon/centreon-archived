@@ -36,11 +36,6 @@ class FindMetaServicePresenterStub extends AbstractPresenter implements FindMeta
     public $response;
 
     /**
-     * @var ResponseStatusInterface|null
-     */
-    protected $responseStatus;
-
-    /**
      * constructor
      */
     public function __construct()
@@ -61,21 +56,5 @@ class FindMetaServicePresenterStub extends AbstractPresenter implements FindMeta
     public function present(mixed $response): void
     {
         $this->response = $response;
-    }
-
-    /**
-     * @param ResponseStatusInterface|null $responseStatus
-     */
-    public function setResponseStatus(?ResponseStatusInterface $responseStatus): void
-    {
-        $this->responseStatus = $responseStatus;
-    }
-
-    /**
-     * @return ResponseStatusInterface|null
-     */
-    public function getResponseStatus(): ?ResponseStatusInterface
-    {
-        return $this->responseStatus;
     }
 }

@@ -25,7 +25,7 @@ namespace Core\Infrastructure\Common\Presenter;
 
 use Symfony\Component\HttpFoundation\Response;
 
-class DownloadFormatter extends AbstractFormatter implements PresenterFormatterInterface, DownloadInterface
+class DownloadPresenter extends AbstractFormatter implements PresenterFormatterInterface, DownloadInterface
 {
     private const CSV_FILE_EXTENSION = 'csv';
     private const JSON_FILE_EXTENSION = 'json';

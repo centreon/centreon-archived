@@ -95,7 +95,7 @@ services:
 
     presenter.download.csv:
         class: Core\Infrastructure\Common\Presenter\DownloadPresenter
-        arguments: ['@Core\Infrastructure\Common\Presenter\CsvPresenter']
+        arguments: ['@Core\Infrastructure\Common\Presenter\CsvFormatter']
 
     Core\Application\RealTime\UseCase\FindPerformanceMetrics\FindPerformanceMetricPresenterInterface:
         class: Core\Infrastructure\RealTime\Api\DownloadPerformanceMetrics\DownloadPerformanceMetricsPresenter
