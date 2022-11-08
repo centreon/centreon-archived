@@ -1,0 +1,5 @@
+centreon_application_find_host_groups2:
+  methods: GET
+  path: /configuration/hosts/groups2
+  controller: 'Core\HostGroup\Infrastructure\Api\FindHostGroups\FindHostGroupsController'
+  condition: "request.attributes.get('version') >= 22.04"

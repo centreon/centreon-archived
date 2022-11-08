@@ -10,3 +10,10 @@ security:
     prefix: "{base_uri}authentication"
     requirements:
         base_uri: ".*"
+core_config:
+    resource: "../../src/Core/**/Infrastructure/**/*Route.yaml"
+    prefix: "{base_uri}api/{version}"
+    defaults:
+        version: "latest"
+    requirements:
+        base_uri: ".*"
