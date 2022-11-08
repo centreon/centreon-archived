@@ -32,7 +32,7 @@ use Core\Application\Configuration\User\Repository\WriteUserRepositoryInterface;
 use Core\Application\Configuration\User\UseCase\PatchUser\PatchUser;
 use Core\Application\Configuration\User\UseCase\PatchUser\PatchUserRequest;
 use Core\Domain\Configuration\User\Model\User;
-use Core\Infrastructure\Common\Presenter\JsonPresenter;
+use Core\Infrastructure\Common\Presenter\JsonFormatter;
 use Core\Infrastructure\Configuration\User\Api\PatchUser\PatchUserPresenter;
 
 beforeEach(function () {
@@ -43,7 +43,7 @@ beforeEach(function () {
     $this->request = new PatchUserRequest();
     $this->request->theme = 'light';
     $this->request->userId = 1;
-    $this->presenter = new PatchUserPresenter(new JsonPresenter());
+    $this->presenter = new PatchUserPresenter(new JsonFormatter());
 });
 
 it('tests the error message when user is not found', function () {

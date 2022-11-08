@@ -36,11 +36,6 @@ class FindMetaServicePresenter extends AbstractPresenter implements FindMetaServ
     use PresenterTrait;
 
     /**
-     * @var ResponseStatusInterface|null
-     */
-    protected $responseStatus;
-
-    /**
      * @param HypermediaCreator $hypermediaCreator
      * @param PresenterFormatterInterface $presenterFormatter
      */
@@ -48,48 +43,49 @@ class FindMetaServicePresenter extends AbstractPresenter implements FindMetaServ
         private HypermediaCreator $hypermediaCreator,
         protected PresenterFormatterInterface $presenterFormatter
     ) {
+        parent::__construct($presenterFormatter);
     }
 
     /**
      * {@inheritDoc}
-     * @param FindMetaServiceResponse $response
+     * @param FindMetaServiceResponse $data
      */
-    public function present(mixed $response): void
+    public function present(mixed $data): void
     {
         $presenterResponse = [
-            'uuid' => 'm' . $response->metaId,
-            'id' => $response->metaId,
-            'name' => $response->name,
+            'uuid' => 'm' . $data->metaId,
+            'id' => $data->metaId,
+            'name' => $data->name,
             'type' => 'metaservice',
             'short_type' => 'm',
-            'status' => $response->status,
-            'in_downtime' => $response->isInDowntime,
-            'acknowledged' => $response->isAcknowledged,
-            'flapping' => $response->isFlapping,
-            'performance_data' => $response->performanceData,
-            'information' => $response->output,
-            'command_line' => $response->commandLine,
-            'notification_number' => $response->notificationNumber,
-            'latency' => $response->latency,
-            'percent_state_change' => $response->statusChangePercentage,
-            'passive_checks' => $response->hasPassiveChecks,
-            'execution_time' => $response->executionTime,
-            'active_checks' => $response->hasActiveChecks,
+            'status' => $data->status,
+            'in_downtime' => $data->isInDowntime,
+            'acknowledged' => $data->isAcknowledged,
+            'flapping' => $data->isFlapping,
+            'performance_data' => $data->performanceData,
+            'information' => $data->output,
+            'command_line' => $data->commandLine,
+            'notification_number' => $data->notificationNumber,
+            'latency' => $data->latency,
+            'percent_state_change' => $data->statusChangePercentage,
+            'passive_checks' => $data->hasPassiveChecks,
+            'execution_time' => $data->executionTime,
+            'active_checks' => $data->hasActiveChecks,
             'groups' => [],
             'parent' => null,
-            'monitoring_server_name' => $response->monitoringServerName,
-            'calculation_type' => $response->calculationType,
+            'monitoring_server_name' => $data->monitoringServerName,
+            'calculation_type' => $data->calculationType,
         ];
 
         $acknowledgement = null;
 
-        if (!empty($response->acknowledgement)) {
+        if (!empty($data->acknowledgement)) {
             /**
              * Convert Acknowledgement dates into ISO 8601 format
              */
-            $acknowledgement = $response->acknowledgement;
-            $acknowledgement['entry_time'] = $this->formatDateToIso8601($response->acknowledgement['entry_time']);
-            $acknowledgement['deletion_time'] = $this->formatDateToIso8601($response->acknowledgement['deletion_time']);
+            $acknowledgement = $data->acknowledgement;
+            $acknowledgement['entry_time'] = $this->formatDateToIso8601($data->acknowledgement['entry_time']);
+            $acknowledgement['deletion_time'] = $this->formatDateToIso8601($data->acknowledgement['deletion_time']);
         }
 
         $presenterResponse['acknowledgement'] = $acknowledgement;
@@ -99,7 +95,7 @@ class FindMetaServicePresenter extends AbstractPresenter implements FindMetaServ
          */
         $formattedDatesDowntimes = [];
 
-        foreach ($response->downtimes as $key => $downtime) {
+        foreach ($data->downtimes as $key => $downtime) {
             $formattedDatesDowntimes[$key] = $downtime;
             $formattedDatesDowntimes[$key]['start_time'] = $this->formatDateToIso8601($downtime['start_time']);
             $formattedDatesDowntimes[$key]['end_time'] = $this->formatDateToIso8601($downtime['end_time']);
@@ -116,35 +112,35 @@ class FindMetaServicePresenter extends AbstractPresenter implements FindMetaServ
         /**
          * Calculate the duration
          */
-        $presenterResponse['duration'] = $response->lastStatusChange !== null
-            ? \CentreonDuration::toString(time() - $response->lastStatusChange->getTimestamp())
+        $presenterResponse['duration'] = $data->lastStatusChange !== null
+            ? \CentreonDuration::toString(time() - $data->lastStatusChange->getTimestamp())
             : null;
 
         /**
          * Convert dates to ISO 8601 format
          */
-        $presenterResponse['next_check'] = $this->formatDateToIso8601($response->nextCheck);
-        $presenterResponse['last_check'] = $this->formatDateToIso8601($response->lastCheck);
-        $presenterResponse['last_time_with_no_issue'] = $this->formatDateToIso8601($response->lastTimeOk);
-        $presenterResponse['last_status_change'] = $this->formatDateToIso8601($response->lastStatusChange);
-        $presenterResponse['last_notification'] = $this->formatDateToIso8601($response->lastNotification);
+        $presenterResponse['next_check'] = $this->formatDateToIso8601($data->nextCheck);
+        $presenterResponse['last_check'] = $this->formatDateToIso8601($data->lastCheck);
+        $presenterResponse['last_time_with_no_issue'] = $this->formatDateToIso8601($data->lastTimeOk);
+        $presenterResponse['last_status_change'] = $this->formatDateToIso8601($data->lastStatusChange);
+        $presenterResponse['last_notification'] = $this->formatDateToIso8601($data->lastNotification);
 
         /**
          * Creating the 'tries' entry
          */
-        $tries = $response->checkAttempts . '/' . $response->maxCheckAttempts;
-        $statusType = $response->status['type'] === 0 ? 'S' : 'H';
+        $tries = $data->checkAttempts . '/' . $data->maxCheckAttempts;
+        $statusType = $data->status['type'] === 0 ? 'S' : 'H';
         $presenterResponse['tries'] = $tries . '(' . $statusType . ')';
 
         /**
          * Creating Hypermedias
          */
         $parameters = [
-            'type' => $response->type,
-            'hostId' => $response->hostId,
-            'serviceId' => $response->serviceId,
-            'internalId' => $response->metaId,
-            'hasGraphData' => $response->hasGraphData
+            'type' => $data->type,
+            'hostId' => $data->hostId,
+            'serviceId' => $data->serviceId,
+            'internalId' => $data->metaId,
+            'hasGraphData' => $data->hasGraphData
         ];
 
         $endpoints = $this->hypermediaCreator->createEndpoints($parameters);
@@ -161,33 +157,6 @@ class FindMetaServicePresenter extends AbstractPresenter implements FindMetaServ
 
         $presenterResponse['links']['uris'] = $this->hypermediaCreator->createInternalUris($parameters);
 
-        $this->presenterFormatter->present($presenterResponse);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function show(): Response
-    {
-        if ($this->getResponseStatus() !== null) {
-            $this->presenterFormatter->present($this->getResponseStatus());
-        }
-        return $this->presenterFormatter->show();
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function setResponseStatus(?ResponseStatusInterface $responseStatus): void
-    {
-        $this->responseStatus = $responseStatus;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getResponseStatus(): ?ResponseStatusInterface
-    {
-        return $this->responseStatus;
+        parent::present($presenterResponse);
     }
 }

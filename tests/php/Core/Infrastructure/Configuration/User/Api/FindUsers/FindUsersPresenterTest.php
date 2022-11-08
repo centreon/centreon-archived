@@ -88,7 +88,7 @@ class FindUsersPresenterTest extends TestCase
             ->willReturn($requestParameterValues);
 
         $this->presenterFormatter->expects($this->once())
-            ->method('present')
+            ->method('format')
             ->with(
                 [
                     'result' => [$user],
@@ -98,5 +98,6 @@ class FindUsersPresenterTest extends TestCase
 
         $response = new FindUsersResponse([$userModel]);
         $presenter->present($response);
+        $presenter->show();
     }
 }

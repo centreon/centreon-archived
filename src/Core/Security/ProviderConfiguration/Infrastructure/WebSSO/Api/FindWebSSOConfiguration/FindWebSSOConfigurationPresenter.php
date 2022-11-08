@@ -33,20 +33,20 @@ class FindWebSSOConfigurationPresenter extends AbstractPresenter implements Find
 {
     /**
      * {@inheritDoc}
-     * @param FindWebSSOConfigurationResponse $response
+     * @param FindWebSSOConfigurationResponse $data
      */
-    public function present(mixed $response): void
+    public function present(mixed $data): void
     {
         $presenterResponse = [
-            'is_active' => $response->isActive,
-            'is_forced' => $response->isForced,
-            'trusted_client_addresses' => $response->trustedClientAddresses,
-            'blacklist_client_addresses' => $response->blacklistClientAddresses,
-            'login_header_attribute' => $response->loginHeaderAttribute,
-            'pattern_matching_login' => $response->patternMatchingLogin,
-            'pattern_replace_login' => $response->patternReplaceLogin
+            'is_active' => $data->isActive,
+            'is_forced' => $data->isForced,
+            'trusted_client_addresses' => $data->trustedClientAddresses,
+            'blacklist_client_addresses' => $data->blacklistClientAddresses,
+            'login_header_attribute' => $data->loginHeaderAttribute,
+            'pattern_matching_login' => $data->patternMatchingLogin,
+            'pattern_replace_login' => $data->patternReplaceLogin
         ];
 
-        $this->presenterFormatter->present($presenterResponse);
+        parent::present($presenterResponse);
     }
 }

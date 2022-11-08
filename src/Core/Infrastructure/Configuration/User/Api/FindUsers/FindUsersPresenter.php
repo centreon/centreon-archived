@@ -23,7 +23,6 @@ declare(strict_types=1);
 namespace Core\Infrastructure\Configuration\User\Api\FindUsers;
 
 use Core\Application\Common\UseCase\AbstractPresenter;
-use Core\Application\Configuration\User\UseCase\FindUsers\FindUsersResponse;
 use Core\Application\Configuration\User\UseCase\FindUsers\FindUsersPresenterInterface;
 use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
 use Core\Infrastructure\Common\Presenter\PresenterFormatterInterface;
@@ -38,17 +37,16 @@ class FindUsersPresenter extends AbstractPresenter implements FindUsersPresenter
         private RequestParametersInterface $requestParameters,
         protected PresenterFormatterInterface $presenterFormatter,
     ) {
+        parent::__construct($presenterFormatter);
     }
 
     /**
      * @inheritDoc
      */
-    public function present(mixed $response): void
+    public function present(mixed $data): void
     {
-        $presenterResponse = $response->users;
-
-        $this->presenterFormatter->present([
-            'result' => $presenterResponse,
+        parent::present([
+            'result' => $data->users,
             'meta' => $this->requestParameters->toArray(),
         ]);
     }

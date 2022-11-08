@@ -25,7 +25,7 @@ namespace Core\Infrastructure\Common\Presenter;
 
 use Symfony\Component\HttpFoundation\Response;
 
-class DownloadPresenter extends AbstractPresenter implements PresenterFormatterInterface, DownloadInterface
+class DownloadPresenter extends AbstractFormatter implements PresenterFormatterInterface, DownloadInterface
 {
     private const CSV_FILE_EXTENSION = 'csv';
     private const JSON_FILE_EXTENSION = 'json';
@@ -39,25 +39,18 @@ class DownloadPresenter extends AbstractPresenter implements PresenterFormatterI
     /**
      * @inheritDoc
      */
-    public function present(mixed $data): void
+    public function format(mixed $data): Response
     {
-        $this->presenter->present($data);
         $originalHeaders = $this->presenter->getResponseHeaders();
         $originalHeaders['Content-Type'] = 'application/force-download';
         $originalHeaders['Content-Disposition'] = 'attachment; filename="' . $this->generateDownloadFileName() . '"';
         $this->presenter->setResponseHeaders($originalHeaders);
+        return $this->presenter->format($data);
     }
 
     /**
-     * @inheritDoc
-     */
-    public function show(): Response
-    {
-        return $this->presenter->show();
-    }
-
-    /**
-     * @inheritDoc
+     * @param string $fileName
+     * @return void
      */
     public function setDownloadFileName(string $fileName): void
     {
@@ -72,8 +65,8 @@ class DownloadPresenter extends AbstractPresenter implements PresenterFormatterI
     private function generateDownloadFileExtension(): string
     {
         return match (get_class($this->presenter)) {
-            CsvPresenter::class => self::CSV_FILE_EXTENSION,
-            JsonPresenter::class => self::JSON_FILE_EXTENSION,
+            CsvFormatter::class => self::CSV_FILE_EXTENSION,
+            JsonFormatter::class => self::JSON_FILE_EXTENSION,
             default => '',
         };
     }

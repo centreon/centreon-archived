@@ -31,7 +31,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Core\Contact\Domain\Model\ContactTemplate;
 use Core\Application\Common\UseCase\ErrorResponse;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Core\Infrastructure\Common\Presenter\JsonPresenter;
+use Core\Infrastructure\Common\Presenter\JsonFormatter;
 use Core\Security\AccessGroup\Domain\Model\AccessGroup;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Domain\Menu\Interfaces\MenuServiceInterface;
@@ -93,7 +93,7 @@ beforeEach(function () {
     $this->authenticationRepository = $this->createMock(AuthenticationRepositoryInterface::class);
     $this->sessionRepository = $this->createMock(SessionRepositoryInterface::class);
     $this->dataStorageEngine = $this->createMock(DataStorageEngineInterface::class);
-    $this->formatter = $this->createMock(JsonPresenter::class);
+    $this->formatter = $this->createMock(JsonFormatter::class);
     $this->presenter = new LoginPresenter($this->formatter);
     $this->contact = $this->createMock(ContactInterface::class);
     $this->authenticationTokens = $this->createMock(AuthenticationTokens::class);

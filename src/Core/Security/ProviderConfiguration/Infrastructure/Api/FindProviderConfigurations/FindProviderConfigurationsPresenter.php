@@ -41,7 +41,7 @@ class FindProviderConfigurationsPresenter extends AbstractPresenter implements
     /**
      * @var ProviderPresenterInterface[]
      */
-    private $providerPresenters;
+    private array $providerPresenters;
 
     /**
      * @param \Traversable<ProviderPresenterInterface> $presenters
@@ -51,6 +51,7 @@ class FindProviderConfigurationsPresenter extends AbstractPresenter implements
         \Traversable $presenters,
         protected PresenterFormatterInterface $presenterFormatter
     ) {
+        parent::__construct($presenterFormatter);
         if (iterator_count($presenters) === 0) {
             throw new NotFoundException(_('No provider presenters could be found'));
         }
@@ -72,6 +73,6 @@ class FindProviderConfigurationsPresenter extends AbstractPresenter implements
                 }
             }
         }
-        $this->presenterFormatter->present($formattedResponse);
+        parent::present($formattedResponse);
     }
 }

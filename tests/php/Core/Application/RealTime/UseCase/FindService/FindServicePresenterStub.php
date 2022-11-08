@@ -36,11 +36,6 @@ class FindServicePresenterStub extends AbstractPresenter implements FindServiceP
     public $response;
 
     /**
-     * @var ResponseStatusInterface|null
-     */
-    protected $responseStatus;
-
-    /**
      * constructor
      */
     public function __construct()
@@ -61,21 +56,5 @@ class FindServicePresenterStub extends AbstractPresenter implements FindServiceP
     public function present(mixed $response): void
     {
         $this->response = $response;
-    }
-
-    /**
-     * @param ResponseStatusInterface|null $responseStatus
-     */
-    public function setResponseStatus(?ResponseStatusInterface $responseStatus): void
-    {
-        $this->responseStatus = $responseStatus;
-    }
-
-    /**
-     * @return ResponseStatusInterface|null
-     */
-    public function getResponseStatus(): ?ResponseStatusInterface
-    {
-        return $this->responseStatus;
     }
 }

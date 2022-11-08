@@ -18,17 +18,31 @@
  * For more information : contact@centreon.com
  *
  */
+
 declare(strict_types=1);
 
-namespace Core\Application\RealTime\UseCase\FindService;
+namespace Core\Infrastructure\Common\Presenter;
 
-use Core\Application\Common\UseCase\PresenterInterface;
-
-interface FindServicePresenterInterface extends PresenterInterface
+abstract class AbstractFormatter
 {
     /**
-     * {@inheritDoc}
-     * @param FindServiceResponse $data
+     * @var array<string, string>
      */
-    public function present(mixed $data): void;
+    protected array $responseHeaders = [];
+
+    /**
+     * @param array<string, string> $responseHeaders
+     */
+    public function setResponseHeaders(array $responseHeaders): void
+    {
+        $this->responseHeaders = $responseHeaders;
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    public function getResponseHeaders(): array
+    {
+        return $this->responseHeaders;
+    }
 }

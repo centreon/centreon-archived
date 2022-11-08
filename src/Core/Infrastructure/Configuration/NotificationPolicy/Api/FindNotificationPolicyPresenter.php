@@ -40,6 +40,7 @@ class FindNotificationPolicyPresenter extends AbstractPresenter implements FindN
         private ContactGroupHypermediaCreator $contactGroupHypermediaCreator,
         protected PresenterFormatterInterface $presenterFormatter
     ) {
+        parent::__construct($presenterFormatter);
     }
 
     /**
@@ -75,6 +76,6 @@ class FindNotificationPolicyPresenter extends AbstractPresenter implements FindN
 
         $presenterResponse['is_notification_enabled'] = $response->isNotificationEnabled;
 
-        $this->presenterFormatter->present($presenterResponse);
+        parent::present($presenterResponse);
     }
 }

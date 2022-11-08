@@ -35,11 +35,6 @@ class FindHostCategoryPresenterStub extends AbstractPresenter implements FindHos
      */
     public $response;
 
-    /**
-     * @var ResponseStatusInterface|null
-     */
-    protected $responseStatus;
-
     public function __construct()
     {
     }
@@ -58,21 +53,5 @@ class FindHostCategoryPresenterStub extends AbstractPresenter implements FindHos
     public function present(mixed $response): void
     {
         $this->response = $response;
-    }
-
-    /**
-     * @param ResponseStatusInterface|null $responseStatus
-     */
-    public function setResponseStatus(?ResponseStatusInterface $responseStatus): void
-    {
-        $this->responseStatus = $responseStatus;
-    }
-
-    /**
-     * @return ResponseStatusInterface|null
-     */
-    public function getResponseStatus(): ?ResponseStatusInterface
-    {
-        return $this->responseStatus;
     }
 }
