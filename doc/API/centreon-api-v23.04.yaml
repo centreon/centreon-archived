@@ -4001,11 +4001,20 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
-  /administration/vaults:
+  /administration/vaults/{vault_id}/configurations:
     post:
       tags:
         - Administration
       summary: "Create vault configuration"
+      parameters:
+      - in: path
+        name: vault_id
+        description: "ID of vault provider"
+        required: true
+        schema:
+          type: integer
+          format: int64
+          example: 1
       requestBody:
         required: true
         content:

@@ -36,6 +36,7 @@ use Symfony\Component\HttpFoundation\Request;
 final class CreateVaultConfigurationController extends AbstractController
 {
     /**
+     * @param int $vaultId
      * @param CreateVaultConfiguration $useCase
      * @param Request $request
      * @param CreateVaultConfigurationPresenterInterface $presenter
@@ -43,6 +44,7 @@ final class CreateVaultConfigurationController extends AbstractController
      * @return object
      */
     public function __invoke(
+        int $vaultId,
         CreateVaultConfiguration $useCase,
         Request $request,
         CreateVaultConfigurationPresenterInterface $presenter
@@ -62,7 +64,6 @@ final class CreateVaultConfigurationController extends AbstractController
         /**
          * @var array{
          *  "name": string,
-         *  "type_id": integer,
          *  "address": string,
          *  "port": integer,
          *  "storage": string,
@@ -75,9 +76,7 @@ final class CreateVaultConfigurationController extends AbstractController
             __DIR__ . '/CreateVaultConfigurationSchema.json'
         );
 
-        $createVaultConfigurationRequest = $this->createCreateVaultConfigurationRequest(
-            $decodedRequest
-        );
+        $createVaultConfigurationRequest = $this->createCreateVaultConfigurationRequest($vaultId, $decodedRequest);
 
         $useCase($presenter, $createVaultConfigurationRequest);
 
@@ -85,9 +84,9 @@ final class CreateVaultConfigurationController extends AbstractController
     }
 
     /**
+     * @param int $vaultId
      * @param array{
      *  "name": string,
-     *  "type_id": integer,
      *  "address": string,
      *  "port": integer,
      *  "storage": string,
@@ -98,11 +97,12 @@ final class CreateVaultConfigurationController extends AbstractController
      * @return CreateVaultConfigurationRequest
      */
     private function createCreateVaultConfigurationRequest(
+        int $vaultId,
         array $decodedRequest
     ): CreateVaultConfigurationRequest {
         $createVaultConfigurationRequest = new CreateVaultConfigurationRequest();
         $createVaultConfigurationRequest->name = $decodedRequest['name'];
-        $createVaultConfigurationRequest->typeId = $decodedRequest['type_id'];
+        $createVaultConfigurationRequest->typeId = $vaultId;
         $createVaultConfigurationRequest->address = $decodedRequest['address'];
         $createVaultConfigurationRequest->port = $decodedRequest['port'];
         $createVaultConfigurationRequest->storage = $decodedRequest['storage'];

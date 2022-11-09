@@ -1,5 +1,7 @@
 centreon_security_create_vault_configuration:
     methods: POST
-    path: /administration/vaults
+    path: /administration/vaults/{vaultId}/configurations
+    requirements:
+        vaultId: '\d+'
     controller: 'Core\Security\Vault\Infrastructure\Api\CreateVaultConfiguration\CreateVaultConfigurationController'
     condition: "request.attributes.get('version') >= 23.04"

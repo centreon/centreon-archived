@@ -16,9 +16,6 @@
         "name": {
             "type": "string"
         },
-        "type_id": {
-            "type": "integer"
-        },
         "address": {
             "type": "string"
         },
