@@ -70,18 +70,17 @@ interface Props {
   minDatePickerStartInput?: Date;
   onClose?: () => void;
   open: boolean;
-  pickerWithoutInitialValue?: boolean;
+  pickerEndWithoutInitialValue?: boolean;
+  pickerStartWithoutInitialValue?: boolean;
   reference?: AnchorReference;
   renderBody?: JSX.Element;
   renderFooter?: JSX.Element;
   renderTitle?: JSX.Element;
+  setPickerEndWithoutInitialValue?: any;
+  setPickerStartWithoutInitialValue?: any;
   transformOrigin?: PopoverOrigin;
-  waitToSelectMinutes?: boolean;
-}
-
-interface CallbackForSelectMinutes {
-  date: Date;
-  property: CustomTimePeriodProperty;
+  viewChangeEndPicker?: any;
+  viewChangeStartPicker?: any;
 }
 
 const PopoverCustomTimePeriodPickers = ({
@@ -104,21 +103,23 @@ const PopoverCustomTimePeriodPickers = ({
   renderTitle,
   renderBody,
   renderFooter,
-  pickerWithoutInitialValue,
+  pickerStartWithoutInitialValue,
+  pickerEndWithoutInitialValue,
+  setPickerStartWithoutInitialValue,
+  setPickerEndWithoutInitialValue,
   maxDatePickerStartInput = customTimePeriod?.end,
   minDatePickerStartInput,
   minDatePickerEndInput = customTimePeriod?.start,
   maxDatePickerEndInput,
-  waitToSelectMinutes = false,
   classNameError,
   getIsErrorDatePicker,
+  viewChangeStartPicker,
+  viewChangeEndPicker,
 }: Props): JSX.Element => {
   const { classes, cx } = useStyles();
   const { t } = useTranslation();
   const [start, setStart] = useState<Date>(customTimePeriod.start);
   const [end, setEnd] = useState<Date>(customTimePeriod.end);
-  const [viewStartPicker, setViewStartPicker] = useState<string | null>(null);
-  const [viewEndPicker, setViewEndPicker] = useState<string | null>(null);
 
   const { locale } = useAtomValue(userAtom);
   const { Adapter } = useDateTimePickerAdapter();
@@ -126,7 +127,10 @@ const PopoverCustomTimePeriodPickers = ({
   const isInvalidDate = ({ startDate, endDate }): boolean =>
     dayjs(startDate).isSameOrAfter(dayjs(endDate), 'minute');
 
-  const error = isInvalidDate({ endDate: end, startDate: start });
+  const error =
+    !pickerStartWithoutInitialValue &&
+    !pickerEndWithoutInitialValue &&
+    isInvalidDate({ endDate: end, startDate: start });
 
   getIsErrorDatePicker?.(error);
 
@@ -152,41 +156,10 @@ const PopoverCustomTimePeriodPickers = ({
       return;
     }
 
-    callbackForSelectMinutes({
-      date,
-      property,
-    });
-  };
-
-  const callbackForSelectMinutes = ({
-    property,
-    date,
-  }: CallbackForSelectMinutes): void => {
-    if (!waitToSelectMinutes) {
-      acceptDate({
-        date,
-        property,
-      });
-
-      return;
-    }
-
-    if (
-      (!equals(viewStartPicker, 'minutes') && equals(property, 'start')) ||
-      (!equals(viewEndPicker, 'minutes') && equals(property, 'end'))
-    ) {
-      return;
-    }
     acceptDate({
       date,
       property,
     });
-    if (equals(viewStartPicker, 'minutes') && equals(property, 'start')) {
-      setViewStartPicker(null);
-    }
-    if (equals(viewEndPicker, 'minutes') && equals(property, 'end')) {
-      setViewEndPicker(null);
-    }
   };
 
   useEffect(() => {
@@ -201,13 +174,6 @@ const PopoverCustomTimePeriodPickers = ({
     setStart(customTimePeriod.start);
     setEnd(customTimePeriod.end);
   }, [customTimePeriod.start, customTimePeriod.end]);
-
-  const viewChangeStartPicker = (data: string): void => {
-    setViewStartPicker(data);
-  };
-  const viewChangeEndPicker = (data: string): void => {
-    setViewEndPicker(data);
-  };
 
   return (
     <div>
@@ -237,7 +203,8 @@ const PopoverCustomTimePeriodPickers = ({
                   minDate={minDatePickerStartInput}
                   property={CustomTimePeriodProperty.start}
                   setDate={setStart}
-                  withoutInitialValue={pickerWithoutInitialValue}
+                  setWithoutInitialValue={setPickerStartWithoutInitialValue}
+                  withoutInitialValue={pickerStartWithoutInitialValue}
                   onViewChange={viewChangeStartPicker}
                 />
               </div>
@@ -252,7 +219,8 @@ const PopoverCustomTimePeriodPickers = ({
                   minDate={minDatePickerEndInput}
                   property={CustomTimePeriodProperty.end}
                   setDate={setEnd}
-                  withoutInitialValue={pickerWithoutInitialValue}
+                  setWithoutInitialValue={setPickerEndWithoutInitialValue}
+                  withoutInitialValue={pickerEndWithoutInitialValue}
                   onViewChange={viewChangeEndPicker}
                 />
               </div>

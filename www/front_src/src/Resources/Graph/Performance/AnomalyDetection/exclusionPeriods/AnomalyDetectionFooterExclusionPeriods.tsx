@@ -18,21 +18,18 @@ const AnomalyDetectionFooterExclusionPeriods = ({
   confirmExcluderPeriods,
   isError,
   dateExisted,
+  cancelExclusionPeriod,
 }: any): JSX.Element => {
   const { classes } = useStyles();
 
-  const cancel = (): void => {
-    console.log('cancel');
-    setOpen(false);
-  };
-
-  const confirm = (): void => {
-    console.log('save');
-  };
-
   return (
     <div className={classes.footer}>
-      <Button data-testid="cancel" size="small" variant="text" onClick={cancel}>
+      <Button
+        data-testid="cancel"
+        size="small"
+        variant="text"
+        onClick={cancelExclusionPeriod}
+      >
         Cancel
       </Button>
       <Button

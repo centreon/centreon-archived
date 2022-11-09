@@ -48,7 +48,7 @@ const useStyles = makeStyles<Theme, StylesProps>((theme) => ({
     boxShadow: disablePaper ? 'unset' : 'undefined',
     columnGap: theme.spacing(2),
     display: 'grid',
-    gridTemplateColumns: `repeat(3, auto)`,
+    gridTemplateColumns: `repeat(4, auto)`,
     gridTemplateRows: '1fr',
     justifyContent: 'center',
     padding: theme.spacing(1, 0.5),

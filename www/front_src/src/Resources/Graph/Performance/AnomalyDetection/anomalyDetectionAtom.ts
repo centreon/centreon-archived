@@ -1,8 +1,10 @@
 import { atom } from 'jotai';
 
+import { Line } from '../models';
+
 interface ThresholdsAnomalyDetectionDataAtom {
   exclusionPeriodsThreshold: {
-    data: Array<{ isConfirmed; lines: any; timeSeries: any }>;
+    data: Array<{ isConfirmed: boolean; lines: Array<Line>; timeSeries: any }>;
     selectedDateToDelete: Array<{ end: undefined; start: undefined }>;
   };
 }

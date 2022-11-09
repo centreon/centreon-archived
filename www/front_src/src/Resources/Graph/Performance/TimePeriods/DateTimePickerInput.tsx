@@ -18,6 +18,7 @@ interface Props {
   onViewChange?: (view: string) => void;
   property: CustomTimePeriodProperty;
   setDate: Dispatch<SetStateAction<Date>>;
+  setWithoutInitialValue?: any;
   withoutInitialValue?: boolean;
 }
 
@@ -46,11 +47,11 @@ const DateTimePickerInput = ({
   changeDate,
   setDate,
   withoutInitialValue = false,
+  setWithoutInitialValue,
   onViewChange,
 }: Props): JSX.Element => {
   const [isOpen, setIsOpen] = useState(false);
-  const [isWithoutInitialValue, setWithoutInitialValue] =
-    useState(withoutInitialValue);
+
   const { getDestinationAndConfiguredTimezoneOffset, formatKeyboardValue } =
     useDateTimePickerAdapter();
 
@@ -58,7 +59,7 @@ const DateTimePickerInput = ({
     newValue: dayjs.Dayjs | null,
     keyBoardValue: string | undefined,
   ): void => {
-    setWithoutInitialValue(false);
+    setWithoutInitialValue?.(false);
 
     if (isOpen) {
       changeDate({ date: dayjs(newValue).toDate(), property });
@@ -88,7 +89,7 @@ const DateTimePickerInput = ({
       minDate={minDate && dayjs(minDate)}
       open={isOpen}
       renderInput={renderDateTimePickerTextField(blur)}
-      value={isWithoutInitialValue ? null : date}
+      value={withoutInitialValue ? null : date}
       onChange={changeTime}
       onClose={(): void => setIsOpen(false)}
       onOpen={(): void => setIsOpen(true)}

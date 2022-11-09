@@ -35,10 +35,12 @@ interface LinesProps {
 interface AdditionalLinesProps {
   additionalLinesProps: LinesProps;
   data: CustomFactorsData | null | undefined;
+  displayThresholdPeriod?: boolean;
 }
 const AdditionalLines = ({
   additionalLinesProps,
   data,
+  displayThresholdPeriod = true,
 }: AdditionalLinesProps): JSX.Element => {
   const details = useAtomValue(detailsAtom);
 
@@ -65,24 +67,26 @@ const AdditionalLines = ({
           />
         </>
       )}
-      {exclusionPeriodsThreshold?.data?.map((item, index) => {
-        const displayed = item.lines.length > 0 && item.timeSeries.length > 0;
+      {displayThresholdPeriod &&
+        exclusionPeriodsThreshold?.data?.map((item, index) => {
+          const displayed =
+            item.lines?.length > 0 && item.timeSeries?.length > 0;
 
-        return (
-          displayed && (
-            <AnomalyDetectionExclusionPeriodsThreshold
-              data={item}
-              graphHeight={graphHeight}
-              graphWidth={graphWidth}
-              key={index}
-              leftScale={leftScale}
-              resource={details}
-              rightScale={rightScale}
-              xScale={xScale}
-            />
-          )
-        );
-      })}
+          return (
+            displayed && (
+              <AnomalyDetectionExclusionPeriodsThreshold
+                data={item}
+                graphHeight={graphHeight}
+                graphWidth={graphWidth}
+                key={index}
+                leftScale={leftScale}
+                resource={details}
+                rightScale={rightScale}
+                xScale={xScale}
+              />
+            )
+          );
+        })}
     </>
   );
 };
@@ -97,6 +101,7 @@ export const getDisplayAdditionalLinesCondition = {
     <AdditionalLines
       additionalLinesProps={additionalLinesProps}
       data={additionalData}
+      displayThresholdPeriod={false}
     />
   ),
 };

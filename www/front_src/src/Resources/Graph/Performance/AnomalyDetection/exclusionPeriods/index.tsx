@@ -100,6 +100,8 @@ const AnomalyDetectionExclusionPeriod = ({ display }: any): JSX.Element => {
   const { sendRequest: sendGetGraphDataRequest } = useRequest<GraphData>({
     request: getData,
   });
+  const [viewStartPicker, setViewStartPicker] = useState<string | null>(null);
+  const [viewEndPicker, setViewEndPicker] = useState<string | null>(null);
 
   const [thresholdsAnomalyDetectionData, setThresholdAnomalyDetectionData] =
     useAtom(thresholdsAnomalyDetectionDataAtom);
@@ -118,6 +120,11 @@ const AnomalyDetectionExclusionPeriod = ({ display }: any): JSX.Element => {
   const { toDate } = centreonUi.useLocaleDateTimeFormat();
 
   const maxDateEndInputPicker = dayjs(exclusionTimePeriods?.end).add(1, 'day');
+
+  const [pickerStartWithoutInitialValue, setPickerStartWithoutInitialValue] =
+    useState(true);
+  const [pickerEndWithoutInitialValue, setPickerEndWithoutInitialValue] =
+    useState(true);
 
   const listExcludedDates =
     thresholdsAnomalyDetectionData?.exclusionPeriodsThreshold
@@ -174,33 +181,29 @@ const AnomalyDetectionExclusionPeriod = ({ display }: any): JSX.Element => {
 
     const updatedData =
       currentData.length > 0
-        ? currentData
-        : [
-            ...thresholdsAnomalyDetectionData.exclusionPeriodsThreshold.data,
-            { isConfirmed: false, lines: lineData, timeSeries },
-          ];
-    const newData = updatedData.map((item) => {
-      if (item.isConfirmed === false) {
-        return { isConfirmed: false, lines: lineData, timeSeries };
-      }
-
-      return item;
-    });
+        ? filteredData
+        : [...data, { isConfirmed: false, lines: lineData, timeSeries }];
 
     setThresholdAnomalyDetectionData({
       ...thresholdsAnomalyDetectionData,
       exclusionPeriodsThreshold: {
         ...thresholdsAnomalyDetectionData.exclusionPeriodsThreshold,
-        data: [...newData],
+        data: [...updatedData],
       },
     });
   };
 
+  const initializeData = (): void => {
+    setStartDate(undefined);
+    setEndDate(undefined);
+    setPickerEndWithoutInitialValue(true);
+    setPickerStartWithoutInitialValue(true);
+  };
+
   const confirmExcluderPeriods = (): void => {
-    const excludedData =
-      thresholdsAnomalyDetectionData.exclusionPeriodsThreshold.data.map(
-        (item) => item.isConfirmed === false && { ...item, isConfirmed: true },
-      );
+    const excludedData = data.map((item) =>
+      item.isConfirmed === false ? { ...item, isConfirmed: true } : item,
+    );
 
     setThresholdAnomalyDetectionData({
       ...thresholdsAnomalyDetectionData,
@@ -215,16 +218,69 @@ const AnomalyDetectionExclusionPeriod = ({ display }: any): JSX.Element => {
       },
     });
     setOpen(false);
+    initializeData();
+  };
+
+  const cancelExclusionPeriod = (): void => {
+    const filteredData = data.filter((item) => item.isConfirmed);
+    const newData = filteredData?.length <= 0 ? [...data] : filteredData;
+    setThresholdAnomalyDetectionData({
+      ...thresholdsAnomalyDetectionData,
+      exclusionPeriodsThreshold: {
+        ...thresholdsAnomalyDetectionData.exclusionPeriodsThreshold,
+        data: [...newData],
+      },
+    });
+    setOpen(false);
+    initializeData();
+  };
+
+  const viewChangeStartPicker = (view: string): void => {
+    setViewStartPicker(view);
+  };
+  const viewChangeEndPicker = (view: string): void => {
+    setViewEndPicker(view);
+  };
+
+  interface CallbackForSelectMinutes {
+    date: Date;
+    property: any;
+  }
+
+  const callbackForSelectMinutes = ({
+    property,
+    date,
+  }: CallbackForSelectMinutes): void => {
+    if (
+      (!equals(viewStartPicker, 'minutes') && equals(property, 'start')) ||
+      (!equals(viewEndPicker, 'minutes') && equals(property, 'end'))
+    ) {
+      return;
+    }
+    changeDate({
+      date,
+      property,
+    });
+    if (equals(viewStartPicker, 'minutes') && equals(property, 'start')) {
+      setViewStartPicker(null);
+    }
+    if (equals(viewEndPicker, 'minutes') && equals(property, 'end')) {
+      setViewEndPicker(null);
+    }
   };
 
   const getIsError = (value: boolean): void => {
     setIsErrorDatePicker(value);
+    if (value) {
+      setEndDate(undefined);
+    }
   };
 
   useEffect(() => {
     if (!startDate || !endDate) {
       return;
     }
+    console.log('call', startDate, endDate);
 
     setNewEndPoint(graphEndpoint() as any);
   }, [startDate, endDate]);
@@ -238,7 +294,7 @@ const AnomalyDetectionExclusionPeriod = ({ display }: any): JSX.Element => {
       endpoint: newEndpoint,
     })
       .then((graphData) => {
-        console.log({ graphData });
+        console.log({ endDate, graphData, startDate });
         setTimeSeries(getTimeSeries(graphData));
         const newLineData = getLineData(graphData);
 
@@ -275,8 +331,6 @@ const AnomalyDetectionExclusionPeriod = ({ display }: any): JSX.Element => {
       }),
     );
   }, [customTimePeriod]);
-
-  console.log({ dateExiste: dateExisted });
 
   return (
     <div className={classes.container}>
@@ -315,9 +369,7 @@ const AnomalyDetectionExclusionPeriod = ({ display }: any): JSX.Element => {
         </List>
       </div>
       <PopoverCustomTimePeriodPickers
-        pickerWithoutInitialValue
-        waitToSelectMinutes
-        acceptDate={changeDate}
+        acceptDate={callbackForSelectMinutes}
         anchorReference="anchorPosition"
         classNameError={classes.error}
         classNamePaper={classes.paper}
@@ -327,10 +379,13 @@ const AnomalyDetectionExclusionPeriod = ({ display }: any): JSX.Element => {
         maxDatePickerEndInput={maxDateEndInputPicker}
         minDatePickerStartInput={exclusionTimePeriods?.start}
         open={open}
+        pickerEndWithoutInitialValue={pickerStartWithoutInitialValue}
+        pickerStartWithoutInitialValue={pickerEndWithoutInitialValue}
         reference={{ anchorPosition }}
         renderBody={<AnomalyDetectionCommentExclusionPeriod />}
         renderFooter={
           <AnomalyDetectionFooterExclusionPeriods
+            cancelExclusionPeriod={cancelExclusionPeriod}
             confirmExcluderPeriods={confirmExcluderPeriods}
             dateExisted={dateExisted}
             isError={isErrorDatePicker}
@@ -338,6 +393,10 @@ const AnomalyDetectionExclusionPeriod = ({ display }: any): JSX.Element => {
           />
         }
         renderTitle={<AnomalyDetectionTitleExclusionPeriods />}
+        setPickerEndWithoutInitialValue={setPickerStartWithoutInitialValue}
+        setPickerStartWithoutInitialValue={setPickerEndWithoutInitialValue}
+        viewChangeEndPicker={viewChangeEndPicker}
+        viewChangeStartPicker={viewChangeStartPicker}
         onClose={close}
       />
     </div>
