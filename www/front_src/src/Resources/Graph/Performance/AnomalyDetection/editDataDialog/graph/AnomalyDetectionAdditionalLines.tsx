@@ -35,33 +35,16 @@ interface LinesProps {
 interface AdditionalLinesProps {
   additionalLinesProps: LinesProps;
   data: CustomFactorsData | null | undefined;
-  dataTest?: {
-    envelopeSizeThreshold?: { data: { lines: any } };
-    estimatedEnvelopeThreshold?: { data: CustomFactorsData | null | undefined };
-    exclusionPeriodsThreshold?: { data: { lines: any; timeSeries: any } };
-  };
 }
 const AdditionalLines = ({
   additionalLinesProps,
   data,
-  dataTest,
 }: AdditionalLinesProps): JSX.Element => {
-  // conditions estimated threshold, threshold , exclusion threshold
-
   const details = useAtomValue(detailsAtom);
 
-  const {
-    exclusionPeriodsThreshold,
-    estimatedEnvelopeThreshold,
-    envelopeSizeThreshold,
-  } = useAtomValue(thresholdsAnomalyDetectionDataAtom);
-
-  const linesExclusionPeriods = exclusionPeriodsThreshold?.data?.lines;
-  const timeSeriesExclusionPeriods =
-    exclusionPeriodsThreshold?.data?.timeSeries;
-
-  const isDisplayedExclusionPeriodsThreshold =
-    !isNil(linesExclusionPeriods) && !isNil(timeSeriesExclusionPeriods);
+  const { exclusionPeriodsThreshold } = useAtomValue(
+    thresholdsAnomalyDetectionDataAtom,
+  );
 
   const { graphHeight, graphWidth, lines, xScale, leftScale, rightScale } =
     additionalLinesProps;
@@ -82,17 +65,24 @@ const AdditionalLines = ({
           />
         </>
       )}
-      {isDisplayedExclusionPeriodsThreshold && (
-        <AnomalyDetectionExclusionPeriodsThreshold
-          data={exclusionPeriodsThreshold}
-          graphHeight={graphHeight}
-          graphWidth={graphWidth}
-          leftScale={leftScale}
-          resource={details}
-          rightScale={rightScale}
-          xScale={xScale}
-        />
-      )}
+      {exclusionPeriodsThreshold?.data?.map((item, index) => {
+        const displayed = item.lines.length > 0 && item.timeSeries.length > 0;
+
+        return (
+          displayed && (
+            <AnomalyDetectionExclusionPeriodsThreshold
+              data={item}
+              graphHeight={graphHeight}
+              graphWidth={graphWidth}
+              key={index}
+              leftScale={leftScale}
+              resource={details}
+              rightScale={rightScale}
+              xScale={xScale}
+            />
+          )
+        );
+      })}
     </>
   );
 };

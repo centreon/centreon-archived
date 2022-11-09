@@ -59,9 +59,11 @@ interface Props {
   acceptDate: (props: AcceptDateProps) => void;
   anchorOrigin?: PopoverOrigin;
   anchorReference?: PopoverReference;
+  classNameError?: string;
   classNamePaper?: string;
   classNamePicker?: string;
   customTimePeriod: CustomTimePeriod;
+  getIsErrorDatePicker?: (value: boolean) => void;
   maxDatePickerEndInput?: Date | dayjs.Dayjs;
   maxDatePickerStartInput?: Date;
   minDatePickerEndInput?: Date;
@@ -74,6 +76,12 @@ interface Props {
   renderFooter?: JSX.Element;
   renderTitle?: JSX.Element;
   transformOrigin?: PopoverOrigin;
+  waitToSelectMinutes?: boolean;
+}
+
+interface CallbackForSelectMinutes {
+  date: Date;
+  property: CustomTimePeriodProperty;
 }
 
 const PopoverCustomTimePeriodPickers = ({
@@ -101,11 +109,16 @@ const PopoverCustomTimePeriodPickers = ({
   minDatePickerStartInput,
   minDatePickerEndInput = customTimePeriod?.start,
   maxDatePickerEndInput,
+  waitToSelectMinutes = false,
+  classNameError,
+  getIsErrorDatePicker,
 }: Props): JSX.Element => {
   const { classes, cx } = useStyles();
   const { t } = useTranslation();
   const [start, setStart] = useState<Date>(customTimePeriod.start);
   const [end, setEnd] = useState<Date>(customTimePeriod.end);
+  const [viewStartPicker, setViewStartPicker] = useState<string | null>(null);
+  const [viewEndPicker, setViewEndPicker] = useState<string | null>(null);
 
   const { locale } = useAtomValue(userAtom);
   const { Adapter } = useDateTimePickerAdapter();
@@ -114,6 +127,8 @@ const PopoverCustomTimePeriodPickers = ({
     dayjs(startDate).isSameOrAfter(dayjs(endDate), 'minute');
 
   const error = isInvalidDate({ endDate: end, startDate: start });
+
+  getIsErrorDatePicker?.(error);
 
   const changeDate = ({ property, date }): void => {
     const currentDate = customTimePeriod[property];
@@ -136,10 +151,42 @@ const PopoverCustomTimePeriodPickers = ({
     ) {
       return;
     }
+
+    callbackForSelectMinutes({
+      date,
+      property,
+    });
+  };
+
+  const callbackForSelectMinutes = ({
+    property,
+    date,
+  }: CallbackForSelectMinutes): void => {
+    if (!waitToSelectMinutes) {
+      acceptDate({
+        date,
+        property,
+      });
+
+      return;
+    }
+
+    if (
+      (!equals(viewStartPicker, 'minutes') && equals(property, 'start')) ||
+      (!equals(viewEndPicker, 'minutes') && equals(property, 'end'))
+    ) {
+      return;
+    }
     acceptDate({
       date,
       property,
     });
+    if (equals(viewStartPicker, 'minutes') && equals(property, 'start')) {
+      setViewStartPicker(null);
+    }
+    if (equals(viewEndPicker, 'minutes') && equals(property, 'end')) {
+      setViewEndPicker(null);
+    }
   };
 
   useEffect(() => {
@@ -154,6 +201,13 @@ const PopoverCustomTimePeriodPickers = ({
     setStart(customTimePeriod.start);
     setEnd(customTimePeriod.end);
   }, [customTimePeriod.start, customTimePeriod.end]);
+
+  const viewChangeStartPicker = (data: string): void => {
+    setViewStartPicker(data);
+  };
+  const viewChangeEndPicker = (data: string): void => {
+    setViewEndPicker(data);
+  };
 
   return (
     <div>
@@ -184,6 +238,7 @@ const PopoverCustomTimePeriodPickers = ({
                   property={CustomTimePeriodProperty.start}
                   setDate={setStart}
                   withoutInitialValue={pickerWithoutInitialValue}
+                  onViewChange={viewChangeStartPicker}
                 />
               </div>
             </div>
@@ -198,16 +253,16 @@ const PopoverCustomTimePeriodPickers = ({
                   property={CustomTimePeriodProperty.end}
                   setDate={setEnd}
                   withoutInitialValue={pickerWithoutInitialValue}
+                  onViewChange={viewChangeEndPicker}
                 />
               </div>
             </div>
-
-            {error && (
-              <FormHelperText error className={classes.error}>
-                {t(labelEndDateGreaterThanStartDate)}
-              </FormHelperText>
-            )}
           </div>
+          {error && (
+            <FormHelperText error className={cx(classes.error, classNameError)}>
+              {t(labelEndDateGreaterThanStartDate)}
+            </FormHelperText>
+          )}
         </LocalizationProvider>
         {renderBody}
         {renderFooter}

@@ -1,11 +1,11 @@
 /* eslint-disable hooks/sort */
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 import dayjs from 'dayjs';
 import { useAtom } from 'jotai';
-import { useAtomValue, useUpdateAtom } from 'jotai/utils';
+import { useAtomValue } from 'jotai/utils';
+import { equals, find, path, propEq } from 'ramda';
 import { makeStyles } from 'tss-react/mui';
-import { equals, find, path, prop, propEq, reject, sortBy } from 'ramda';
 
 import AddIcon from '@mui/icons-material/Add';
 import {
@@ -20,23 +20,19 @@ import {
 import { getData, useRequest } from '@centreon/ui';
 
 import { centreonUi } from '../../../../../Header/helpers';
-import {
-  detailsAtom,
-  selectedResourcesDetailsAtom,
-} from '../../../../Details/detailsAtoms';
+import { detailsAtom } from '../../../../Details/detailsAtoms';
+import { GraphData, Line, TimeValue } from '../../models';
 import PopoverCustomTimePeriodPickers from '../../TimePeriods/PopoverCustomTimePeriodPickers';
 import {
   customTimePeriodAtom,
   graphQueryParametersDerivedAtom,
-  selectedTimePeriodAtom,
 } from '../../TimePeriods/timePeriodAtoms';
-import { GraphData, Line, TimeValue } from '../../models';
 import { getLineData, getTimeSeries } from '../../timeSeries';
 import { thresholdsAnomalyDetectionDataAtom } from '../anomalyDetectionAtom';
 
 import AnomalyDetectionCommentExclusionPeriod from './AnomalyDetectionCommentExclusionPeriods';
-import AnomalyDetectionTitleExclusionPeriods from './AnomalyDetectionTitleExclusionPeriods';
 import AnomalyDetectionFooterExclusionPeriods from './AnomalyDetectionFooterExclusionPeriods';
+import AnomalyDetectionTitleExclusionPeriods from './AnomalyDetectionTitleExclusionPeriods';
 
 const useStyles = makeStyles()((theme) => ({
   body: {
@@ -51,12 +47,15 @@ const useStyles = makeStyles()((theme) => ({
   divider: {
     margin: theme.spacing(0, 2),
   },
+  error: {
+    textAlign: 'left',
+  },
+
   excludedPeriods: {
     display: 'flex',
     flexDirection: 'column',
     width: '50%',
   },
-
   exclusionButton: {
     width: theme.spacing(22.5),
   },
@@ -86,10 +85,7 @@ const useStyles = makeStyles()((theme) => ({
   },
 }));
 
-const AnomalyDetectionExclusionPeriod = ({
-  data,
-  display,
-}: any): JSX.Element => {
+const AnomalyDetectionExclusionPeriod = ({ display }: any): JSX.Element => {
   const { classes } = useStyles();
 
   const [open, setOpen] = useState(false);
@@ -98,11 +94,10 @@ const AnomalyDetectionExclusionPeriod = ({
   const [newEndpoint, setNewEndPoint] = useState(undefined);
   const [timeSeries, setTimeSeries] = useState<Array<TimeValue>>([]);
   const [lineData, setLineData] = useState<Array<Line>>();
-
-  const {
-    sendRequest: sendGetGraphDataRequest,
-    sending: sendingGetGraphDataRequest,
-  } = useRequest<GraphData>({
+  const [isErrorDatePicker, setIsErrorDatePicker] = useState(false);
+  const [enabledExclusionButton, setEnabledExclusionButton] = useState(false);
+  const dateExisted = startDate && endDate;
+  const { sendRequest: sendGetGraphDataRequest } = useRequest<GraphData>({
     request: getData,
   });
 
@@ -112,11 +107,15 @@ const AnomalyDetectionExclusionPeriod = ({
   const getGraphQueryParameters = useAtomValue(graphQueryParametersDerivedAtom);
   const details = useAtomValue(detailsAtom);
 
+  const isInvalidDate = ({ start, end }): boolean =>
+    dayjs(start).isSameOrAfter(dayjs(end), 'minute');
+
   const [exclusionTimePeriods, setExclusionTimePeriods] =
     useState(customTimePeriod);
+  const { data } = thresholdsAnomalyDetectionData.exclusionPeriodsThreshold;
 
   const endpoint = path(['links', 'endpoints', 'performance_graph'], details);
-  const { format, toTime, toDate } = centreonUi.useLocaleDateTimeFormat();
+  const { toDate } = centreonUi.useLocaleDateTimeFormat();
 
   const maxDateEndInputPicker = dayjs(exclusionTimePeriods?.end).add(1, 'day');
 
@@ -127,6 +126,8 @@ const AnomalyDetectionExclusionPeriod = ({
   const exclude = (): void => {
     setOpen(true);
     setExclusionTimePeriods(customTimePeriod);
+    setEndDate(undefined);
+    setStartDate(undefined);
   };
 
   const anchorPosition = {
@@ -135,6 +136,8 @@ const AnomalyDetectionExclusionPeriod = ({
   };
 
   const close = (): void => {
+    setEndDate(undefined);
+    setStartDate(undefined);
     setOpen(false);
   };
 
@@ -156,30 +159,80 @@ const AnomalyDetectionExclusionPeriod = ({
     return `${endpoint}${graphQuerParameters}`;
   };
 
+  const addCurrentData = (): void => {
+    const filteredData = data.map((item) => {
+      if (item.isConfirmed === false) {
+        return { isConfirmed: false, lines: lineData, timeSeries };
+      }
+
+      return item;
+    });
+
+    const currentData = filteredData.filter(
+      (item) => item.isConfirmed === false,
+    );
+
+    const updatedData =
+      currentData.length > 0
+        ? currentData
+        : [
+            ...thresholdsAnomalyDetectionData.exclusionPeriodsThreshold.data,
+            { isConfirmed: false, lines: lineData, timeSeries },
+          ];
+    const newData = updatedData.map((item) => {
+      if (item.isConfirmed === false) {
+        return { isConfirmed: false, lines: lineData, timeSeries };
+      }
+
+      return item;
+    });
+
+    setThresholdAnomalyDetectionData({
+      ...thresholdsAnomalyDetectionData,
+      exclusionPeriodsThreshold: {
+        ...thresholdsAnomalyDetectionData.exclusionPeriodsThreshold,
+        data: [...newData],
+      },
+    });
+  };
+
+  const confirmExcluderPeriods = (): void => {
+    const excludedData =
+      thresholdsAnomalyDetectionData.exclusionPeriodsThreshold.data.map(
+        (item) => item.isConfirmed === false && { ...item, isConfirmed: true },
+      );
+
+    setThresholdAnomalyDetectionData({
+      ...thresholdsAnomalyDetectionData,
+      exclusionPeriodsThreshold: {
+        ...thresholdsAnomalyDetectionData.exclusionPeriodsThreshold,
+        data: [...excludedData],
+        selectedDateToDelete: [
+          ...thresholdsAnomalyDetectionData.exclusionPeriodsThreshold
+            .selectedDateToDelete,
+          { end: endDate, start: startDate },
+        ],
+      },
+    });
+    setOpen(false);
+  };
+
+  const getIsError = (value: boolean): void => {
+    setIsErrorDatePicker(value);
+  };
+
   useEffect(() => {
     if (!startDate || !endDate) {
       return;
     }
-    console.log('call');
+
     setNewEndPoint(graphEndpoint() as any);
-    // setThresholdAnomalyDetectionData({
-    //   ...thresholdsAnomalyDetectionData,
-    //   exclusionPeriodsThreshold: {
-    //     ...thresholdsAnomalyDetectionData.exclusionPeriodsThreshold,
-    //     selectedDateToDelete: [
-    //       ...thresholdsAnomalyDetectionData.exclusionPeriodsThreshold
-    //         .selectedDateToDelete,
-    //       { end: endDate, start: startDate },
-    //     ],
-    //   },
-    // });
   }, [startDate, endDate]);
 
   useEffect(() => {
     if (!newEndpoint) {
       return;
     }
-    console.log('app');
 
     sendGetGraphDataRequest({
       endpoint: newEndpoint,
@@ -211,31 +264,19 @@ const AnomalyDetectionExclusionPeriod = ({
       return;
     }
 
-    setThresholdAnomalyDetectionData({
-      ...thresholdsAnomalyDetectionData,
-      exclusionPeriodsThreshold: {
-        ...thresholdsAnomalyDetectionData.exclusionPeriodsThreshold,
-        data: { lines: lineData, timeSeries },
-      },
-    });
+    addCurrentData();
   }, [timeSeries, lineData]);
 
-  console.log({ thresholdsAnomalyDetectionData });
+  useEffect(() => {
+    setEnabledExclusionButton(
+      isInvalidDate({
+        end: customTimePeriod?.end,
+        start: customTimePeriod?.start,
+      }),
+    );
+  }, [customTimePeriod]);
 
-  const confirmExcluderPeriods = (): void => {
-    setThresholdAnomalyDetectionData({
-      ...thresholdsAnomalyDetectionData,
-      exclusionPeriodsThreshold: {
-        ...thresholdsAnomalyDetectionData.exclusionPeriodsThreshold,
-        selectedDateToDelete: [
-          ...thresholdsAnomalyDetectionData.exclusionPeriodsThreshold
-            .selectedDateToDelete,
-          { end: endDate, start: startDate },
-        ],
-      },
-    });
-    setOpen(false);
-  };
+  console.log({ dateExiste: dateExisted });
 
   return (
     <div className={classes.container}>
@@ -248,6 +289,7 @@ const AnomalyDetectionExclusionPeriod = ({
           <Button
             className={classes.exclusionButton}
             data-testid="exclude"
+            disabled={enabledExclusionButton}
             size="small"
             startIcon={<AddIcon />}
             variant="contained"
@@ -274,11 +316,14 @@ const AnomalyDetectionExclusionPeriod = ({
       </div>
       <PopoverCustomTimePeriodPickers
         pickerWithoutInitialValue
+        waitToSelectMinutes
         acceptDate={changeDate}
         anchorReference="anchorPosition"
+        classNameError={classes.error}
         classNamePaper={classes.paper}
         classNamePicker={classes.picker}
         customTimePeriod={exclusionTimePeriods}
+        getIsErrorDatePicker={getIsError}
         maxDatePickerEndInput={maxDateEndInputPicker}
         minDatePickerStartInput={exclusionTimePeriods?.start}
         open={open}
@@ -287,6 +332,8 @@ const AnomalyDetectionExclusionPeriod = ({
         renderFooter={
           <AnomalyDetectionFooterExclusionPeriods
             confirmExcluderPeriods={confirmExcluderPeriods}
+            dateExisted={dateExisted}
+            isError={isErrorDatePicker}
             setOpen={setOpen}
           />
         }

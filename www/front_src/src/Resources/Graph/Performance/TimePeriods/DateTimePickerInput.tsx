@@ -15,6 +15,7 @@ interface Props {
   date: Date;
   maxDate?: Date | dayjs.Dayjs;
   minDate?: Date | dayjs.Dayjs;
+  onViewChange?: (view: string) => void;
   property: CustomTimePeriodProperty;
   setDate: Dispatch<SetStateAction<Date>>;
   withoutInitialValue?: boolean;
@@ -45,6 +46,7 @@ const DateTimePickerInput = ({
   changeDate,
   setDate,
   withoutInitialValue = false,
+  onViewChange,
 }: Props): JSX.Element => {
   const [isOpen, setIsOpen] = useState(false);
   const [isWithoutInitialValue, setWithoutInitialValue] =
@@ -90,6 +92,7 @@ const DateTimePickerInput = ({
       onChange={changeTime}
       onClose={(): void => setIsOpen(false)}
       onOpen={(): void => setIsOpen(true)}
+      onViewChange={onViewChange}
     />
   );
 };

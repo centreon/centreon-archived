@@ -16,6 +16,8 @@ const useStyles = makeStyles()((theme) => ({
 const AnomalyDetectionFooterExclusionPeriods = ({
   setOpen,
   confirmExcluderPeriods,
+  isError,
+  dateExisted,
 }: any): JSX.Element => {
   const { classes } = useStyles();
 
@@ -36,6 +38,7 @@ const AnomalyDetectionFooterExclusionPeriods = ({
       <Button
         className={classes.confirmButton}
         data-testid="save"
+        disabled={isError || !dateExisted}
         size="small"
         variant="contained"
         onClick={confirmExcluderPeriods}
