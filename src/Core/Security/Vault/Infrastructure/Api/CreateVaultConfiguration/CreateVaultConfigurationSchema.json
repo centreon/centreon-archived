@@ -4,7 +4,6 @@
     "type": "object",
     "required": [
         "name",
-        "type_id",
         "address",
         "port",
         "storage",
