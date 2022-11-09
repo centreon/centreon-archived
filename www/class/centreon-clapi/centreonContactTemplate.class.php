@@ -51,6 +51,7 @@ class CentreonContactTemplate extends CentreonContact
     public const ORDER_ACCESS = 4;
     public const ORDER_LANG = 5;
     public const ORDER_AUTHTYPE = 6;
+    public const ORDER_DEFAULT_PAGE = 7;
 
     /**
      * Constructor
@@ -91,6 +92,7 @@ class CentreonContactTemplate extends CentreonContact
         $this->initUserAccess($params);
         $this->initLang($params);
         $this->initAuthenticationType($params);
+        $this->initDefaultPage($params);
 
         $this->params = array_merge($this->params, $this->addParams);
         $this->checkParameters();
