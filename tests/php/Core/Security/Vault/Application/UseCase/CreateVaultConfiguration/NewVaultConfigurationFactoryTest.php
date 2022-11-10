@@ -23,19 +23,31 @@ declare(strict_types=1);
 
 namespace Tests\Core\Security\Vault\Application\UseCase\CreateVaultConfiguration;
 
+use Core\Security\Vault\Application\Repository\ReadVaultRepositoryInterface;
 use Core\Security\Vault\Application\UseCase\CreateVaultConfiguration\{
     CreateVaultConfigurationRequest,
     NewVaultConfigurationFactory
 };
-use Core\Security\Vault\Domain\Model\NewVaultConfiguration;
+use Core\Security\Vault\Domain\Model\{NewVaultConfiguration, Vault};
 use Security\Encryption;
+
+beforeEach(function () {
+    $this->readVaultRepository = $this->createMock(ReadVaultRepositoryInterface::class);
+});
 
 it(
     'should return an instance of NewVaultConfiguration when a valid request is passed to create method',
     function (): void {
         $encryption = new Encryption();
+        $vault = new Vault(1, 'myVaultProvider');
+        $this->readVaultRepository
+            ->expects($this->once())
+            ->method('findById')
+            ->willReturn($vault);
+
         $factory = new NewVaultConfigurationFactory(
-            $encryption->setFirstKey('myFirstKey')
+            $encryption->setFirstKey('myFirstKey'),
+            $this->readVaultRepository
         );
         $createVaultConfigurationRequest = new CreateVaultConfigurationRequest();
         $createVaultConfigurationRequest->name = 'myVault';
@@ -55,7 +67,14 @@ it(
 it('should encrypt roleId and secretId correctly', function (): void {
     $encryption = new Encryption();
     $encryption = $encryption->setFirstKey('myFirstKey');
-    $factory = new NewVaultConfigurationFactory($encryption);
+
+    $vault = new Vault(1, 'myVaultProvider');
+    $this->readVaultRepository
+        ->expects($this->once())
+        ->method('findById')
+        ->willReturn($vault);
+
+    $factory = new NewVaultConfigurationFactory($encryption, $this->readVaultRepository);
     $createVaultConfigurationRequest = new CreateVaultConfigurationRequest();
     $createVaultConfigurationRequest->name = 'myVault';
     $createVaultConfigurationRequest->typeId = 1;

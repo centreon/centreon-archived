@@ -17112,3 +17112,6 @@ msgstr "Une configuration de vault existe déjà avec ces propriétés"
 
 msgid "Impossible to create vault configuration"
 msgstr "Impossible de créer la configuration de vault"
+
+msgid "Vault provider does not exist"
+msgstr "Vault provider n'existe pas"

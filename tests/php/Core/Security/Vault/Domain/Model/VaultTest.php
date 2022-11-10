@@ -21,24 +21,12 @@
 
 declare(strict_types=1);
 
-namespace Core\Security\Vault\Application\Repository;
+namespace Tests\Core\Security\Vault\Domain\Model;
 
-use Core\Security\Vault\Domain\Model\VaultConfiguration;
+use Core\Security\Vault\Domain\Model\Vault;
 
-interface ReadVaultConfigurationRepositoryInterface
-{
-    /**
-     * @param string $address
-     * @param int $port
-     * @param string $storage
-     *
-     * @throws \Throwable
-     *
-     * @return VaultConfiguration|null
-     */
-    public function findByAddressAndPortAndStorage(
-        string $address,
-        int $port,
-        string $storage
-    ): ?VaultConfiguration;
+$invalidMinLengthString = '';
+$invalidMaxLengthString = '';
+for ($index = 0; $index <= Vault::MAX_LENGTH; $index++) {
+    $invalidMaxLengthString .= 'a';
 }

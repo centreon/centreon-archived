@@ -23,22 +23,9 @@ declare(strict_types=1);
 
 namespace Core\Security\Vault\Application\Repository;
 
-use Core\Security\Vault\Domain\Model\VaultConfiguration;
+use Core\Security\Vault\Domain\Model\Vault;
 
-interface ReadVaultConfigurationRepositoryInterface
+interface ReadVaultRepositoryInterface
 {
-    /**
-     * @param string $address
-     * @param int $port
-     * @param string $storage
-     *
-     * @throws \Throwable
-     *
-     * @return VaultConfiguration|null
-     */
-    public function findByAddressAndPortAndStorage(
-        string $address,
-        int $port,
-        string $storage
-    ): ?VaultConfiguration;
+    public function findById(int $id): ?Vault;
 }

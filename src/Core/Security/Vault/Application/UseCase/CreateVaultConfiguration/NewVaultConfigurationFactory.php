@@ -24,16 +24,20 @@ declare(strict_types=1);
 namespace Core\Security\Vault\Application\UseCase\CreateVaultConfiguration;
 
 use Assert\InvalidArgumentException;
-use Core\Security\Vault\Domain\Model\NewVaultConfiguration;
 use Security\Interfaces\EncryptionInterface;
+use Core\Security\Vault\Domain\Exceptions\VaultException;
+use Core\Security\Vault\Domain\Model\NewVaultConfiguration;
+use Core\Security\Vault\Application\Repository\ReadVaultRepositoryInterface;
 
 class NewVaultConfigurationFactory
 {
     /**
      * @param EncryptionInterface $encryption
      */
-    public function __construct(private EncryptionInterface $encryption)
-    {
+    public function __construct(
+        private EncryptionInterface $encryption,
+        private ReadVaultRepositoryInterface $readVaultRepository
+    ) {
     }
 
     /**
@@ -45,8 +49,7 @@ class NewVaultConfigurationFactory
      *
      * @return NewVaultConfiguration
      */
-    public function create(CreateVaultConfigurationRequest $request): NewVaultConfiguration
-    {
+    public function create(CreateVaultConfigurationRequest $request): NewVaultConfiguration {
         $salt = $this->encryption->generateRandomString(NewVaultConfiguration::SALT_LENGTH);
         $roleId = $this->encryption
             ->setSecondKey($salt)
@@ -55,9 +58,15 @@ class NewVaultConfigurationFactory
             ->setSecondKey($salt)
             ->crypt($request->secretId);
 
+        $vault = $this->readVaultRepository->findById($request->typeId);
+
+        if ($vault === null) {
+            throw VaultException::providerDoesNotExist();
+        }
+
         return new NewVaultConfiguration(
             $request->name,
-            $request->typeId,
+            $vault,
             $request->address,
             $request->port,
             $request->storage,

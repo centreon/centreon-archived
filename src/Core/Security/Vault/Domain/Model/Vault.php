@@ -23,34 +23,26 @@ declare(strict_types=1);
 
 namespace Core\Security\Vault\Domain\Model;
 
+use Centreon\Domain\Common\Assertion\Assertion;
+
 /**
- * This class represents already existing vault configuration.
+ * This class represents vault provider entity.
  */
-class VaultConfiguration extends NewVaultConfiguration
+class Vault
 {
+    public const MIN_LENGTH = 1;
+    public const MAX_LENGTH = 255;
+    public const MIN_ID = 1;
+
     /**
      * @param int $id
      * @param string $name
-     * @param int $typeId
-     * @param string $address
-     * @param int $port
-     * @param string $storage
-     * @param string $roleId
-     * @param string $secretId
-     * @param string $salt
      */
-    public function __construct(
-        private int $id,
-        string $name,
-        Vault $vault,
-        string $address,
-        int $port,
-        string $storage,
-        string $roleId,
-        string $secretId,
-        string $salt
-    ) {
-        parent::__construct($name, $vault, $address, $port, $storage, $roleId, $secretId, $salt);
+    public function __construct(private int $id, private string $name)
+    {
+        Assertion::min($this->id, self::MIN_ID, 'Vault::id');
+        Assertion::minLength($name, self::MIN_LENGTH, 'Vault::name');
+        Assertion::maxLength($name, self::MAX_LENGTH, 'Vault::name');
     }
 
     /**
@@ -59,5 +51,13 @@ class VaultConfiguration extends NewVaultConfiguration
     public function getId(): int
     {
         return $this->id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName(): string
+    {
+        return $this->name;
     }
 }

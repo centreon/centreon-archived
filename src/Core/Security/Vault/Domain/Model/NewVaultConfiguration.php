@@ -30,6 +30,7 @@ use Centreon\Domain\Common\Assertion\{Assertion, AssertionException};
  */
 class NewVaultConfiguration
 {
+    public const MIN_LENGTH = 1;
     public const MAX_LENGTH = 255;
     public const MIN_PORT_VALUE = 1;
     public const MAX_PORT_VALUE = 65535;
@@ -48,7 +49,7 @@ class NewVaultConfiguration
      */
     public function __construct(
         protected string $name,
-        protected int $typeId,
+        protected Vault $vault,
         protected string $address,
         protected int $port,
         protected string $storage,
@@ -56,19 +57,18 @@ class NewVaultConfiguration
         protected string $secretId,
         protected string $salt
     ) {
-        Assertion::notEmpty($name, 'NewVaultConfiguration::name');
+        Assertion::minLength($name, self::MIN_LENGTH, 'NewVaultConfiguration::name');
         Assertion::maxLength($name, self::MAX_LENGTH, 'NewVaultConfiguration::name');
-        Assertion::min($typeId, self::MIN_TYPE_ID, 'NewVaultConfiguration::typeId');
-        Assertion::notEmpty($address, 'NewVaultConfiguration::address');
+        Assertion::minLength($address, self::MIN_LENGTH, 'NewVaultConfiguration::address');
         Assertion::ipOrDomain($address, 'NewVaultConfiguration::address');
         Assertion::max($port, self::MAX_PORT_VALUE, 'NewVaultConfiguration::port');
         Assertion::min($port, self::MIN_PORT_VALUE, 'NewVaultConfiguration::port');
         Assertion::notEmpty($port, 'NewVaultConfiguration::port');
-        Assertion::notEmpty($storage, 'NewVaultConfiguration::storage');
+        Assertion::minLength($storage, self::MIN_LENGTH, 'NewVaultConfiguration::storage');
         Assertion::maxLength($storage, self::MAX_LENGTH, 'NewVaultConfiguration::storage');
-        Assertion::notEmpty($roleId, 'NewVaultConfiguration::roleId');
+        Assertion::minLength($roleId, self::MIN_LENGTH, 'NewVaultConfiguration::roleId');
         Assertion::maxLength($roleId, self::MAX_LENGTH, 'NewVaultConfiguration::roleId');
-        Assertion::notEmpty($secretId, 'NewVaultConfiguration::secretId');
+        Assertion::minLength($secretId, self::MIN_LENGTH, 'NewVaultConfiguration::secretId');
         Assertion::maxLength($secretId, self::MAX_LENGTH, 'NewVaultConfiguration::secretId');
     }
 
@@ -81,11 +81,11 @@ class NewVaultConfiguration
     }
 
     /**
-     * @return int
+     * @return Vault
      */
-    public function getTypeId(): int
+    public function getVault(): Vault
     {
-        return $this->typeId;
+        return $this->vault;
     }
 
     /**

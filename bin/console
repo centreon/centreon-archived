@@ -1,4 +1,4 @@
-#!@PHP_BIN@
+#! /usr/bin/php
 <?php
 /*
  * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)

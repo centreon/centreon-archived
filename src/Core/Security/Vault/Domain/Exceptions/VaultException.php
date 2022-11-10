@@ -21,24 +21,17 @@
 
 declare(strict_types=1);
 
-namespace Core\Security\Vault\Application\Repository;
+namespace Core\Security\Vault\Domain\Exceptions;
 
-use Core\Security\Vault\Domain\Model\VaultConfiguration;
-
-interface ReadVaultConfigurationRepositoryInterface
+class VaultException extends \Exception
 {
     /**
-     * @param string $address
-     * @param int $port
-     * @param string $storage
+     * Exception thrown when vault provider does not exist.
      *
-     * @throws \Throwable
-     *
-     * @return VaultConfiguration|null
+     * @return self
      */
-    public function findByAddressAndPortAndStorage(
-        string $address,
-        int $port,
-        string $storage
-    ): ?VaultConfiguration;
+    public static function providerDoesNotExist(): self
+    {
+        return new self('Vault provider does not exist');
+    }
 }

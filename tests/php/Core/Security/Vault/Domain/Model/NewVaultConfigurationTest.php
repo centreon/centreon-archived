@@ -26,31 +26,48 @@ namespace Tests\Core\Security\Vault\Domain\Model;
 use Assert\InvalidArgumentException;
 use Centreon\Domain\Common\Assertion\AssertionException;
 use Core\Security\Vault\Domain\Model\NewVaultConfiguration;
+use Core\Security\Vault\Domain\Model\Vault;
 
+$invalidMinLengthString = '';
 $invalidMaxLengthString = '';
 for ($index = 0; $index <= NewVaultConfiguration::MAX_LENGTH; $index++) {
     $invalidMaxLengthString .= 'a';
 }
 
-it('should throw InvalidArgumentException when vault name is empty', function (): void {
-    new NewVaultConfiguration(
-        '',
-        NewVaultConfiguration::MIN_TYPE_ID,
-        '127.0.0.1',
-        8200,
-        'myStorage',
-        'myRoleId',
-        'mySecretId',
-        'mySalt'
-    );
-})->throws(InvalidArgumentException::class, AssertionException::notEmpty('NewVaultConfiguration::name')->getMessage());
+beforeEach(function () {
+    $this->vault = new Vault(1, 'myVaultProvider');
+});
+
+it(
+    'should throw InvalidArgumentException when vault name is empty',
+    function () use ($invalidMinLengthString): void {
+        new NewVaultConfiguration(
+            $invalidMinLengthString,
+            $this->vault,
+            '127.0.0.1',
+            8200,
+            'myStorage',
+            'myRoleId',
+            'mySecretId',
+            'mySalt'
+        );
+    }
+)->throws(
+    InvalidArgumentException::class,
+    AssertionException::minLength(
+        $invalidMinLengthString,
+        strlen($invalidMinLengthString),
+        NewVaultConfiguration::MIN_LENGTH,
+        'NewVaultConfiguration::name'
+    )->getMessage()
+);
 
 it(
     'should throw InvalidArgumentException when vault name exceeds allowed max length',
     function () use ($invalidMaxLengthString): void {
         new NewVaultConfiguration(
             $invalidMaxLengthString,
-            NewVaultConfiguration::MIN_TYPE_ID,
+            $this->vault,
             '127.0.0.1',
             8200,
             'myStorage',
@@ -69,46 +86,34 @@ it(
     )->getMessage()
 );
 
-it('should throw InvalidArgumentException when vault type id is less than 1', function (): void {
-    new NewVaultConfiguration(
-        'myVault',
-        NewVaultConfiguration::MIN_TYPE_ID - 1,
-        '127.0.0.1',
-        8200,
-        'myStorage',
-        'myRoleId',
-        'mySecretId',
-        'mySalt'
-    );
-})->throws(
+it(
+    'should throw InvalidArgumentException when vault address is empty',
+    function () use ($invalidMinLengthString): void {
+        new NewVaultConfiguration(
+            'myVault',
+            $this->vault,
+            $invalidMinLengthString,
+            8200,
+            'myStorage',
+            'myRoleId',
+            'mySecretId',
+            'mySalt'
+        );
+    }
+)->throws(
     InvalidArgumentException::class,
-    AssertionException::min(
-        NewVaultConfiguration::MIN_TYPE_ID - 1,
-        NewVaultConfiguration::MIN_TYPE_ID,
-        'NewVaultConfiguration::typeId'
+    AssertionException::minLength(
+        $invalidMinLengthString,
+        strlen($invalidMinLengthString),
+        NewVaultConfiguration::MIN_LENGTH,
+        'NewVaultConfiguration::address'
     )->getMessage()
-);
-
-it('should throw InvalidArgumentException when vault address is empty', function (): void {
-    new NewVaultConfiguration(
-        'myVault',
-        NewVaultConfiguration::MIN_TYPE_ID,
-        '',
-        8200,
-        'myStorage',
-        'myRoleId',
-        'mySecretId',
-        'mySalt'
-    );
-})->throws(
-    InvalidArgumentException::class,
-    AssertionException::notEmpty('NewVaultConfiguration::address')->getMessage()
 );
 
 it('should throw AssertionException when vault address is \'._@\'', function (): void {
     new NewVaultConfiguration(
         'myVault',
-        NewVaultConfiguration::MIN_TYPE_ID,
+        $this->vault,
         '._@',
         8200,
         'myStorage',
@@ -124,7 +129,7 @@ it('should throw AssertionException when vault address is \'._@\'', function ():
 it('should throw InvalidArgumentException when vault port value is lower than allowed range', function (): void {
     new NewVaultConfiguration(
         'myVault',
-        NewVaultConfiguration::MIN_TYPE_ID,
+        $this->vault,
         '127.0.0.1',
         0,
         'myStorage',
@@ -144,7 +149,7 @@ it('should throw InvalidArgumentException when vault port value is lower than al
 it('should throw InvalidArgumentException when vault port exceeds allowed range', function (): void {
     new NewVaultConfiguration(
         'myVault',
-        NewVaultConfiguration::MIN_TYPE_ID,
+        $this->vault,
         '127.0.0.1',
         NewVaultConfiguration::MAX_PORT_VALUE + 1,
         'myStorage',
@@ -161,20 +166,28 @@ it('should throw InvalidArgumentException when vault port exceeds allowed range'
     )->getMessage()
 );
 
-it('should throw InvalidArgumentException when vault storage is empty', function (): void {
-    new NewVaultConfiguration(
-        'myVault',
-        NewVaultConfiguration::MIN_TYPE_ID,
-        '127.0.0.1',
-        8200,
-        '',
-        'myRoleId',
-        'mySecretId',
-        'mySalt'
-    );
-})->throws(
+it(
+    'should throw InvalidArgumentException when vault storage is empty',
+    function () use ($invalidMinLengthString): void {
+        new NewVaultConfiguration(
+            'myVault',
+            $this->vault,
+            '127.0.0.1',
+            8200,
+            $invalidMinLengthString,
+            'myRoleId',
+            'mySecretId',
+            'mySalt'
+        );
+    }
+)->throws(
     InvalidArgumentException::class,
-    AssertionException::notEmpty('NewVaultConfiguration::storage')->getMessage()
+    AssertionException::minLength(
+        $invalidMinLengthString,
+        strlen($invalidMinLengthString),
+        NewVaultConfiguration::MIN_LENGTH,
+        'NewVaultConfiguration::storage'
+    )->getMessage()
 );
 
 it(
@@ -182,7 +195,7 @@ it(
     function () use ($invalidMaxLengthString): void {
         new NewVaultConfiguration(
             'myVault',
-            NewVaultConfiguration::MIN_TYPE_ID,
+            $this->vault,
             '127.0.0.1',
             8200,
             $invalidMaxLengthString,
@@ -201,20 +214,28 @@ it(
     )->getMessage()
 );
 
-it('should throw InvalidArgumentException when vault role id is empty', function (): void {
-    new NewVaultConfiguration(
-        'myVault',
-        NewVaultConfiguration::MIN_TYPE_ID,
-        '127.0.0.1',
-        8200,
-        'myStorage',
-        '',
-        'mySecretId',
-        'mySalt'
-    );
-})->throws(
+it(
+    'should throw InvalidArgumentException when vault role id is empty',
+    function () use ($invalidMinLengthString): void {
+        new NewVaultConfiguration(
+            'myVault',
+            $this->vault,
+            '127.0.0.1',
+            8200,
+            'myStorage',
+            $invalidMinLengthString,
+            'mySecretId',
+            'mySalt'
+        );
+    }
+)->throws(
     InvalidArgumentException::class,
-    AssertionException::notEmpty('NewVaultConfiguration::roleId')->getMessage()
+    AssertionException::minLength(
+        $invalidMinLengthString,
+        strlen($invalidMinLengthString),
+        NewVaultConfiguration::MIN_LENGTH,
+        'NewVaultConfiguration::roleId'
+    )->getMessage()
 );
 
 it(
@@ -222,7 +243,7 @@ it(
     function () use ($invalidMaxLengthString): void {
         new NewVaultConfiguration(
             'myVault',
-            NewVaultConfiguration::MIN_TYPE_ID,
+            $this->vault,
             '127.0.0.1',
             8200,
             'myStorage',
@@ -241,20 +262,28 @@ it(
     )->getMessage()
 );
 
-it('should throw InvalidArgumentException when vault secret id is empty', function (): void {
-    new NewVaultConfiguration(
-        'myVault',
-        NewVaultConfiguration::MIN_TYPE_ID,
-        '127.0.0.1',
-        8200,
-        'myStorage',
-        'myRoleId',
-        '',
-        'mySalt'
-    );
-})->throws(
+it(
+    'should throw InvalidArgumentException when vault secret id is empty',
+    function () use ($invalidMinLengthString): void {
+        new NewVaultConfiguration(
+            'myVault',
+            $this->vault,
+            '127.0.0.1',
+            8200,
+            'myStorage',
+            'myRoleId',
+            $invalidMinLengthString,
+            'mySalt'
+        );
+    }
+)->throws(
     InvalidArgumentException::class,
-    AssertionException::notEmpty('NewVaultConfiguration::secretId')->getMessage()
+    AssertionException::minLength(
+        $invalidMinLengthString,
+        strlen($invalidMinLengthString),
+        NewVaultConfiguration::MIN_LENGTH,
+        'NewVaultConfiguration::secretId'
+    )->getMessage()
 );
 
 it(
@@ -262,7 +291,7 @@ it(
     function () use ($invalidMaxLengthString): void {
         new NewVaultConfiguration(
             'myVault',
-            NewVaultConfiguration::MIN_TYPE_ID,
+            $this->vault,
             '127.0.0.1',
             8200,
             'myStorage',
@@ -284,7 +313,7 @@ it(
 it('should return an instance of NewVaultConfiguration when all vault parametes are valid', function (): void {
     $newVaultConfiguration = new NewVaultConfiguration(
         'myVault',
-        NewVaultConfiguration::MIN_TYPE_ID,
+        $this->vault,
         '127.0.0.1',
         8200,
         'myStorage',
@@ -294,7 +323,7 @@ it('should return an instance of NewVaultConfiguration when all vault parametes 
     );
 
     expect($newVaultConfiguration->getName())->toBe('myVault');
-    expect($newVaultConfiguration->getTypeId())->toBe(1);
+    expect($newVaultConfiguration->getVault())->toBeInstanceOf(Vault::class);
     expect($newVaultConfiguration->getAddress())->toBe('127.0.0.1');
     expect($newVaultConfiguration->getPort())->toBe(8200);
     expect($newVaultConfiguration->getStorage())->toBe('myStorage');
