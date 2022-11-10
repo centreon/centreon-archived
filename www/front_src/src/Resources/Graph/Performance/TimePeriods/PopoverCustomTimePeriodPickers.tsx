@@ -63,6 +63,8 @@ interface Props {
   classNamePaper?: string;
   classNamePicker?: string;
   customTimePeriod: CustomTimePeriod;
+  disabledPickerEndInput?: boolean;
+  disabledPickerStartInput?: boolean;
   getIsErrorDatePicker?: (value: boolean) => void;
   maxDatePickerEndInput?: Date | dayjs.Dayjs;
   maxDatePickerStartInput?: Date;
@@ -115,6 +117,8 @@ const PopoverCustomTimePeriodPickers = ({
   getIsErrorDatePicker,
   viewChangeStartPicker,
   viewChangeEndPicker,
+  disabledPickerEndInput,
+  disabledPickerStartInput,
 }: Props): JSX.Element => {
   const { classes, cx } = useStyles();
   const { t } = useTranslation();
@@ -135,6 +139,7 @@ const PopoverCustomTimePeriodPickers = ({
   getIsErrorDatePicker?.(error);
 
   const changeDate = ({ property, date }): void => {
+    console.log('change ??');
     const currentDate = customTimePeriod[property];
 
     cond([
@@ -199,6 +204,7 @@ const PopoverCustomTimePeriodPickers = ({
                 <DateTimePickerInput
                   changeDate={changeDate}
                   date={start}
+                  disabled={disabledPickerStartInput}
                   maxDate={maxDatePickerStartInput}
                   minDate={minDatePickerStartInput}
                   property={CustomTimePeriodProperty.start}
@@ -215,6 +221,7 @@ const PopoverCustomTimePeriodPickers = ({
                 <DateTimePickerInput
                   changeDate={changeDate}
                   date={end}
+                  disabled={disabledPickerEndInput}
                   maxDate={maxDatePickerEndInput}
                   minDate={minDatePickerEndInput}
                   property={CustomTimePeriodProperty.end}

@@ -3,6 +3,8 @@ import { useState } from 'react';
 import { makeStyles } from 'tss-react/mui';
 
 import { TextField, Typography } from '@mui/material';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Checkbox from '@mui/material/Checkbox';
 
 const useStyles = makeStyles()((theme) => ({
   container: {
@@ -13,7 +15,10 @@ const useStyles = makeStyles()((theme) => ({
   },
 }));
 
-const AnomalyDetectionCommentExclusionPeriod = (): JSX.Element => {
+const AnomalyDetectionCommentExclusionPeriod = ({
+  onChangeCheckedExclusionPeriod,
+  isExclusionPeriodChecked,
+}: any): JSX.Element => {
   const { classes } = useStyles();
   const [comment, setComment] = useState(null);
 
@@ -22,17 +27,28 @@ const AnomalyDetectionCommentExclusionPeriod = (): JSX.Element => {
   };
 
   return (
-    <div className={classes.container}>
-      <Typography>Comment </Typography>
-      <TextField
-        multiline
-        className={classes.field}
-        rows={3}
-        value={comment}
-        variant="filled"
-        onChange={changeComment}
+    <>
+      <FormControlLabel
+        control={
+          <Checkbox
+            checked={isExclusionPeriodChecked}
+            onChange={onChangeCheckedExclusionPeriod}
+          />
+        }
+        label="From beginning"
       />
-    </div>
+      <div className={classes.container}>
+        <Typography>Comment </Typography>
+        <TextField
+          multiline
+          className={classes.field}
+          rows={3}
+          value={comment}
+          variant="filled"
+          onChange={changeComment}
+        />
+      </div>
+    </>
   );
 };
 

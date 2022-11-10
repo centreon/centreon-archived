@@ -13,6 +13,7 @@ import useDateTimePickerAdapter from '../../../useDateTimePickerAdapter';
 interface Props {
   changeDate: (props) => void;
   date: Date;
+  disabled?: boolean;
   maxDate?: Date | dayjs.Dayjs;
   minDate?: Date | dayjs.Dayjs;
   onViewChange?: (view: string) => void;
@@ -49,6 +50,7 @@ const DateTimePickerInput = ({
   withoutInitialValue = false,
   setWithoutInitialValue,
   onViewChange,
+  disabled = false,
 }: Props): JSX.Element => {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -85,6 +87,7 @@ const DateTimePickerInput = ({
       PopperProps={{
         open: isOpen,
       }}
+      disabled={disabled}
       maxDate={maxDate && dayjs(maxDate)}
       minDate={minDate && dayjs(minDate)}
       open={isOpen}
