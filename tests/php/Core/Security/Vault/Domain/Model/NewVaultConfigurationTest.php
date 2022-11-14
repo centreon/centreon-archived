@@ -39,7 +39,7 @@ beforeEach(function () {
 });
 
 it(
-    'should throw InvalidArgumentException when vault name is empty',
+    'should throw InvalidArgumentException when vault configuration name is empty',
     function () use ($invalidMinLengthString): void {
         new NewVaultConfiguration(
             $invalidMinLengthString,
@@ -63,7 +63,7 @@ it(
 );
 
 it(
-    'should throw InvalidArgumentException when vault name exceeds allowed max length',
+    'should throw InvalidArgumentException when vault configuration name exceeds allowed max length',
     function () use ($invalidMaxLengthString): void {
         new NewVaultConfiguration(
             $invalidMaxLengthString,
@@ -87,7 +87,7 @@ it(
 );
 
 it(
-    'should throw InvalidArgumentException when vault address is empty',
+    'should throw InvalidArgumentException when vault configuration address is empty',
     function () use ($invalidMinLengthString): void {
         new NewVaultConfiguration(
             'myVault',
@@ -110,7 +110,7 @@ it(
     )->getMessage()
 );
 
-it('should throw AssertionException when vault address is \'._@\'', function (): void {
+it('should throw AssertionException when vault configuration address is \'._@\'', function (): void {
     new NewVaultConfiguration(
         'myVault',
         $this->vault,
@@ -126,7 +126,7 @@ it('should throw AssertionException when vault address is \'._@\'', function ():
     AssertionException::ipOrDomain('._@', 'NewVaultConfiguration::address')->getMessage()
 );
 
-it('should throw InvalidArgumentException when vault port value is lower than allowed range', function (): void {
+it('should throw InvalidArgumentException when vault configuration port value is lower than allowed range', function (): void {
     new NewVaultConfiguration(
         'myVault',
         $this->vault,
@@ -146,7 +146,7 @@ it('should throw InvalidArgumentException when vault port value is lower than al
     )->getMessage()
 );
 
-it('should throw InvalidArgumentException when vault port exceeds allowed range', function (): void {
+it('should throw InvalidArgumentException when vault configuration port exceeds allowed range', function (): void {
     new NewVaultConfiguration(
         'myVault',
         $this->vault,
@@ -167,7 +167,7 @@ it('should throw InvalidArgumentException when vault port exceeds allowed range'
 );
 
 it(
-    'should throw InvalidArgumentException when vault storage is empty',
+    'should throw InvalidArgumentException when vault configuration storage is empty',
     function () use ($invalidMinLengthString): void {
         new NewVaultConfiguration(
             'myVault',
@@ -191,7 +191,7 @@ it(
 );
 
 it(
-    'should throw InvalidArgumentException when vault storage exeeds allowed max length',
+    'should throw InvalidArgumentException when vault configuration storage exeeds allowed max length',
     function () use ($invalidMaxLengthString): void {
         new NewVaultConfiguration(
             'myVault',
@@ -215,7 +215,7 @@ it(
 );
 
 it(
-    'should throw InvalidArgumentException when vault role id is empty',
+    'should throw InvalidArgumentException when vault configuration role id is empty',
     function () use ($invalidMinLengthString): void {
         new NewVaultConfiguration(
             'myVault',
@@ -239,7 +239,7 @@ it(
 );
 
 it(
-    'should throw InvalidArgumentException when vault role id exeeds allowed max length',
+    'should throw InvalidArgumentException when vault configuration role id exeeds allowed max length',
     function () use ($invalidMaxLengthString): void {
         new NewVaultConfiguration(
             'myVault',
@@ -263,7 +263,7 @@ it(
 );
 
 it(
-    'should throw InvalidArgumentException when vault secret id is empty',
+    'should throw InvalidArgumentException when vault configuration secret id is empty',
     function () use ($invalidMinLengthString): void {
         new NewVaultConfiguration(
             'myVault',
@@ -287,7 +287,7 @@ it(
 );
 
 it(
-    'should throw InvalidArgumentException when vault secret id exeeds allowed max length',
+    'should throw InvalidArgumentException when vault configuration secret id exeeds allowed max length',
     function () use ($invalidMaxLengthString): void {
         new NewVaultConfiguration(
             'myVault',
@@ -310,23 +310,26 @@ it(
     )->getMessage()
 );
 
-it('should return an instance of NewVaultConfiguration when all vault parametes are valid', function (): void {
-    $newVaultConfiguration = new NewVaultConfiguration(
-        'myVault',
-        $this->vault,
-        '127.0.0.1',
-        8200,
-        'myStorage',
-        'myRoleId',
-        'mySecretId',
-        'mySalt'
-    );
+it(
+    'should return an instance of NewVaultConfiguration when all vault configuration parametes are valid',
+    function (): void {
+        $newVaultConfiguration = new NewVaultConfiguration(
+            'myVault',
+            $this->vault,
+            '127.0.0.1',
+            8200,
+            'myStorage',
+            'myRoleId',
+            'mySecretId',
+            'mySalt'
+        );
 
-    expect($newVaultConfiguration->getName())->toBe('myVault');
-    expect($newVaultConfiguration->getVault())->toBeInstanceOf(Vault::class);
-    expect($newVaultConfiguration->getAddress())->toBe('127.0.0.1');
-    expect($newVaultConfiguration->getPort())->toBe(8200);
-    expect($newVaultConfiguration->getStorage())->toBe('myStorage');
-    expect($newVaultConfiguration->getRoleId())->toBe('myRoleId');
-    expect($newVaultConfiguration->getSecretId())->toBe('mySecretId');
-});
+        expect($newVaultConfiguration->getName())->toBe('myVault');
+        expect($newVaultConfiguration->getVault())->toBeInstanceOf(Vault::class);
+        expect($newVaultConfiguration->getAddress())->toBe('127.0.0.1');
+        expect($newVaultConfiguration->getPort())->toBe(8200);
+        expect($newVaultConfiguration->getStorage())->toBe('myStorage');
+        expect($newVaultConfiguration->getRoleId())->toBe('myRoleId');
+        expect($newVaultConfiguration->getSecretId())->toBe('mySecretId');
+    }
+);

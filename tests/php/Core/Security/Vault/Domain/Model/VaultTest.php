@@ -23,10 +23,53 @@ declare(strict_types=1);
 
 namespace Tests\Core\Security\Vault\Domain\Model;
 
+use Assert\InvalidArgumentException;
 use Core\Security\Vault\Domain\Model\Vault;
+use Centreon\Domain\Common\Assertion\AssertionException;
 
 $invalidMinLengthString = '';
 $invalidMaxLengthString = '';
 for ($index = 0; $index <= Vault::MAX_LENGTH; $index++) {
     $invalidMaxLengthString .= 'a';
 }
+
+it('should throw an InvalidArgumentException when vault id is lower than allowed minimum', function () {
+    new Vault(0, 'myVault');
+})->throws(
+    InvalidArgumentException::class,
+    AssertionException::min(
+        Vault::MIN_ID - 1,
+        Vault::MIN_ID,
+        'Vault::id'
+    )->getMessage()
+);
+
+it(
+    'should throw InvalidArgumentException when vault name is empty',
+    function () use ($invalidMinLengthString) {
+        new Vault (Vault::MIN_ID, $invalidMinLengthString);
+    }
+)->throws(
+    InvalidArgumentException::class,
+    AssertionException::minLength(
+        $invalidMinLengthString,
+        strlen($invalidMinLengthString),
+        Vault::MIN_LENGTH,
+        'Vault::name'
+    )->getMessage()
+);
+
+it(
+    'should throw InvalidArgumentException when vault name exceeds allowed max length',
+    function () use ($invalidMaxLengthString) {
+        new Vault(Vault::MIN_ID, $invalidMaxLengthString);
+    }
+)->throws(
+    InvalidArgumentException::class,
+    AssertionException::maxLength(
+        $invalidMaxLengthString,
+        strlen($invalidMaxLengthString),
+        Vault::MAX_LENGTH,
+        'Vault::name'
+    )->getMessage()
+);
