@@ -31,7 +31,7 @@ class VaultConfiguration extends NewVaultConfiguration
     /**
      * @param int $id
      * @param string $name
-     * @param int $typeId
+     * @param Vault $vault
      * @param string $address
      * @param int $port
      * @param string $storage

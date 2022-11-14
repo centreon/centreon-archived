@@ -86,7 +86,7 @@ final class CreateVaultConfiguration
 
             $this->writeVaultConfigurationRepository->create($newVaultConfiguration);
             $presenter->setResponseStatus(new CreatedResponse());
-        } catch (InvalidArgumentException|VaultException $ex) {
+        } catch (InvalidArgumentException | VaultException $ex) {
             $this->error('Some parameters are not valid', ['trace' => (string) $ex]);
             $presenter->setResponseStatus(
                 new InvalidArgumentResponse($ex->getMessage())

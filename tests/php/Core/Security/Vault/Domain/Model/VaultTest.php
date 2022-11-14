@@ -24,8 +24,8 @@ declare(strict_types=1);
 namespace Tests\Core\Security\Vault\Domain\Model;
 
 use Assert\InvalidArgumentException;
-use Core\Security\Vault\Domain\Model\Vault;
 use Centreon\Domain\Common\Assertion\AssertionException;
+use Core\Security\Vault\Domain\Model\Vault;
 
 $invalidMinLengthString = '';
 $invalidMaxLengthString = '';
@@ -47,7 +47,7 @@ it('should throw an InvalidArgumentException when vault id is lower than allowed
 it(
     'should throw InvalidArgumentException when vault name is empty',
     function () use ($invalidMinLengthString): void {
-        new Vault (Vault::MIN_ID, $invalidMinLengthString);
+        new Vault(Vault::MIN_ID, $invalidMinLengthString);
     }
 )->throws(
     InvalidArgumentException::class,

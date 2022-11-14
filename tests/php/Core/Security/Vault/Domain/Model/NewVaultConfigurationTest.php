@@ -126,18 +126,21 @@ it('should throw AssertionException when vault configuration address is \'._@\''
     AssertionException::ipOrDomain('._@', 'NewVaultConfiguration::address')->getMessage()
 );
 
-it('should throw InvalidArgumentException when vault configuration port value is lower than allowed range', function (): void {
-    new NewVaultConfiguration(
-        'myVault',
-        $this->vault,
-        '127.0.0.1',
-        0,
-        'myStorage',
-        'myRoleId',
-        'mySecretId',
-        'mySalt'
-    );
-})->throws(
+it(
+    'should throw InvalidArgumentException when vault configuration port value is lower than allowed range',
+    function (): void {
+        new NewVaultConfiguration(
+            'myVault',
+            $this->vault,
+            '127.0.0.1',
+            0,
+            'myStorage',
+            'myRoleId',
+            'mySecretId',
+            'mySalt'
+        );
+    }
+)->throws(
     InvalidArgumentException::class,
     AssertionException::min(
         NewVaultConfiguration::MIN_PORT_VALUE - 1,
