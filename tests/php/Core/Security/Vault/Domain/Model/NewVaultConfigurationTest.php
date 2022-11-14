@@ -34,7 +34,7 @@ for ($index = 0; $index <= NewVaultConfiguration::MAX_LENGTH; $index++) {
     $invalidMaxLengthString .= 'a';
 }
 
-beforeEach(function () {
+beforeEach(function (): void {
     $this->vault = new Vault(1, 'myVaultProvider');
 });
 

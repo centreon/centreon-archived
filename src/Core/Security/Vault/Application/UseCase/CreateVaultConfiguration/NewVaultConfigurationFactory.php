@@ -24,15 +24,16 @@ declare(strict_types=1);
 namespace Core\Security\Vault\Application\UseCase\CreateVaultConfiguration;
 
 use Assert\InvalidArgumentException;
-use Security\Interfaces\EncryptionInterface;
+use Core\Security\Vault\Application\Repository\ReadVaultRepositoryInterface;
 use Core\Security\Vault\Domain\Exceptions\VaultException;
 use Core\Security\Vault\Domain\Model\NewVaultConfiguration;
-use Core\Security\Vault\Application\Repository\ReadVaultRepositoryInterface;
+use Security\Interfaces\EncryptionInterface;
 
 class NewVaultConfigurationFactory
 {
     /**
      * @param EncryptionInterface $encryption
+     * @param ReadVaultRepositoryInterface $readVaultRepository
      */
     public function __construct(
         private EncryptionInterface $encryption,

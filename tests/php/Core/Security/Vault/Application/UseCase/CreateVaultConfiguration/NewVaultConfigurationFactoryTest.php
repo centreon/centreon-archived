@@ -31,7 +31,7 @@ use Core\Security\Vault\Application\UseCase\CreateVaultConfiguration\{
 use Core\Security\Vault\Domain\Model\{NewVaultConfiguration, Vault};
 use Security\Encryption;
 
-beforeEach(function () {
+beforeEach(function (): void {
     $this->readVaultRepository = $this->createMock(ReadVaultRepositoryInterface::class);
 });
 
