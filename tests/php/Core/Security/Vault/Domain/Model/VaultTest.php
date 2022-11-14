@@ -33,7 +33,7 @@ for ($index = 0; $index <= Vault::MAX_LENGTH; $index++) {
     $invalidMaxLengthString .= 'a';
 }
 
-it('should throw an InvalidArgumentException when vault id is lower than allowed minimum', function () {
+it('should throw an InvalidArgumentException when vault id is lower than allowed minimum', function (): void {
     new Vault(0, 'myVault');
 })->throws(
     InvalidArgumentException::class,
@@ -46,7 +46,7 @@ it('should throw an InvalidArgumentException when vault id is lower than allowed
 
 it(
     'should throw InvalidArgumentException when vault name is empty',
-    function () use ($invalidMinLengthString) {
+    function () use ($invalidMinLengthString): void {
         new Vault (Vault::MIN_ID, $invalidMinLengthString);
     }
 )->throws(
@@ -61,7 +61,7 @@ it(
 
 it(
     'should throw InvalidArgumentException when vault name exceeds allowed max length',
-    function () use ($invalidMaxLengthString) {
+    function () use ($invalidMaxLengthString): void {
         new Vault(Vault::MIN_ID, $invalidMaxLengthString);
     }
 )->throws(
