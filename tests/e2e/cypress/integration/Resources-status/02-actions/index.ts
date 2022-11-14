@@ -7,7 +7,6 @@ import {
   insertResourceFixtures,
   tearDownResource,
 } from '../common';
-import { refreshListing } from '../../../support/centreonData';
 
 const serviceInAcknowledgementName = 'service_test_ack';
 const serviceInDowntimeName = 'service_test_dt';
@@ -18,15 +17,14 @@ before(() => {
 
 When('I select the acknowledge action on a problematic Resource', () => {
   cy.contains(serviceInAcknowledgementName)
-    .parents('div[role="row"]:first')
+    .parent()
+    .parent()
+    .parent()
+    .parent()
     .find('input[type="checkbox"]:first')
     .click();
 
-  cy.get(`[aria-label="${actions.acknowledge}"]`)
-    .parent('button')
-    .first()
-    .should('be.enabled')
-    .click();
+  cy.getByLabel({ label: actions.acknowledge }).last().click();
 
   cy.get('textarea').should('be.visible');
   cy.get('button').contains('Acknowledge').click();
@@ -35,7 +33,8 @@ When('I select the acknowledge action on a problematic Resource', () => {
 Then('the problematic Resource is displayed as acknowledged', () => {
   cy.get(stateFilterContainer).click().get('[data-value="all"]').click();
   cy.waitUntil(() => {
-    return refreshListing()
+    return cy
+      .refreshListing()
       .then(() => cy.contains(serviceInAcknowledgementName))
       .parent()
       .parent()
@@ -50,15 +49,14 @@ Then('the problematic Resource is displayed as acknowledged', () => {
 
 When('I select the downtime action on a problematic Resource', () => {
   cy.contains(serviceInDowntimeName)
-    .parents('div[role="row"]:first')
+    .parent()
+    .parent()
+    .parent()
+    .parent()
     .find('input[type="checkbox"]:first')
     .click();
 
-  cy.get(`[aria-label="${actions.setDowntime}"]`)
-    .parent('button')
-    .first()
-    .should('be.enabled')
-    .click();
+  cy.getByLabel({ label: actions.setDowntime }).last().click();
 
   cy.get('textarea').should('be.visible');
   cy.get('button').contains(`${actions.setDowntime}`).click();
@@ -66,7 +64,8 @@ When('I select the downtime action on a problematic Resource', () => {
 
 Then('the problematic Resource is displayed as in downtime', () => {
   cy.waitUntil(() => {
-    return refreshListing()
+    return cy
+      .refreshListing()
       .then(() => cy.contains(serviceInDowntimeName))
       .parent()
       .parent()

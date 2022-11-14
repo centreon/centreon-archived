@@ -1,4 +1,11 @@
-.ListTable a:link, #ListTable a:link, .ListTable a:visited, #ListTable a:visited {color: var(--list-table-anchors-font-color);}
+.ListTable a:link, #ListTable a:link, .ListTable a:visited, #ListTable a:visited {
+    color:var(--table-font-color) ;
+}
+
+svg{
+    fill: var(--bt-success-background-color) !important;
+}
+
 .ListTable, .ListTableMedium, .ListTableSmall {
     border-color: var(--list-table-border-color);
     border-radius: 5px;
@@ -6,13 +13,13 @@
 .list_lvl_1 { background-color:var(--list-lvl-1-background-color); color: var(--list-lvl-1-font-color)}
 .list_lvl_2 { background-color:var(--list-lvl-2-background-color); color: var(--list-lvl-2-font-color)}
 
-.ListHeader     { background:var(--list-header-background); }
-.ListSubHeader  {
+
+.ListSubHeader{
     background-color:var(--list-sub-header-background-color);
     font-weight:bold;
     background-position:top left;
 }
->
+
 .list_lvl_2 td, .list_lvl_1 td {
     border-top-color: var(--list-lvls-td-top-border-color);
     border-left-color: var(--list-lvls-td-left-border-color);
@@ -22,17 +29,13 @@
 
 .list_one td, .list_two td, .list_three td, .list_four td, .list_up td, .list_down td, .line_ack td, 
 .line_downtime td, .list_unreachable td, .row_disabled td {
-    border-top-color: var(--lists-td-top-border-color);
-    border-left-color: var(--lists-td-left-border-color);
-    border-bottom-color: var(--lists-td-bottom-border-color);
-    border-right-color: var(--lists-td-right-border-color);
+    color:var(--table-font-color) ;
 }
 
 .tab .list_one td, .tab .list_two td, .tab .list_three td, .tab .list_four td, .tab .list_up td, 
 .tab .list_down td,.tab .line_ack td,.tab .line_downtime td,.tab .list_unreachable td, .tab .row_disabled td {
     border-top-color: var(--tab-lists-td-top-border-color);
     border-left-color: var(--tab-lists-td-left-border-color);
-    border-bottom-color: var(--tab-lists-td-bottom-border-color);
     border-right-color: var(--tab-lists-td-right-border-color);
 }
 
@@ -44,9 +47,8 @@
 }
 
 .ListHeader td{
-    border-top-color: var(--list-header-border-top-color);
-    border-left-color: var(--list-header-border-left-color);
     color: var(--list-header-font-color);
+    border-bottom: 1px solid var(--list-header-border-bottom-color);
 }
 
 .ListColFooterRight, .ListColFooterLeft, .ListColFooterCenter {
@@ -56,17 +58,17 @@
 .list_one_fixe      {   background-color: var(--list-one-fix-background-color);}
 .list_two_fixe      {   background-color: var(--list-two-fix-background-color);}
 
-.list_one           {   background-color: var(--list-one-background-color); color: var(--list-one-font-color);}
-.list_one:hover     {   background-color: var(--list-one-hover-background-color); color: var(--list-one-hover-font-color);}
+.list_one           {   color: var(--list-one-font-color);}
+.list_one:hover     {   background-color: var(--list-hover-background-color); color: var(--list-one-hover-font-color);}
 
-.list_two           {   background-color: var(--list-two-background-color); color: var(--list-two-font-color);}
-.list_two:hover     {   background-color: var(--list-two-hover-background-color); color: var(--list-two-hover-font-color);}
+.list_two           {   color: var(--list-two-font-color);}
+.list_two:hover     {   background-color: var(--list-hover-background-color); color: var(--list-two-hover-font-color);}
 
 .list_three         {   background-color: var(--list-three-background-color);}
-.list_three:hover   {   background-color: var(--list-three-hover-background-color);}
+.list_three:hover   {   background-color: var(--list-hover-background-color);}
 
 .list_four          {   background-color: var(--list-four-background-color);}
-.list_four:hover    {   background-color: var(--list-four-hover-background-color);}
+.list_four:hover    {   background-color: var(--list-hover-background-color);}
 
 .list_up            {   background-color: var(--list-up-background-color);}
 .list_up:hover      {   background-color: var(--list-up-hover-background-color);}

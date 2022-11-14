@@ -21,7 +21,7 @@ import Form from './Form';
 const useStyles = makeStyles((theme) => ({
   container: {
     alignItems: 'center',
-    backgroundColor: theme.palette.background.default,
+    backgroundColor: theme.palette.background.paper,
     display: 'flex',
     flexDirection: 'column',
     height: '100vh',

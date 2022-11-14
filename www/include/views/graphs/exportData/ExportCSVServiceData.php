@@ -41,6 +41,7 @@ function get_error($str)
 
 require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.config.php");
 include_once _CENTREON_PATH_ . "www/class/centreonDB.class.php";
+include_once _CENTREON_PATH_ . "www/class/HtmlAnalyzer.php";
 
 $pearDB = new CentreonDB();
 $pearDBO = new CentreonDB("centstorage");
@@ -62,9 +63,8 @@ $index = filter_var(
     $_GET['index'] ?? $_POST['index'] ?? false,
     FILTER_VALIDATE_INT
 );
-$period = filter_var(
-    $_GET['period'] ?? $_POST['period'] ?? 'today',
-    FILTER_SANITIZE_STRING
+$period = \HtmlAnalyzer::sanitizeAndRemoveTags(
+    $_GET['period'] ?? $_POST['period'] ?? 'today'
 );
 $start = filter_var(
     $_GET['start'] ?? false,
@@ -74,9 +74,8 @@ $end = filter_var(
     $_GET['end'] ?? false,
     FILTER_VALIDATE_INT
 );
-$chartId = filter_var(
-    $_GET['chartId'] ?? null,
-    FILTER_SANITIZE_STRING
+$chartId = \HtmlAnalyzer::sanitizeAndRemoveTags(
+    $_GET['chartId'] ?? null
 );
 
 if (!empty($chartId)) {

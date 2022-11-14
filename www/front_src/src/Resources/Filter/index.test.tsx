@@ -12,6 +12,9 @@ import {
   render,
   RenderResult,
   act,
+  TestQueryProvider,
+  resetMocks,
+  mockResponseOnce,
 } from '@centreon/ui';
 import { refreshIntervalAtom, userAtom } from '@centreon/ui-context';
 
@@ -118,7 +121,7 @@ const filterParams: Array<FilterParameter> = [
       hostGroups: [linuxServersHostGroup.name],
     },
     (): void => {
-      mockedAxios.get.mockResolvedValueOnce({
+      mockResponseOnce({
         data: {
           meta: {
             limit: 10,
@@ -136,7 +139,7 @@ const filterParams: Array<FilterParameter> = [
       serviceGroups: [webAccessServiceGroup.name],
     },
     (): void => {
-      mockedAxios.get.mockResolvedValueOnce({
+      mockResponseOnce({
         data: {
           meta: {
             limit: 10,
@@ -216,17 +219,19 @@ const FilterTest = (): JSX.Element | null => {
   useDetails();
 
   return (
-    <Context.Provider
-      value={
-        {
-          ...listingState,
-          ...actionsState,
-          ...detailsState,
-        } as ResourceContext
-      }
-    >
-      <FilterWithLoading />
-    </Context.Provider>
+    <TestQueryProvider>
+      <Context.Provider
+        value={
+          {
+            ...listingState,
+            ...actionsState,
+            ...detailsState,
+          } as ResourceContext
+        }
+      >
+        <FilterWithLoading />
+      </Context.Provider>
+    </TestQueryProvider>
   );
 };
 
@@ -287,6 +292,7 @@ describe(Filter, () => {
     mockedAxios.get.mockReset();
     mockedLocalStorageSetItem.mockReset();
     mockedLocalStorageGetItem.mockReset();
+    resetMocks();
 
     window.history.pushState({}, '', window.location.pathname);
   });
@@ -449,7 +455,6 @@ describe(Filter, () => {
       });
 
       selectEndpointMockAction?.();
-      mockedAxios.get.mockResolvedValueOnce({ data: {} });
 
       const searchValue = 'foobar';
       userEvent.type(getByPlaceholderText(labelSearch), searchValue);
@@ -618,6 +623,28 @@ describe(Filter, () => {
         .mockReturnValueOnce(JSON.stringify(filter))
         .mockReturnValueOnce(JSON.stringify(true));
 
+      mockResponseOnce({
+        data: {
+          meta: {
+            limit: 30,
+            page: 1,
+            total: 0,
+          },
+          result: [linuxServersHostGroup],
+        },
+      });
+
+      mockResponseOnce({
+        data: {
+          meta: {
+            limit: 30,
+            page: 1,
+            total: 0,
+          },
+          result: [webAccessServiceGroup],
+        },
+      });
+
       mockedAxios.get
         .mockResolvedValueOnce({
           data: {
@@ -637,26 +664,6 @@ describe(Filter, () => {
               total: 0,
             },
             result: [],
-          },
-        })
-        .mockResolvedValueOnce({
-          data: {
-            meta: {
-              limit: 30,
-              page: 1,
-              total: 0,
-            },
-            result: [linuxServersHostGroup],
-          },
-        })
-        .mockResolvedValueOnce({
-          data: {
-            meta: {
-              limit: 30,
-              page: 1,
-              total: 0,
-            },
-            result: [webAccessServiceGroup],
           },
         });
 
@@ -768,7 +775,28 @@ describe(Filter, () => {
         },
       ]);
 
-      mockedAxios.get.mockReset();
+      mockResponseOnce({
+        data: {
+          meta: {
+            limit: 30,
+            page: 1,
+            total: 0,
+          },
+          result: [linuxServersHostGroup],
+        },
+      });
+
+      mockResponseOnce({
+        data: {
+          meta: {
+            limit: 30,
+            page: 1,
+            total: 0,
+          },
+          result: [webAccessServiceGroup],
+        },
+      });
+
       mockedAxios.get
         .mockResolvedValueOnce({
           data: {
@@ -788,26 +816,6 @@ describe(Filter, () => {
               total: 0,
             },
             result: [],
-          },
-        })
-        .mockResolvedValueOnce({
-          data: {
-            meta: {
-              limit: 30,
-              page: 1,
-              total: 0,
-            },
-            result: [linuxServersHostGroup],
-          },
-        })
-        .mockResolvedValue({
-          data: {
-            meta: {
-              limit: 30,
-              page: 1,
-              total: 0,
-            },
-            result: [webAccessServiceGroup],
           },
         });
 

@@ -76,7 +76,15 @@ const isCriteriaPart = pipe(
 );
 const isFilledCriteria = pipe(endsWith(':'), not);
 
-const parse = (search: string): Array<Criteria> => {
+interface ParametersParse {
+  criteriaName?: Record<string, string>;
+  search: string;
+}
+
+const parse = ({
+  search,
+  criteriaName = criteriaValueNameById,
+}: ParametersParse): Array<Criteria> => {
   const [criteriaParts, rawSearchParts] = partition(
     allPass([includes(':'), isCriteriaPart, isFilledCriteria]),
     search.split(' '),
@@ -106,7 +114,7 @@ const parse = (search: string): Array<Criteria> => {
 
           return {
             id,
-            name: criteriaValueNameById[id],
+            name: criteriaName[id],
           };
         }
 
@@ -267,6 +275,7 @@ interface DynamicCriteriaParametersAndValues {
 const getDynamicCriteriaParametersAndValue = ({
   search,
   cursorPosition,
+  newSelectableCriterias = selectableCriterias,
 }: AutocompleteSuggestionProps): DynamicCriteriaParametersAndValues | null => {
   const isNextCharacterEmpty = getIsNextCharacterEmpty({
     cursorPosition,
@@ -291,7 +300,7 @@ const getDynamicCriteriaParametersAndValue = ({
 
   return hasCriteriaDynamicValues
     ? {
-        criteria: selectableCriterias[pluralizedCriteriaName],
+        criteria: newSelectableCriterias[pluralizedCriteriaName],
         values: expressionCriteriaValues,
       }
     : null;
@@ -300,6 +309,7 @@ const getDynamicCriteriaParametersAndValue = ({
 const getAutocompleteSuggestions = ({
   search,
   cursorPosition,
+  newSelectableCriterias,
 }: AutocompleteSuggestionProps): Array<string> => {
   const isNextCharacterEmpty = getIsNextCharacterEmpty({
     cursorPosition,
@@ -323,13 +333,22 @@ const getAutocompleteSuggestions = ({
     const criterias = getSelectableCriteriasByName(criteriaName);
     const lastCriteriaValue = last(expressionCriteriaValues) || '';
 
+    const criteriaNames = pluralize(criteriaName);
+
+    const criteriasForInstalledModules = newSelectableCriterias?.[criteriaNames]
+      ?.options as Array<{ id: string; name: string }>;
+
+    const allCriterias = newSelectableCriterias
+      ? criteriasForInstalledModules
+      : criterias;
+
     const criteriaValueSuggestions = getCriteriaValueSuggestions({
-      criterias,
+      criterias: allCriterias,
       selectedValues: expressionCriteriaValues,
     });
 
     const isLastValueInSuggestions = getCriteriaValueSuggestions({
-      criterias,
+      criterias: allCriterias,
       selectedValues: [],
     }).includes(lastCriteriaValue);
 

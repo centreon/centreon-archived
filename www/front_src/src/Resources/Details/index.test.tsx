@@ -14,6 +14,7 @@ import {
   setUrlQueryParameters,
   getUrlQueryParameters,
   screen,
+  getSearchQueryParameterValue,
 } from '@centreon/ui';
 import { refreshIntervalAtom, userAtom } from '@centreon/ui-context';
 
@@ -43,9 +44,9 @@ import {
   labelCommand,
   labelComment,
   labelConfigure,
+  labelDetails,
   labelViewLogs,
   labelViewReport,
-  labelDetails,
   labelCopyLink,
   labelServices,
   labelFqdn,
@@ -62,7 +63,6 @@ import {
   labelAvg,
   labelCompactTimePeriod,
   labelCheck,
-  labelShortcuts,
   labelMonitoringServer,
   labelToday,
   labelYesterday,
@@ -79,7 +79,6 @@ import {
 } from '../translatedLabels';
 import Context, { ResourceContext } from '../testUtils/Context';
 import useListing from '../Listing/useListing';
-import { resourcesEndpoint } from '../api/endpoint';
 import { buildResourcesEndpoint } from '../Listing/api/endpoint';
 import { cancelTokenRequestParam } from '../testUtils';
 import { defaultGraphOptions } from '../Graph/Performance/ExportableGraphWithTimeline/graphOptionsAtoms';
@@ -140,8 +139,8 @@ const categories = [
 
 const serviceDetailsUrlParameters = {
   id: 1,
-  parentId: 1,
-  parentType: 'host',
+  resourcesDetailsEndpoint:
+    'api/latest/monitoring/resources/hosts/1/services/1',
   tab: 'details',
   type: 'service',
   uuid: 'h1-s1',
@@ -167,6 +166,8 @@ const serviceDetailsTimelineUrlParameters = {
 
 const hostDetailsServicesUrlParameters = {
   id: 1,
+  parentId: 3,
+  parentType: 'service',
   tab: 'services',
   type: 'host',
   uuid: 'h1',
@@ -253,9 +254,11 @@ const retrievedDetails = {
   latency: 0.005,
   links: {
     endpoints: {
+      details: '/centreon/api/latest/monitoring/resources/hosts/1/services/1',
       notification_policy: 'notification_policy',
       performance_graph: 'performance_graph',
       timeline: 'timeline',
+      timeline_download: 'timeline/download',
     },
     externals: {
       action_url: undefined,
@@ -527,9 +530,34 @@ const retrievedFilters = {
   },
 };
 
-let context: ResourceContext;
-
 const currentDateIsoString = '2020-01-21T06:00:00.000Z';
+const start = '2020-01-20T06:00:00.000Z';
+
+const mockedParametersDataTimeLineDownload = {
+  conditions: [
+    {
+      field: 'date',
+      values: {
+        $gt: start,
+        $lt: currentDateIsoString,
+      },
+    },
+  ],
+  lists: [
+    {
+      field: 'type',
+      values: [
+        'event',
+        'notification',
+        'comment',
+        'acknowledgement',
+        'downtime',
+      ],
+    },
+  ],
+};
+
+let context: ResourceContext;
 
 const DetailsTest = (): JSX.Element => {
   const listingState = useListing();
@@ -575,6 +603,12 @@ const renderDetails = (): RenderResult => render(<DetailsWithJotai />);
 
 const mockedLocalStorageGetItem = jest.fn();
 const mockedLocalStorageSetItem = jest.fn();
+const mockedNavigate = jest.fn();
+
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: (): jest.Mock => mockedNavigate,
+}));
 
 Storage.prototype.getItem = mockedLocalStorageGetItem;
 Storage.prototype.setItem = mockedLocalStorageSetItem;
@@ -986,15 +1020,15 @@ describe(Details, () => {
     );
   });
 
-  it('displays the shortcut links when the More icon is clicked', async () => {
+  it('navigates to logs and report pages when the corresponding icons are clicked', async () => {
     mockedAxios.get.mockResolvedValueOnce({
       data: {
         ...retrievedDetails,
         links: {
           ...retrievedDetails.links,
           uris: {
-            logs: '/logs',
-            reporting: '/reporting',
+            logs: 'logs',
+            reporting: 'reporting',
           },
         },
       },
@@ -1004,26 +1038,25 @@ describe(Details, () => {
       { name: 'details', value: serviceDetailsUrlParameters },
     ]);
 
-    const { getByLabelText, getAllByLabelText } = renderDetails();
+    const { getByLabelText, getByTestId } = renderDetails();
 
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalled();
     });
 
     await waitFor(() =>
-      expect(getByLabelText(labelShortcuts)).toBeInTheDocument(),
+      expect(getByLabelText(labelViewLogs)).toBeInTheDocument(),
     );
 
-    userEvent.click(getByLabelText(labelShortcuts).firstChild as HTMLElement);
+    expect(getByLabelText(labelViewReport)).toBeInTheDocument();
 
-    expect(getAllByLabelText(labelViewLogs)[0]).toHaveAttribute(
-      'href',
-      '/logs',
-    );
-    expect(getAllByLabelText(labelViewReport)[0]).toHaveAttribute(
-      'href',
-      '/reporting',
-    );
+    userEvent.click(getByTestId(labelViewLogs));
+
+    expect(mockedNavigate).toHaveBeenCalledWith('/logs');
+
+    userEvent.click(getByTestId(labelViewReport));
+
+    expect(mockedNavigate).toHaveBeenCalledWith('/reporting');
   });
 
   it('sets the details according to the details URL query parameter when given', async () => {
@@ -1037,8 +1070,8 @@ describe(Details, () => {
 
     const retrievedServiceDetails = {
       id: 2,
-      parentId: 3,
-      parentType: 'host',
+      resourcesDetailsEndpoint:
+        'api/latest/monitoring/resources/hosts/1/services/2',
       tab: 'details',
       tabParameters: {
         graph: {
@@ -1063,7 +1096,7 @@ describe(Details, () => {
 
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalledWith(
-        `${resourcesEndpoint}/${retrievedServiceDetails.parentType}s/${retrievedServiceDetails.parentId}/${retrievedServiceDetails.type}s/${retrievedServiceDetails.id}`,
+        './api/latest/monitoring/resources/hosts/1/services/2' as string,
         expect.anything(),
       );
     });
@@ -1095,8 +1128,8 @@ describe(Details, () => {
           start: '2020-01-14T06:00:00.000Z',
         },
         id: 2,
-        parentId: 3,
-        parentType: 'host',
+        resourcesDetailsEndpoint:
+          'api/latest/monitoring/resources/hosts/1/services/2',
         selectedTimePeriodId: 'last_7_days',
         tab: 'graph',
         tabParameters: {
@@ -1119,7 +1152,6 @@ describe(Details, () => {
             },
           },
         },
-        type: 'service',
         uuid: 'h3-s2',
       });
     });
@@ -1798,10 +1830,18 @@ describe(Details, () => {
     });
   });
 
-  it('calls the download graph endpoint when the Graph tab is selected and the "Export CSV Button" is clicked', async () => {
-    mockedAxios.get
-      .mockResolvedValueOnce({ data: retrievedDetails })
-      .mockResolvedValueOnce({ data: retrievedPerformanceGraphData });
+  it('calls the download timeline endpoint when the Timeline tab is selected and the "Export to CSV button" is clicked', async () => {
+    mockedAxios.get.mockResolvedValueOnce({ data: retrievedDetails });
+    mockedAxios.get.mockResolvedValueOnce({ data: retrievedTimeline });
+
+    const timelineDownloadEndpoint = path(
+      ['links', 'endpoints', 'timeline_download'],
+      retrievedDetails,
+    );
+
+    const parameters = getSearchQueryParameterValue(
+      mockedParametersDataTimeLineDownload,
+    );
 
     const mockedOpen = jest.fn();
     window.open = mockedOpen;
@@ -1809,23 +1849,22 @@ describe(Details, () => {
     setUrlQueryParameters([
       {
         name: 'details',
-        value: serviceDetailsGraphUrlParameters,
+        value: serviceDetailsTimelineUrlParameters,
       },
     ]);
 
-    const { getByText } = renderDetails();
+    const { getByTestId } = renderDetails();
 
     await waitFor(() => {
-      expect(mockedAxios.get).toHaveBeenCalledWith(
-        `${retrievedDetails.links.endpoints.performance_graph}?start=2020-01-20T06:00:00.000Z&end=2020-01-21T06:00:00.000Z`,
-        cancelTokenRequestParam,
-      );
+      expect(mockedAxios.get).toHaveBeenCalledTimes(3);
     });
 
-    await waitFor(() => {
-      expect(getByText(labelExportToCSV)).toBeInTheDocument();
-    });
+    fireEvent.click(getByTestId(labelExportToCSV));
 
-    userEvent.click(getByText('Export') as HTMLElement);
+    expect(mockedOpen).toHaveBeenCalledWith(
+      `${timelineDownloadEndpoint}?search=${JSON.stringify(parameters)}`,
+      'noopener',
+      'noreferrer',
+    );
   });
 });

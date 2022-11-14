@@ -25,10 +25,13 @@ namespace Core\Resources\Infrastructure\Repository;
 use Core\Domain\RealTime\Model\Icon;
 use Centreon\Domain\Monitoring\Notes;
 use Centreon\Domain\Monitoring\ResourceStatus;
+use Core\Domain\RealTime\ResourceTypeInterface;
 use Core\Severity\RealTime\Domain\Model\Severity;
 use Centreon\Domain\Monitoring\Icon as LegacyIconModel;
 use Centreon\Domain\Monitoring\Resource as ResourceEntity;
+use Core\Domain\RealTime\Model\ResourceTypes\HostResourceType;
 use Core\Infrastructure\Common\Repository\DbFactoryUtilitiesTrait;
+use Core\Domain\RealTime\Model\ResourceTypes\MetaServiceResourceType;
 
 class DbResourceFactory
 {
@@ -36,18 +39,21 @@ class DbResourceFactory
 
     /**
      * @param array<string,int|string|null> $record
+     * @param ResourceTypeInterface[] $availableResourceTypes
      * @return ResourceEntity
      */
-    public static function createFromRecord(array $record): ResourceEntity
+    public static function createFromRecord(array $record, array $availableResourceTypes): ResourceEntity
     {
-        $resourceType = self::normalizeType((int) $record['type']);
+        $resourceType = self::normalizeType((int) $record['type'], $availableResourceTypes);
 
         $parent = null;
 
-        if ($resourceType === ResourceEntity::TYPE_SERVICE) {
+        $resourceHasParent = self::resourceHasParent((int) $record['type'], $availableResourceTypes);
+
+        if ($resourceHasParent === true) {
             $parentStatus = (new ResourceStatus())
                 ->setCode((int) $record['parent_status'])
-                ->setName(self::getStatusAsString(ResourceEntity::TYPE_HOST, (int) $record['parent_status']))
+                ->setName(self::getStatusAsString(HostResourceType::TYPE_NAME, (int) $record['parent_status']))
                 ->setSeverityCode(self::normalizeSeverityCode((int) $record['parent_status_ordered']));
 
             /** @var string|null */
@@ -63,7 +69,7 @@ class DbResourceFactory
                 ->setId((int) $record['parent_id'])
                 ->setName($name)
                 ->setAlias($alias)
-                ->setType(ResourceEntity::TYPE_HOST)
+                ->setType(HostResourceType::TYPE_NAME)
                 ->setFqdn($fqdn)
                 ->setStatus($parentStatus);
         }
@@ -137,16 +143,17 @@ class DbResourceFactory
             ->setMonitoringServerName((string) $record['monitoring_server_name'])
             ->setLastStatusChange(self::createDateTimeFromTimestamp((int) $record['last_status_change']))
             ->setHasGraph((int) $record['has_graph'] === 1)
-            ->setSeverity($severity);
+            ->setSeverity($severity)
+            ->setInternalId(self::getIntOrNull($record['internal_id']));
 
-        /**
-         * Handle special case of Meta Service resource type
-         */
-        $resourceId = $resource->getType() === ResourceEntity::TYPE_META
-            ? $record['internal_id']
-            : $record['id'];
+        $resource->setId(
+            self::resourceHasInternalId((int) $record['type'], $availableResourceTypes) === true
+                ? (int) $record['internal_id']
+                : (int) $record['id']
+        );
 
-        $resource->setId((int) $resourceId);
+        $resource->setServiceId($resourceHasParent === true ? (int) $record['id'] : null);
+        $resource->setHostId($resourceHasParent === true ? (int) $record['parent_id'] : (int) $record['id']);
 
         /** @var string|null */
         $actionUrl = $record['action_url'];
@@ -211,16 +218,55 @@ class DbResourceFactory
     /**
      * Converts the resource type value stored as int into a string
      *
-     * @param int $type
+     * @param integer $type
+     * @param ResourceTypeInterface[] $availableResourceTypes
      * @return string
      */
-    private static function normalizeType(int $type): string
+    private static function normalizeType(int $type, array $availableResourceTypes): string
     {
-        return match ($type) {
-            0 => ResourceEntity::TYPE_SERVICE,
-            1 => ResourceEntity::TYPE_HOST,
-            2 => ResourceEntity::TYPE_META,
-            default => ResourceEntity::TYPE_SERVICE
-        };
+        $normalizedType = '';
+        foreach ($availableResourceTypes as $resourceType) {
+            if ($resourceType->isValidForTypeId($type)) {
+                $normalizedType =  $resourceType->getName();
+            }
+        }
+
+        return $normalizedType;
+    }
+
+    /**
+     * Checks if the Resource has a parent to define
+     *
+     * @param integer $resourceTypeId
+     * @param ResourceTypeInterface[] $availableResourceTypes
+     * @return boolean
+     */
+    private static function resourceHasParent(int $resourceTypeId, array $availableResourceTypes): bool
+    {
+        $hasParent = false;
+        foreach ($availableResourceTypes as $resourceType) {
+            if ($resourceType->isValidForTypeId($resourceTypeId)) {
+                $hasParent = $resourceType->hasParent();
+            }
+        }
+
+        return $hasParent;
+    }
+
+    /**
+     * @param integer $resourceTypeId
+     * @param ResourceTypeInterface[] $availableResourceTypes
+     * @return boolean
+     */
+    private static function resourceHasInternalId(int $resourceTypeId, array $availableResourceTypes): bool
+    {
+        $hasInternalId = false;
+        foreach ($availableResourceTypes as $resourceType) {
+            if ($resourceType->isValidForTypeId($resourceTypeId)) {
+                $hasInternalId = $resourceType->hasInternalId();
+            }
+        }
+
+        return $hasInternalId;
     }
 }

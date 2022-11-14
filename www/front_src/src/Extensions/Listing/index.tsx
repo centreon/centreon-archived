@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 import { find, propEq, pathEq, filter, isEmpty } from 'ramda';
 import { useAtomValue } from 'jotai/utils';
@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 import UpdateIcon from '@mui/icons-material/SystemUpdateAlt';
 import InstallIcon from '@mui/icons-material/Add';
 import Stack from '@mui/material/Stack';
-import { Box, Button } from '@mui/material';
+import { Button } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 
 import {
@@ -16,6 +16,7 @@ import {
   postData,
   SelectEntry,
   useSnackbar,
+  Responsive,
 } from '@centreon/ui';
 
 import FederatedComponents from '../../components/FederatedComponents';
@@ -41,11 +42,11 @@ import { buildEndPoint, buildExtensionEndPoint } from './api/endpoint';
 const useStyles = makeStyles((theme) => ({
   contentWrapper: {
     [theme.breakpoints.up(767)]: {
-      padding: theme.spacing(1.5),
+      padding: theme.spacing(1.5, 1.5, 1.5, 0),
     },
     boxSizing: 'border-box',
     margin: theme.spacing(0, 'auto'),
-    padding: theme.spacing(1.5, 2.5, 0, 2.5),
+    padding: theme.spacing(1.5, 2.5, 0, 0),
   },
 }));
 
@@ -53,7 +54,7 @@ interface Props {
   reloadNavigation: () => void;
 }
 
-const scrollMargin = 8;
+const scrollMargin = 20;
 
 const ExtensionsManager = ({ reloadNavigation }: Props): JSX.Element => {
   const classes = useStyles();
@@ -88,10 +89,6 @@ const ExtensionsManager = ({ reloadNavigation }: Props): JSX.Element => {
   const [confirmedDeletingEntityId, setConfirmedDeletingEntityId] = useState<
     string | null
   >(null);
-
-  const listingRef = useRef<HTMLDivElement | null>(null);
-
-  const [listingHeight, setListingHeight] = useState(window.innerHeight);
 
   const { sendRequest: sendExtensionsRequests } = useRequest<ExtensionResult>({
     request: getData,
@@ -351,18 +348,6 @@ const ExtensionsManager = ({ reloadNavigation }: Props): JSX.Element => {
       });
   };
 
-  const resize = (): void => {
-    setListingHeight(window.innerHeight);
-  };
-
-  useEffect(() => {
-    window.addEventListener('resize', resize);
-
-    return () => {
-      window.removeEventListener('resize', resize);
-    };
-  }, []);
-
   const allModulesInstalled = isEmpty(
     filter(pathEq(['version', 'installed'], false), extensions.module.entities),
   );
@@ -383,19 +368,8 @@ const ExtensionsManager = ({ reloadNavigation }: Props): JSX.Element => {
 
   const disableInstall = allModulesInstalled && allWidgetsInstalled;
 
-  const listingContainerHeight =
-    listingHeight -
-    (listingRef.current?.getBoundingClientRect().top || 0) -
-    scrollMargin;
-
   return (
-    <Box
-      ref={listingRef}
-      sx={{
-        height: listingContainerHeight,
-        overflowY: 'auto',
-      }}
-    >
+    <Responsive margin={scrollMargin}>
       <div className={classes.contentWrapper}>
         <Stack direction="row" spacing={2}>
           <Button
@@ -480,7 +454,7 @@ const ExtensionsManager = ({ reloadNavigation }: Props): JSX.Element => {
           onConfirm={deleteById}
         />
       )}
-    </Box>
+    </Responsive>
   );
 };
 

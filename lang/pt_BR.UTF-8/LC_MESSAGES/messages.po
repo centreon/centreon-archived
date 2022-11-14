@@ -11792,7 +11792,7 @@ msgstr "Escala"
 
 #: centreon-web/www/install/smarty_translate.php:414
 msgid "Service category"
-msgstr "Categoria do Serviço"
+msgstr "Categoria de Serviço"
 
 #: centreon-web/www/install/smarty_translate.php:438
 msgid "Service Scheduling Options"
@@ -15619,6 +15619,9 @@ msgstr "Ocorreu um erro durante a recuperação das categorias de hosts"
 #  msgid "Warning, maximum size exceeded for input '%s' (max: %d), it will be truncated upon saving"
 #  msgstr ""
 
+# msgid "Export to CSV"
+# msgstr ""
+
 msgid "Service severity"
 msgstr "Severidade de serviço"
 
@@ -15681,3 +15684,66 @@ msgstr "Nível de Severidade de host"
 
 # msgid "Small size"
 # msgstr ""
+
+# msgid "CSV"
+# msgstr ""
+
+#  msgid "Poller Configuration Actions / Poller Management"
+#  msgstr ""
+
+#  msgid "Create and edit pollers"
+#  msgstr ""
+
+#  msgid "Delete pollers"
+#  msgstr ""
+
+#  msgid "Deploy configuration"
+#  msgstr ""
+
+msgid "Are you sure you want to change the size of the envelope? The new envelope size will be applied immediately."
+msgstr "Tem certeza de que deseja alterar o tamanho do envelope? O novo tamanho de envelope será aplicado imediatamente."
+
+msgid "Changes to the envelope size will be applied immediately"
+msgstr "As alterações no tamanho do envelope serão aplicadas imediatamente"
+
+msgid "Manage envelope size"
+msgstr "Gerenciar o tamanho do envelope"
+
+msgid "use default value"
+msgstr "usar valor padrão"
+
+msgid "points out of envelope"
+msgstr "pontos fora do envelope"
+
+msgid "Edit anomaly detection data"
+msgstr "Editar dados de detecção de anomalias"
+
+#  msgid "Enable/disable resource"
+#  msgstr ""
+
+#  msgid "Note"
+#  msgstr ""
+
+#  msgid "Note URL"
+#  msgstr ""
+
+#  msgid "Geographic coordinates"
+#  msgstr ""
+
+#  msgid "Members"
+#  msgstr ""
+
+#  msgid "Monitoring settings"
+#  msgstr ""
+
+#  msgid "Classification"
+#  msgstr ""
+
+#  msgid "Hosts (simplified)"
+#  msgstr ""
+
+#  msgid "Templates (simplified)"
+#  msgstr ""
+
+#  msgid "Host Groups (simplified)"
+#  msgstr ""

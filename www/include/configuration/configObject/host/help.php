@@ -16,8 +16,7 @@ $help["host_name"] = dgettext(
 $help["alias"] = dgettext("help", "The alias is used to define a longer name or description for the host.");
 $help["address"] = dgettext(
     "help",
-    "Define the address of the host here. Normally, this should be an IP address, but a FQDN can be used to"
-    . " identify the host instead. If DNS services are not reachable a FQDN could cause problems."
+    "Network address. Can be either IP or FQDN. If no DNS service is available, using a FQDN could raise false alarms."
 );
 $help["snmp_options"] = dgettext(
     "help",
@@ -26,10 +25,12 @@ $help["snmp_options"] = dgettext(
 );
 $help["poller"] = dgettext(
     "help",
-    "In a distributed monitoring environment, the monitoring node (central or satellite)"
-    . " for this host can be specified here."
+    "Central, remote server or poller that will monitor the host."
 );
-$help["host_location"] = dgettext("help", "Define the timezone of the host's location.");
+$help["host_location"] = dgettext(
+    "help",
+    "Timezone corresponding to the host's location. This will impact how the check period is applied to it."
+);
 
 $help["use"] = dgettext(
     "help",
@@ -158,13 +159,11 @@ $help["recovery_notification_delay"] = dgettext(
  */
 $help["hostgroups"] = dgettext(
     "help",
-    "Define the hostgroup(s) that this host belongs to. This directive may be used as an alternative to"
-    . " (or in addition to) defining the members in hostgroup definitions."
+    "Host groups linked to the host."
 );
 $help["hostcategories"] = dgettext(
     "help",
-    "Define categories in which this host belongs to."
-    . " You can add this later by editing the host or the category you want to add it to."
+    "Host categories linked to the host."
 );
 $help["parents"] = dgettext(
     "help",
@@ -273,11 +272,12 @@ $help["host_acknowledgement_timeout"] = dgettext(
 
 $help["notes_url"] = dgettext(
     "help",
-    "Define an optional URL that can be used to provide more information about the host."
-    . " Any valid URL can be used. This can be very useful if you want to make detailed information on the host,"
-    . " emergency contact methods, etc. available to other support staff."
+    "Clickable URL displayed in the Notes column of the Resources Status page."
 );
-$help["notes"] = dgettext("help", "Define an optional string of notes pertaining to the host.");
+$help["notes"] = dgettext(
+    "help",
+    "Information note displayed as a tooltip in the Notes column of the Resources Status page."
+);
 $help["action_url"] = dgettext(
     "help",
     "Define an optional URL that can be used to provide more actions to be performed on the host."
@@ -301,8 +301,8 @@ $help["statusmap_image"] = dgettext(
 );
 $help["geo_coords"] = dgettext(
     "help",
-    "Geographical coordinates use by Centreon Map module to position element on map. Define \"Latitude,Longitude\","
-    . " for example for Paris coordinates set \"48.51,2.20\""
+    "Geographic coordinates to allow Centreon MAP to plot the resource on a geographic view. "
+    . "Format: Latitude,Longitude. For example, Paris' coordinates are 48.51,2.20"
 );
 $help["2d_coords"] = dgettext(
     "help",
@@ -325,7 +325,7 @@ $help["3d_coords"] = dgettext(
 );
 $help['criticality_id'] = dgettext(
     "help",
-    "Severity level use to sort issue in Monitoring menu."
+    "Host severity level. Can be used to sort alerts in the monitoring menus, including the Resources Status page."
 );
 $help['acl_groups'] = dgettext(
     "help",
@@ -359,4 +359,8 @@ $help["initial_state"] = dgettext(
     "help",
     "By default monitoring engine will assume that all hosts are in UP states when it starts."
     . " You can override the initial state for a host by using this directive."
+);
+$help['host_activate'] = dgettext(
+    "help",
+    "This setting determines whether the host and its services must be monitored or not."
 );

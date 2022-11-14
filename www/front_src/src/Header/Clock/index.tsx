@@ -8,6 +8,13 @@ import { centreonUi } from '../helpers/index';
 const useStyles = makeStyles((theme) => ({
   dateTime: {
     color: theme.palette.common.white,
+    display: 'flex',
+    flexDirection: 'column',
+    height: '100%',
+    justifyContent: 'space-between',
+  },
+  nowrap: {
+    whiteSpace: 'nowrap',
   },
 }));
 
@@ -49,8 +56,13 @@ const Clock = (): JSX.Element => {
 
   return (
     <div className={classes.dateTime} data-cy="clock">
-      <Typography variant="body2">{date}</Typography>
-      <Typography variant="body1">{time}</Typography>
+      <Typography className={classes.nowrap} variant="body2">
+        {date}
+      </Typography>
+
+      <Typography className={classes.nowrap} variant="body1">
+        {time}
+      </Typography>
     </div>
   );
 };

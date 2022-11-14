@@ -18,10 +18,12 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import makeStyles from '@mui/styles/makeStyles';
+import { CreateCSSProperties } from '@mui/styles';
 
 import { useMemoComponent } from '@centreon/ui';
 import { userAtom } from '@centreon/ui-context';
 
+import { isDarkMode } from '../../../Header';
 import { searchUrlFromEntry } from '../helpers/getUrlFromEntry';
 import { Page } from '../../models';
 import {
@@ -48,41 +50,55 @@ interface Props {
 }
 
 const useStyles = makeStyles((theme) => ({
-  activated: {
+  activated: ({ isRoot }): CreateCSSProperties => ({
     '& .MuiListItemText-root': {
       '& .MuiTypography-root': {
-        color: theme.palette.background.paper,
+        color: 'inherit',
       },
     },
     '& .MuiSvgIcon-root': {
-      color: theme.palette.background.paper,
+      color: isDarkMode(theme)
+        ? theme.palette.common.white
+        : theme.palette.primary.main,
     },
     '&:hover': {
-      backgroundColor: theme.palette.primary.main,
+      backgroundColor:
+        isDarkMode(theme) && isRoot
+          ? theme.palette.primary.main
+          : theme.palette.primary.light,
     },
-
-    backgroundColor: theme.palette.primary.main,
+    backgroundColor:
+      isDarkMode(theme) && isRoot
+        ? theme.palette.primary.main
+        : theme.palette.primary.light,
+    color:
+      isDarkMode(theme) && isRoot
+        ? theme.palette.common.white
+        : theme.palette.primary.main,
+  }),
+  arrowIcon: {
+    color: 'inherit',
   },
-  containerIcon: {
+  iconButton: {
     alignItems: 'center',
-    color: theme.palette.text.primary,
-    minWidth: theme.spacing(5.75),
+    color: theme.palette.common.white,
+    height: theme.spacing(rootHeightItem / 8),
   },
-  icon: {
-    color: theme.palette.text.primary,
+  iconWrapper: {
+    alignItems: 'center',
+    color: 'inherit',
+    minWidth: theme.spacing(5.75),
   },
   label: {
     '& .MuiTypography-root': {
-      fontSize: 11,
+      color: 'inherit',
+      lineHeight: 1,
     },
+    color: theme.palette.text.primary,
     margin: theme.spacing(0),
   },
-  listButton: {
-    alignItems: 'center',
-    height: theme.spacing(rootHeightItem / 8),
-    marginBottom: 0.8,
-  },
   rootLabel: {
+    color: 'inherit',
     margin: theme.spacing(0),
   },
 }));
@@ -128,7 +144,7 @@ const MenuItems = ({
     Component: (
       <ListItemButton
         disableTouchRipple
-        className={clsx(classes.listButton, {
+        className={clsx(classes.iconButton, {
           [classes.activated]: hover,
         })}
         component={ItemLink}
@@ -140,13 +156,13 @@ const MenuItems = ({
       >
         {isRoot ? (
           <>
-            <ListItemIcon className={classes.containerIcon}>
+            <ListItemIcon className={classes.iconWrapper}>
               {icon}
               {isDrawerOpen &&
                 Array.isArray(data?.children) &&
                 data.children.length > 0 && (
                   <ArrowIcon
-                    className={classes.icon}
+                    className={classes.arrowIcon}
                     isOpen={isOpen}
                     size="small"
                   />

@@ -515,7 +515,7 @@ function migrateBrokerConfigOutputsToUnifiedSql(CentreonDB $pearDB): void
     if (empty($unifiedSqlType)) {
         throw new \Exception("Cannot find 'unified_sql' in cb_type table");
     }
-    $unifiedSqlTypeId = (int) $unifiedSqlType['cb_type_id'];
+    $unifiedSqlTypeId = (int) $unifiedSqlType;
 
     foreach ($configIds as $configId) {
         // Find next config group id
@@ -527,7 +527,7 @@ function migrateBrokerConfigOutputsToUnifiedSql(CentreonDB $pearDB): void
         if (empty($maxConfigGroupId)) {
             throw new \Exception("Cannot find max config group id in cfg_centreonbroker_info table");
         }
-        $nextConfigGroupId = (int) $maxConfigGroupId['max_config_group_id'] + 1;
+        $nextConfigGroupId = (int) $maxConfigGroupId + 1;
         $blockIdsQueryBinds = [];
         foreach ($blockIds as $key => $value) {
             $blockIdsQueryBinds[':block_id_' . $key] = $value;

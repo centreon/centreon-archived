@@ -26,6 +26,7 @@ namespace Tests\Centreon\Infrastructure\Monitoring\Resource;
 use Centreon\Domain\Monitoring\ResourceStatus;
 use Centreon\Domain\Monitoring\Resource as ResourceEntity;
 use Core\Resources\Infrastructure\Repository\DbResourceFactory;
+use Core\Domain\RealTime\Model\ResourceTypes\ServiceResourceType;
 
 beforeEach(function () {
     $this->record = [
@@ -69,10 +70,34 @@ beforeEach(function () {
         'severity_icon_id' => '1',
         'severity_type' => '0',
     ];
+
+    $this->serviceResourceType = $this->createMock(ServiceResourceType::class);
 });
 
 it('should create a resource model from record', function () {
-    $resource = DbResourceFactory::createFromRecord($this->record);
+    $this->serviceResourceType
+        ->expects($this->any())
+        ->method('isValidForTypeId')
+        ->with($this->record['type'])
+        ->willReturn(true);
+
+    $this->serviceResourceType
+        ->expects($this->once())
+        ->method('getName')
+        ->willReturn(ServiceResourceType::TYPE_NAME);
+
+    $this->serviceResourceType
+        ->expects($this->any())
+        ->method('hasParent')
+        ->willReturn(true);
+
+    $this->serviceResourceType
+        ->expects($this->once())
+        ->method('hasInternalId')
+        ->willReturn(false);
+
+    $resource = DbResourceFactory::createFromRecord($this->record, [$this->serviceResourceType]);
+
     expect($resource->getId())->toBe((int) $this->record['id']);
     expect($resource->getParent()?->getId())->toBe((int) $this->record['parent_id']);
     expect($resource->getName())->toBe($this->record['name']);

@@ -29,7 +29,6 @@ use Security\Domain\Authentication\Interfaces\SessionRepositoryInterface;
 
 class SessionRepository extends AbstractRepositoryDRB implements SessionRepositoryInterface
 {
-
     /**
      * @param DatabaseConnection $db
      */

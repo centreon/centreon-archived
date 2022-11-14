@@ -13,6 +13,7 @@ import isBetween from 'dayjs/plugin/isBetween';
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
 import duration from 'dayjs/plugin/duration';
 import ResizeObserver from 'resize-observer-polyfill';
+import fetchMock from 'jest-fetch-mock';
 
 window.ResizeObserver = ResizeObserver;
 
@@ -62,3 +63,5 @@ jest.mock('@centreon/ui-context', () => ({
   ...jest.requireActual('centreon-frontend/packages/ui-context'),
   ThemeMode: 'light',
 }));
+
+fetchMock.enableMocks();

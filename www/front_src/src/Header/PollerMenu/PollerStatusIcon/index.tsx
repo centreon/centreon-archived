@@ -50,13 +50,24 @@ const useStatusStyles = makeStyles<Theme, StyleProps>((theme) => {
   });
 
   return {
+    avatar: {
+      fontSize: theme.typography.body1.fontSize,
+      height: theme.spacing(2.5),
+      width: theme.spacing(2.5),
+    },
+    container: {
+      display: 'flex',
+      gap: theme.spacing(0.5),
+      [theme.breakpoints.down(768)]: {
+        bottom: 0,
+        right: theme.spacing(1),
+      },
+    },
     database: ({ databaseSeverity }): CreateCSSProperties<StyleProps> =>
       getSeverityColor(databaseSeverity),
     icon: {
-      fontSize: theme.typography.body1.fontSize,
-      height: theme.spacing(4),
-      position: 'relative',
-      width: theme.spacing(4),
+      height: theme.spacing(1.75),
+      width: theme.spacing(1.75),
     },
     latency: ({ latencySeverity }): CreateCSSProperties<StyleProps> =>
       getSeverityColor(latencySeverity),
@@ -72,28 +83,28 @@ const PollerStatusIcon = ({ issues }: PollerStatusIconProps): JSX.Element => {
   const { t } = useTranslation();
 
   return (
-    <>
+    <div className={classes.container}>
       <Avatar
-        className={clsx(classes.database, classes.icon)}
+        className={clsx(classes.database, classes.avatar)}
         title={
           databaseSeverity === SeverityCode.Ok
             ? t(labelDatabaseUpdateAndActive)
             : t(labelDatabaseNotActive)
         }
       >
-        <StorageIcon />
+        <StorageIcon className={classes.icon} />
       </Avatar>
       <Avatar
-        className={clsx(classes.latency, classes.icon)}
+        className={clsx(classes.latency, classes.avatar)}
         title={
           latencySeverity === SeverityCode.Ok
             ? t(labelNoLatencyDetected)
             : t(labelLatencyDetected)
         }
       >
-        <LatencyIcon />
+        <LatencyIcon className={classes.icon} />
       </Avatar>
-    </>
+    </div>
   );
 };
 

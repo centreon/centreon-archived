@@ -31,7 +31,6 @@ use Centreon\Domain\Monitoring\Timeline\TimelineContact;
 use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
 use FOS\RestBundle\Context\Context;
 use FOS\RestBundle\View\View;
-use Centreon\Domain\Contact\Contact;
 use Centreon\Domain\Exception\EntityNotFoundException;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Centreon\Domain\Monitoring\Timeline\TimelineEvent;
@@ -81,20 +80,7 @@ class TimelineController extends AbstractController
     ): View {
         $this->denyAccessUnlessGrantedForApiRealtime();
 
-        /**
-         * @var Contact $user
-         */
-        $user = $this->getUser();
-        $this->monitoringService->filterByContact($user);
-        $this->timelineService->filterByContact($user);
-
-        $host = $this->monitoringService->findOneHost($hostId);
-        if ($host === null) {
-            throw new EntityNotFoundException(
-                sprintf(_('Host id %d not found'), $hostId)
-            );
-        }
-
+        $host = $this->getHostById($hostId);
         $timeline = $this->timelineService->findTimelineEventsByHost($host);
 
         $context = (new Context())
@@ -129,22 +115,61 @@ class TimelineController extends AbstractController
 
         return $this->view(
             [
-                'result' => $this->getTimelines($hostId, $serviceId),
+                'result' => $this->getTimelinesByHostIdAndServiceId($hostId, $serviceId),
                 'meta' => $requestParameters->toArray()
             ]
         )->setContext($context);
     }
 
+    /**
+     * @param int $hostId
+     * @param RequestParametersInterface $requestParameters
+     * @return StreamedResponse
+     */
+    public function downloadHostTimeline(int $hostId, RequestParametersInterface $requestParameters): StreamedResponse
+    {
+        $this->denyAccessUnlessGrantedForApiRealtime();
+        $this->addDownloadParametersInRequestParameters($requestParameters);
+        $timeLines = $this->formatTimeLinesForDownload($this->getTimelinesByHostId($hostId));
+
+        return $this->streamTimeLines($timeLines);
+    }
+
+    /**
+     * @param int $hostId
+     * @param int $serviceId
+     * @param RequestParametersInterface $requestParameters
+     * @return StreamedResponse
+     * @throws EntityNotFoundException
+     */
     public function downloadServiceTimeline(
         int $hostId,
         int $serviceId,
         RequestParametersInterface $requestParameters
     ): StreamedResponse {
         $this->denyAccessUnlessGrantedForApiRealtime();
+        $this->addDownloadParametersInRequestParameters($requestParameters);
+        $timeLines = $this->formatTimeLinesForDownload($this->getTimelinesByHostIdAndServiceId($hostId, $serviceId));
+
+        return $this->streamTimeLines($timeLines);
+    }
+
+    /**
+     * @param RequestParametersInterface $requestParameters
+     * @return void
+     */
+    private function addDownloadParametersInRequestParameters(RequestParametersInterface $requestParameters): void
+    {
         $requestParameters->setPage(1);
         $requestParameters->setLimit(1000000000);
-        $timeLines = $this->formatTimeLinesForDownload($this->getTimelines($hostId, $serviceId));
+    }
 
+    /**
+     * @param \Iterator<String[]> $timeLines
+     * @return StreamedResponse
+     */
+    private function streamTimeLines(iterable $timeLines): StreamedResponse
+    {
         $response = new StreamedResponse();
         $response->setCallback(function () use ($timeLines) {
             $handle = fopen('php://output', 'r+');
@@ -167,22 +192,10 @@ class TimelineController extends AbstractController
     }
 
     /**
-     * Entry point to get timeline for a meta service
-     *
-     * @param int $metaId ID of the Meta
-     * @param RequestParametersInterface $requestParameters Request parameters used to filter the request
-     * @return View
-     * @throws EntityNotFoundException
+     * @return TimelineEvent[]
      */
-    public function getMetaServiceTimeline(
-        int $metaId,
-        RequestParametersInterface $requestParameters
-    ): View {
-        $this->denyAccessUnlessGrantedForApiRealtime();
-
-        /**
-         * @var Contact $user
-         */
+    private function getMetaServiceTimelineById(int $metaId): array
+    {
         $user = $this->getUser();
         $this->monitoringService->filterByContact($user);
         $this->timelineService->filterByContact($user);
@@ -190,12 +203,8 @@ class TimelineController extends AbstractController
         $service = $this->monitoringService->findOneServiceByDescription('meta_' . $metaId);
 
         if (is_null($service)) {
-            throw new EntityNotFoundException(
-                sprintf(
-                    _('Meta service %d not found'),
-                    $metaId
-                )
-            );
+            $errorMsg = sprintf(_('Meta service %d not found'), $metaId);
+            throw new EntityNotFoundException($errorMsg);
         }
 
         $serviceHost = $service->getHost();
@@ -214,7 +223,20 @@ class TimelineController extends AbstractController
 
         $service->setHost($host);
 
-        $timeline = $this->timelineService->findTimelineEventsByService($service);
+        return $this->timelineService->findTimelineEventsByService($service);
+    }
+
+    /**
+     * Entry point to get timeline for a meta service
+     *
+     * @param int $metaId ID of the Meta
+     * @param RequestParametersInterface $requestParameters Request parameters used to filter the request
+     * @return View
+     * @throws EntityNotFoundException
+     */
+    public function getMetaServiceTimeline(int $metaId, RequestParametersInterface $requestParameters): View
+    {
+        $this->denyAccessUnlessGrantedForApiRealtime();
 
         $context = (new Context())
             ->setGroups(static::SERIALIZER_GROUPS_MAIN)
@@ -222,10 +244,39 @@ class TimelineController extends AbstractController
 
         return $this->view(
             [
-                'result' => $timeline,
+                'result' => $this->getMetaServiceTimelineById($metaId),
                 'meta' => $requestParameters->toArray()
             ]
         )->setContext($context);
+    }
+
+    /**
+     * @param int $metaId
+     * @param RequestParametersInterface $requestParameters
+     * @return StreamedResponse
+     * @throws EntityNotFoundException
+     */
+    public function downloadMetaserviceTimeline(
+        int $metaId,
+        RequestParametersInterface $requestParameters
+    ): StreamedResponse {
+        $this->denyAccessUnlessGrantedForApiRealtime();
+        $this->addDownloadParametersInRequestParameters($requestParameters);
+
+        $timeLines = $this->formatTimeLinesForDownload($this->getMetaServiceTimelineById($metaId));
+
+        return $this->streamTimeLines($timeLines);
+    }
+
+    /**
+     * @param int $hostId
+     * @return TimelineEvent[]
+     */
+    private function getTimelinesByHostId(int $hostId): array
+    {
+        $host = $this->getHostById($hostId);
+
+        return $this->timelineService->findTimelineEventsByHost($host);
     }
 
     /**
@@ -234,35 +285,37 @@ class TimelineController extends AbstractController
      * @return TimelineEvent[]
      * @throws EntityNotFoundException
      */
-    private function getTimelines(int $hostId, int $serviceId): array
+    private function getTimelinesByHostIdAndServiceId(int $hostId, int $serviceId): array
     {
-        /**
-         * @var Contact $user
-         */
+        $host = $this->getHostById($hostId);
+
+        $service = $this->monitoringService->findOneService($hostId, $serviceId);
+        if ($service === null) {
+            $errorMsg = sprintf(_('Service %d on host %d not found'), $hostId, $serviceId);
+            throw new EntityNotFoundException($errorMsg);
+        }
+        $service->setHost($host);
+
+        return $this->timelineService->findTimelineEventsByService($service);
+    }
+
+    /**
+     * @param int $hostId
+     * @return Host
+     * @throws EntityNotFoundException
+     */
+    private function getHostById(int $hostId): Host
+    {
         $user = $this->getUser();
         $this->monitoringService->filterByContact($user);
         $this->timelineService->filterByContact($user);
 
         $host = $this->monitoringService->findOneHost($hostId);
         if ($host === null) {
-            throw new EntityNotFoundException(
-                sprintf(_('Host id %d not found'), $hostId)
-            );
+            throw new EntityNotFoundException(sprintf(_('Host id %d not found'), $hostId));
         }
 
-        $service = $this->monitoringService->findOneService($hostId, $serviceId);
-        if ($service === null) {
-            throw new EntityNotFoundException(
-                sprintf(
-                    _('Service %d on host %d not found'),
-                    $hostId,
-                    $serviceId
-                )
-            );
-        }
-        $service->setHost($host);
-
-        return $this->timelineService->findTimelineEventsByService($service);
+        return $host;
     }
 
     /**

@@ -6,7 +6,7 @@ import { useAtomValue } from 'jotai/utils';
 import { FormikErrors, FormikHandlers, FormikValues } from 'formik';
 import { isNil } from 'ramda';
 
-import { LocalizationProvider, DateTimePicker } from '@mui/lab';
+import { LocalizationProvider, DateTimePicker } from '@mui/x-date-pickers';
 import {
   Checkbox,
   FormControlLabel,
@@ -138,12 +138,12 @@ const DialogDowntime = ({
       onClose={onCancel}
       onConfirm={onConfirm}
     >
-      {deniedTypeAlert && <Alert severity="warning">{deniedTypeAlert}</Alert>}
       <LocalizationProvider
         dateAdapter={Adapter}
         locale={locale.substring(0, 2)}
       >
-        <Stack spacing={1}>
+        {deniedTypeAlert && <Alert severity="warning">{deniedTypeAlert}</Alert>}
+        <Stack spacing={2}>
           <Box
             alignItems="center"
             display="grid"

@@ -1,64 +1,70 @@
-import { MutableRefObject, useEffect, useRef, useState } from 'react';
+import {
+  MutableRefObject,
+  ReactNode,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 
 import { Responsive } from '@visx/visx';
+import { useAtomValue } from 'jotai/utils';
 import {
-  map,
-  prop,
-  propEq,
+  add,
+  equals,
   find,
-  reject,
-  sortBy,
+  head,
   isEmpty,
   isNil,
-  head,
-  equals,
-  pipe,
-  not,
-  add,
+  map,
   negate,
+  not,
   or,
+  pipe,
+  prop,
+  propEq,
   propOr,
+  reject,
+  sortBy,
 } from 'ramda';
 import { useTranslation } from 'react-i18next';
-import { useAtomValue } from 'jotai/utils';
 
-import { Typography, Theme, Skeleton } from '@mui/material';
+import { Skeleton, Theme, Typography } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 
 import {
-  useRequest,
   getData,
   timeFormat,
   useLocaleDateTimeFormat,
+  useRequest,
 } from '@centreon/ui';
 
-import { TimelineEvent } from '../../Details/tabs/Timeline/models';
-import { Resource } from '../../models';
-import { ResourceDetails } from '../../Details/models';
-import { CommentParameters } from '../../Actions/api';
 import { labelNoDataForThisPeriod } from '../../translatedLabels';
+import { TimelineEvent } from '../../Details/tabs/Timeline/models';
+import { Resource, ResourceType } from '../../models';
+import { CommentParameters } from '../../Actions/api';
+import { ResourceDetails } from '../../Details/models';
 import {
   CustomTimePeriod,
   CustomTimePeriodProperty,
 } from '../../Details/tabs/Graph/models';
-import { selectedResourceIdAtom } from '../../Details/detailsAtoms';
+import { selectedResourcesDetailsAtom } from '../../Details/detailsAtoms';
 
+import { CustomFactorsData } from './AnomalyDetection/models';
 import Graph from './Graph';
-import Legend from './Legend';
-import LoadingSkeleton from './LoadingSkeleton';
-import {
-  GraphData,
-  TimeValue,
-  Line as LineModel,
-  AdjustTimePeriodProps,
-} from './models';
-import { getTimeSeries, getLineData, getMetrics } from './timeSeries';
-import { TimeShiftDirection } from './Graph/TimeShiftZones';
-import MemoizedGraphActions from './GraphActions';
 import {
   isListingGraphOpenAtom,
   timeValueAtom,
 } from './Graph/mouseTimeValueAtoms';
+import { TimeShiftDirection } from './Graph/TimeShiftZones';
+import Legend from './Legend';
+import LoadingSkeleton from './LoadingSkeleton';
+import {
+  AdjustTimePeriodProps,
+  GraphData,
+  Line as LineModel,
+  TimeValue,
+} from './models';
+import { getLineData, getMetrics, getTimeSeries } from './timeSeries';
 
 interface Props {
   adjustTimePeriod?: (props: AdjustTimePeriodProps) => void;
@@ -67,10 +73,17 @@ interface Props {
   displayEventAnnotations?: boolean;
   displayTitle?: boolean;
   endpoint?: string;
+  getPerformanceGraphRef?: (
+    value: MutableRefObject<HTMLDivElement | null>,
+  ) => void;
+  graphActions?: ReactNode;
   graphHeight: number;
+  isEditAnomalyDetectionDataDialogOpen?: boolean;
   isInViewport?: boolean;
   limitLegendRows?: boolean;
+  modal?: ReactNode;
   onAddComment?: (commentParameters: CommentParameters) => void;
+  resizeEnvelopeData?: CustomFactorsData;
   resource: Resource | ResourceDetails;
   resourceDetailsUpdated?: boolean;
   timeline?: Array<TimelineEvent>;
@@ -147,6 +160,11 @@ const PerformanceGraph = ({
   limitLegendRows,
   isInViewport = true,
   displayCompleteGraph,
+  isEditAnomalyDetectionDataDialogOpen,
+  modal,
+  graphActions,
+  getPerformanceGraphRef,
+  resizeEnvelopeData,
 }: Props): JSX.Element => {
   const classes = useStyles({
     canAdjustTimePeriod: not(isNil(adjustTimePeriod)),
@@ -159,6 +177,7 @@ const PerformanceGraph = ({
   const [lineData, setLineData] = useState<Array<LineModel>>();
   const [title, setTitle] = useState<string>();
   const [base, setBase] = useState<number>();
+
   const performanceGraphRef = useRef<HTMLDivElement | null>(null);
   const performanceGraphHeightRef = useRef<number>(0);
 
@@ -169,7 +188,7 @@ const PerformanceGraph = ({
     request: getData,
   });
 
-  const selectedResourceId = useAtomValue(selectedResourceIdAtom);
+  const selectedResource = useAtomValue(selectedResourcesDetailsAtom);
 
   const timeValue = useAtomValue(timeValueAtom);
   const isListingGraphOpen = useAtomValue(isListingGraphOpenAtom);
@@ -189,6 +208,7 @@ const PerformanceGraph = ({
         setBase(graphData.global.base);
         setTitle(graphData.global.title);
         const newLineData = getLineData(graphData);
+
         if (lineData) {
           setLineData(
             newLineData.map((line) => ({
@@ -200,17 +220,18 @@ const PerformanceGraph = ({
 
           return;
         }
+
         setLineData(newLineData);
       })
       .catch(() => undefined);
   }, [endpoint]);
 
   useEffect(() => {
-    if (or(isNil(selectedResourceId), isNil(lineData))) {
+    if (or(isNil(selectedResource?.resourceId), isNil(lineData))) {
       return;
     }
     setLineData(undefined);
-  }, [selectedResourceId]);
+  }, [selectedResource?.resourceId]);
 
   useEffect(() => {
     if (isInViewport && performanceGraphRef.current && lineData) {
@@ -218,6 +239,13 @@ const PerformanceGraph = ({
         performanceGraphRef.current.clientHeight;
     }
   }, [isInViewport, lineData]);
+
+  useEffect(() => {
+    if (!getPerformanceGraphRef) {
+      return;
+    }
+    getPerformanceGraphRef(performanceGraphRef);
+  }, [performanceGraphRef]);
 
   if (isNil(lineData) || isNil(timeline) || isNil(endpoint)) {
     return (
@@ -249,7 +277,28 @@ const PerformanceGraph = ({
   }
 
   const sortedLines = sortBy(prop('name'), lineData);
-  const displayedLines = reject(propEq('display', false), sortedLines);
+
+  const originMetric = sortedLines.map(({ metric }) =>
+    metric.includes('_upper_thresholds')
+      ? metric.replace('_upper_thresholds', '')
+      : null,
+  );
+
+  const lineOriginMetric = sortedLines.filter((item) => {
+    const name = originMetric.filter((element) => element);
+
+    return equals(item.metric, name[0]);
+  });
+
+  const linesThreshold = sortedLines.filter(({ metric }) =>
+    metric.includes('thresholds'),
+  );
+
+  const newSortedLines = equals(resource.type, ResourceType.anomalydetection)
+    ? [...linesThreshold, ...lineOriginMetric]
+    : sortedLines;
+
+  const displayedLines = reject(propEq('display', false), newSortedLines);
 
   const getLineByMetric = (metric): LineModel => {
     return find(propEq('metric', metric), lineData) as LineModel;
@@ -370,22 +419,20 @@ const PerformanceGraph = ({
           >
             {title}
           </Typography>
-          <MemoizedGraphActions
-            customTimePeriod={customTimePeriod}
-            performanceGraphRef={performanceGraphRef}
-            resourceName={resource.name}
-            resourceParentName={resource.parent?.name}
-            timeline={timeline}
-          />
+          {graphActions}
+          {modal}
         </div>
       )}
 
       <div>
-        {displayTimeValues && timeTick && containsMetrics && (
-          <Typography align="center" variant="body1">
-            {toDateTime(timeTick)}
-          </Typography>
-        )}
+        {displayTimeValues &&
+          timeTick &&
+          containsMetrics &&
+          !isEditAnomalyDetectionDataDialogOpen && (
+            <Typography align="center" variant="body1">
+              {toDateTime(timeTick)}
+            </Typography>
+          )}
       </div>
       <div>
         <Responsive.ParentSize>
@@ -398,10 +445,14 @@ const PerformanceGraph = ({
               displayEventAnnotations={displayEventAnnotations}
               displayTimeValues={displayTimeValues}
               height={height}
+              isEditAnomalyDetectionDataDialogOpen={
+                isEditAnomalyDetectionDataDialogOpen
+              }
               lines={displayedLines}
               loading={
                 not(resourceDetailsUpdated) && sendingGetGraphDataRequest
               }
+              resizeEnvelopeData={resizeEnvelopeData}
               resource={resource}
               shiftTime={shiftTime}
               timeSeries={timeSeries}
@@ -417,8 +468,11 @@ const PerformanceGraph = ({
         base={base as number}
         displayCompleteGraph={displayCompleteGraph}
         displayTimeValues={displayTimeValues}
+        isEditAnomalyDetectionDataDialogOpen={
+          isEditAnomalyDetectionDataDialogOpen
+        }
         limitLegendRows={limitLegendRows}
-        lines={sortedLines}
+        lines={newSortedLines}
         timeSeries={timeSeries}
         toggable={toggableLegend}
         onClearHighlight={clearHighlight}

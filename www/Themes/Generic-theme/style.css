@@ -32,9 +32,6 @@
  *
  */
 
-body {
-    background-color:var(--body-background);
-}
 * {
     margin:0;
     padding:0;
@@ -43,9 +40,10 @@ html {
     height: 100%;
 }
 body {
-    font-family: 'Open Sans', Arial, Tahoma, Helvetica, Sans-Serif;
+    background-color:var(--body-background);
+    font-family: "Roboto","Helvetica","Arial",sans-serif;
     color:var(--body-color);
-    font-size:11px;
+    font-size:12px;
     height: 100%;
 }
 .link a {
@@ -56,9 +54,7 @@ body {
 a {
     text-decoration:none;
 }
-a:hover {
-    text-decoration:underline;
-}
+
 img, hr {
     border:0;
     padding:0;
@@ -87,7 +83,6 @@ input, textarea {
 input, select {
     border-radius: 0px;
     padding: 4px;
-    font-size: 11px !important;
     border: 1px solid var(--select-border-color);
     line-height: 18px;
     background-color: var(--input-select-background-color);
@@ -135,7 +130,7 @@ input[type="checkbox"]  {
     width: 1.25em;
     height: 1.25em;
     background: var(--md-checkbox-background);
-    border: 2px solid var(--md-checkbox-border-color);
+    border: 2px solid var(--table-font-color);
     border-radius: 0.125em;
     cursor: pointer;
     transition: background .3s;
@@ -151,7 +146,7 @@ input[type="checkbox"]  {
     font-size: inherit;
 }
 .md-checkbox input[type="checkbox"]:checked + label:before {
-    background: var(--md-checkbox-checked-label-before-background-color);
+    background: var(--bt-success-background-color);
     border: none;
 }
 .md-checkbox input[type="checkbox"]:checked + label:after {
@@ -222,7 +217,7 @@ input[type="checkbox"]  {
     top: 0;
     width: 15px;
     height: 15px;
-    border: 2px solid var(--md-radio-label-before-border-color);
+    border: 2px solid var(--bt-success-background-color);
 }
 .md-radio label:after, .md-radio-modified label:after {
     top: 4px;
@@ -230,7 +225,7 @@ input[type="checkbox"]  {
     width: 7px;
     height: 7px;
     transform: scale(0);
-    background: var(--md-radio-label-after-background);
+    background: var(--bt-success-background-color);
 }
 .md-radio-modified label {
     padding: 4px 0px 0 18px;
@@ -242,7 +237,7 @@ input[type="radio"] {
 }
 
 select {
-    background-color: var(--select-background);
+    background-color: var(--select-background) ;
     background-image: url('../../img/icones/7x7/sort_desc.gif');
     background-repeat: no-repeat, repeat;
     background-position: right 5px top 50%, 0 0;
@@ -254,8 +249,9 @@ select {
     -webkit-appearance: none;
     appearance: none;
     padding: 4px 20px 4px 6px;
-    color: var(--select-color);
+    color: var(--select-color) ;
 }
+
 select::-ms-expand {
     display: none;
 }
@@ -318,7 +314,7 @@ p.description {
 }
 
 p.description a, p.description a:visited {
-    color: var(--p-description-a-visited-color);
+    color: var(--bt-success-background-color);
 }
 
 /* -------- wrappers ----------*/
@@ -403,7 +399,7 @@ p.description a, p.description a:visited {
 
 .select2-container--default .select2-selection--single {
     background-color: var(--select2-container-selection-background-color);
-    border: 1px solid var(--select2-container-selection-border-color) !important;
+    border: 1px solid var(--bt-success-background-color);
     border-radius: 0 !important;
 }
 
@@ -558,33 +554,50 @@ p.description a, p.description a:visited {
     display: inline-block;
     border-radius: 18px;
     color: var(--badge-color);
-    padding: 2px 6px;
+    padding: 5px 10px;
     font-size: 10px;
     font-weight: bold;
     text-transform: uppercase;
     white-space: nowrap;
+    min-width: 60px;
 }
 
-.badge a            {
+.badge a  {
     display: inline-block;
-    padding: 4px 8px;
     color: var(--badge-a-color);
 }
 
 /* ----------- States --------------- */
 
-.default_badge      {background-color: var(--default-badge-background-color);}
-.host_down, .danger, .service_critical  {background-color: var(--host-down-danger-service-critical-background-color);}
-.host_unreachable, .unknown     {background-color: var(--host-unreachable-unknown-background-color);}
-.host_downtime      {background-color: var(--host-downtime-background-color);}
+.default_badge {
+    background-color: var(--default-badge-background-color);
+}
+.host_down, .danger, .service_critical  {
+    background-color: var(--host-down-danger-service-critical-background-color);
+}
+.host_unreachable, .unknown , .service_unknown {
+    background-color: var(--host-unreachable-unknown-background-color);
+}
+.host_downtime      {
+    background-color: var(--host-downtime-background-color);
+}
 
-.service_ok,.host_up, .success  {background-color: var(--service-ok-host-up-success-background-color);
-    color:var(--status-success-color)}
-.service_warning, .warning  {background-color: var(--service-warning-background-color);}
-.pending    {background-color: var(--pending-background-color);}
-.service_unknown    {background-color: var(--service-unknown-background-color); color: var(--service-unknown-font-color)}
-.info {background-color: var(--info-background-color)}
-.ack {background-color: var(--ack-background-color);}
+.service_ok,.host_up, .success  {
+    background-color: var(--service-ok-host-up-success-background-color);
+}
+
+.service_warning, .warning  {
+    background-color: var(--service-warning-background-color);
+}
+.pending    {
+    background-color: var(--pending-background-color);
+}
+.info {
+    background-color: var(--info-background-color)
+}
+.ack {
+    background-color: var(--ack-background-color);
+}
 
 .bdg_dtm:before {
     padding: 2px 4px;
@@ -654,33 +667,50 @@ p.description a, p.description a:visited {
 /* ------ START : Buttons -----*/
 .btc {
     border-radius: 4px !important;
-    padding: 4px 10px;
+    padding: 4px 10px ;
     border: none !important;
     outline: none !important;
-    color: var(--btc-color);
+    color: var(--btc-color) ;
     cursor: pointer;
 }
-a.btc {
-    color: var(--a-btc-color) !important;
-    padding: 4px 10px;
-    margin : 0px 4px;
-    cursor: pointer;
+
+.btc svg {
+    fill: var(--btc-color) !important;
 }
 
 .bt_default {
     background: var(--bt-default-background-color) !important;
 }
 
+.bt_default:hover {
+    background: var(--bt-default-hover-background-color) !important;
+    color: var(--bt-default-hover-font-color) !important;
+}
+
 .bt_success {
     background: var(--bt-success-background-color) !important;
+}
+.bt_success:hover {
+    background: var(--bt-action-hover-background-color) !important;
+    color: var(--bt-success-hover-font-color) !important;
 }
 
 .bt_danger {
     background: var(--bt-danger-background-color) !important;
 }
 
+.bt_danger:hover {
+    background: var(--bt-danger-hover-background-color) !important;
+    color: var(--bt-danger-hover-font-color) !important;
+}
+
 .bt_info {
     background: var(--bt-info-background-color) !important;
+}
+
+.bt_info:hover {
+    background: var(--bt-info-hover-background-color) !important;
+    color: var(--bt-info-hover-font-color) !important;
 }
 
 .bt_warning {
@@ -699,6 +729,10 @@ a.btc {
 .bt_action:hover {
     background-color: var(--bt-action-hover-background-color) !important;
     border: 1px solid var(--bt-action-hover-border-color) !important;
+}
+
+.bt_default:hover svg, .bt_success:hover svg, .bt_info:hover svg, .bt_danger:hover svg {
+    fill: var(--btc-hover-color) !important;
 }
 
 .bt_default.ui-state-active,
@@ -1341,7 +1375,17 @@ table-form-header-h3 {
 }
 .help       {position:absolute;right:15px;top:15px;}
 
-.pathWay    {padding:0px;margin:0px;color:var(--path-way-font-color);}
+.pathWay {
+    padding:0px;
+    margin:0px;
+    color:var(--path-way-font-color);
+    font-size: small;
+}
+
+.pathWay :hover {
+    text-decoration: underline;
+}
+
 .imgPathWay {border:0;margin:0 0 -2px;padding:0;}
 
 .separator      {color:var(--separator-font-color);font-style:italic;font-weight:700;}
@@ -1585,17 +1629,20 @@ div.update_readme,div.update_output {background-color:var(--update-read-me-outpu
 .line_ack td,.tab .line_ack td,
 .line_downtime td, .tab .line_downtime td,
 .list_unreachable td,.tab .list_unreachable td,
-.row_disabled td, .tab .row_disabled td {border-left-style:solid;border-top-style:solid;border-width:0;}
+.row_disabled td, .tab .row_disabled td {
+    border-bottom: 1px solid var(--listing-border-botom-color);    
+}
+
+
 
 .row_disabled {
     background-color:var(--row-disabled-background-color);
     padding:1px 3px;
 }
 
-.ListHeader             {
-    font-weight:700;vertical-align:top;
-
-
+.ListHeader{
+    font-weight:700;
+    vertical-align:top;
 }
 .ListHeader td,
 .ListHeader th {
@@ -1603,7 +1650,8 @@ div.update_readme,div.update_output {background-color:var(--update-read-me-outpu
     font-weight:700;
     height:18px;
     vertical-align:middle;
-}
+    border-bottom: 1px solid var(--listing-border-botom-color); 
+} 
 .ListColHeaderPicker        {padding:1px 3px;text-align:center;vertical-align:middle;width:10px;}
 .ListColHeaderCenter        {padding:1px 3px;text-align:center;}
 .ListColHeaderLeft      {padding:1px 3px;text-align:left;}
@@ -1620,7 +1668,7 @@ div.update_readme,div.update_output {background-color:var(--update-read-me-outpu
 .ListColRight                           {padding:1px 3px;}
 
 * html #ListTable td,#ListTableMedium td,#ListTableSmall td,.ListTable td,.ListTableMedium td,.ListTableSmall td {margin:0;padding:0 4px;}
-.ListTableSmall a,.ListTable a,.ListTableMedium a,.ListTableSmall a, .ListTableSmallArg a {color:var(--list-table-small-arg-anchor-font-color);z-index:5;}
+.ListTableSmall a,.ListTable a,.ListTableMedium a,.ListTableSmall a, .ListTableSmallArg a {z-index:5;}
 .ListTable td a {
     /*margin: 0px 6px;*/
 }
@@ -1633,7 +1681,12 @@ table.ListTableSmallArg td {
     padding: 2px 0px;
 }
 .ListTableMultiTp       {border-width:0;width:100%;}
-.ListTable,.ListTableMedium,.ListTableSmall,.ListTableMultiTp {border-collapse:separate;border-spacing:0;border-style:solid;empty-cells:show;}
+.ListTable,.ListTableMedium,.ListTableSmall,.ListTableMultiTp {
+    border-collapse:separate;
+    border-spacing:0;
+    border-style:solid;
+    empty-cells:show;
+}
 .ListTable,.ListTableMedium,.ListTableSmall {border-width:1px;}
 .ListTable td,.ListTableMedium td,.ListTableSmall td,.ListTableSmallArg {padding-bottom:2px;padding-top:2px;}
 .ListTable td {padding: 4px;}
@@ -1771,7 +1824,7 @@ span.show-disabled[disabled]::after {
 .ToolbarTR td:first-child {
     width: 50%;
 }
-.ToolbarTR a.btc { display: inline-block; height: 28px; line-height: 28px; padding: 0 10px; }
+.ToolbarTR a.btc { display: inline-block; height: 28px; line-height: 31px; padding: 0 10px; }
 
 .Toolbar_TDSelectAction_Top {
     border: 1px solid var(--toolbar-td-select-top-action-border-color);
@@ -1794,7 +1847,7 @@ td, a.infobulle:hover td {
 #Tcontener,#Tmainpage,#tabLegend,div.tab,.Tmenu3 .center,.ListTable {width:100%;}
 
 .ListTable {
-    font-size: 11px;
+
 }
 
 #Tmainpage {
@@ -1832,7 +1885,10 @@ td, a.infobulle:hover td {
 .Toolbar_pagelimit select {
     float: right;
 }
-.list_one,.list_two,.list_three,.list_four,.line_ack,.line_downtime,.list_unreachable,.row_disabled     {font-weight:400;vertical-align:middle;}
+.list_one,.list_two,.list_three,.list_four,.line_ack,.line_downtime,.list_unreachable,.row_disabled     {
+    font-weight:400;
+    vertical-align:middle;
+}
 
 div.ams     {text-align:center;font-style:italic;}
 
@@ -1911,8 +1967,8 @@ td.ListColHeaderLeft select {
 }
 
 span.state_badge {
-    height: 10px;
-    width: 10px;
+    height: 14px;
+    width: 14px;
     display: inline-block;
     margin-right: 3px;
     border-radius: 2px;
@@ -2889,7 +2945,7 @@ ul.module_list {
 }
 .add-new-entry {
     cursor: pointer;
-    color: var(--add-new-entry-font-color);
+    color: var(--bt-success-background-color);
 }
 
 .gorgone_config_file {
@@ -2897,3 +2953,4 @@ ul.module_list {
     color: var(--gorgone-config-file-font-color);
     background-color: var(--gorgone-config-file-background-color);
 }
+

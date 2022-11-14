@@ -32,7 +32,7 @@ use Core\Domain\RealTime\Model\Acknowledgement;
 use Core\Severity\RealTime\Domain\Model\Severity;
 use Centreon\Domain\Monitoring\Host as LegacyHost;
 use Core\Application\Common\UseCase\NotFoundResponse;
-use Core\Security\Domain\AccessGroup\Model\AccessGroup;
+use Core\Security\AccessGroup\Domain\Model\AccessGroup;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Domain\Monitoring\Service as LegacyService;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringServiceInterface;
@@ -41,7 +41,7 @@ use Core\Application\RealTime\UseCase\FindService\FindServiceResponse;
 use Core\Application\RealTime\Repository\ReadServiceRepositoryInterface;
 use Core\Tag\RealTime\Application\Repository\ReadTagRepositoryInterface;
 use Core\Application\RealTime\Repository\ReadDowntimeRepositoryInterface;
-use Core\Security\Application\Repository\ReadAccessGroupRepositoryInterface;
+use Core\Security\AccessGroup\Application\Repository\ReadAccessGroupRepositoryInterface;
 use Core\Application\RealTime\Repository\ReadServicegroupRepositoryInterface;
 use Core\Application\RealTime\Repository\ReadAcknowledgementRepositoryInterface;
 use Core\Application\RealTime\UseCase\FindService\FindServicePresenterInterface;
@@ -86,15 +86,7 @@ class FindService
         int $serviceId,
         FindServicePresenterInterface $presenter
     ): void {
-        $servicegroups = [];
-        $serviceCategories = [];
-
-        $this->info(
-            "Searching details for service",
-            [
-                "id" => $serviceId
-            ]
-        );
+        $this->info('Searching details for service', ['id' => $serviceId]);
 
         if ($this->contact->isAdmin()) {
             $host = $this->hostRepository->findHostById($hostId);
@@ -167,6 +159,14 @@ class FindService
 
         $service->setSeverity($severity);
 
+        $acknowledgement = $service->isAcknowledged() === true
+            ? $this->acknowledgementRepository->findOnGoingAcknowledgementByHostIdAndServiceId($hostId, $serviceId)
+            : null;
+
+        $downtimes = $service->isInDowntime() === true
+            ? $this->downtimeRepository->findOnGoingDowntimesByHostIdAndServiceId($hostId, $serviceId)
+            : [];
+
         /**
          * Obfuscate the passwords in Service commandLine
          */
@@ -175,8 +175,8 @@ class FindService
         $presenter->present(
             $this->createResponse(
                 $service,
-                $this->downtimeRepository->findOnGoingDowntimesByHostIdAndServiceId($hostId, $serviceId),
-                $this->acknowledgementRepository->findOnGoingAcknowledgementByHostIdAndServiceId($hostId, $serviceId),
+                $downtimes,
+                $acknowledgement,
                 $host
             )
         );

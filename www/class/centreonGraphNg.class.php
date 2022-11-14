@@ -508,10 +508,10 @@ class CentreonGraphNg
         $this->metrics[$metric["metric_id"]]["crit"] = $metric["crit"];
         $this->metrics[$metric["metric_id"]]["crit_low"] = $metric["crit_low"];
         if (!isset($dsData["ds_color_area_warn"]) || empty($dsData["ds_color_area_warn"])) {
-            $this->metrics[$metric["metric_id"]]["ds_color_area_warn"] = $this->generalOpt["color_warning"]['value'];
+            $this->metrics[$metric["metric_id"]]["ds_color_area_warn"] = "#ff9a13";
         }
         if (!isset($dsData["ds_color_area_crit"]) || empty($dsData["ds_color_area_crit"])) {
-            $this->metrics[$metric["metric_id"]]["ds_color_area_crit"] = $this->generalOpt["color_critical"]['value'];
+            $this->metrics[$metric["metric_id"]]["ds_color_area_crit"] = "#e00b3d";
         }
 
         $this->metrics[$metric["metric_id"]]["ds_order"] =
@@ -985,7 +985,10 @@ class CentreonGraphNg
             $this->indexData = $row;
         }
 
-        if (preg_match("/meta_([0-9]*)/", $this->indexData["service_description"], $matches)) {
+        if (
+            ! empty($this->indexData["service_description"])
+            && preg_match("/meta_([0-9]*)/", $this->indexData["service_description"], $matches)
+        ) {
             $stmt = $this->db->prepare("SELECT meta_name FROM meta_service WHERE `meta_id` = :meta_id");
             $stmt->bindParam(':meta_id', $matches[1], PDO::PARAM_INT);
             $stmt->execute();
@@ -1056,7 +1059,7 @@ class CentreonGraphNg
      */
     public function setRRDOption($name, $value = null)
     {
-        if (strpos($value, " ") !== false) {
+        if ($value !== null && strpos($value, " ") !== false) {
             $value = "'" . $value . "'";
         }
         $this->rrdOptions[$name] = $value;

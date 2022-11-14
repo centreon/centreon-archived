@@ -30,10 +30,24 @@ try {
     $errorMessage = "Impossible to update 'cb_field' table";
     $pearDB->query("ALTER TABLE cb_field MODIFY description VARCHAR(510) DEFAULT NULL");
 
+    $errorMessage = "Impossible to update 'hosts' table";
+    if (! str_contains(strtolower($pearDBO->getColumnType('hosts', 'notification_number')), 'bigint')) {
+        $pearDBO->beginTransaction();
+        $pearDBO->query("UPDATE `hosts` SET `notification_number`= 0 WHERE `notification_number`< 0");
+        $pearDBO->query("ALTER TABLE `hosts` MODIFY `notification_number` BIGINT(20) UNSIGNED DEFAULT NULL");
+    }
+
+    $errorMessage = "Impossible to update 'services' table";
+    if (! str_contains(strtolower($pearDBO->getColumnType('services', 'notification_number')), 'bigint')) {
+        $pearDBO->beginTransaction();
+        $pearDBO->query("UPDATE `services` SET `notification_number`= 0 WHERE `notification_number`< 0");
+        $pearDBO->query("ALTER TABLE `services` MODIFY `notification_number` BIGINT(20) UNSIGNED DEFAULT NULL");
+    }
+
     $pearDB->beginTransaction();
 
-    $errorMessage = "Unable to delete 'oreon_web_path' option from database";
-    $pearDB->query("DELETE FROM `options` WHERE `key` = 'oreon_web_path'");
+    $errorMessage = "Unable to delete 'oreon_web_path' and color options from database";
+    $pearDB->query("DELETE FROM `options` WHERE `key` = 'oreon_web_path' OR `key` LIKE 'color_%'");
 
     $errorMessage = "Unable to delete 'appKey' information from database";
     $pearDB->query("DELETE FROM `informations` WHERE `key` = 'appKey'");
@@ -41,15 +55,42 @@ try {
     $errorMessage = "Impossible to add new BBDO streams";
     createBbdoStreamConfigurationForms($pearDB);
 
+    $errorMessage = "Impossible to update pollers ACLs";
+    updatePollerAcls($pearDB);
+
+    $errorMessage = "Impossible to update OpenID Provider configuration";
+    updateOpenIdCustomConfiguration($pearDB);
     $pearDB->commit();
 
     if ($pearDB->isColumnExist('remote_servers', 'app_key') === 1) {
         $errorMessage = "Unable to drop 'app_key' from remote_servers table";
         $pearDB->query("ALTER TABLE remote_servers DROP COLUMN `app_key`");
     }
+
+    if ($pearDB->isColumnExist('remote_servers', 'server_id') === 0) {
+        $errorMessage = "Unable to add 'server_id' column to remote_servers table";
+        $pearDB->query(
+            "ALTER TABLE remote_servers
+            ADD COLUMN `server_id` int(11) NOT NULL"
+        );
+
+        migrateRemoteServerRelations($pearDB);
+
+        $errorMessage = "Unable to add foreign key constraint of remote_servers.server_id";
+        $pearDB->query(
+            "ALTER TABLE remote_servers
+            ADD CONSTRAINT `remote_server_nagios_server_ibfk_1`
+            FOREIGN KEY(`server_id`) REFERENCES `nagios_server` (`id`)
+            ON DELETE CASCADE"
+        );
+    }
 } catch (\Exception $e) {
     if ($pearDB->inTransaction()) {
         $pearDB->rollBack();
+    }
+
+    if ($pearDBO->inTransaction()) {
+        $pearDBO->rollBack();
     }
 
     $centreonLog->insertLog(
@@ -61,6 +102,143 @@ try {
     );
 
     throw new \Exception($versionOfTheUpgrade . $errorMessage, (int) $e->getCode(), $e);
+}
+
+/**
+ * Manage relations between remote servers and nagios servers
+ *
+ * @param \CentreonDB $pearDB
+ */
+function migrateRemoteServerRelations(\CentreonDB $pearDB): void
+{
+    $processedIps = [];
+
+    $selectServerStatement = $pearDB->prepare(
+        "SELECT id FROM nagios_server WHERE ns_ip_address = :ip_address"
+    );
+    $deleteRemoteStatement = $pearDB->prepare(
+        "DELETE FROM remote_servers WHERE id = :id"
+    );
+    $updateRemoteStatement = $pearDB->prepare(
+        "UPDATE remote_servers SET server_id = :server_id WHERE id = :id"
+    );
+
+    $result = $pearDB->query(
+        "SELECT id, ip FROM remote_servers"
+    );
+    while ($remote = $result->fetch()) {
+        $remoteIp = $remote['ip'];
+        $remoteId = $remote['id'];
+        if (in_array($remoteIp, $processedIps)) {
+            $deleteRemoteStatement->bindValue(':id', $remoteId, \PDO::PARAM_INT);
+            $deleteRemoteStatement->execute();
+        }
+
+        $processedIps[] = $remoteIp;
+
+        $selectServerStatement->bindValue(':ip_address', $remoteIp, \PDO::PARAM_STR);
+        $selectServerStatement->execute();
+        if ($server = $selectServerStatement->fetch()) {
+            $updateRemoteStatement->bindValue(':server_id', $server['id'], \PDO::PARAM_INT);
+            $updateRemoteStatement->bindValue(':id', $remoteId, \PDO::PARAM_INT);
+            $updateRemoteStatement->execute();
+        } else {
+            $deleteRemoteStatement->bindValue(':id', $remoteId, \PDO::PARAM_INT);
+            $deleteRemoteStatement->execute();
+        }
+    }
+}
+
+/**
+ * @param CentreonDB $pearDB
+ * @throws \Exception
+ */
+function updatePollerAcls(CentreonDB $pearDB): void
+{
+    $stmt = $pearDB->query(
+        "SELECT topology_id FROM topology WHERE topology_page = 60901"
+    );
+    $pollersTopologyId = $stmt->fetch();
+    if ($pollersTopologyId === false) {
+        return;
+    }
+    $pollersTopologyId = (int) $pollersTopologyId['topology_id'];
+
+    updatePollerActionsAcls($pearDB, $pollersTopologyId);
+    updatePollerMenusAcls($pearDB, $pollersTopologyId);
+}
+
+/**
+ * @param CentreonDB $pearDB
+ * @param int $topologyId
+ * @throws \Exception
+ */
+function updatePollerMenusAcls(CentreonDB $pearDB, int $topologyId): void
+{
+    $stmt = $pearDB->prepare(
+        "UPDATE acl_topology_relations SET access_right = '1'
+        WHERE access_right = '2' AND topology_topology_id = :topologyId"
+    );
+    $stmt->bindValue(':topologyId', $topologyId, \PDO::PARAM_INT);
+    $stmt->execute();
+
+    $stmt = $pearDB->prepare("UPDATE topology SET readonly = '1' WHERE topology_id = :topologyId");
+    $stmt->bindValue(':topologyId', $topologyId, \PDO::PARAM_INT);
+    $stmt->execute();
+}
+
+/**
+ * @param CentreonDB $pearDB
+ * @param int $topologyId
+ * @throws \Exception
+ */
+function updatePollerActionsAcls(CentreonDB $pearDB, int $topologyId): void
+{
+    // Get ACL action ids linked to pollers page with read/write access
+    $stmt = $pearDB->prepare(
+        "SELECT DISTINCT(gar.acl_action_id) FROM acl_group_actions_relations gar
+        JOIN acl_group_topology_relations gtr ON gar.acl_group_id = gtr.acl_group_id
+        JOIN acl_topology_relations tr ON tr.acl_topo_id = gtr.acl_topology_id
+        WHERE tr.topology_topology_id = :topologyId AND tr.access_right = '1'"
+    );
+    $stmt->bindValue(':topologyId', $topologyId, \PDO::PARAM_INT);
+    $stmt->execute();
+
+    $actionIdsToUpdate = $stmt->fetchAll(\PDO::FETCH_COLUMN, 0);
+    if (empty($actionIdsToUpdate)) {
+        return;
+    }
+
+    // Get ACL action ids linked to pollers page without read/write access
+    $stmt = $pearDB->prepare(
+        "SELECT DISTINCT(gar.acl_action_id) FROM acl_group_actions_relations gar
+        JOIN acl_group_topology_relations gtr ON gar.acl_group_id = gtr.acl_group_id
+        WHERE gtr.acl_topology_id NOT IN (
+            SELECT acl_topo_id FROM acl_topology_relations
+            WHERE topology_topology_id = :topologyId AND access_right = '1'
+        )"
+    );
+    $stmt->bindValue(':topologyId', $topologyId, \PDO::PARAM_INT);
+    $stmt->execute();
+
+    $actionIdsToExclude = $stmt->fetchAll(\PDO::FETCH_COLUMN, 0);
+
+    foreach ($actionIdsToUpdate as $actionId) {
+        /**
+         * Do not update ACL action linked to write AND read only / none pollers page access
+         * so the most restrictive access wins
+         */
+        if (in_array($actionId, $actionIdsToExclude)) {
+            continue;
+        }
+
+        $stmt = $pearDB->prepare(
+            "INSERT INTO acl_actions_rules (acl_action_rule_id, acl_action_name) VALUES
+            (:actionId, 'create_edit_poller_cfg'), (:actionId, 'delete_poller_cfg')"
+        );
+        $stmt->bindValue(':actionId', $actionId);
+        $stmt->execute();
+    }
 }
 
 /**
@@ -435,4 +613,60 @@ function getFieldsDetails(): array
     ];
 
     return ['bbdo_server' => $bbdoServer, 'bbdo_client' => $bbdoClient];
+}
+
+/**
+ * Update Open ID Provider with new parameters.
+ *
+ * @param CentreonDB $pearDB
+ */
+function updateOpenIdCustomConfiguration(CentreonDB $pearDB): void
+{
+    $statement = $pearDB->query("SELECT custom_configuration FROM provider_configuration WHERE `name`='openid'");
+
+    if ($result = $statement->fetch()) {
+        $customConfiguration = json_decode($result['custom_configuration'], true);
+
+        /**
+         * Remove trusted & blacklist client addresses from root of custom configuration
+         * and add them to authentication conditions
+         */
+        $trustedClientAddresses = $customConfiguration['trusted_client_addresses'];
+        $blacklistClientAddresses = $customConfiguration['blacklist_client_addresses'];
+        unset($customConfiguration['trusted_client_addresses']);
+        unset($customConfiguration['blacklist_client_addresses']);
+
+        /**
+         * Remove claim name and contact group id as they are know handled in roles mapping and groups mapping.
+         */
+        unset($customConfiguration['claim_name']);
+        unset($customConfiguration['contact_group_id']);
+        $customConfiguration['authentication_conditions'] = [
+            'is_enabled' => false,
+            'attribute_path' => '',
+            'endpoint' => '',
+            'authorized_values' => [],
+            'trusted_client_addresses' => $trustedClientAddresses,
+            'blacklist_client_addresses' => $blacklistClientAddresses
+        ];
+        $customConfiguration['roles_mapping'] = [
+            'is_enabled' => false,
+            'apply_only_first_role' => false,
+            'attribute_path' => '',
+            'endpoint' => ['type' => 'introspection_endpoint', 'custom_endpoint' => '']
+        ];
+        $customConfiguration['groups_mapping'] = [
+            'is_enabled' => false,
+            'attribute_path' => '',
+            'endpoint' => ['type' => 'introspection_endpoint', 'custom_endpoint' => ''],
+        ];
+
+        $encodedConfiguration = json_encode($customConfiguration);
+
+        $statement = $pearDB->prepare(
+            "UPDATE custom_configuration SET custom_configuration = :customConfiguration WHERE `name`='openid'"
+        );
+        $statement->bindValue(':customConfiguration', $encodedConfiguration, \PDO::PARAM_STR);
+        $statement->execute();
+    }
 }

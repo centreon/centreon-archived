@@ -1,15 +1,31 @@
 :root {
     /** Main colors **/
-    --color-primary-light: #64B5F6;
+    --color-primary-light: #2E68AA;
+    --color-primary-dark: #6EAFF8;
     --color-primary-body-dark : #b2aca2;
     --color-primary-body-background-dark:#212121;
+    --color-primary-body-background-light:#fff;
     --color-primary-success-dark : #84bd00;
-    --color-primary-dark: #10069F;
-    --color-success : #88b917 ;
-    --color-warning : #ff9a13 ;
-    --color-danger : #e00b3d ;
-    --color-pending : #2AD1D4 ;
-    --color-info : #00bdb0 ;
+    --color-primary-hover: #255891;
+    --color-primary-hover-dark: #4974A5;
+    --color-secondary : #666666 ;
+    --color-secondary-dark : #b5b5b5 ;
+    --color-listing-hover: #E6EDF5;
+    --color-listing-hover-dark: #384C62;
+    --color-divider: #E3E3E3 ;
+    --color-divider-dark: #666666 ;
+    --color-success : #88B922 ;
+    --color-success-dark : #5F8118 ;
+    --color-warning : #FD9B27 ;
+    --color-warning-dark : #C55400 ;
+    --color-danger : #FF4A4A ;
+    --color-danger-dark : #D60101 ;
+    --color-pending : #1EBEB3 ;
+    --color-pending-dark : #118077;
+    --color-unknown : #2E68AA19 ;
+    --color-unknown-dark : #6EAFF819  ;
+    --color-info :  #1588D1 ;
+    --color-info-dark : #1CA9F4 ;
     --color-ack : #AA9C24;
     --color-white : #fff ;
     --color-black: #000000;
@@ -174,6 +190,7 @@
     --color-dark-gray-rgba-6: rgba(90, 90, 90, 0.6);
     --color-grey-chateau-rgba-4: rgba(167, 169, 172, 0.4);
     --color-torch-red-rgba-4: rgba(249, 0, 38, 0.4);
+    --color-alto-rgba-5: rgba(153, 153, 153, .5);
     --color-rayola: #ffcb6b;
     --color-rayola-2: #ffa600;
     --color-menthol: #B6FCA7;

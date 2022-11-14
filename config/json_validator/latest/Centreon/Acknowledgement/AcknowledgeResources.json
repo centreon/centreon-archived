@@ -1,0 +1,66 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "Acknowledge resources",
+    "type": "object",
+    "required": ["acknowledgement", "resources"],
+    "additionalProperties": false,
+    "properties": {
+        "acknowledgement": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "comment": {
+                    "type": "string"
+                },
+                "with_services": {
+                    "type": "boolean"
+                },
+                "force_active_checks": {
+                    "type": "boolean"
+                },
+                "is_notify_contacts": {
+                    "type": "boolean"
+                },
+                "is_persistent_comment": {
+                    "type": "boolean"
+                },
+                "is_sticky": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "resources": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "type",
+                    "id",
+                    "parent"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                    "type": {
+                        "type": "string"
+                    },
+                    "id": {
+                        "type": "integer"
+                    },
+                    "parent": {
+                        "type": [
+                            "object",
+                            "null"
+                        ],
+                        "additionalProperties": false,
+                        "required": ["id"],
+                        "properties": {
+                            "id": {
+                                "type": "integer"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

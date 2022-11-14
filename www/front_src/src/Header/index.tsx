@@ -1,6 +1,11 @@
 import { useRef } from 'react';
 
+import { equals } from 'ramda';
+
 import { makeStyles } from '@mui/styles';
+import { Theme } from '@mui/material';
+
+import { ThemeMode } from '@centreon/ui-context';
 
 import FederatedComponent from '../components/FederatedComponents';
 
@@ -9,47 +14,34 @@ import HostStatusCounter from './RessourceStatusCounter/Host';
 import ServiceStatusCounter from './RessourceStatusCounter/Service';
 import UserMenu from './userMenu';
 
+export const isDarkMode = (theme: Theme): boolean =>
+  equals(theme.palette.mode, ThemeMode.dark);
+
+export const headerHeight = 7;
+
 const useStyles = makeStyles((theme) => ({
-  container: {
-    alignItems: 'center',
-    display: 'flex',
-  },
   header: {
-    background: theme.palette.common.black,
-    width: '100%',
-  },
-  hookComponent: {
+    alignItems: 'center',
+    backgroundColor: isDarkMode(theme)
+      ? theme.palette.common.black
+      : theme.palette.primary.dark,
     display: 'flex',
-    flex: 0.4,
-    justifyContent: 'flex-end',
+    height: theme.spacing(headerHeight),
+    padding: `0 ${theme.spacing(3)}`,
   },
-  hostStatusContainer: {
-    display: 'flex',
-    flex: 0.35,
-    justifyContent: 'center',
+  item: {
+    flex: '1 0 120px',
   },
-  pollerContainer: {
-    flex: 0.4,
-  },
-  rightContainer: {
+  leftContainer: {
     alignItems: 'center',
     display: 'flex',
-    flex: 0.9,
-  },
-  serviceStatusContainer: {
-    display: 'flex',
-    flex: 0.45,
-  },
-  userMenu: {
-    display: 'flex',
-    flex: 0.8,
-    justifyContent: 'flex-end',
+    gap: theme.spacing(2),
+    [theme.breakpoints.up(768)]: {
+      gap: theme.spacing(3),
+    },
   },
   userMenuContainer: {
-    alignItems: 'center',
-    display: 'flex',
-    flex: 0.3,
-    justifyContent: 'flex-end',
+    marginLeft: 'auto',
   },
 }));
 
@@ -59,24 +51,22 @@ const Header = (): JSX.Element => {
 
   return (
     <header className={classes.header} ref={headerRef}>
-      <div className={classes.container}>
-        <div className={classes.pollerContainer}>
+      <div className={classes.leftContainer}>
+        <div className={classes.item}>
           <PollerMenu />
         </div>
-        <div className={classes.rightContainer}>
-          <div className={classes.hookComponent}>
-            <FederatedComponent path="/bam/header/topCounter" />
-          </div>
-          <div className={classes.hostStatusContainer}>
-            <HostStatusCounter />
-          </div>
-          <div className={classes.serviceStatusContainer}>
-            <ServiceStatusCounter />
-          </div>
-          <div className={classes.userMenuContainer}>
-            <UserMenu headerRef={headerRef} />
-          </div>
+        <div className={classes.item}>
+          <ServiceStatusCounter />
         </div>
+        <div className={classes.item}>
+          <HostStatusCounter />
+        </div>
+        <div className={classes.item}>
+          <FederatedComponent path="/bam/header/topCounter" />
+        </div>
+      </div>
+      <div className={classes.userMenuContainer}>
+        <UserMenu headerRef={headerRef} />
       </div>
     </header>
   );

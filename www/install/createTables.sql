@@ -2278,7 +2278,9 @@ CREATE TABLE IF NOT EXISTS `remote_servers` (
   `http_method` enum('http','https') NOT NULL DEFAULT 'http',
   `http_port` int(11) DEFAULT NULL,
   `no_check_certificate` enum('0','1') NOT NULL DEFAULT '0',
-  `no_proxy` enum('0','1') NOT NULL DEFAULT '0'
+  `no_proxy` enum('0','1') NOT NULL DEFAULT '0',
+  `server_id` int(11) NOT NULL,
+  CONSTRAINT `remote_server_nagios_server_ibfk_1` FOREIGN KEY(`server_id`) REFERENCES `nagios_server` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- Create rs_poller_relation for the additional relationship between poller and remote servers
@@ -2420,11 +2422,25 @@ CREATE TABLE `security_provider_access_group_relation` (
   `claim_value` VARCHAR(255) NOT NULL,
   `access_group_id` int(11) NOT NULL,
   `provider_configuration_id` int(11) NOT NULL,
+  `priority` SMALLINT UNSIGNED  NOT NULL,
   PRIMARY KEY (`claim_value`, `access_group_id`, `provider_configuration_id`),
   CONSTRAINT `security_provider_access_group_id`
     FOREIGN KEY (`access_group_id`)
     REFERENCES `acl_groups` (`acl_group_id`) ON DELETE CASCADE,
   CONSTRAINT `security_provider_provider_configuration_id`
+    FOREIGN KEY (`provider_configuration_id`)
+    REFERENCES `provider_configuration` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `security_provider_contact_group_relation` (
+  `claim_value` VARCHAR(255) NOT NULL,
+  `contact_group_id` int(11) NOT NULL,
+  `provider_configuration_id` int(11) NOT NULL,
+  PRIMARY KEY (`claim_value`, `contact_group_id`, `provider_configuration_id`),
+  CONSTRAINT `security_provider_contact_group_id`
+    FOREIGN KEY (`contact_group_id`)
+    REFERENCES `contactgroup` (`cg_id`) ON DELETE CASCADE,
+  CONSTRAINT `security_provider_configuration_provider_id`
     FOREIGN KEY (`provider_configuration_id`)
     REFERENCES `provider_configuration` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { prop, isEmpty, path, isNil } from 'ramda';
 import { useAtomValue } from 'jotai/utils';
 
-import { Paper } from '@mui/material';
+import { Paper, Stack } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 
 import {
@@ -30,13 +30,15 @@ import { listTimelineEventsDecoder } from './api/decoders';
 import { listTimelineEvents } from './api';
 import Events from './Events';
 import LoadingSkeleton from './LoadingSkeleton';
+import ExportToCsv from './ExportToCsv';
 
 type TimelineListing = ListingModel<TimelineEvent>;
 
 const useStyles = makeStyles((theme) => ({
-  filter: {
-    padding: theme.spacing(2),
-    paddingTop: 0,
+  filterHeader: {
+    alignItems: 'center',
+    display: 'grid',
+    padding: theme.spacing(1),
   },
 }));
 
@@ -90,6 +92,10 @@ const TimelineTab = ({ details }: TabProps): JSX.Element => {
   };
 
   const timelineEndpoint = path(['links', 'endpoints', 'timeline'], details);
+  const timelineDownloadEndpoint = path(
+    ['links', 'endpoints', 'timeline_download'],
+    details,
+  );
 
   const listTimeline = ({
     atPage,
@@ -110,21 +116,30 @@ const TimelineTab = ({ details }: TabProps): JSX.Element => {
     setSelectedTypes(typeIds);
   };
 
+  const displayCsvExport = !isNil(timelineDownloadEndpoint);
+
   return (
     <InfiniteScroll
       details={details}
       filter={
-        <Paper className={classes.filter}>
-          <TimePeriodButtonGroup disableGraphOptions disablePaper />
-          <MultiAutocompleteField
-            fullWidth
-            label={t(labelEvent)}
-            limitTags={3}
-            options={translatedTypes}
-            value={selectedTypes}
-            onChange={changeSelectedTypes}
-          />
-        </Paper>
+        <Stack spacing={0.5}>
+          <Paper className={classes.filterHeader}>
+            <TimePeriodButtonGroup disableGraphOptions disablePaper />
+            <MultiAutocompleteField
+              label={t(labelEvent)}
+              limitTags={3}
+              options={translatedTypes}
+              value={selectedTypes}
+              onChange={changeSelectedTypes}
+            />
+          </Paper>
+          {displayCsvExport && (
+            <ExportToCsv
+              getSearch={getSearch}
+              timelineDownloadEndpoint={timelineDownloadEndpoint as string}
+            />
+          )}
+        </Stack>
       }
       limit={limit}
       loading={sending}

@@ -1,36 +1,64 @@
-import { lazy } from 'react';
+import { lazy, useEffect, Suspense } from 'react';
 
 import { isNil } from 'ramda';
-import { useAtomValue } from 'jotai/utils';
+import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 
-import { ListingPage, useMemoComponent, WithPanel } from '@centreon/ui';
+import {
+  ListingPage,
+  LoadingSkeleton,
+  useMemoComponent,
+  WithPanel,
+} from '@centreon/ui';
 
 import Details from './Details';
-import EditFiltersPanel from './Filter/Edit';
-import { selectedResourceIdAtom } from './Details/detailsAtoms';
+import {
+  selectedResourcesDetailsAtom,
+  clearSelectedResourceDerivedAtom,
+} from './Details/detailsAtoms';
 import useDetails from './Details/useDetails';
 import { editPanelOpenAtom } from './Filter/filterAtoms';
 import useFilter from './Filter/useFilter';
+
+const EditFiltersPanel = lazy(() => import('./Filter/Edit'));
 
 const Filter = lazy(() => import('./Filter'));
 const Listing = lazy(() => import('./Listing'));
 
 const ResourcesPage = (): JSX.Element => {
-  const selectedResourceId = useAtomValue(selectedResourceIdAtom);
+  const selectedResource = useAtomValue(selectedResourcesDetailsAtom);
   const editPanelOpen = useAtomValue(editPanelOpenAtom);
+  const clearSelectedResource = useUpdateAtom(clearSelectedResourceDerivedAtom);
+
+  useEffect(() => {
+    window.addEventListener('beforeunload', clearSelectedResource);
+
+    return () => {
+      window.removeEventListener('beforeunload', clearSelectedResource);
+      clearSelectedResource();
+    };
+  }, []);
 
   return useMemoComponent({
     Component: (
-      <WithPanel open={editPanelOpen} panel={<EditFiltersPanel />}>
+      <WithPanel
+        open={editPanelOpen}
+        panel={
+          editPanelOpen ? (
+            <Suspense fallback={<LoadingSkeleton height="100%" width={550} />}>
+              <EditFiltersPanel />
+            </Suspense>
+          ) : undefined
+        }
+      >
         <ListingPage
           filter={<Filter />}
           listing={<Listing />}
           panel={<Details />}
-          panelOpen={!isNil(selectedResourceId)}
+          panelOpen={!isNil(selectedResource?.resourceId)}
         />
       </WithPanel>
     ),
-    memoProps: [selectedResourceId, editPanelOpen],
+    memoProps: [selectedResource?.resourceId, editPanelOpen],
   });
 };
 
