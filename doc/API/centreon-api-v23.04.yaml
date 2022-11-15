@@ -22,7 +22,7 @@ info:
   license:
     name: Apache 2.0
     url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
-  version: "22.10"
+  version: "23.04"
 externalDocs:
   description: You can contact us on our community Slack
   url: 'https://centreon.slack.com/messages/CCRGLQSE5'
@@ -42,7 +42,7 @@ servers:
         default: '80'
         description: "Port used by HTTP server"
       version:
-        default: v22.10
+        default: v23.04
         description: "Version of the API"
 tags:
   - name: Acknowledgement
@@ -4001,6 +4001,35 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
+  /administration/vaults/{vault_id}/configurations:
+    post:
+      tags:
+        - Administration
+      summary: "Create vault configuration"
+      parameters:
+      - in: path
+        name: vault_id
+        description: "ID of vault provider"
+        required: true
+        schema:
+          type: integer
+          format: int64
+          example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Administration.Vault'
+      responses:
+        '201':
+          description: "OK"
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
 components:
   securitySchemes:
     Token:
@@ -7224,3 +7253,31 @@ components:
           type: string
           description: "Fix version"
           example: "0"
+    Administration.Vault:
+      type: object
+      required: [name, address, port, storage, role_id, secret_id]
+      description: "Vault configuration"
+      properties:
+        name:
+          type: string
+          description: "Vault configuration name"
+          example: "centreon_vault"
+        address:
+          type: string
+          description: "Vault URL or IP"
+          example: "127.0.0.1"
+        port:
+          type: integer
+          description: "Vault Port"
+          example: 8200
+        storage:
+          type: string
+          description: "Vault storage name"
+          example: "centreon"
+        role_id:
+          type: string
+          description: "Vault role id"
+        secret_id:
+          type: string
+          description: "Vault secret id"
+

@@ -307,4 +307,20 @@ class Assertion
             $propertyPath
         );
     }
+
+    /**
+     * Assert that value is a valid IP or Domain name
+     *
+     * @param string $value
+     * @param string|null $propertyPath
+     */
+    public static function ipOrDomain(string $value, string $propertyPath = null): void
+    {
+        if (
+            filter_var($value, FILTER_VALIDATE_IP) === false
+            && filter_var($value, FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME) === false
+        ) {
+            throw AssertionException::ipOrDomain($value, $propertyPath);
+        }
+    }
 }
