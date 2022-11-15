@@ -23,6 +23,7 @@ declare(strict_types=1);
 
 namespace Core\Security\Vault\Infrastructure\Repository;
 
+use Core\Security\Vault\Application\Repository\ReadVaultRepositoryInterface;
 use Core\Security\Vault\Domain\Model\VaultConfiguration;
 use Security\Interfaces\EncryptionInterface;
 
@@ -32,8 +33,10 @@ class DbVaultConfigurationFactory
      * @param EncryptionInterface $encryption
      * @param DbReadVaultRepository $vaultRepository
      */
-    public function __construct(private EncryptionInterface $encryption, private DbReadVaultRepository $vaultRepository)
-    {
+    public function __construct(
+        private EncryptionInterface $encryption,
+        private ReadVaultRepositoryInterface $vaultRepository
+    ) {
     }
 
     /**

@@ -26,10 +26,12 @@ namespace Core\Security\Vault\Infrastructure\Repository;
 use Centreon\Domain\Log\LoggerTrait;
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
-use Core\Security\Vault\Application\Repository\ReadVaultConfigurationRepositoryInterface as VaultInterface;
+use Core\Security\Vault\Application\Repository\ReadVaultConfigurationRepositoryInterface;
+use Core\Security\Vault\Domain\Exceptions\VaultConfigurationException;
 use Core\Security\Vault\Domain\Model\VaultConfiguration;
 
-class DbReadVaultConfigurationRepository extends AbstractRepositoryDRB implements VaultInterface
+class DbReadVaultConfigurationRepository extends AbstractRepositoryDRB
+    implements ReadVaultConfigurationRepositoryInterface
 {
     use LoggerTrait;
 
@@ -44,12 +46,6 @@ class DbReadVaultConfigurationRepository extends AbstractRepositoryDRB implement
 
     /**
      * @inheritDoc
-     *
-     * @param string $address
-     * @param int $port
-     * @param string $storage
-     *
-     * @return VaultConfiguration|null
      */
     public function findByAddressAndPortAndStorage(
         string $address,
@@ -61,21 +57,22 @@ class DbReadVaultConfigurationRepository extends AbstractRepositoryDRB implement
         $record = [];
         $statement = $this->db->prepare(
             $this->translateDbName(
-                'SELECT * FROM `:db`.`vault_configuration` WHERE `url`=:address, `port`=:port, `storage`=:storage'
+                'SELECT * FROM `:db`.`vault_configuration` WHERE `url`=:address AND `port`=:port AND `storage`=:storage'
             )
         );
         $statement->bindValue(':address', $address, \PDO::PARAM_STR);
         $statement->bindValue(':port', $port, \PDO::PARAM_INT);
         $statement->bindValue(':storage', $storage, \PDO::PARAM_STR);
-
-        if ($statement->execute() === false) {
-            return null;
-        }
+        $statement->execute();
 
         /**
          * @var array<string,int|string> $record
          */
         $record = $statement->fetch(\PDO::FETCH_ASSOC);
+
+        if (! $record) {
+            return null;
+        }
 
         return $this->factory->createFromRecord($record);
     }
