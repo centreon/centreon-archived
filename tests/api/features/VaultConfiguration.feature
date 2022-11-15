@@ -69,13 +69,7 @@ Feature: Vault Configuration API
         "secret_id": "mySecretId"
       }
     """
-    Then the response code should be "401"
-    And the JSON should be equal to:
-    """
-      {
-        "message": "Invalid credentials."
-      }
-    """
+    Then the response code should be "403"
 
   Scenario: Create a new vault configuration as an admin user while the same vault configuration already exists
     Given I am logged in
