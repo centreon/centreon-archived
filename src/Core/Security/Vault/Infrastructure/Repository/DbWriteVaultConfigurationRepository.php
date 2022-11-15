@@ -26,11 +26,12 @@ namespace Core\Security\Vault\Infrastructure\Repository;
 use Centreon\Domain\Log\LoggerTrait;
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
-use Core\Security\Vault\Application\Repository\WriteVaultConfigurationRepositoryInterface;
+use Core\Security\Vault\Application\Repository\{
+    WriteVaultConfigurationRepositoryInterface as WriteVaultConfigurationInterface
+};
 use Core\Security\Vault\Domain\Model\NewVaultConfiguration;
 
-class DbWriteVaultConfigurationRepository extends AbstractRepositoryDRB
-    implements WriteVaultConfigurationRepositoryInterface
+class DbWriteVaultConfigurationRepository extends AbstractRepositoryDRB implements WriteVaultConfigurationInterface
 {
     use LoggerTrait;
 

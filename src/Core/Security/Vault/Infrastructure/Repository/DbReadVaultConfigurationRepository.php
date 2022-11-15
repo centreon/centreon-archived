@@ -26,12 +26,12 @@ namespace Core\Security\Vault\Infrastructure\Repository;
 use Centreon\Domain\Log\LoggerTrait;
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
-use Core\Security\Vault\Application\Repository\ReadVaultConfigurationRepositoryInterface;
-use Core\Security\Vault\Domain\Exceptions\VaultConfigurationException;
+use Core\Security\Vault\Application\Repository\{
+    ReadVaultConfigurationRepositoryInterface as ReadVaultConfigurationInterface
+};
 use Core\Security\Vault\Domain\Model\VaultConfiguration;
 
-class DbReadVaultConfigurationRepository extends AbstractRepositoryDRB
-    implements ReadVaultConfigurationRepositoryInterface
+class DbReadVaultConfigurationRepository extends AbstractRepositoryDRB implements ReadVaultConfigurationInterface
 {
     use LoggerTrait;
 
