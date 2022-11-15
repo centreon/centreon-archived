@@ -32,6 +32,7 @@ use Core\Security\Vault\Application\UseCase\CreateVaultConfiguration\{
     CreateVaultConfigurationRequest
 };
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 final class CreateVaultConfigurationController extends AbstractController
 {
@@ -49,17 +50,7 @@ final class CreateVaultConfigurationController extends AbstractController
         Request $request,
         CreateVaultConfigurationPresenterInterface $presenter
     ): object {
-        /**
-         * @var Contact $user
-         */
-        $user = $this->getUser();
-        if (! $user->isAdmin()) {
-            $presenter->setResponseStatus(
-                new UnauthorizedResponse('Only admin user can create vault configuration')
-            );
-
-            return $presenter->show();
-        }
+        $this->denyAccessUnlessGrantedForApiConfiguration();
 
         /**
          * @var array{
