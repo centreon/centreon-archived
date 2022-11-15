@@ -63,7 +63,6 @@ class NewVaultConfiguration
         Assertion::ipOrDomain($address, 'NewVaultConfiguration::address');
         Assertion::max($port, self::MAX_PORT_VALUE, 'NewVaultConfiguration::port');
         Assertion::min($port, self::MIN_PORT_VALUE, 'NewVaultConfiguration::port');
-        Assertion::notEmpty($port, 'NewVaultConfiguration::port');
         Assertion::minLength($storage, self::MIN_LENGTH, 'NewVaultConfiguration::storage');
         Assertion::maxLength($storage, self::MAX_LENGTH, 'NewVaultConfiguration::storage');
         Assertion::minLength($roleId, self::MIN_LENGTH, 'NewVaultConfiguration::roleId');
