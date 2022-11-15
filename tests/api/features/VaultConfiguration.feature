@@ -9,11 +9,10 @@ Feature: Vault Configuration API
   Scenario: Create a new vault configuration as an admin user
     Given I am logged in
     And the endpoints are described in Centreon Web API documentation (version: 23.04)
-    When I send a POST request to '/api/latest/administration/vaults' with body:
+    When I send a POST request to '/api/latest/administration/vaults/1/configurations' with body:
     """
       {
         "name": "myVaultConfiguration",
-        "type_id": 1,
         "address": "127.0.0.1",
         "port": 8200,
         "storage": "myStorageFolder",
@@ -31,11 +30,10 @@ Feature: Vault Configuration API
     """
     And I am logged in with "kev"/"Centreon@2022"
 
-    When I send a POST request to '/api/latest/administration/vaults' with body:
+    When I send a POST request to '/api/latest/administration/vaults/1/configurations' with body:
     """
       {
         "name": "myVaultConfiguration",
-        "type_id": 1,
         "address": "127.0.0.1",
         "port": 8200,
         "storage": "myStorageFolder",
@@ -47,11 +45,10 @@ Feature: Vault Configuration API
 
   Scenario: Create a new vault configuration as an admin user while the same vault configuration already exists
     Given I am logged in
-    And I send a POST request to '/api/latest/administration/vaults' with body:
+    And I send a POST request to '/api/latest/administration/vaults/1/configurations' with body:
     """
       {
         "name": "myVaultConfiguration",
-        "type_id": 1,
         "address": "127.0.0.1",
         "port": 8200,
         "storage": "myStorageFolder",
@@ -60,11 +57,10 @@ Feature: Vault Configuration API
       }
     """
 
-    When I send a POST request to '/api/latest/administration/vaults' with body:
+    When I send a POST request to '/api/latest/administration/vaults/1/configurations' with body:
     """
       {
         "name": "myAnotherVaultConfiguration",
-        "type_id": 1,
         "address": "127.0.0.1",
         "port": 8200,
         "storage": "myStorageFolder",
@@ -76,11 +72,10 @@ Feature: Vault Configuration API
 
   Scenario: Create a new vault configuration as an admin user with invalid parameter
     Given I am logged in
-    When I send a POST request to '/api/latest/administration/vaults' with body:
+    When I send a POST request to '/api/latest/administration/vaults/1/configurations' with body:
     """
       {
         "name": "myVaultConfiguration",
-        "type_id": 1,
         "address": "",
         "port": 8200,
         "storage": "myStorageFolder",
