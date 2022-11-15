@@ -29,6 +29,7 @@ interface ReadVaultRepositoryInterface
 {
     /**
      * @param int $id
+     *
      * @return Vault|null
      */
     public function findById(int $id): ?Vault;

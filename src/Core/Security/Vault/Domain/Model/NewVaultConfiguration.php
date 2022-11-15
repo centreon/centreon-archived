@@ -23,7 +23,7 @@ declare(strict_types=1);
 
 namespace Core\Security\Vault\Domain\Model;
 
-use Centreon\Domain\Common\Assertion\{Assertion, AssertionException};
+use Centreon\Domain\Common\Assertion\Assertion;
 
 /**
  * This class represents vault configuration being created.
