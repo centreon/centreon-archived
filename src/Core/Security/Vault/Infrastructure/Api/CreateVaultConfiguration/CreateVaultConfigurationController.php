@@ -24,15 +24,12 @@ declare(strict_types=1);
 namespace Core\Security\Vault\Infrastructure\Api\CreateVaultConfiguration;
 
 use Centreon\Application\Controller\AbstractController;
-use Centreon\Domain\Contact\Contact;
-use Core\Application\Common\UseCase\UnauthorizedResponse;
 use Core\Security\Vault\Application\UseCase\CreateVaultConfiguration\{
     CreateVaultConfiguration,
     CreateVaultConfigurationPresenterInterface,
     CreateVaultConfigurationRequest
 };
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 
 final class CreateVaultConfigurationController extends AbstractController
 {
