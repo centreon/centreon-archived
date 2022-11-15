@@ -42,6 +42,13 @@ Feature: Vault Configuration API
       }
     """
     Then the response code should be "403"
+    And the JSON should be equal to:
+    """
+      {
+        "code": 403,
+        "message": "Only admin user can create vault configuration"
+      }
+    """
 
   Scenario: Create a new vault configuration as a non-admin user with rights to Reach API
     Given the following CLAPI import data:
@@ -63,6 +70,12 @@ Feature: Vault Configuration API
       }
     """
     Then the response code should be "401"
+    And the JSON should be equal to:
+    """
+      {
+        "message": "Invalid credentials."
+      }
+    """
 
   Scenario: Create a new vault configuration as an admin user while the same vault configuration already exists
     Given I am logged in
@@ -105,3 +118,10 @@ Feature: Vault Configuration API
       }
     """
     Then the response code should be "400"
+    And the JSON should be equal to:
+    """
+      {
+        "code": 400,
+        "message": "Vault configuration with these properties already exists"
+      }
+    """
