@@ -25,8 +25,9 @@ namespace Tests\Core\Security\Vault\Application\UseCase\CreateVaultConfiguration
 
 use Assert\InvalidArgumentException;
 use Centreon\Domain\Common\Assertion\AssertionException;
+use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Core\Application\Common\UseCase\InvalidArgumentResponse;
-use Core\Application\Common\UseCase\{CreatedResponse, ErrorResponse};
+use Core\Application\Common\UseCase\{CreatedResponse, ErrorResponse, ForbiddenResponse};
 use Core\Infrastructure\Common\Presenter\PresenterFormatterInterface;
 use Core\Security\Vault\Application\Repository\{
     ReadVaultConfigurationRepositoryInterface,
@@ -48,9 +49,52 @@ beforeEach(function (): void {
     $this->readVaultRepository = $this->createMock(ReadVaultRepositoryInterface::class);
     $this->presenterFormatter = $this->createMock(PresenterFormatterInterface::class);
     $this->factory = $this->createMock(NewVaultConfigurationFactory::class);
+    $this->user = $this->createMock(ContactInterface::class);
+});
+
+it('should present ForbiddenResponse when user is not admin', function (): void {
+    $this->user
+        ->expects($this->once())
+        ->method('isAdmin')
+        ->willReturn(false);
+
+        $vault = new Vault(1, 'myVaultProvider');
+
+        $vaultConfiguration = new VaultConfiguration(
+            1,
+            'myConf',
+            $vault,
+            '127.0.0.1',
+            8200,
+            'myStorage',
+            'myRoleId',
+            'mySecretId',
+            'mySalt'
+        );
+
+        $presenter = new CreateVaultConfigurationPresenterStub($this->presenterFormatter);
+        $useCase = new CreateVaultConfiguration(
+            $this->readVaultConfigurationRepository,
+            $this->writeVaultConfigurationRepository,
+            $this->readVaultRepository,
+            $this->factory,
+            $this->user
+        );
+
+        $createVaultConfigurationRequest = new CreateVaultConfigurationRequest();
+
+        $useCase($presenter, $createVaultConfigurationRequest);
+
+        expect($presenter->getResponseStatus())->toBeInstanceOf(ForbiddenResponse::class);
+        expect($presenter->getResponseStatus()?->getMessage())->toBe('Only admin user can create vault configuration');
 });
 
 it('should present InvalidArgumentResponse when vault configuration already exists', function (): void {
+    $this->user
+        ->expects($this->once())
+        ->method('isAdmin')
+        ->willReturn(true);
+
     $vault = new Vault(1, 'myVaultProvider');
 
     $vaultConfiguration = new VaultConfiguration(
@@ -74,7 +118,8 @@ it('should present InvalidArgumentResponse when vault configuration already exis
         $this->readVaultConfigurationRepository,
         $this->writeVaultConfigurationRepository,
         $this->readVaultRepository,
-        $this->factory
+        $this->factory,
+        $this->user
     );
 
     $createVaultConfigurationRequest = new CreateVaultConfigurationRequest();
@@ -88,6 +133,11 @@ it('should present InvalidArgumentResponse when vault configuration already exis
 });
 
 it('should present InvalidArgumentResponse when one parameter is not valid', function (): void {
+    $this->user
+        ->expects($this->once())
+        ->method('isAdmin')
+        ->willReturn(true);
+
     $this->readVaultConfigurationRepository
         ->expects($this->once())
         ->method('findByAddressAndPortAndStorage')
@@ -104,7 +154,8 @@ it('should present InvalidArgumentResponse when one parameter is not valid', fun
         $this->readVaultConfigurationRepository,
         $this->writeVaultConfigurationRepository,
         $this->readVaultRepository,
-        $this->factory
+        $this->factory,
+        $this->user
     );
 
     $createVaultConfigurationRequest = new CreateVaultConfigurationRequest();
@@ -136,6 +187,11 @@ it('should present InvalidArgumentResponse when one parameter is not valid', fun
 });
 
 it('should present InvalidArgumentResponse when vault provider does not exist', function (): void {
+    $this->user
+        ->expects($this->once())
+        ->method('isAdmin')
+        ->willReturn(true);
+
     $this->readVaultConfigurationRepository
         ->expects($this->once())
         ->method('findByAddressAndPortAndStorage')
@@ -151,7 +207,8 @@ it('should present InvalidArgumentResponse when vault provider does not exist', 
         $this->readVaultConfigurationRepository,
         $this->writeVaultConfigurationRepository,
         $this->readVaultRepository,
-        $this->factory
+        $this->factory,
+        $this->user
     );
 
     $createVaultConfigurationRequest = new CreateVaultConfigurationRequest();
@@ -172,6 +229,11 @@ it('should present InvalidArgumentResponse when vault provider does not exist', 
 });
 
 it('should present ErrorResponse when an unhandled error occurs', function (): void {
+    $this->user
+        ->expects($this->once())
+        ->method('isAdmin')
+        ->willReturn(true);
+
     $this->readVaultConfigurationRepository
         ->expects($this->once())
         ->method('findByAddressAndPortAndStorage')
@@ -182,7 +244,8 @@ it('should present ErrorResponse when an unhandled error occurs', function (): v
         $this->readVaultConfigurationRepository,
         $this->writeVaultConfigurationRepository,
         $this->readVaultRepository,
-        $this->factory
+        $this->factory,
+        $this->user
     );
 
     $createVaultConfigurationRequest = new CreateVaultConfigurationRequest();
@@ -196,6 +259,11 @@ it('should present ErrorResponse when an unhandled error occurs', function (): v
 });
 
 it('should present CreatedResponse when vault configuration is created with success', function (): void {
+    $this->user
+        ->expects($this->once())
+        ->method('isAdmin')
+        ->willReturn(true);
+
     $this->readVaultConfigurationRepository
         ->expects($this->once())
         ->method('findByAddressAndPortAndStorage')
@@ -212,7 +280,8 @@ it('should present CreatedResponse when vault configuration is created with succ
         $this->readVaultConfigurationRepository,
         $this->writeVaultConfigurationRepository,
         $this->readVaultRepository,
-        $this->factory
+        $this->factory,
+        $this->user
     );
 
     $createVaultConfigurationRequest = new CreateVaultConfigurationRequest();

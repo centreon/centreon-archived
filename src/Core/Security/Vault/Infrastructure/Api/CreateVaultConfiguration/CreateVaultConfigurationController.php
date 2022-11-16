@@ -24,8 +24,6 @@ declare(strict_types=1);
 namespace Core\Security\Vault\Infrastructure\Api\CreateVaultConfiguration;
 
 use Centreon\Application\Controller\AbstractController;
-use Centreon\Domain\Contact\Contact;
-use Core\Application\Common\UseCase\UnauthorizedResponse;
 use Core\Security\Vault\Application\UseCase\CreateVaultConfiguration\{
     CreateVaultConfiguration,
     CreateVaultConfigurationPresenterInterface,
@@ -49,17 +47,7 @@ final class CreateVaultConfigurationController extends AbstractController
         Request $request,
         CreateVaultConfigurationPresenterInterface $presenter
     ): object {
-        /**
-         * @var Contact $user
-         */
-        $user = $this->getUser();
-        if (! $user->isAdmin()) {
-            $presenter->setResponseStatus(
-                new UnauthorizedResponse('Only admin user can create vault configuration')
-            );
-
-            return $presenter->show();
-        }
+        $this->denyAccessUnlessGrantedForApiConfiguration();
 
         /**
          * @var array{

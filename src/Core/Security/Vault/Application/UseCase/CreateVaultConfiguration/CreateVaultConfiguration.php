@@ -24,8 +24,9 @@ declare(strict_types=1);
 namespace Core\Security\Vault\Application\UseCase\CreateVaultConfiguration;
 
 use Assert\InvalidArgumentException;
+use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Domain\Log\LoggerTrait;
-use Core\Application\Common\UseCase\{CreatedResponse, ErrorResponse, InvalidArgumentResponse};
+use Core\Application\Common\UseCase\{CreatedResponse, ErrorResponse, ForbiddenResponse, InvalidArgumentResponse};
 use Core\Security\Vault\Application\Repository\{
     ReadVaultConfigurationRepositoryInterface,
     ReadVaultRepositoryInterface,
@@ -42,12 +43,14 @@ final class CreateVaultConfiguration
      * @param WriteVaultConfigurationRepositoryInterface $writeVaultConfigurationRepository
      * @param ReadVaultRepositoryInterface $readVaultRepository
      * @param NewVaultConfigurationFactory $factory
+     * @param ContactInterface $user
      */
     public function __construct(
         private ReadVaultConfigurationRepositoryInterface $readVaultConfigurationRepository,
         private WriteVaultConfigurationRepositoryInterface $writeVaultConfigurationRepository,
         private ReadVaultRepositoryInterface $readVaultRepository,
-        private NewVaultConfigurationFactory $factory
+        private NewVaultConfigurationFactory $factory,
+        private ContactInterface $user
     ) {
     }
 
@@ -60,6 +63,14 @@ final class CreateVaultConfiguration
         CreateVaultConfigurationRequest $createVaultConfigurationRequest
     ): void {
         try {
+            if (! $this->user->isAdmin()) {
+                $presenter->setResponseStatus(
+                    new ForbiddenResponse('Only admin user can create vault configuration')
+                );
+
+                return;
+            }
+
             if (
                 $this->isSameVaultConfigurationExists(
                     $createVaultConfigurationRequest->address,
