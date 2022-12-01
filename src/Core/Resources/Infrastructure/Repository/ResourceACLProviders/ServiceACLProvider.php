@@ -27,10 +27,21 @@ use Core\Domain\RealTime\Model\ResourceTypes\ServiceResourceType;
 
 class ServiceACLProvider implements ResourceACLProviderInterface
 {
-    public function getACLSubRequest(): string
+    /**
+     * @inheritDoc
+     */
+    public function buildACLSubRequest(array $accessGroupIds): string
     {
-        $requestPattern = 'resources.type = %d AND resources.parent_id = acl.host_id AND resources.id = acl.service_id';
+        $requestPattern = 'EXISTS (
+            SELECT 1
+            FROM `:dbstg`.centreon_acl acl
+            WHERE
+                resources.type = %d
+                AND resources.parent_id = acl.host_id
+                AND resources.id = acl.service_id
+                AND acl.group_id IN (%s)
+        )';
 
-        return sprintf($requestPattern, ServiceResourceType::TYPE_ID);
+        return sprintf($requestPattern, ServiceResourceType::TYPE_ID, implode(', ', $accessGroupIds));
     }
 }

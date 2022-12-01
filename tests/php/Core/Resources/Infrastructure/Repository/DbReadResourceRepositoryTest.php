@@ -28,6 +28,8 @@ use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
 use Centreon\Domain\RequestParameters\RequestParameters;
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\RequestParameters\SqlRequestParametersTranslator;
+use Core\Domain\RealTime\Model\ResourceTypes\HostResourceType;
+use Core\Domain\RealTime\Model\ResourceTypes\MetaServiceResourceType;
 use Core\Domain\RealTime\Model\ResourceTypes\ServiceResourceType;
 use Core\Resources\Infrastructure\Repository\DbReadResourceRepository;
 use Core\Resources\Infrastructure\Repository\ResourceACLProviders\HostACLProvider;
@@ -35,15 +37,31 @@ use Core\Resources\Infrastructure\Repository\ResourceACLProviders\MetaServiceACL
 use Core\Resources\Infrastructure\Repository\ResourceACLProviders\ResourceACLProviderInterface;
 use Core\Resources\Infrastructure\Repository\ResourceACLProviders\ServiceACLProvider;
 
-function getSubQueryByACLProvider(ResourceACLProviderInterface $provider): string
+function getSubQueryByACLProvider(ResourceACLProviderInterface $provider, array $accessGroupIds): string
 {
-    $serviceSubQuery = 'resources.type = 0 AND resources.parent_id = acl.host_id AND resources.id = acl.service_id';
-    $metaServiceSubQuery = 'resources.type = 2 AND resources.parent_id = acl.host_id AND resources.id = acl.service_id';
+    $hostPattern = 'EXISTS (
+            SELECT 1
+            FROM `centreon-monitoring`.centreon_acl acl
+            WHERE
+                resources.type = %d
+                AND resources.id = acl.host_id
+                AND acl.group_id IN (%s)
+        )';
+
+    $servicePattern = 'EXISTS (
+            SELECT 1
+            FROM `centreon-monitoring`.centreon_acl acl
+            WHERE
+                resources.type = %d
+                AND resources.parent_id = acl.host_id
+                AND resources.id = acl.service_id
+                AND acl.group_id IN (%s)
+        )';
 
     return match ($provider::class) {
-        ServiceACLProvider::class => $serviceSubQuery,
-        HostACLProvider::class => 'resources.type = 1 AND resources.id = acl.host_id AND acl.service_id IS NULL',
-        MetaServiceACLProvider::class => $metaServiceSubQuery,
+        ServiceACLProvider::class => sprintf($servicePattern, ServiceResourceType::TYPE_ID, implode(', ', $accessGroupIds)),
+        HostACLProvider::class => sprintf($hostPattern, HostResourceType::TYPE_ID, implode(', ', $accessGroupIds)),
+        MetaServiceACLProvider::class => sprintf($servicePattern, MetaServiceResourceType::TYPE_ID, implode(', ', $accessGroupIds)),
         default => throw new \Exception('Unexpected match value'),
     };
 }
@@ -55,13 +73,11 @@ function getSubQueryByACLProvider(ResourceACLProviderInterface $provider): strin
 function generateAccessGroupSubQuery(\Traversable $providers, array $accessGroupIds): string
 {
     $orConditions = array_map(
-        fn(ResourceACLProviderInterface $provider) => '(' . getSubQueryByACLProvider($provider) . ')',
+        fn(ResourceACLProviderInterface $provider) => getSubQueryByACLProvider($provider, $accessGroupIds),
         iterator_to_array($providers)
     );
-    $pattern = 'AND EXISTS (SELECT 1 FROM `centreon-monitoring`.centreon_acl acl ' .
-        'WHERE (%s) AND acl.group_id IN (%s) LIMIT 1) ';
 
-    return sprintf($pattern, join(' OR ', $orConditions), join(', ', $accessGroupIds));
+    return sprintf(' AND (%s)', implode(" OR ", $orConditions));
 }
 
 function generateExpectedSQLQuery(string $accessGroupRequest): string
@@ -110,18 +126,17 @@ function generateExpectedSQLQuery(string $accessGroupRequest): string
         FROM `centreon-monitoring`.`resources`
         LEFT JOIN `centreon-monitoring`.`resources` parent_resource
             ON parent_resource.id = resources.parent_id
-            AND parent_resource.type = 1' .
-        " LEFT JOIN `centreon-monitoring`.`severities`
+        LEFT JOIN `centreon-monitoring`.`severities`
             ON `severities`.severity_id = `resources`.severity_id
         LEFT JOIN `centreon-monitoring`.`resources_tags` AS rtags
             ON `rtags`.resource_id = `resources`.resource_id
         INNER JOIN `centreon-monitoring`.`instances`
-            ON `instances`.instance_id = `resources`.poller_id WHERE " .
+            ON `instances`.instance_id = `resources`.poller_id WHERE ' .
         " resources.name NOT LIKE '\_Module\_%'
             AND resources.parent_name NOT LIKE '\_Module\_BAM%'
-            AND resources.enabled = 1 AND resources.type != 3 " .
+            AND resources.enabled = 1 AND resources.type != 3" .
         $accessGroupRequest .
-        'ORDER BY resources.status_ordered DESC, resources.name ASC';
+        ' ORDER BY resources.status_ordered DESC, resources.name ASC';
 
     return $request;
 }
