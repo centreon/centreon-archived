@@ -495,6 +495,7 @@ try {
   if (env.BUILD != 'CI') {
     stage("$DELIVERY_STAGE") {
       node {
+        cleanWs()
         checkoutCentreonBuild()
         sh 'rm -rf output'
         unstash 'tar-sources'

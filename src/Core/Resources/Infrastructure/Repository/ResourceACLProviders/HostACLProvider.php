@@ -27,10 +27,20 @@ use Core\Domain\RealTime\Model\ResourceTypes\HostResourceType;
 
 class HostACLProvider implements ResourceACLProviderInterface
 {
-    public function getACLSubRequest(): string
+    /**
+     * @inheritDoc
+     */
+    public function buildACLSubRequest(array $accessGroupIds): string
     {
-        $requestPattern = 'resources.type = %d AND resources.id = acl.host_id AND acl.service_id IS NULL';
+        $requestPattern = 'EXISTS (
+            SELECT 1
+            FROM `:dbstg`.centreon_acl acl
+            WHERE
+                resources.type = %d
+                AND resources.id = acl.host_id
+                AND acl.group_id IN (%s)
+        )';
 
-        return sprintf($requestPattern, HostResourceType::TYPE_ID);
+        return sprintf($requestPattern, HostResourceType::TYPE_ID, implode(', ', $accessGroupIds));
     }
 }

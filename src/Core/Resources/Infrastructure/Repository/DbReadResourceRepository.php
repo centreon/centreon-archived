@@ -127,7 +127,7 @@ class DbReadResourceRepository extends AbstractRepositoryDRB implements ReadReso
     ): string {
         $this->sqlRequestTranslator->setConcordanceArray($this->resourceConcordances);
 
-        $request = 'SELECT SQL_CALC_FOUND_ROWS DISTINCT
+        $request = "SELECT SQL_CALC_FOUND_ROWS DISTINCT
             resources.resource_id,
             resources.name,
             resources.alias,
@@ -171,7 +171,7 @@ class DbReadResourceRepository extends AbstractRepositoryDRB implements ReadReso
         FROM `:dbstg`.`resources`
         LEFT JOIN `:dbstg`.`resources` parent_resource
             ON parent_resource.id = resources.parent_id
-            AND parent_resource.type = ' . self::RESOURCE_TYPE_HOST .
+            AND parent_resource.type = " . self::RESOURCE_TYPE_HOST .
         " LEFT JOIN `:dbstg`.`severities`
             ON `severities`.severity_id = `resources`.severity_id
         LEFT JOIN `:dbstg`.`resources_tags` AS rtags
@@ -287,7 +287,7 @@ class DbReadResourceRepository extends AbstractRepositoryDRB implements ReadReso
     private function addResourceAclSubRequest(array $accessGroupIds): string
     {
         $orConditions = array_map(
-            fn(ResourceACLProviderInterface $provider) => '(' . $provider->getACLSubRequest() . ')',
+            fn (ResourceACLProviderInterface $provider) => $provider->buildACLSubRequest($accessGroupIds),
             iterator_to_array($this->resourceACLProviders)
         );
 
@@ -295,9 +295,7 @@ class DbReadResourceRepository extends AbstractRepositoryDRB implements ReadReso
             throw new \InvalidArgumentException(_('You must provide at least one ACL provider'));
         }
 
-        $pattern = ' AND EXISTS (SELECT 1 FROM `:dbstg`.centreon_acl acl WHERE (%s) AND acl.group_id IN (%s) LIMIT 1)';
-
-        return sprintf($pattern, join(' OR ', $orConditions), join(', ', $accessGroupIds));
+        return sprintf(' AND (%s)', implode(' OR ', $orConditions));
     }
 
     private function fetchResources(string $request, StatementCollector $collector): void

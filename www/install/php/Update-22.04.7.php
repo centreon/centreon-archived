@@ -18,18 +18,3 @@
  * For more information : contact@centreon.com
  *
  */
-
-declare(strict_types=1);
-
-namespace Core\Resources\Infrastructure\Repository\ResourceACLProviders;
-
-interface ResourceACLProviderInterface
-{
-    /*
-     * Build ACL sub request regarding access groups IDs for the given resource type
-     *
-     * @param int[] $accessGroupIds
-     * @return string
-     */
-    public function buildACLSubRequest(array $accessGroupIds): string;
-}
